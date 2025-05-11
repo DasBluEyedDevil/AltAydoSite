@@ -1,0 +1,10 @@
+<!-- 
+This is a placeholder file. You should create a simple ship outline silhouette image 
+and save it as "ship-outline.png" in the public directory.
+
+The image should be approximately 96px × 64px with a transparent background.
+A simple blue/cyan silhouette of a spaceship would work well with the Mobiglass theme.
+
+If you don't have this image, the dashboard will still work, but will show a broken image 
+in the ship status widget.
+--> 

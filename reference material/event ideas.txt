@@ -1,0 +1,84 @@
+Casual/unstructured activity ideas:
+
+Commodity trading:
+
+Participants pool money together to buy a cargo-load of a commodity, then haul it to the place they will sell it to…rinse and repeat.
+
+Could be good for at least one person to act as security
+
+Mining:
+
+Participants rent Prospectors (or use their own) to fly as a group to various locations to mine, but they don’t all have to go to the same areas
+
+Alternatively, people could rent ROCs and have someone shuttle them from one mining spot to another
+
+Salvaging:
+
+Participants can rent Vultures (have to check if Vultures are able to be rented, not sure) to fly as a group to complete salvaging missions.
+
+Someone could tag along in a cargo ship to offload from the Vultures, but it just depends on what people want to do.
+
+
+
+
+
+
+
+
+
+“Official”/structured event ideas:
+
+Extended mining operation:
+
+Two MOLEs are used at minimum
+
+When one MOLE finishes mining, a person in another is at the ready to have the crew of the first transferred to that second ship; the original MOLE then flies to the refinery to submit an order, then flies back to do the same swap…rinse and repeat.
+
+When we get the ability to create refinery orders from the freight elevator as well as being able to swap out mining bags with the ships able to detect them properly, we will replace this idea by with having a hauling crew going back and forth from MOLEs/Prospectors to the refinery station (basically, a cargo ship will carry a bunch of empty hopper bags to swap for full ones to then submit at the refinery)
+
+People that want to use a ROC (and the future ATLS GEO) to mine will have someone with a ship to ferry them around locations.
+
+Ideally there should be someone in a ship to scout out locations for ore so the MOLEs don’t have to waste time searching; perhaps the ship that ferries the ground miners can serve that purpose so the pilot has something to do in-between carrying the vehicles around.
+
+Extended salvaging operation:
+
+A Reclaimer crew will accept salvaging missions for the duration of the event, OR accept bounty missions to salvage from the defeated enemies.
+
+A cargo crew will tag along to transfer the cargo so that the Reclaimer doesn’t have to go to a landing zone.
+
+If bounties are the method of collecting salvage, ideally a small contingent of fighter craft should be used
+
+Ship and/or ground racing:
+
+Racers submit an entry fee to be part of the race; such fees will go towards a 1st, 2nd, and 3rd place prizes (org funds will likely have to be put towards this to make for a more appealing prize; depends on how big of a fee we want to have).
+
+Attempt to facilitate betting on racers
+
+Race will likely be held at CIG/community-created race tracks in the PU, though potentially they could be held in Arena Commander
+
+PaperTiger is our race manager for those unaware, so we’ll have to broach the topic to him to ask if he wants to reinstate active racing in the org again like we used to
+
+Fulfilling orders from other orgs/individuals:
+
+Hopefully we can try to get contracts with other orgs and individuals to carry out certain things that they either don’t want to do or don’t have the manpower for. 
+
+Will have to spend time reaching out to other orgs to offer them hauling, personnel transport, and various other services that we come up with
+
+The reason such things would be considered a structured event is that fulfilling such orders will affect our reputation to the outside community, and thus the highest priority will be given to such things
+
+“The Big Haul”
+
+A massive cargo haul of commodities to Ruin station and/or back to a location within the Stanton System.
+
+Several large cargo ships load (C2, Hull C, Cat), transport and unload cargo. The bread and butter of our org on a massive scale.
+
+A contingent of fighters protect the cargo being hauled. This could be internal or work with another org.
+
+Chance to work on moult crew communication protocols to not clog the Voice Chat.
+
+Transport support for a partner security group
+
+If a security group is doing ground exercises or participating in an event that has ground combat or transportation needs, we could do that for them.
+
+Focus on transportation in an armed combat zone to get goods, personnel and vehicles to their intended location.
+
