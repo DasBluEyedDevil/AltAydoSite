@@ -1,0 +1,982 @@
+AydoCorp Leadership Manual
+
+Table of Contents
+
+
+
+AydoCorp Leadership Manual
+
+Table of Contents
+
+Organization-Specific Plans
+
+Entry Procedures
+
+Prospective Members
+
+Prospective Hire Interview Checklist
+
+Interns
+
+Intern Interview Checklist
+
+Intern Courses
+
+Ground Course
+
+Spacecraft Course
+
+Employee
+
+Disciplinary Actions
+
+Reference Material
+
+Subsidiary Member Ranks
+
+Training Courses
+
+Organization Records
+
+Org Ledger
+
+Credit Balance Verification
+
+AydoCorp Lore
+
+Outline
+
+
+
+
+
+Organization-Specific Plans
+
+
+
+Entry Procedures
+
+Prospective Members
+
+
+
+As of now, entry procedures are quite simple:
+
+Person  joins the server
+
+Person selects the applicable role to gain access to public channels
+
+If the person decides to become an intern and wishes to join the organization, after two weeks we have them interviewed (if a member of leadership isn’t available then a specific time would then be set) and…if the interview goes well, we allow them into the organization.
+
+Prospective Hire Interview Checklist
+
+
+
+Brief introduction of the interviewer
+
+Confirm the Prospective Hire’s details
+
+Ask if they are above 18+ years of age (do not ask for a specific age)
+
+In-game username (make sure they change their server profile username to match their in-game one; this is a strict requirement and must be met; verify this by having them friend you; they can unfriend after, it’s just for verification)
+
+Region timezone (if they don’t want to divulge that info then that’s fine)
+
+Affiliation with other orgs (if they are in a criminal organization, make sure to tell them that they will need to leave it if they join AydoCorp as we have a zero-tolerance policy on ‘official’ criminal action; however, being part of any other type of organization is fine as we are not exclusive)
+
+How many years they have been a backer of Star Citizen
+
+If they have alt accounts - if yes, then ask what their usernames are (to prevent griefing and/or getting around blacklists, though truly malicious people won’t answer truthfully to this question)
+
+Ask the PH to describe how they got into the game and what their gameplay interests are at the moment, and then also have them describe what kind of gameplay they are interested in for the future of the game
+
+Describe what AydoCorp is concerning the in-game lore as well as the real-life application of it as a player organization and the services we currently offer and those we wish to offer in the future. After that, go over our ubsidiaries and what gameplay they focus on and how that ties into the logistical gameplay that the organization focuses on overall. Make sure to include the fact that training is involved with subsidiary gameplay and that it is the more structured path within the organization.
+
+Ask if all of what has been described sounds fine and if the PH is on-board with all of this. 
+
+At this point ask them if they have any more questions about further involvement with the organization. If you think they seem fine, then ping UdonMan or Kaibo and they will give them the “Intern” role to officially become part of the org; let them know that this usually should happen within 24 hours.
+
+
+
+NOTE: Keep notes on the intern’s response throughout the interview, which will be put into a log accordingly. Link to log: Prospective Hire Interview Log
+
+
+
+Interns
+
+
+
+What needs to change concerning entrance procedures is the approach we take when prospective hires become interns. Right now we leave it entirely up to interns as for the pace they wish to go to make the decision to become an employee, but this method causes a loss of momentum in us engaging members in organizational procedures. If we are to mold members into how we wish the organization to be run, then we need to have this process be more proactive. To that end, when a prospective hire becomes an intern, we will pitch our subsidiaries to the new member and refer them to the “Intern Support Desk” category on the Discord server if they need to be refamiliarized with the information, which is contained in the Employee Onboarding slideshow. At that point we will add their username and the date they became a member in a spreadsheet, as well as listing the date it will be in two weeks from then. Most importantly, we will let the new intern know that they must go through the two entry courses and pass OR schedule a demonstration of their skills to waive the requirement of going through the courses. After that is done and a period of two weeks minimum has transpired, we will request the member to schedule a mandatory interview. 
+
+This interview will be our way to ascertain the member’s gameplay interests and to put them into a subsidiary. It should be explained that a member can move to other subsidiaries if they wish, but their ranking progress will be reset upon a move (with ranks equating to certain perks, like increased wages when conducting official operations); that is not to say that if someone wishes to be part of one that they won’t be allowed to do things with another, but they will get lower wages and only entrusted to non-critical roles. Subsidiary-specific training sessions cannot be attended by non-subsidiary members, and if an official subsidiary event has all available positions filled by subsidiary members then they will have to let non-subsidiary members know that there’s no extra need and they won’t be allowed to participate at that point - this is NOT to restrict gameplay, but to respect people’s time as if a certain operation with, say, Empyrion Industries requires a Reclaimer to go out and conduct salvage operations, you can only have so many people join on that single ship before their presence becomes not only redundant but also negatively affects the experience since profits will be less for everyone overall as each additional member to the team makes the individual cut lower and lower. For this reason it should be made known that being part of a subsidiary will thus be much more of a guarantee for the gameplay that a member wishes to engage in, and is a reason they should be a part of that subsidiary as a result. 
+
+Intern Interview Checklist
+
+
+
+Brief introduction of the interviewer
+
+Confirm that the intern’s server username matches their in-game username (and have them change it if not)
+
+Ask the intern for a brief description of how long they’ve been playing the game and what kind of gameplay they are most interested in
+
+Ask them which subsidiary they wish to be in
+
+Ask if everything that has been described still sounds fine and if they have any questions or concerns about anything
+
+At this point inform them that they’ll get the decision of them being accepted as an employee within the subsidiary within a week or two and we’ll let them know their status then.
+
+
+
+	NOTE: Keep notes on the intern’s response throughout the interview, which will be put into a log accordingly. Link to log: Intern Interview Log
+
+Intern Courses
+
+
+
+	As previously described, interns are not only required to be at the intern rank for two weeks in order to be eligible to arrange an interview to become an employee, but they are also required to complete two courses that act as a tutorial of basic gameplay to ensure we have a basic standard of skill and competency for our members. Not only does this help the members be more confident in their abilities, but it also acts as a way to respect the time of other members as there shouldn’t be a need to have to stop what we are doing to explain basic gameplay during operations. If an intern is already capable and confident in their skills, at least at a basic gameplay level, then they can schedule a demonstration to someone in the leadership team; if this demonstration is successful, then they can waive the requirement to go through the courses and go straight on to getting an interview set up. As follows, here is a brief listing of the courses and their segments:
+
+Ground Course
+
+MFD/HUD Training Segment
+
+Basic First Aid Segment
+
+Basic FPS Segment
+
+Spacecraft Course
+
+Turret Familiarization Segment
+
+Crew Conduct Segment
+
+Basic Flight Training Segment 
+
+Ground Course
+
+MFD/HUD Training Segment:
+
+Agenda:
+
+What EXACTLY are you instructing upon?
+
+Multi-functional Displays (MFD) & Heads-up Displays (HUDs)
+
+Time needed for course:
+
+~ 15-30 minutes
+
+Loadout:
+
+Tools/Weapons:
+
+None
+
+Uniform/Protective Gear
+
+Undersuit
+
+Helmet
+
+Consumables
+
+None
+
+Equipment/Vehicles
+
+Training Vehicle (MPUV)
+
+Scenario:
+
+Meeting point
+
+AydoCorp HQ
+
+Setting
+
+The instructor will have a MPUV ready in a hangar and meet the interns in the lounge area by the window. Once all interns are gathered, the instructor will give a brief overview of what will be covered, then will take the interns to the ASOP terminals.
+
+Once there, the instructor will go over ship retrieval and storage, and then instruct each intern to retrieve and store their ship. After this, the instructor will take the interns to the hangar containing the MPUV.
+
+Once in the hangar, the instructor will explain the various indicators on the HUD
+
+Next, the instructor will explain the various screens in a ship, such as how to change them and what their function is. Then each intern will take turns going into the cockpit of the MPUV to get familiarity for themselves in a non-stressful environment (engines of ship off the entire time). 
+
+Stages (what will happen at each location or subject? specific locations):
+
+AydoCorp HQ for the whole duration (in a hangar)
+
+Evaluation:
+
+Interns should be able to do the following to get credit for this course:
+
+Be able to say what each item on a helmet’s HUD means when shown.
+
+Be able to successfully retrieve one’s ship and store it back again.
+
+Be able to demonstrate full knowledge of what each panel on a ship’s MFD is for and navigate it correctly.
+
+Basic First Aid Segment:
+
+Agenda:
+
+What EXACTLY are you instructing upon?
+
+[Medical] HUD Icons:
+
+Health
+
+Injuries (tier explanation)
+
+Blood drug level (BDL)
+
+Heart Rate
+
+Symptoms
+
+Concussion (darkened spots; loss of hearing)
+
+Overdose (blurry vision; stumbling; high BDL; inability to walk)
+
+Severe injuries (loss of control; shaking; inability to walk)
+
+Treatment
+
+ParaMed (medical gun)
+
+Basic mode
+
+Advanced mode (each drug; symptoms they treat; manual vs auto)
+
+MedPens (when to use them vs advanced mode: near-instant; 15m; 19% BDL)
+
+Medical Beds (how to treat injuries)
+
+Time needed for course:
+
+~ 30 minutes
+
+Loadout:
+
+Tools/Weapons:
+
+Sidearm (for instructor to demonstrate wound recovery)
+
+Uniform/Protective Gear
+
+Undersuit
+
+Helmet
+
+Consumables
+
+None (trainees will be instructed to purchase at pharmacy)
+
+Equipment/Vehicles
+
+Carrack
+
+Scenario:
+
+Meeting point
+
+AydoCorp HQ
+
+Setting
+
+The instructor will have a Carrack ready (for group transport and medical bed), and then meet trainees at the Medical Clinic/ASOP terminals. Trainees will be instructed to buy 1 of each MedPen and a ParaMed device. Once all have purchased their equipment, they will be given a tutorial on their inventory and on equipping their medical equipment in the pharmacy.
+
+Once all are equipped, the group will move to the hangar and board the Carrack. The ship will head to [insert moon], where a volunteer, or the instructor, will be wounded while trainees observe on the Habitation Level. This will allow trainees to witness what a wound looks like through the ParaMed device and see the effects of treatment by contrasting impairments before and after drugs.
+
+Stages (what will happen at each location or subject? specific locations):
+
+AydoCorp HQ for equipment procurement and assembly
+
+[Insert moon] right at [insert outpost] quantum release (in case bounties are active) for live demonstration. 5 minute break during transit.
+
+Live injury demonstration as conclusion
+
+Evaluation:
+
+Interns should be able to do the following to get credit for this course:
+
+Demonstrate understanding of various drugs
+
+Demonstrate knowledge and usage of a MedPen
+
+Demonstrate knowledge and usage of a ParaMed device
+
+Demonstrate knowledge and usage of a medical bed
+
+Basic FPS Segment:
+
+Agenda:
+
+What EXACTLY are you instructing upon?
+
+FPS Basics
+
+Time needed for course:
+
+~ 40 minutes
+
+Loadout:
+
+Tools/Weapons:
+
+Rifle
+
+Pistol
+
+Uniform/Protective Gear
+
+Undersuit
+
+Helmet
+
+Torso armor
+
+Arm armor
+
+Leg armor
+
+Consumables
+
+Medpen
+
+Oxypen
+
+Food & Water ration
+
+Ammunition
+
+Equipment/Vehicles
+
+Backpack
+
+Valkyrie/Vanguard Hoplite/Cutlass Steel (Any dropship)
+
+Scenario:
+
+Meeting point
+
+AydoCorp HQ
+
+Setting
+
+Trainees will be briefed by the instructor on the training, and then be led to the hangar where the dropship has been retrieved. Inside the hangar or ship, the trainees will be given their gear, with the small arms stored on the ship to then give out once out of the armistice zone. 
+
+A bunker mission will be accepted by the instructor, whereupon it will be shared with everyone. The dropship will land 200 km. away from the bunker to best avoid the random passersby from detecting the ship. At this point the instructor will go over the weapons and how to equip/stow them, as well as how to hold the weapons at the ready to avoid pointing the weapons at people when not being engaged. Loading/unloading will also be gone over (such as how reloading when a magazine isn’t empty will result in a partially filled magazine being put back on your person; the magazines are dropped when fully emptied; etc.), and any other tips the instructor has at this point will be divulged. 
+
+After this training is completed, the instructor will take the trainees to the bunker and split them into groups of two (battle-buddies), whereupon each group will be assigned taking different directions when inside the bunker to provide full coverage. Once the bunker mission is complete, the trainees will then be taken back to AydoCorp HQ for debriefing. 
+
+Stages (what will happen at each location or subject? specific locations):
+
+AydoCorp HQ for briefing and equipment transfer
+
+ArcCorp moon for firearm familiarity training and bunker mission (depends on where the actual mission that’s accepted takes place)
+
+Back to AydoCorp HQ for debriefing
+
+Evaluation:
+
+Interns should be able to do the following to get credit for this course:
+
+Demonstrate familiarity with firearms
+
+Demonstrate firearm safety
+
+Demonstrate the ability to follow commands and accomplish an FPS mission at a basic level of skill
+
+Spacecraft Course
+
+
+
+Turret Familiarization Segment:
+
+Agenda:
+
+What EXACTLY are you instructing upon?
+
+Manned/Unmanned Turrets
+
+Time needed for course:
+
+~ 15 minutes
+
+Loadout:
+
+Tools/Weapons:
+
+None
+
+Uniform/Protective Gear
+
+Undersuit
+
+Helmet
+
+Consumables
+
+None
+
+Equipment/Vehicles
+
+Valkyrie
+
+Scenario:
+
+Meeting point
+
+AydoCorp HQ
+
+Setting
+
+Instructor will retrieve a Valkyrie in a hangar, whereupon the trainees will be gathered in the lobby where the instructor will give a brief overview of the agenda. Once the briefing is done, trainees will be led to the hangar and get into the Valkyrie.
+
+Trainees will be shown where the turrets are, whereupon the instructor will have a demonstration of basic turret usage, starting with turning on the power, what the MFDs show, how to target/un-target, as well as the different modes available. Trainees will get to try out both the manned and unmanned turrets to see the differences, then the ship will fly out so they can get used to targeting the space station turrets, as well as firing into open space to see how staggered mode works and the speed of traversal. 
+
+After all trainees get some practice, the Valkyrie will land back in the station and the course will end. 
+
+Stages (what will happen at each location or subject? specific locations):
+
+AydoCorp HQ, both inside and around the station in space for the entire duration.
+
+Evaluation:
+
+Interns should be able to do the following to get credit for this course:
+
+Demonstrate the ability to turn on the turret (with the knowledge that turning off the turret may mean turning off the power of the ship and should be avoided) and manipulate the MFDs
+
+Demonstrate the ability to target and un-target things
+
+Demonstrate the ability to use different turret modes to have effective fire
+
+Crew Conduct Segment:
+
+Agenda:
+
+What EXACTLY are you instructing upon?
+
+Crew Conduct
+
+Time needed for course:
+
+~ 30 minutes
+
+Loadout:
+
+Tools/Weapons:
+
+None
+
+Uniform/Protective Gear
+
+Undersuit
+
+Helmet
+
+Consumables
+
+Medpen
+
+Oxypen
+
+Equipment/Vehicles
+
+Hammerhead/Carrack/Redeemer
+
+Arrow/Gladius
+
+Scenario:
+
+Meeting point
+
+AydoCorp HQ
+
+Setting
+
+Instructor will brief the trainees in the lobby of the station, whereupon everyone will be brought to the training vessel. Everyone will be given a callsign based on the assigned turret and be instructed to refer to each other with the callsigns from that point forward.
+
+An already trained member will fly out with an Arrow or Gladius, where they will fly around the training vessel. Trainees will be instructed to make a call-out and heading based exactly when they see the fighter and which direction it is going. The fighter pilot will do random maneuvers slowly, then faster as time goes on, to ensure all trainees get a  good amount of practice. 
+
+The instructor will then accept a bounty mission and share it with the trainees, and take the training vessel to the bounty location. Trainees will use what they learned to have effective communication and complete the mission.
+
+Once the mission is complete, the training vessel will return back to AydoCorp HQ for a debrief.
+
+Stages (what will happen at each location or subject? specific locations):
+
+HUR-L1 for briefing and training.
+
+Hurston-area bounty location for the mission
+
+HUR-L1 for debriefing
+
+Evaluation:
+
+Interns should be able to do the following to get credit for this course:
+
+Demonstrate effective communication abilities
+
+Demonstrate the ability to use good communication to complete an objective
+
+Basic Flight Training Segment:
+
+Agenda:
+
+What EXACTLY are you instructing upon?
+
+Basic Flight
+
+Time needed for course:
+
+~ 30 minutes
+
+Loadout:
+
+Tools/Weapons:
+
+None
+
+Uniform/Protective Gear
+
+Undersuit
+
+Helmet
+
+Consumables
+
+Medpen
+
+Oxypen
+
+Equipment/Vehicles
+
+Starter Ships (whatever small, spaceships the interns own is acceptable)
+
+Scenario:
+
+Meeting point
+
+AydoCorp HQ
+
+Setting
+
+The recruiter will gather all the interns in the upstairs lobby area and give a brief overview of what will be covered, then take everyone to the ASOP terminals to retrieve their ships (instructor will take his own as well). 
+
+Once everyone is in their ships, the instructor will go over flight takeoff procedures as well as going over the various buttons/controls/hotkeys that are useful to know. Interns will learn how to call the ATC both manually and how to set it to a hotkey. All basic flight elements will then be gone over, with cruise control being highlighted for safety reasons. 
+
+Targeting/un-targeting and scanning will be explained once everyone meets up in the center of the space station ring, as well as tips on safe speeds around obstacles. Interns will be allowed to fly around the space station for a bit to get used to their new knowledge, then the instructor will fly to the end of the light indicator circle that’s around the space station and have the interns fly there. Once everyone is there, the instructor will explain how QT-ing works and have each person quantum to and from [insert moon] one by one. It will be remarked that this can be done all at the same time with paired QT-ing, and everyone will go from [insert moon] back to AydoCorp HQ as a group all at the same time.
+
+Interns will then be instructed to land and taught about assisted landing for future reference. After a debrief in the lobby, the course will be over. 
+
+Stages (what will happen at each location or subject? specific locations):
+
+AydoCorp HQ for most of the instruction
+
+Flight to [insert moon] and back to AydoCorp HQ for QT training
+
+Evaluation:
+
+Interns should be able to do the following to get credit for this course:
+
+Be able to retrieve their ship without assistance.
+
+Successfully take off from the station in a controlled and safe manner.
+
+Be able to QT to any point without much difficulty
+
+Be able to manually land and use assisted landing in a controlled, safe manner
+
+Employee
+
+
+
+Once an intern becomes an employee, the leadership of the subsidiary they chose will take over from there. While there are no general guidelines that the board sets in regards to how a subsidiary operates in regards to new employees, we have certain expectations to be met:
+
+After an interview for an intern, leadership of the subsidiary will be notified on that intern’s interest to join the subsidiary and must give their approval or disapproval within two weeks.
+
+The new employee receives an introduction by someone from the subsidiary leadership and given instructions on how to proceed, as well as an in-depth explanation of how the subsidiary works (such as the training process, ranks and rewards associated with them, etc.)
+
+Training for new employees should ideally be conducted within at least the first month of their membership, which means subsidiaries need a regular system for new trainee instruction already established. Even if at this point membership slowly trickles in and there aren’t a lot of new employees entering into a subsidiary, having the training sessions still going on is still important at least as a way to refine the training despite only a couple of people (or even no one) being in attendance. Consistency is key! 
+
+
+
+Disciplinary Actions
+
+
+
+We are at a pretty good place in terms of preparing for enforcing organizational policies and rules. All we ask at this point is for all members in leadership to be intimately familiar with the rules and the correct actions to take to enforce them. Access to the rules and disciplinary procedures guide can be found here:
+
+ Rules 	
+
+Disciplinary Procedures Guide
+
+	As for the chain of command in terms of actually implementing these actions, they are quite simple:
+
+Board members can take immediate action on any infractions, though it is preferred that they discuss it with other leadership before doing so if the issue isn’t as time-sensitive. Board members are the only ones with administrator privileges and thus kick/ban power resides with only themselves.
+
+Directors have the ability to time-out members and mute them, as well as deleting posts, which they can do if they perceive an infraction that calls for such action. Right after they must announce to other management what they’ve done and discuss why, and if further action needs to be taken a board member will take control of the situation. Performing such moderation actions without alerting the rest of leadership is an abuse of power and will result in disciplinary action against themselves. 
+
+Managers have the ability to mute people in voice chat but not much else, but they are expected to report any infractions that they see occur and try to take as much corrective action as they can verbally or through text.
+
+
+
+NOTE: Preferably try to take corrective action in private, so if a member is being disruptive in voice chat then move them to an interviewing room voice channel (all members of leadership have the ability to move members to other channels) and explain to the member that what they’re doing is not accepted and that they’re violating the rules. We do not want drama to spread, and most often disruptive people and/or trolls like to have attention drawn to themselves and thus corrective actions made publicly only helps to fuel their bad behavior.
+
+
+
+Reference Material
+
+Subsidiary Member Ranks
+
+
+
+Ranks are at the full discretion of the director, HOWEVER there needs to be things made clear before they are created. Aydo Intergalactic Corporation is NOT a private military company, nor will it ever act as such. The subsidiaries need to reflect this fact, and while the ‘culture’ of Midnight Security and Omega Medical do indeed have some martial tendencies, ranks need to reflect the security and emergency operations roles that they respectively fulfill. Directors, please try to be as creative as you can in formulating the structure, ranking, and overall ‘culture’ of your subsidiaries to reflect the corporate role in which we all play in AydoCorp.
+
+Ranks Template
+
+
+
+General Ranks             Subsidiary Ranks
+
+               Upper Management:
+
+     Director                         Director        ↑                                                          
+
+              Lower Management:
+
+     Manager                    Vice-Director 
+
+                                        Unit Leader
+
+    Supervisor                  Team Leader                                            
+
+              Standard Members:                  
+
+ Senior Employee           Veteran Hire      ↑
+
+                                       Seasoned Hire   
+
+     Employee                Experienced Hire
+
+                                       Standard Hire
+
+                                            Trainee           
+
+ Intern/Freelancer
+
+ Prospective Hire                                       ↑
+
+
+
+In reference to the template in pg. 5, ranks are divided in a simple structure (names of the ranks are at the discretion of the subsidiary director, with the ability to add “filler” ranks if they so desire, but it’s advised to stick to this template for the sake of simplicity): 
+
+Director is an unobtainable rank and directly appointed by the board. Directors have relatively complete autonomy over their subsidiary and are at the top of their respective chain of command. 
+
+The Vice-Director is an auxiliary role to help the director manage the running of the subsidiary, and is the highest rank achievable in the subsidiary. It is tied to the general “Manager” rank. 
+
+The Unit Leader is given the authority to oversee a complete operation and trusted to handle a great deal of tasks and manpower. It is tied to the general “Manager” rank.
+
+The Team Leader operates under the guidance of a Unit Leader to help break down operations into smaller pieces to make it more manageable, and typically leads at a small level, such as running things on a single ship or leading a small crew/squad. It is tied to the general “Supervisor” rank.
+
+The Veteran Hire is the highest “standard employee” rank able to be obtained, and gained through exceptional commitment and/or experience within the subsidiary. It is tied to the general “Senior Employee” rank.
+
+The Seasoned Hire rank is obtained through gaining a great deal of experience within the subsidiary and achieving a ‘specialization’ status within it. Is tied to the general “Senior Employee” rank.
+
+The Experienced Hire rank is achieved through steady progress within the subsidiary through verified activity. Tied to the general “Employee” rank.
+
+The Standard Hire rank is achieved through completing the subsidiary onboarding course and evaluation, and is the first “official” rank of the subsidiary. Tied to the general “Employee” rank.
+
+The Trainee rank is for new Employees just entering into a subsidiary and have only gone through the initial interview process.  
+
+Rank Requirements:
+
+Going back to the ranks in #6, below is a complete list of requirements in order to rank up:
+
+Director - Unobtainable except by an appointment of the board. No standard method of acquisition. 
+
+Vice Director - Requires being a Unit Leader for an indefinite probationary period. The member needs to be documented to have successfully acted as a Unit Leader in three separate subsidiary/official events. In addition, this member needs to go through extensive interviewing to ensure stability of character and actions. (This rank is heavily based on a character judgment by the director, since while it is able to be ranked-up to, this is not a rank many members will be at)  
+
+Unit Leader - Requires being a Team Leader for an indefinite probationary period, then an interview can then be had with the director/representative to ascertain leadership skills and aptitude. In addition, the member needs to be documented to have successfully acted as a Team Leader in three separate subsidiary/official events. 
+
+Team Leader - Requires being a Veteran Hire for an indefinite probationary period, then an interview can then be had with the director/representative to ascertain leadership skills and aptitude. If the course is failed, training can be continued again immediately, with a four week gap between having another evaluation done to respect the time of all involved. Even if the member doesn’t want to actually take a leadership position in the near future (or if never), they still need to go through and pass this course.
+
+Veteran Hire - Requires being a Seasoned Hire for an indefinite probationary period, then an interview can then be had with the director/representative to ascertain leadership skills and aptitude.
+
+Seasoned Hire - Requires being an Experienced Hire for a minimum of three months* as a baseline; an interview can then be had with the director/representative to ascertain shown skills and aptitude.
+
+Experienced Hire - Requires being a Standard Hire for a minimum of three months* as a baseline. Needs to attend a minimum of six subsidiary events, or at least four subsidiary events and one official event** to be considered, and then an interview should be scheduled to ascertain the member’s involvement and motivation within the organization, mostly a formality but is necessary. 
+
+Standard Hire - Requires being a Trainee for a minimum of two weeks as a baseline. Needs to pass the standard subsidiary onboarding course and evaluation; an interview can then be had with the director/representative to ascertain shown skills and aptitude. If the course is failed, training can be continued again immediately, with a two week gap between having another evaluation done to respect the time of all involved.   
+
+Trainee - When an Intern passes the employee onboarding course and evaluation, they must conduct an interview with the director of the subsidiary they wish to be in (or whomever the director wishes to perform interviews). When they are accepted for the position, they will then officially achieve the Employee general rank along with joining the subsidiary.
+
+ 
+
+* Activity Merits (In Progress):
+
+Members can earn merits when they participate in events and training; these merits will then decrease the time required to earn a promotion, with a single merit being equal to the reduction of a single day. For our purposes, a “month” is thirty days as per the average, so for a member to get rid of an entire month to earn a promotion, s/he would have to earn 30 merits. Merit table as follows:
+
+Training Event: 
+
+29 minutes of participation or less: 0.5 merit
+
+30 minutes of participation or longer: 1 merit
+
+Casual Event:
+
+29 minutes of participation or less: 0.5 merit
+
+30 minutes of participation or longer: 1 merit
+
+
+
+Subsidiary Event:
+
+29 minutes of participation or less: 0.5 merit
+
+30 minutes of participation or longer: 1 merit
+
+Official & Inter-org Events: 
+
+ 29 minutes of participation or less: 1 merit
+
+30 - 59 minutes of participation: 2 merits
+
+1 hour of participation or longer: 5 merits
+
+Active in Chat:
+
+1 to 4 merits possible per month (determined by interviewer by checking chat history and making a judgment call)
+
+Trainer Merit:
+
+29 minutes of being a trainer for an active training session or less: 1 merit
+
+30 minutes of being a trainer for an active training session or longer: 2 merits (trainer needs to be determined by director/representative and judged if they have the necessary skills to train, and then must log the time they conducted training)
+
+**  Needs to be in attendance of the event for a minimum of 30 minutes to qualify.
+
+Training Courses
+
+
+
+	Subsidiary directors are required to curate the content and methodology of the courses they present. To aid in this, however, a template is provided that can be used to help craft the course. Please note that it is mandatory for the Trainee to complete a standard subsidiary onboarding course, which should go over basic procedures, operations, and ‘culture’ of the subsidiary. Do not go too much into depth, but treat it more as a primer; universal skills and standard procedures for a subsidiary member regardless of which ‘branch’ s/he is in is what should be focused on.
+
+
+
+Course Template:
+
+Agenda:
+
+What EXACTLY are you instructing upon?
+
+
+
+Time needed for course:
+
+
+
+Loadout:
+
+Tools/Weapons
+
+Uniform/Protective Gear
+
+Consumables
+
+Equipment/Vehicles
+
+
+
+Scenario:
+
+Meeting point
+
+Setting
+
+Stages (what will happen at each location or subject? specific locations)
+
+Example Template:
+
+Agenda
+
+What EXACTLY are you instructing upon?
+
+HUD icons
+
+Health
+
+Injuries (tier explanation)
+
+Blood drug level (BDL)
+
+Heart rate
+
+Symptoms
+
+Concussion (darkened spots, loss of hearing)
+
+Overdose (blurry vision, stumbling, high BDL, crime stat)
+
+Severe injuries (loss of control, shaking, inability to walk)
+
+Treatment
+
+ParaMed "Med Gun"
+
+Basic mode
+
+Advanced mode (each drug, symptoms they treat, manual vs auto)
+
+MedPens (when to use them vs advanced mode: near-instant, 15m, 19% BDL)
+
+Medical Beds (how to treat injuries)
+
+Time needed for course:
+
+<30 mins
+
+Loadout:
+
+Tools/Weapons
+
+Sidearm for the instructor - needed for demo
+
+Uniform
+
+Undersuit and Helmet
+
+Consumables
+
+None, we will visit a pharmacy at a station to purchase them
+
+Equipment
+
+Same as above
+
+Scenario
+
+Meeting point
+
+HUR-L1
+
+Setting
+
+The instructor will have a Carrack ready (for group transport and medical bed), and then meet trainees at the Medical Clinic/ASOP terminals. Trainees will be instructed to buy 1 of each MedPen and a ParaMed device. Once all have purchased their equipment, they will be given a tutorial on their inventory and on equipping their medical equipment in the pharmacy.
+
+Once all are equipped, the group will move to the hangar and board the Carrack. The ship will head to Ita, where a volunteer, or the instructor, will be wounded while trainees observe on the Habitation Level. This will allow trainees to witness what a wound looks like through the ParaMed device and see the effects of treatment by contrasting impairments before and after drugs.
+
+Stages (what will happen at each location or subject? specific locations)
+
+HUR-L1 for equipment procurement and assembly
+
+Ita right at HDMS-Ryder quantum release (in case bounties are active) for live demonstration. 5 minute break during transit.
+
+Live injury demonstration as conclusion
+
+
+
+
+
+Organization Records
+
+Org Ledger
+
+	While it is not as vital in the current state of the game, as things are developed more it will become paramount to have a good bearing on our organization finances. As such, here is the link to our ledger: AydoCorp Ledger
+
+Credit Balance Verification
+
+
+
+	To be transparent in the use of our funds, we not only have the ledger visible to our members, but require the CEO and COO to submit screenshots of credit expenditures in every gameplay session they participate in, whether it is with the organization or in their own individual sessions. Link: AydoCorp Credit Balance Verification
+
+AydoCorp Lore
+
+
+
+	It was deemed necessary to create some background for the organization to make it better fit the universe of Star Citizen. This is good not only for legitimizing it and making it feel a part of the broader lore of the game, but also for creating a culture that members can be a part of. Below is the current outline of the general AydoCorp lore, which will be expanded upon in the future as well as individual lore tying the subsidiaries into the broader history:
+
+
+
+Outline
+
+
+
+Christoff Revan’s Personal Background
+
+Childhood
+
+2924: Born at Ulmari Central Hospital in Neo Taurii, Kampos
+
+Christoff Revan was born in Ulmari Central Hospital in Neo Taurii, Kampos on August 14, 2924. His parents were Paulus and Tyrenia Revan, an esteemed family due to Paulus’ career as a senator. Though Paulus could not be around much due to his career, Christoff’s mother made up for it with all the doting and affectionate care a small child could ask for. However, this period of the child’s life would be brief, as not long after his eighth birthday his father became accused of bribery and tax evasion and was forced to resign from the senate. In an attempt to restore the family’s standing, Paulus invested their entire savings in a terraforming project that was near completion. However, an eco-terrorist attack on the terraforming machinery resulted in a collapse of the venture - the former senator was now near penniless. In an attempt to assuage his wife’s suspicions on their dire situation, Paulus decided to take Tyrenia on a holiday cruise to Bremen in the family’s 890 Jump, the “Markheim”. However, they would never make it there, as they were waylaid by Vanduul raiders in the Vega system. There were no survivors among the 13 crew and family friends aboard, all had been slaughtered as the cruel aliens were known to do to any and all humans they made contact with. Once news reached back home, it didn’t take the government long to seize the remaining assets of the Revan estate. As Christoff was now an orphan, he became a ward of the state and placed in a boarding school for similarly disadvantaged youth. It was a tough several years for the boy to acclimate to all of this, his spoiled early childhood was in stark contrast to the rough, uncaring environment of the boarding school. However, his lot in life would soon change again at age 11 as his testing scores became noticed by UEE recruiters making their rounds through government schools. 
+
+2935: Enrolled in gifted student pilot program
+
+While not entirely ethical, due to the Vanduul menace the UEE had been increasingly desperate to find as much manpower as they could get, leading to recruiters scouring schools all across the empire for gifted children that had potential for service. Christoff became one such child, as his test scores were off the charts in the areas of deduction and reasoning abilities. The recruiters gave the boy the choice of what UEE career to follow, and it didn’t take Christoff long to decide on the pilot program as he had always looked to the stars with fascination…being out there in the black was a dream he always had.  
+
+2941: Graduation
+
+Early Adult Life
+
+UEE Service & Discharge
+
+2941-2942: UEE basic training and first posting
+
+2942-2946: Served on UEES Integrity for 4 years and honorably discharged 
+
+Found Investor (Ike Days)
+
+2946: Founded Aydo City Delivery
+
+Formation of Aydo City Delivery
+
+ Rocky Beginnings
+
+2946-2947: Tough initial year for ACD as already established delivery companies had a tight grip on the market. No profit was made, and initial investment began to run dry.
+
+Life-Changing Contract at Pinecone
+
+2947: An old friend of Ike Days mentioned offhand the austere living conditions of miners at Pinecone, and the idea was struck to provide amenities and luxury goods to make their lives easier. Deal was made with a mining conglomerate and the first shipment of goods was personally flown in by Christoff. Profits in the first few months were so good that a few additional ships and pilots were hired to deal with the demand. 
+
+Growth of the Company
+
+Contract with Encole Station
+
+2947 (later in the year): Scientists at Encole Station heard about the services to the miners at Pinecone and brokered a deal for luxury goods to be shipped to them on a regular basis. By the end of the year, ACD had expanded its fleet from 1 dilapidated Freelancer to three Freelancers, 5 Hull As, and 2 Hull Bs. 
+
+Contract in Neo Taurii (Kampos)
+
+2848: Continuing relationships with industry in Ellis led to making a deal with Seahorse Fisheries in Neo Taurii to ship their seafood throughout the system.
+
+Change into Aydo Amalgamated Industries
+
+Contract with Seahorse Fisheries Turns to Merger
+
+2950: Due to ACD giving Seahorse Fisheries more profits than ever as their market reach was expanded, it just made sense for a merger as 75% of ACD’s profits were made with SF. To help facilitate this, Christoff purchased a majority stake in SF, with the deal that the former CEO of SF would always have a seat on the board. As the company’s endeavors weren’t centered on just delivery anymore, it was agreed to change the name to “Aydo Amalgamated Industries”.
+
+Expansion to Other Star Systems: Aydo Intergalactic Corporation
+
+Aydo City Delivery Rebrand
+
+2950: Due to the merger, ACD became a subsidiary of AAI, and to help mark the new change the decision was made to also change the name as well as expanding its services to personnel transport and not just delivery; thus, ACD became “AydoExpress”. 
+
+Empyrion Industries Buyout Leads to Network in Sol
+
+2951: AAI was doing so well that Christoff began being interested in diversifying its assets to further stabilize and expand the company. To that end, he became aware of a struggling company in Sol, Empyrion Industries, and approached their board with an offer of a complete buyout. Initially they made ridiculous offers that were far exceeding what the company was valuated at, but eventually a deal was struck, bringing in EI as a subsidiary.
+
+Security Firm Bought to Protect Assets
+
+2951 (end of year): An old rival from Christoff’s flight school days, Kirk Torrence, ended up on hard times and let it be known that he was willing to sell his security firm, Midnight Security. Christoff saw this as a chance to set the score straight and had a representative broker a deal to purchase the company for less than the asking price. Kirk was so desperate that he agreed to the offer, but soon afterwards was in shock when Christoff walked into the meeting room and declared that he was now owner of the company.
+
+Current Day
+
+Majority Shares Bought in Omega Medical
+
+2952: During a function for a charity, Christoff became aware of a company called “Omega Medical” that had been doing humanitarian work in the Pyro system and providing aid to people in that region. He became so impressed with this work that he purchased a majority of the shares of the company and granted them a sizable donation to continue this work in not just Pyro but in other systems as well. 
+
+Presence in Stanton
+
+2952: The expansion of the new subsidiary of Omega Medical in the AAI led to OM having its headquarters placed in ArcCorp in the Stanton system. With this expansion, the board made the decision to rename the company yet again in acknowledgement of the company having operations in multiple star systems. The name chosen was “Aydo Intergalactic Corporation”, and as an entity was reestablished under UEE directives in 02/23/2952.
+

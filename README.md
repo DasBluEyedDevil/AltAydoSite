@@ -1,0 +1,78 @@
+# AydoCorp Corporate Website
+
+Official website for Aydo Intergalactic Corporation, a leading provider of interstellar logistics and shipping services.
+
+## Features
+
+- Modern, responsive design with advanced UI/UX
+- Secure employee portal with multi-factor authentication
+- Interactive interface with real-time updates
+- Comprehensive information about our services and operations
+- Secure contact system and corporate communications
+- Mobile-optimized for field operatives
+
+## Tech Stack
+
+- Next.js 14 with App Router
+- TypeScript for enhanced reliability
+- Tailwind CSS for modern styling
+- Framer Motion for interface animations
+- Auth0 for secure authentication
+- React for dynamic components
+
+## Development Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/aydocorp-website.git
+cd aydocorp-website
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env.local` file in the root directory with the following configuration:
+```env
+AUTH0_SECRET='[Generate with: openssl rand -hex 32]'
+AUTH0_BASE_URL='http://localhost:3000'
+AUTH0_ISSUER_BASE_URL='https://dev-ton75slvnl1y0ooy.us.auth0.com'
+AUTH0_CLIENT_ID='0TwGb8sq5DooSqDHDgOQX4IpAO2CQnta'
+AUTH0_CLIENT_SECRET='mOncH5sYZklVbK7sSlXwmcsfN6mXTjrSMlW1MfYHf8vvLsZAtTR9x4sH1WBFlAkz'
+AUTH0_AUDIENCE='https://api.aydocorp.space'
+```
+
+4. Run the development server:
+```bash
+npm run dev
+```
+
+5. Access the development environment at [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
+
+```
+src/
+├── app/                    # Core application directory
+│   ├── about/             # Corporate information
+│   ├── services/          # Service offerings
+│   ├── join/              # Recruitment portal
+│   ├── contact/           # Communications hub
+│   ├── dashboard/         # Employee interface
+│   └── api/               # Backend services
+├── components/            # Interface components
+└── styles/               # Visual styling
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/enhancement`)
+3. Commit your changes (`git commit -m 'Add new feature'`)
+4. Push to the branch (`git push origin feature/enhancement`)
+5. Submit a Pull Request
+
+## License
+
+This project is proprietary software of Aydo Intergalactic Corporation. All rights reserved. 
