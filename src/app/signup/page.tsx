@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 export default function SignupPage() {
@@ -16,7 +16,21 @@ export default function SignupPage() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordMatch, setPasswordMatch] = useState<'matching' | 'not-matching' | 'incomplete' | null>(null);
   const router = useRouter();
+
+  // Check password match whenever password or confirmPassword changes
+  useEffect(() => {
+    if (formData.confirmPassword === '') {
+      setPasswordMatch(null);
+    } else if (formData.password === '') {
+      setPasswordMatch('incomplete');
+    } else if (formData.password === formData.confirmPassword) {
+      setPasswordMatch('matching');
+    } else {
+      setPasswordMatch('not-matching');
+    }
+  }, [formData.password, formData.confirmPassword]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -184,7 +198,7 @@ export default function SignupPage() {
             </div>
             
             {/* Confirm Password */}
-            <div className="mg-input-group mb-6">
+            <div className="mg-input-group mb-4">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">CONFIRM PASSWORD*</label>
               <div className="relative">
                 <input
@@ -192,17 +206,119 @@ export default function SignupPage() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm px-3 py-2 text-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none transition-colors font-quantify tracking-wide"
+                  className={`mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] rounded-sm px-3 py-2 text-sm focus:outline-none transition-colors font-quantify tracking-wide
+                    ${passwordMatch === 'matching' ? 'border border-[rgba(var(--mg-success),0.4)] focus:border-[rgba(var(--mg-success),0.7)]' : 
+                      passwordMatch === 'not-matching' ? 'border border-[rgba(var(--mg-danger),0.4)] focus:border-[rgba(var(--mg-danger),0.7)]' :
+                      'border border-[rgba(var(--mg-primary),0.2)] focus:border-[rgba(var(--mg-primary),0.5)]'}`}
                   placeholder="••••••••••••"
                   required
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
+                
+                {/* Status indicator for password matching */}
+                <AnimatePresence>
+                  {passwordMatch && (
+                    <motion.div 
+                      className="absolute right-3 w-5 h-5"
+                      style={{ top: '8px' }}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {passwordMatch === 'matching' && (
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          width="20" 
+                          height="20" 
+                          viewBox="0 0 20 20" 
+                          fill="none" 
+                          stroke="rgba(20, 255, 170, 0.8)" 
+                          strokeWidth="2"
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <path d="M4 10l4 4 8-8" />
+                        </svg>
+                      )}
+                      {passwordMatch === 'not-matching' && (
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          width="20" 
+                          height="20" 
+                          viewBox="0 0 20 20" 
+                          fill="none" 
+                          stroke="rgba(255, 70, 70, 0.8)" 
+                          strokeWidth="2"
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <path d="M15 5L5 15" />
+                          <path d="M5 5L15 15" />
+                        </svg>
+                      )}
+                      {passwordMatch === 'incomplete' && (
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          width="20" 
+                          height="20" 
+                          viewBox="0 0 20 20" 
+                          fill="none" 
+                          stroke="rgba(255, 190, 30, 0.8)" 
+                          strokeWidth="2"
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <path d="M10 6v4" />
+                          <path d="M10 14h.01" />
+                          <circle cx="10" cy="10" r="7" />
+                        </svg>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+              
+              {/* Password match message with sci-fi theme */}
+              <AnimatePresence>
+                {passwordMatch && (
+                  <motion.div
+                    className={`text-[10px] mt-1 font-quantify tracking-wider ${
+                      passwordMatch === 'matching' ? 'text-[rgba(var(--mg-success),0.8)]' :
+                      passwordMatch === 'not-matching' ? 'text-[rgba(var(--mg-danger),0.8)]' :
+                      'text-[rgba(var(--mg-warning),0.8)]'
+                    }`}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {passwordMatch === 'matching' && (
+                      <div className="flex items-center">
+                        <div className="mr-1 w-1 h-1 bg-[rgba(var(--mg-success),0.8)] rounded-full"></div>
+                        <span>AUTHENTICATION PROTOCOL VERIFIED</span>
+                      </div>
+                    )}
+                    {passwordMatch === 'not-matching' && (
+                      <div className="flex items-center">
+                        <div className="mr-1 w-1 h-1 bg-[rgba(var(--mg-danger),0.8)] rounded-full"></div>
+                        <span>SECURITY AUTHENTICATION FAILURE: CODE MISMATCH</span>
+                      </div>
+                    )}
+                    {passwordMatch === 'incomplete' && (
+                      <div className="flex items-center">
+                        <div className="mr-1 w-1 h-1 bg-[rgba(var(--mg-warning),0.8)] rounded-full"></div>
+                        <span>INPUT PRIMARY SECURITY CODE FIRST</span>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             
             <motion.button
               type="submit"
-              className={`mg-button w-full py-2 px-4 relative overflow-hidden ${isLoading ? 'opacity-80' : 'hover:bg-[rgba(var(--mg-primary),0.1)]'}`}
+              className={`mg-button w-full py-2 px-4 relative overflow-hidden mt-6 ${isLoading ? 'opacity-80' : 'hover:bg-[rgba(var(--mg-primary),0.1)]'}`}
               disabled={isLoading}
               whileTap={{ scale: 0.98 }}
             >

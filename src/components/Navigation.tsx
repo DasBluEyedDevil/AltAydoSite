@@ -61,22 +61,60 @@ export default function Navigation() {
               >
                 <Link
                   href={item.href}
-                  className="mg-nav-item text-xs tracking-wider font-quantify holo-element rounded-none"
+                  className="mg-nav-item text-xs tracking-wider font-quantify holo-element rounded-none relative group"
                 >
-                  <span className="relative inline-block">
+                  <span className="relative inline-block z-10">
                     {item.name}
                     <AnimatePresence>
                       {activeItem === item.name && (
                         <motion.span 
-                          className="absolute -bottom-0.5 left-0 h-px bg-[rgba(var(--mg-primary),0.6)]"
-                          initial={{ width: '0%' }}
-                          animate={{ width: '100%' }}
-                          exit={{ width: '0%' }}
-                          transition={{ duration: 0.2 }}
+                          className="absolute -bottom-0.5 left-0 h-[2px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent"
+                          initial={{ width: '0%', opacity: 0 }}
+                          animate={{ width: '100%', opacity: 1 }}
+                          exit={{ width: '0%', opacity: 0 }}
+                          transition={{ duration: 0.3 }}
                         />
                       )}
                     </AnimatePresence>
                   </span>
+                  
+                  {/* Animated corner borders */}
+                  <motion.span 
+                    className="absolute top-0 left-0 w-[6px] h-[6px] border-t border-l border-[rgba(var(--mg-primary),0)]"
+                    initial={{ borderColor: 'rgba(var(--mg-primary),0)' }}
+                    animate={activeItem === item.name ? { 
+                      borderColor: 'rgba(var(--mg-primary),0.8)',
+                      boxShadow: '0 0 5px rgba(var(--mg-primary),0.5)'
+                    } : {}}
+                    transition={{ duration: 0.2 }}
+                  />
+                  <motion.span 
+                    className="absolute top-0 right-0 w-[6px] h-[6px] border-t border-r border-[rgba(var(--mg-primary),0)]"
+                    initial={{ borderColor: 'rgba(var(--mg-primary),0)' }}
+                    animate={activeItem === item.name ? { 
+                      borderColor: 'rgba(var(--mg-primary),0.8)',
+                      boxShadow: '0 0 5px rgba(var(--mg-primary),0.5)'
+                    } : {}}
+                    transition={{ duration: 0.2 }}
+                  />
+                  <motion.span 
+                    className="absolute bottom-0 left-0 w-[6px] h-[6px] border-b border-l border-[rgba(var(--mg-primary),0)]"
+                    initial={{ borderColor: 'rgba(var(--mg-primary),0)' }}
+                    animate={activeItem === item.name ? { 
+                      borderColor: 'rgba(var(--mg-primary),0.8)',
+                      boxShadow: '0 0 5px rgba(var(--mg-primary),0.5)'
+                    } : {}}
+                    transition={{ duration: 0.2 }}
+                  />
+                  <motion.span 
+                    className="absolute bottom-0 right-0 w-[6px] h-[6px] border-b border-r border-[rgba(var(--mg-primary),0)]" 
+                    initial={{ borderColor: 'rgba(var(--mg-primary),0)' }}
+                    animate={activeItem === item.name ? { 
+                      borderColor: 'rgba(var(--mg-primary),0.8)',
+                      boxShadow: '0 0 5px rgba(var(--mg-primary),0.5)'
+                    } : {}}
+                    transition={{ duration: 0.2 }}
+                  />
                 </Link>
               </motion.div>
             ))}
@@ -169,10 +207,38 @@ export default function Navigation() {
                 >
                   <Link
                     href={item.href}
-                    className="mg-nav-item block py-1 text-xs font-quantify tracking-wider"
+                    className="mg-nav-item block py-1 text-xs font-quantify tracking-wider holo-element relative group"
                     onClick={() => setIsOpen(false)}
                   >
-                    {item.name}
+                    <span className="relative inline-block z-10">
+                      {item.name}
+                    </span>
+                    
+                    {/* Animated corner borders */}
+                    <motion.span 
+                      className="absolute top-0 left-0 w-[6px] h-[6px] border-t border-l border-[rgba(var(--mg-primary),0.4)]"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: idx * 0.05 + 0.1 }}
+                    />
+                    <motion.span 
+                      className="absolute top-0 right-0 w-[6px] h-[6px] border-t border-r border-[rgba(var(--mg-primary),0.4)]"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: idx * 0.05 + 0.2 }}
+                    />
+                    <motion.span 
+                      className="absolute bottom-0 left-0 w-[6px] h-[6px] border-b border-l border-[rgba(var(--mg-primary),0.4)]"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: idx * 0.05 + 0.3 }}
+                    />
+                    <motion.span 
+                      className="absolute bottom-0 right-0 w-[6px] h-[6px] border-b border-r border-[rgba(var(--mg-primary),0.4)]"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: idx * 0.05 + 0.4 }}
+                    />
                   </Link>
                 </motion.div>
               ))}
