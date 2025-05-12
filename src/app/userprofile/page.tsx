@@ -4,9 +4,9 @@ import React, { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import DashboardWidgets from '../../components/dashboard/DashboardWidgets';
+import UserProfilePanel from '../../components/UserProfilePanel';
 
-export default function DashboardPage() {
+export default function UserProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   
@@ -26,7 +26,7 @@ export default function DashboardPage() {
               <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.2)] rounded-sm"></div>
               <div className="absolute inset-0 border-t-2 border-l-2 border-[rgba(var(--mg-primary),0.8)] rounded-sm animate-spin"></div>
             </div>
-            <div className="mt-4 font-quantify tracking-wider text-xs">LOADING DASHBOARD</div>
+            <div className="mt-4 font-quantify tracking-wider text-xs">LOADING PROFILE</div>
           </div>
         </div>
       </div>
@@ -41,19 +41,13 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="mg-title text-2xl mb-1">Command Center</h1>
-        <div className="mg-subtitle text-xs tracking-wider">SYSTEM ACCESS GRANTED</div>
+        <h1 className="mg-title text-2xl mb-1">Employee Profile</h1>
+        <div className="mg-subtitle text-xs tracking-wider">PERSONAL DATA MANAGEMENT</div>
       </motion.div>
       
-      <div className="w-full mx-auto">
-        {/* Dashboard Widgets */}
-        <DashboardWidgets user={
-          session?.user ? {
-            name: session.user.name || undefined,
-            email: session.user.email || undefined,
-            picture: session.user.image || undefined
-          } : undefined
-        } />
+      <div className="max-w-3xl mx-auto">
+        {/* User Profile */}
+        <UserProfilePanel />
       </div>
     </div>
   );

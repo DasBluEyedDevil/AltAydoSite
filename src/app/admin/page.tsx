@@ -1,9 +1,9 @@
 import React from 'react';
-import { auth0 } from "../../lib/auth0";
 import Link from 'next/link';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
 
 export const metadata: Metadata = {
   title: 'AydoCorp | Admin Dashboard',
@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminDashboard() {
-  const session = await auth0.getSession();
+  const session = await getServerSession();
   
   // Check if user is logged in
   if (!session) {
     redirect('/login');
   }
   
-  // TODO: Implement proper role check via Auth0 when integrated
+  // TODO: Implement proper role check via NextAuth when integrated
   // For now, we'll use a placeholder check
   const isAdmin = session.user?.email === "shatteredobsidian@yahoo.com";
   
@@ -29,7 +29,7 @@ export default async function AdminDashboard() {
           <h2 className="text-xl text-[rgba(var(--mg-primary),1)]">Access Restricted</h2>
           <p className="opacity-70 mt-2">You do not have permission to access the admin dashboard</p>
           <Link href="/dashboard" className="mt-4 inline-block px-4 py-2 bg-[rgba(var(--mg-primary),0.2)] hover:bg-[rgba(var(--mg-primary),0.3)] text-[rgba(var(--mg-primary),0.9)] rounded transition-colors">
-            Return to Dashboard
+            Return to Command Center
           </Link>
         </div>
       </div>
@@ -87,7 +87,7 @@ export default async function AdminDashboard() {
               <div className="flex-grow"></div>
               
               <Link href="/dashboard" className="px-3 py-1.5 bg-[rgba(var(--mg-primary),0.2)] hover:bg-[rgba(var(--mg-primary),0.3)] text-[rgba(var(--mg-primary),0.9)] rounded transition-colors text-xs">
-                Return to Dashboard
+                Return to Command Center
               </Link>
             </div>
           </div>

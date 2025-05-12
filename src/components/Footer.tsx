@@ -3,9 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useRandomId } from './UserProviderWrapper';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { randomId } = useRandomId();
   
   return (
     <footer className="relative z-10 mt-12">
@@ -144,7 +146,7 @@ export default function Footer() {
                 <div className="flex items-center">
                   <div className="w-1 h-1 bg-[rgba(var(--mg-primary),0.4)] mr-1 rounded-full"></div>
                   <div className="font-quantify tracking-wider mg-flicker">
-                    SYS_{Math.random().toString(36).substring(2, 6).toUpperCase()}
+                    SYS_{randomId}
                   </div>
                 </div>
               </motion.div>

@@ -426,22 +426,9 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <Link
                       href="/dashboard"
-                      className="mg-container p-4 hover:shadow-mg transition-all duration-300 group"
+                      className="mg-button px-4 py-2 text-sm font-medium border-2 border-[rgba(var(--mg-primary),0.5)] hover:border-[rgba(var(--mg-primary),0.8)] bg-transparent backdrop-blur-sm transition-all duration-300"
                     >
-                      <div className="mg-header text-center text-xs">
-                        <h3 className="mg-subtitle">COMMAND CENTER</h3>
-                      </div>
-                      <div className="p-4 text-center">
-                        <div className="flex justify-center">
-                          <div className="w-16 h-16 flex items-center justify-center relative">
-                            <div className="absolute inset-0 radar-sweep opacity-0 group-hover:opacity-30"></div>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[rgba(var(--mg-primary),0.9)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M9 17V7m0 0L3 12m6-5l6 5M15 7v10m0 0l6-5m-6 5l-6-5" />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="mt-3 mg-text text-xs">Operations Access</div>
-                      </div>
+                      COMMAND CENTER
                     </Link>
                     
                     <Link
