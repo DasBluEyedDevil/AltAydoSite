@@ -5,9 +5,10 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import DashboardWidgets from '../../components/dashboard/DashboardWidgets';
+import { UserSession } from '../../lib/auth';
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession() as { data: UserSession | null, status: string };
   const router = useRouter();
   
   // Redirect to login if not authenticated
@@ -51,7 +52,8 @@ export default function DashboardPage() {
           session?.user ? {
             name: session.user.name || undefined,
             email: session.user.email || undefined,
-            picture: session.user.image || undefined
+            picture: session.user.image || undefined,
+            clearanceLevel: session.user.clearanceLevel
           } : undefined
         } />
       </div>

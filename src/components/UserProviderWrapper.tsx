@@ -23,7 +23,7 @@ export default function UserProviderWrapper({
   }, []);
 
   return (
-    <SessionProvider>
+    <SessionProvider session={null} refetchInterval={5}>
       <RandomIdContext.Provider value={{ randomId }}>
         {children}
       </RandomIdContext.Provider>
