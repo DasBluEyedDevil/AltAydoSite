@@ -1,46 +1,24 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useSession } from 'next-auth/react';
 
 const navItems = [
-  { name: 'ABOUT', href: '/about' },
-  { name: 'SERVICES', href: '/services' },
-  { name: 'JOIN', href: '/join' },
+  { name: 'SERVICES', href: '/#services' },
+  { name: 'ABOUT', href: '/#about' },
+  { name: 'JOIN', href: '/#join' },
   { name: 'CONTACT', href: '/contact' },
 ];
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
-  const { user } = useUser();
-
-  // Debug log
-  useEffect(() => {
-    console.log("Auth user state:", user);
-  }, [user]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 5;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [scrolled]);
+  const { data: session } = useSession();
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-500 ${
-      scrolled ? 'backdrop-blur-md border-b border-[rgba(var(--mg-primary),0.15)]' : ''
-    }`}>
+    <nav className="fixed top-6 w-full z-40 border-b border-[rgba(var(--mg-primary),0.15)] bg-[rgba(0,10,20,0.85)] backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-14">
           <div className="flex items-center">
@@ -105,7 +83,7 @@ export default function Navigation() {
             
             <div className="w-px h-5 bg-[rgba(var(--mg-primary),0.2)] mx-1"></div>
             
-            {user ? (
+            {session ? (
               <motion.div
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
@@ -128,7 +106,7 @@ export default function Navigation() {
                 className="mg-highlight"
               >
                 <Link
-                  href="/api/auth/login"
+                  href="/login"
                   className="mg-button py-1 px-3 text-xs flex items-center justify-center group"
                 >
                   <span className="relative z-10 tracking-wider font-quantify">ACCESS</span>
@@ -204,7 +182,7 @@ export default function Navigation() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.2, delay: navItems.length * 0.05 }}
               >
-                {user ? (
+                {session ? (
                   <Link
                     href="/dashboard"
                     className="mg-button block w-full text-center mt-4 text-xs font-quantify tracking-wider"
@@ -214,7 +192,7 @@ export default function Navigation() {
                   </Link>
                 ) : (
                   <Link
-                    href="/api/auth/login"
+                    href="/login"
                     className="mg-button block w-full text-center mt-4 text-xs font-quantify tracking-wider"
                     onClick={() => setIsOpen(false)}
                   >

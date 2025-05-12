@@ -1,36 +1,32 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { auth0 } from './lib/auth0';
+import { getToken } from 'next-auth/jwt';
 
-export async function middleware(req: NextRequest) {
-  // Get the pathname of the request
-  const path = req.nextUrl.pathname;
+// This function can be marked `async` if using `await` inside
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ 
+    req: request,
+    secret: "c9c3fa66d0c46cfa96ef9b3dfbcb2f30b62cee09f33c9f16a1cc39993a7a1984"
+  });
 
-  // Check if the path starts with /dashboard
-  if (path.startsWith('/dashboard')) {
-    const session = await auth0.getSession();
-    
-    // If no session exists, redirect to the login page
-    if (!session) {
-      const url = req.nextUrl.clone();
-      url.pathname = '/api/auth/login';
-      url.searchParams.set('returnTo', path);
-      return NextResponse.redirect(url);
+  const isAuth = !!token;
+  const isAuthPage = request.nextUrl.pathname.startsWith('/login');
+
+  if (isAuthPage) {
+    if (isAuth) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
+    return NextResponse.next();
+  }
+
+  if (!isAuth && request.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   return NextResponse.next();
 }
 
+// See "Matching Paths" below to learn more
 export const config = {
-  matcher: [
-    '/dashboard/:path*',
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
-  ],
+  matcher: ['/dashboard/:path*', '/login'],
 }; 

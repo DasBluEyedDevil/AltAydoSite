@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,30 +16,75 @@ interface LandingPageProps {
 export default function LandingPage({ isLoggedIn }: LandingPageProps) {
   const [activePage, setActivePage] = useState('hero');
   const [scrollPosition, setScrollPosition] = useState(0);
+  
+  // Create refs to track section visibility
+  const sectionRefs = useRef<{ [key: string]: IntersectionObserverEntry | null }>({
+    hero: null,
+    services: null,
+    about: null,
+    join: null
+  });
 
   useEffect(() => {
+    // Simple scroll position tracker for parallax
     const handleScroll = () => {
       setScrollPosition(window.scrollY);
-      
-      // Update active section based on scroll position
-      const sections = ['join', 'about', 'services', 'hero'];
-      
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          // If the section is in view (with some offset to favor the one mostly in view)
-          if (rect.top <= 200) {
-            setActivePage(section);
-            break;
-          }
-        }
-      }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Create an Intersection Observer for each section
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Store the latest intersection data for each section
+        entries.forEach(entry => {
+          const id = entry.target.id;
+          sectionRefs.current[id] = entry;
+        });
+        
+        // Determine which section is most visible
+        let maxVisibility = 0;
+        let maxSection = activePage;
+        
+        Object.entries(sectionRefs.current).forEach(([section, entry]) => {
+          if (entry && entry.isIntersecting) {
+            // Calculate how much of the section is visible
+            const visiblePx = Math.min(entry.boundingClientRect.bottom, window.innerHeight) - 
+                             Math.max(entry.boundingClientRect.top, 0);
+            const visibilityRatio = visiblePx / window.innerHeight;
+            
+            if (visibilityRatio > maxVisibility) {
+              maxVisibility = visibilityRatio;
+              maxSection = section;
+            }
+          }
+        });
+        
+        // Update active page if it changed
+        if (maxVisibility > 0 && maxSection !== activePage) {
+          setActivePage(maxSection);
+        }
+      },
+      {
+        // Configure the observer to watch for sections taking up any portion of the viewport
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+        rootMargin: "0px"
+      }
+    );
+    
+    // Start observing all sections
+    ['hero', 'services', 'about', 'join'].forEach(section => {
+      const element = document.getElementById(section);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
+  }, [activePage]);
 
   // Parallax effect based on scroll position
   const parallaxOffset = (depth: number) => {
@@ -95,8 +140,17 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
             <button
               key={section}
               onClick={() => {
-                document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
-                setActivePage(section);
+                const element = document.getElementById(section);
+                if (element) {
+                  // First update the active page for immediate feedback
+                  setActivePage(section);
+                  
+                  // Then scroll to the element
+                  element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
+                }
               }}
               className={`w-3 h-3 rounded-full transition-all duration-300 flex items-center justify-center ${
                 activePage === section 

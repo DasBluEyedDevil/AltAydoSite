@@ -157,7 +157,7 @@ export default function Contact() {
                   <div>
                     <h3 className="text-lg font-semibold mb-2">RSI Organization</h3>
                     <a
-                      href="#"
+                      href="https://robertsspaceindustries.com/orgs/AYDOCORP"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:text-blue-300 transition-colors"
