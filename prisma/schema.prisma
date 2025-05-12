@@ -11,8 +11,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("postgresql://aydocorp_devil:IHateGeico1!@localhost:5432/aydocorp_db")
-  shadowDatabaseUrl = env("postgresql://aydocorp_devil:IHateGeico1!@localhost:5432/aydocorp_db")
+  url      = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
 }
 
 // User model
