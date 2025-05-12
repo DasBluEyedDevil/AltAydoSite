@@ -18,7 +18,7 @@ export default function Navigation() {
   const { data: session } = useSession();
 
   return (
-    <nav className="fixed top-6 w-full z-40 border-b border-[rgba(var(--mg-primary),0.15)] bg-[rgba(0,10,20,0.85)] backdrop-blur-sm">
+    <nav className="sticky top-0 w-full z-40 border-b border-[rgba(var(--mg-primary),0.15)] bg-[rgba(0,10,20,0.85)] backdrop-blur-sm mt-0 pt-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-14">
           <div className="flex items-center">
@@ -109,7 +109,7 @@ export default function Navigation() {
                   href="/login"
                   className="mg-button py-1 px-3 text-xs flex items-center justify-center group"
                 >
-                  <span className="relative z-10 tracking-wider font-quantify">ACCESS</span>
+                  <span className="relative z-10 tracking-wider font-quantify">LOGIN</span>
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="radar-sweep"></div>
                   </div>
@@ -196,7 +196,7 @@ export default function Navigation() {
                     className="mg-button block w-full text-center mt-4 text-xs font-quantify tracking-wider"
                     onClick={() => setIsOpen(false)}
                   >
-                    ACCESS
+                    LOGIN
                   </Link>
                 )}
               </motion.div>

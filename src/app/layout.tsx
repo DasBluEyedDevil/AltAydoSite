@@ -7,8 +7,15 @@ import Footer from '../components/Footer';
 import { metadata } from './metadata';
 import StarfieldWrapper from '../components/StarfieldWrapper';
 import UserProviderWrapper from '../components/UserProviderWrapper';
+import dynamic from 'next/dynamic';
+import SecureConnectionIndicator from '../components/SecureConnectionIndicator';
 
 const inter = Inter({ subsets: ['latin'] });
+
+// Dynamically import AuthDebugger to avoid server rendering issues
+const AuthDebugger = dynamic(() => import('../components/AuthDebugger'), {
+  ssr: false,
+});
 
 export { metadata };
 
@@ -46,13 +53,21 @@ export default function RootLayout({
               </div>
               
               <div className="relative z-20 flex flex-col flex-1">
-                <Navigation />
-                <div className="h-8"></div>
+                <header className="flex flex-col">
+                  <Profile />
+                  <Navigation />
+                </header>
                 <main className="flex-1">
                   {children}
                 </main>
                 <Footer />
               </div>
+              
+              {/* Secure Connection Indicator - only shows when user is logged in */}
+              <SecureConnectionIndicator />
+              
+              {/* Auth Debugger component - only visible in development */}
+              <AuthDebugger />
             </div>
           </AuthProvider>
         </UserProviderWrapper>

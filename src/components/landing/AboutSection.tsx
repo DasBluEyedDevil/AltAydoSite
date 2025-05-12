@@ -9,25 +9,25 @@ const aboutTabs = [
     id: 'background',
     title: 'BACKGROUND',
     content: `Based in the Ellis system on the planet Green, the Aydo Intergalactic Corporation (more commonly referred to as "AydoCorp") is an amalgamation of not only several companies within the system but also containing subsidiaries in a multitude of other systems. Aptly named due to its headquarters located in the city of Aydo, the corporation had its humble beginnings as a small one-man delivery company run by none other than the current CEO, Christoff Revan. Over the years the company would grow and expand, what was once known as "Aydo City Delivery" eventually became "Aydo Amalgamated Industries" after a merger with Seahorse Fisheries, based out of Neo Taurii on Kampos. After acquiring multiple subsidiaries and having greater expansions, the company would transform into the corporation we now know as "AydoCorp", serving many clients throughout human and alien space.`,
-    image: '/images/about-background.jpg'
+    image: '/images/spacebg.jpg'
   },
   {
     id: 'mission',
     title: 'OUR MISSION',
     content: `AydoCorp strives to provide the most reliable, efficient, and secure logistics and transportation services across known space. We maintain the highest standards of integrity, innovation, and customer satisfaction in every operation we undertake. Our mission is to connect worlds and businesses through seamless logistics solutions, empowering commerce and cooperation throughout human and alien space. We are committed to sustainable practices, technological advancement, and the professional development of our team members.`,
-    image: '/images/about-mission.jpg'
+    image: '/images/logisticsoffice.jpg'
   },
   {
     id: 'fleet',
     title: 'OUR FLEET',
     content: `AydoCorp maintains a diverse and modern fleet of vessels designed to meet any transportation need. From nimble personnel shuttles to massive cargo haulers, our ships are equipped with the latest technology and maintained to the highest standards. Each vessel undergoes rigorous safety inspections and is operated by experienced crews trained to handle any situation. Our specialized ships include deep space freighters, system hoppers, luxury personnel transports, heavy towing vessels, and rapid response ships.`,
-    image: '/images/about-fleet.jpg'
+    image: '/images/Hull_E.jpg'
   },
   {
     id: 'team',
     title: 'OUR TEAM',
     content: `The true strength of AydoCorp lies in our exceptional team members. Each employee is selected for their expertise, dedication, and commitment to excellence. Our diverse workforce brings together specialists from across known space, creating a rich tapestry of knowledge and experience. We invest heavily in ongoing training and professional development, ensuring our team remains at the cutting edge of logistics best practices. From pilots to cargo specialists, administrators to engineers, every member of the AydoCorp family plays a vital role in our continued success.`,
-    image: '/images/about-team.jpg'
+    image: '/images/AydoOffice1.png'
   }
 ];
 

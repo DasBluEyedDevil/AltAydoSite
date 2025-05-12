@@ -1,44 +1,73 @@
 'use client';
 
-import React, { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
-export default function LoginPage() {
-  const [username, setUsername] = useState('');
+function LoginForm() {
+  const [aydoHandle, setAydoHandle] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [debugMessage, setDebugMessage] = useState<string | null>(null);
+  const { data: session, status } = useSession();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!username || !password) {
-      setError('Please enter both username and password');
-      return;
+  // Get the callback URL (where to redirect after successful login)
+  const callbackUrl = searchParams?.get('from') || '/dashboard';
+
+  useEffect(() => {
+    // Check if redirected from successful signup
+    if (searchParams?.get('signup') === 'success') {
+      setSuccessMessage('Account created successfully. Please log in.');
     }
-    
+  }, [searchParams]);
+
+  // Add debugging for authentication process
+  useEffect(() => {
+    if (status === 'loading') {
+      setDebugMessage('Authentication in progress...');
+    } else if (status === 'authenticated') {
+      setDebugMessage('Authentication successful! User: ' + session?.user?.name);
+    } else if (status === 'unauthenticated') {
+      setDebugMessage('Not authenticated');
+    }
+  }, [status, session]);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsLoading(true);
-    setError('');
+    setAuthError(null);
     
     try {
       const result = await signIn('credentials', {
-        username,
+        aydoHandle,
         password,
         redirect: false,
       });
       
+      setDebugMessage('Sign-in result: ' + JSON.stringify(result));
+      
       if (result?.error) {
-        setError('Invalid login credentials');
+        setAuthError(result.error);
         setIsLoading(false);
       } else {
-        router.push('/dashboard'); // Redirect to dashboard on success
-        router.refresh(); // Refresh to update auth state
+        // Successfully authenticated
+        if (searchParams?.get('from')) {
+          router.push(searchParams.get('from') as string);
+        } else {
+          router.push('/dashboard');
+        }
       }
     } catch (error) {
-      setError('An error occurred during login');
+      console.error('Authentication error:', error);
+      setAuthError('An unexpected error occurred during authentication');
+      setDebugMessage('Auth error: ' + JSON.stringify(error));
       setIsLoading(false);
     }
   };
@@ -60,7 +89,7 @@ export default function LoginPage() {
           
           <div className="text-center mb-6">
             <h2 className="mg-title text-xl mb-1">AYDO<span className="mg-subtitle font-light">CORP</span></h2>
-            <div className="mg-subtitle text-xs tracking-wider">PILOT AUTHENTICATION</div>
+            <div className="mg-subtitle text-xs tracking-wider">EMPLOYEE AUTHENTICATION</div>
           </div>
           
           <form onSubmit={handleSubmit}>
@@ -79,15 +108,30 @@ export default function LoginPage() {
               </motion.div>
             )}
             
+            {successMessage && (
+              <motion.div 
+                className="mb-4 p-2 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] text-[rgba(var(--mg-success),0.8)] text-xs rounded-sm"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+              >
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {successMessage}
+                </div>
+              </motion.div>
+            )}
+            
             <div className="mg-input-group mb-4">
-              <label className="mg-subtitle text-xs mb-1 block tracking-wider">USERNAME</label>
+              <label className="mg-subtitle text-xs mb-1 block tracking-wider">AYDOCORP HANDLE</label>
               <div className="relative">
                 <input
                   type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={aydoHandle}
+                  onChange={(e) => setAydoHandle(e.target.value)}
                   className="mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm px-3 py-2 text-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none transition-colors font-quantify tracking-wide"
-                  placeholder="ENTER USERNAME"
+                  placeholder="ENTER HANDLE"
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
@@ -127,7 +171,7 @@ export default function LoginPage() {
           </form>
           
           <div className="mt-4 text-center text-[rgba(var(--mg-text),0.5)] text-xs">
-            <span>Demo credentials: username: "demo" | password: "password"</span>
+            <span>Don't have an account? <Link href="/signup" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)]">Sign up here</Link></span>
           </div>
         </div>
         
@@ -139,6 +183,46 @@ export default function LoginPage() {
           </div>
         </div>
       </motion.div>
+      
+      {/* Add debug information if present */}
+      {debugMessage && process.env.NODE_ENV === 'development' && (
+        <div className="mt-4 p-2 bg-black/50 text-white text-xs rounded">
+          <div className="font-mono overflow-auto max-h-24">
+            <strong>Debug:</strong> {debugMessage}
+          </div>
+        </div>
+      )}
+      
+      {/* Display authentication errors */}
+      {authError && (
+        <div className="mt-4 p-2 bg-red-900/50 text-white text-xs rounded">
+          <div className="font-mono">
+            <strong>Error:</strong> {authError}
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+// Simple loading component for suspense
+function LoginLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="mb-2">
+          <div className="inline-block w-6 h-6 border-2 border-[rgba(var(--mg-primary),0.5)] border-t-[rgba(var(--mg-primary),1)] rounded-full animate-spin"></div>
+        </div>
+        <div className="text-xs text-[rgba(var(--mg-text),0.7)]">Loading authentication...</div>
+      </div>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginLoading />}>
+      <LoginForm />
+    </Suspense>
   );
 } 

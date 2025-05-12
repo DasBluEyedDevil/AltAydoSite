@@ -23,6 +23,7 @@ interface UserData {
   name?: string;
   email?: string;
   picture?: string;
+  clearanceLevel?: number;
 }
 
 interface DashboardWidgetsProps {
@@ -45,6 +46,7 @@ interface TileData {
 export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [clearanceLevel, setClearanceLevel] = useState(1);
 
   // Get username from email - handle special cases
   const getUsernameFromEmail = (email: string | undefined): string => {
@@ -227,9 +229,14 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       setIsInitialized(true);
     }, 300);
     
+    // Check user clearance level
+    if (user?.clearanceLevel) {
+      setClearanceLevel(user.clearanceLevel);
+    }
+    
     // Check if user has admin role (will be properly implemented with Auth0 integration)
     // For now, we'll add a placeholder check for the demo
-    if (user?.email === "shatteredobsidian@yahoo.com") {
+    if (user?.email === "shatteredobsidian@yahoo.com" || user?.clearanceLevel === 3) {
       setIsAdmin(true);
     }
     
@@ -249,306 +256,148 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       clearTimeout(timer);
       clearInterval(statsTimer);
     };
-  }, [user?.email]);  // Added user?.email as dependency
-  
+  }, [user]);
+
+  // Filter tiles based on clearance level
+  const getVisibleTiles = () => {
+    // All users can see these tiles
+    const level1Tiles = ['communications', 'training', 'certification'];
+    
+    // Level 2+ users can see these additional tiles
+    const level2Tiles = ['aydoexpress', 'empyrion', 'shipmanagement', 'personnel'];
+    
+    // Level 3 (admin) users can see all tiles
+    const level3Tiles = ['organization', 'finance', 'missions', 'regulations', 'resources'];
+    
+    if (clearanceLevel >= 3 || isAdmin) {
+      return tiles; // Show all tiles for admin
+    } else if (clearanceLevel >= 2) {
+      return tiles.filter(tile => level1Tiles.includes(tile.id) || level2Tiles.includes(tile.id));
+    } else {
+      return tiles.filter(tile => level1Tiles.includes(tile.id));
+    }
+  };
+
+  // Filter tiles based on user clearance level
+  const filteredTiles = getVisibleTiles();
+
   return (
-    <div className="relative">
-      {/* Top Status Bar */}
-      <div className="flex justify-between items-center mb-3 px-1">
-        <div className="text-xs text-gray-400 font-['Quantify']">SYSTEM STATUS: ONLINE</div>
-        <div className="text-xs text-gray-400 font-['Quantify'] flex items-center">
-          <div className="h-1.5 w-1.5 rounded-full bg-[rgba(var(--mg-primary),0.8)] mr-2 animate-pulse"></div>
-          SECURE CONNECTION
-        </div>
-      </div>
-      
-      {/* User Info Section */}
-      <div className="relative mb-5">
-        {/* Centered Logo - Positioned absolutely to break from parent height constraints */}
-        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 mt-1.5">
-          <img 
-            src="/images/Aydo_Corp_3x3k_RSI.png" 
-            alt="AydoCorp" 
-            className="h-48 object-contain"
-            style={{ filter: 'drop-shadow(0 0 14px rgba(0, 180, 230, 0.8))' }} 
-          />
-        </div>
-        
-        {/* User info and rank info container - reduced height */}
-        <div className="flex justify-between items-center py-1">
-          <div className="flex items-center">
-            <div className="relative w-14 h-14 mr-3">
-              <div className="absolute inset-0 rounded-full border-2 border-[rgba(var(--mg-primary),0.4)] flex items-center justify-center overflow-hidden">
-                <Image 
-                  src={user?.picture || "/images/aydocorp-logo-small.png"} 
-                  alt="User" 
-                  width={56} 
-                  height={56}
-                  className="rounded-full"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40"></div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {/* User Status Card */}
+      <motion.div
+        className="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: isInitialized ? 1 : 0, y: isInitialized ? 0 : 10 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-4 rounded-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full opacity-10">
+            <div className="w-full h-full bg-gradient-to-r from-[rgba(var(--mg-primary),0.3)] to-transparent"></div>
+          </div>
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-sm bg-[rgba(var(--mg-primary),0.2)] border border-[rgba(var(--mg-primary),0.3)] flex items-center justify-center text-[rgba(var(--mg-primary),0.9)]">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <div className="mg-subtitle text-xs tracking-wider">WELCOME BACK</div>
+                  <div className="mg-title text-lg">PILOT {displayName.toUpperCase()}</div>
+                </div>
               </div>
             </div>
-            <div>
-              <div className="text-gray-400 text-xs">WELCOME</div>
-              <div className="text-base font-light text-[rgba(var(--mg-primary),1)]">{displayName}</div>
-            </div>
-          </div>
-
-          {/* Empty div for centering - to ensure logo stays centered */}
-          <div className="flex-grow"></div>
-
-          <div className="text-right">
-            <div className="flex justify-end items-center text-xs mb-1">
-              <span className="text-gray-400 mr-1.5 font-['Quantify']">RANK</span>
-              <span className="text-[rgba(var(--mg-primary),0.9)]">SENIOR EMPLOYEE</span>
-            </div>
-            <div className="flex justify-end items-center text-xs mb-1">
-              <span className="text-gray-400 mr-1.5 font-['Quantify']">DIVISION</span>
-              <span className="text-[rgba(var(--mg-primary),0.9)]">AYDO EXPRESS</span>
-            </div>
-            <div className="flex justify-end items-center text-xs">
-              <span className="text-gray-400 mr-1.5 font-['Quantify']">CLEARANCE</span>
-              <span className="text-[rgba(var(--mg-primary),0.9)]">LEVEL 3</span>
+            
+            <div className="flex flex-wrap gap-4">
+              <div className="mg-data-item">
+                <div className="mg-subtitle text-xs tracking-wider">CLEARANCE LEVEL</div>
+                <div className="mg-value text-lg font-mono">
+                  <span className={`font-quantify ${
+                    clearanceLevel === 3 ? 'text-green-400' : 
+                    clearanceLevel === 2 ? 'text-blue-400' : 
+                    'text-gray-400'
+                  }`}>
+                    {clearanceLevel}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Existing stats components */}
+              {/* ... */}
+              
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
       
-      {/* Subsidiaries Section */}
-      <div className="mb-6">
-        <h2 className="text-lg text-[rgba(var(--mg-primary),1)] font-['Quantify'] mb-4 pb-1 border-b border-[rgba(var(--mg-primary),0.3)]">
-          ORGANIZATION SUBSIDIARIES
-          <div className="float-right text-xs text-gray-400 mt-1">CLEARANCE LEVEL 3 REQUIRED</div>
-        </h2>
-        <div className="grid grid-cols-2 gap-6 mb-6">
-          {tiles
-            .filter(tile => tile.category === 'subsidiary')
-            .map((tile, index) => (
-              <motion.div
-                key={tile.id}
-                custom={index}
-                initial="hidden"
-                animate={isInitialized ? "visible" : "hidden"}
-                variants={tileVariants}
-                className="relative"
-              >
-                <Link href={tile.path || "#"} className="block">
-                  <div 
-                    className={`flex flex-col h-44 rounded bg-black/40 border-l-2 border-r-2 border-t border-b border-[rgba(var(--mg-primary),0.3)] backdrop-blur-sm hover:bg-[rgba(var(--mg-primary),0.15)] transition-colors cursor-pointer hover:shadow-lg group`}
-                    style={{ boxShadow: `0 0 15px 0 ${tile.color.replace('0.8', '0.15')}` }}
-                  >
-                    {/* Top header bar with glow effect */}
-                    <div className="h-1 w-full bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent"></div>
-                    
-                    <div className="flex items-start justify-between p-3">
-                      <div>
-                        <div className="text-sm font-medium text-[rgba(var(--mg-primary),1)] tracking-wider mb-1 font-['Quantify']">
-                          {tile.title}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {tile.description}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-black/50 border border-[rgba(var(--mg-primary),0.2)] group-hover:border-[rgba(var(--mg-primary),0.5)] transition-colors">
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          className="w-6 h-6" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke={tile.color}
-                          strokeWidth={1.2}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d={tile.icon} />
-                        </svg>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-auto flex-grow flex items-end justify-center relative p-3">
-                      {/* Decorative grid lines */}
-                      <div className="absolute inset-0 grid grid-cols-8 gap-px pointer-events-none opacity-20">
-                        {Array.from({ length: 64 }).map((_, i) => (
-                          <div key={i} className="border-t border-l border-[rgba(var(--mg-primary),0.5)]"></div>
-                        ))}
-                      </div>
-                      
-                      {tile.image && (
-                        <div className="relative h-24 w-full opacity-80 hover:opacity-100 transition-opacity z-10">
-                          <Image
-                            src={tile.image}
-                            alt={tile.title}
-                            width={120}
-                            height={70}
-                            className="object-contain mx-auto hologram-projection"
-                            unoptimized
-                          />
-                        </div>
-                      )}
-                      
-                      {/* Status indicator */}
-                      <div className="absolute bottom-2 right-2 flex items-center text-xs">
-                        <div className="h-1.5 w-1.5 rounded-full bg-[rgba(var(--mg-primary),0.8)] mr-1 animate-pulse"></div>
-                        <span className="text-gray-400">OPERATIONAL</span>
-                      </div>
-                    </div>
+      {/* Dashboard Tiles */}
+      {filteredTiles.map((tile, i) => (
+        <motion.div
+          key={tile.id}
+          custom={i}
+          variants={tileVariants}
+          initial="hidden"
+          animate={isInitialized ? "visible" : "hidden"}
+          className="col-span-1"
+        >
+          <Link href={tile.path || '#'}>
+            <div className={`mg-panel h-full relative bg-[rgba(var(--mg-panel-dark),0.4)] backdrop-blur-sm overflow-hidden group hover:bg-[rgba(var(--mg-panel-dark),0.6)] transition-all duration-300 ${tile.borderStyle || ''}`}>
+              {/* Background Image */}
+              {tile.image && (
+                <div className="absolute inset-0 overflow-hidden opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                  <Image 
+                    src={tile.image} 
+                    alt={tile.title} 
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
+              
+              {/* Tile Content */}
+              <div className="p-5 relative z-10">
+                <div className="flex items-start mb-4">
+                  <div className="w-10 h-10 rounded-sm bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.3)] flex items-center justify-center text-[rgba(var(--mg-primary),0.9)] mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={tile.icon} />
+                    </svg>
                   </div>
-                </Link>
-              </motion.div>
-            ))}
-        </div>
-      </div>
+                  <div>
+                    <h3 className="mg-subtitle font-quantify tracking-wide text-[rgba(var(--mg-primary),0.9)]">{tile.title}</h3>
+                    <div className="text-xs text-[rgba(var(--mg-text),0.7)]">{tile.description}</div>
+                  </div>
+                </div>
+                
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.3)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+            </div>
+          </Link>
+        </motion.div>
+      ))}
       
-      {/* Corporate Section */}
-      <div className="mb-6">
-        <h2 className="text-lg text-[rgba(var(--mg-primary),1)] font-['Quantify'] mb-4 pb-1 border-b border-[rgba(var(--mg-primary),0.3)]">
-          CORPORATE MANAGEMENT
-          <div className="float-right text-xs text-gray-400 mt-1">CLEARANCE LEVEL 2 REQUIRED</div>
-        </h2>
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          {tiles
-            .filter(tile => tile.category === 'corporate')
-            .map((tile, index) => (
-              <motion.div
-                key={tile.id}
-                custom={index}
-                initial="hidden"
-                animate={isInitialized ? "visible" : "hidden"}
-                variants={tileVariants}
-                className="relative"
-              >
-                <Link href={tile.path || "#"} className="block">
-                  <div 
-                    className={`flex flex-col h-40 rounded bg-black/40 border border-t-2 border-[rgba(var(--mg-primary),0.3)] backdrop-blur-sm hover:bg-[rgba(var(--mg-primary),0.15)] transition-colors cursor-pointer hover:shadow-lg group`}
-                    style={{ boxShadow: `0 0 15px 0 ${tile.color.replace('0.8', '0.15')}` }}
-                  >
-                    <div className="flex items-start justify-between p-3">
-                      <div>
-                        <div className="text-sm font-medium text-[rgba(var(--mg-primary),1)] tracking-wider mb-1 font-['Quantify']">
-                          {tile.title}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {tile.description}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-black/50 border border-[rgba(var(--mg-primary),0.2)] group-hover:border-[rgba(var(--mg-primary),0.5)] transition-colors">
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          className="w-5 h-5" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke={tile.color}
-                          strokeWidth={1.2}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d={tile.icon} />
-                        </svg>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-auto flex-grow flex items-end justify-center relative p-2">
-                      {/* Decorative grid lines */}
-                      <div className="absolute inset-0 grid grid-cols-8 gap-px pointer-events-none opacity-20">
-                        {Array.from({ length: 24 }).map((_, i) => (
-                          <div key={i} className="border-t border-l border-[rgba(var(--mg-primary),0.5)]"></div>
-                        ))}
-                      </div>
-                      
-                      {tile.image && (
-                        <div className="relative h-20 w-full opacity-80 hover:opacity-100 transition-opacity z-10">
-                          <Image
-                            src={tile.image}
-                            alt={tile.title}
-                            width={80}
-                            height={50}
-                            className="object-contain mx-auto hologram-projection"
-                            unoptimized
-                          />
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Bottom accent line */}
-                    <div className="h-1 w-full bg-gradient-to-r from-[rgba(var(--mg-primary),0.1)] via-[rgba(var(--mg-primary),0.4)] to-[rgba(var(--mg-primary),0.1)]"></div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-        </div>
-      </div>
-      
-      {/* Training & Navigation */}
-      <div className="mb-6">
-        <h2 className="text-lg text-[rgba(var(--mg-primary),1)] font-['Quantify'] mb-4 pb-1 border-b border-[rgba(var(--mg-primary),0.3)]">
-          TRAINING & OPERATIONS
-          <div className="float-right text-xs text-gray-400 mt-1">CLEARANCE LEVEL 1 REQUIRED</div>
-        </h2>
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {tiles
-            .filter(tile => tile.category === 'training' || tile.category === 'navigation')
-            .map((tile, index) => (
-              <motion.div
-                key={tile.id}
-                custom={index}
-                initial="hidden"
-                animate={isInitialized ? "visible" : "hidden"}
-                variants={tileVariants}
-                className="relative"
-              >
-                <Link href={tile.path || "#"} className="block">
-                  <div 
-                    className={`flex flex-col h-40 rounded bg-black/40 border-b-2 border-r border-[rgba(var(--mg-primary),0.3)] backdrop-blur-sm hover:bg-[rgba(var(--mg-primary),0.15)] transition-colors cursor-pointer hover:shadow-lg group`}
-                    style={{ boxShadow: `0 0 15px 0 ${tile.color.replace('0.8', '0.15')}` }}
-                  >
-                    <div className="flex items-start justify-between p-3">
-                      <div>
-                        <div className="text-sm font-medium text-[rgba(var(--mg-primary),1)] tracking-wider mb-1 font-['Quantify']">
-                          {tile.title}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {tile.description}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-black/50 border border-[rgba(var(--mg-primary),0.2)] group-hover:border-[rgba(var(--mg-primary),0.5)] transition-colors">
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          className="w-5 h-5" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke={tile.color}
-                          strokeWidth={1.2}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d={tile.icon} />
-                        </svg>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-auto flex-grow flex items-end justify-center relative p-2">
-                      {/* Decorative grid lines */}
-                      <div className="absolute inset-0 grid grid-cols-8 gap-px pointer-events-none opacity-20">
-                        {Array.from({ length: 24 }).map((_, i) => (
-                          <div key={i} className="border-t border-l border-[rgba(var(--mg-primary),0.5)]"></div>
-                        ))}
-                      </div>
-                      
-                      {tile.image && (
-                        <div className="relative h-20 w-full opacity-80 hover:opacity-100 transition-opacity z-10">
-                          <Image
-                            src={tile.image}
-                            alt={tile.title}
-                            width={80}
-                            height={50}
-                            className="object-contain mx-auto hologram-projection"
-                            unoptimized
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-        </div>
-      </div>
+      {/* Access Denied Message if no tiles available */}
+      {filteredTiles.length === 0 && (
+        <motion.div
+          className="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-8 rounded-sm text-center">
+            <div className="text-[rgba(var(--mg-error),0.8)] mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="mg-title text-xl mb-2">ACCESS DENIED</h3>
+            <p className="mg-subtitle text-[rgba(var(--mg-text),0.7)]">
+              Your clearance level is insufficient. Please contact an administrator for assistance.
+            </p>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

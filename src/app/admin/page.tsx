@@ -2,13 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
-import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-
-export const metadata: Metadata = {
-  title: 'AydoCorp | Admin Dashboard',
-  description: 'Administrative controls for AydoCorp organization management.'
-};
 
 export default async function AdminDashboard() {
   const session = await getServerSession();

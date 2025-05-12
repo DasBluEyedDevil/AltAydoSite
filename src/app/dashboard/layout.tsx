@@ -1,4 +1,6 @@
+import React from 'react';
 import { Metadata } from 'next';
+import DashboardClient from './DashboardClient';
 
 export const metadata: Metadata = {
   title: 'AydoCorp | Command Center',
@@ -10,5 +12,9 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <DashboardClient>
+      {children}
+    </DashboardClient>
+  );
 } 
