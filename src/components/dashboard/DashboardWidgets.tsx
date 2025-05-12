@@ -305,7 +305,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
                 </div>
                 <div className="ml-3">
                   <div className="mg-subtitle text-xs tracking-wider">WELCOME BACK</div>
-                  <div className="mg-title text-lg">PILOT {displayName.toUpperCase()}</div>
+                  <div className="mg-title text-lg">{displayName.toUpperCase()}</div>
                 </div>
               </div>
             </div>

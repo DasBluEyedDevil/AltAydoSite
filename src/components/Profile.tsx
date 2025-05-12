@@ -3,7 +3,6 @@
 import { useSession, signOut } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
 import Link from 'next/link';
 
 export default function Profile() {
@@ -11,14 +10,8 @@ export default function Profile() {
   const user = session?.user;
   const pathname = usePathname();
   
-  // Add debug logging for authentication status
-  useEffect(() => {
-    console.log("Profile auth status:", status, !!session);
-  }, [status, session]);
-  
-  // Hide on protected pages which have their own headers (except dashboard)
-  const isProtectedPage = pathname?.startsWith('/userprofile') || 
-                          pathname?.startsWith('/admin');
+  // Hide on protected pages which have their own headers (except dashboard and userprofile)
+  const isProtectedPage = pathname?.startsWith('/admin');
   
   // Only render when authenticated and not on protected pages 
   if (status !== 'authenticated' || isProtectedPage) {

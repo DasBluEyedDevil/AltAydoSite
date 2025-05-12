@@ -19,17 +19,9 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/userprofile') || 
     request.nextUrl.pathname.startsWith('/admin');
 
-  // Debug logging (only works in server console)
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[Middleware] Path: ${request.nextUrl.pathname}`);
-    console.log(`[Middleware] isAuth: ${isAuth}, isAuthPage: ${isAuthPage}, isProtectedPage: ${isProtectedPage}`);
-    console.log(`[Middleware] Token:`, token ? 'Present' : 'Not present');
-  }
-
   // If trying to access auth pages while already logged in
   if (isAuthPage) {
     if (isAuth) {
-      console.log('[Middleware] Already authenticated, redirecting to dashboard');
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     return NextResponse.next();
@@ -37,7 +29,6 @@ export async function middleware(request: NextRequest) {
 
   // If trying to access protected pages while not logged in
   if (isProtectedPage && !isAuth) {
-    console.log('[Middleware] Not authenticated, redirecting to login');
     const from = request.nextUrl.pathname;
     return NextResponse.redirect(new URL(`/login?from=${encodeURIComponent(from)}`, request.url));
   }

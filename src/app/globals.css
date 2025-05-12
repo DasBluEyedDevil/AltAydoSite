@@ -161,13 +161,39 @@ body {
 .mg-nav-item {
   position: relative;
   padding: 0.4rem 0.75rem;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-out;
   color: rgba(var(--mg-text), 0.7);
+  z-index: 1;
 }
 
 .mg-nav-item:hover, .mg-nav-item.active {
   color: rgba(var(--mg-primary), 1);
-  background: rgba(var(--mg-primary), 0.07);
+  text-shadow: 0 0 8px rgba(var(--mg-primary), 0.3);
+}
+
+.mg-nav-item:hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--mg-primary), 0.08) 0%,
+    transparent 70%
+  );
+  z-index: -1;
+  opacity: 0.6;
+  animation: subtle-pulse 2s infinite ease-in-out;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
 }
 
 .mg-nav-item.active::before {
@@ -177,7 +203,11 @@ body {
   top: 0;
   height: 100%;
   width: 2px;
-  background: rgba(var(--mg-primary), 1);
+  background: linear-gradient(to bottom, 
+    rgba(var(--mg-primary), 0), 
+    rgba(var(--mg-primary), 1),
+    rgba(var(--mg-primary), 0)
+  );
   box-shadow: 0 0 8px rgba(var(--mg-primary), 0.5);
 }
 
@@ -185,23 +215,31 @@ body {
 .holo-element {
   position: relative;
   overflow: hidden;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  transition: all 0.3s ease;
 }
 
 .holo-element::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -150%;
-  width: 120%;
-  height: 100%;
+  inset: 0;
+  border-radius: inherit; 
+  padding: 1px; 
   background: linear-gradient(
     90deg,
     rgba(var(--mg-primary), 0) 0%,
-    rgba(var(--mg-primary), 0.2) 50%,
+    rgba(var(--mg-primary), 0.5) 50%,
     rgba(var(--mg-primary), 0) 100%
   );
-  transform: skewX(-20deg);
-  animation: holo-shine 10s ease-in-out infinite;
+  mask: linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  animation: border-flow 3s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(var(--mg-primary), 0.5));
 }
 
 .holo-scan {
@@ -379,11 +417,20 @@ html {
 
 /* Animations - smoother and more subtle */
 @keyframes holo-shine {
-  0%, 20% {
+  0% {
     left: -150%;
   }
-  35%, 100% {
-    left: 150%;
+  100% {
+    left: 150%; 
+  }
+}
+
+@keyframes border-flow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 0%;
   }
 }
 

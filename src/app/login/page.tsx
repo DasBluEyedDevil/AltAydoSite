@@ -15,7 +15,6 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [authError, setAuthError] = useState<string | null>(null);
-  const [debugMessage, setDebugMessage] = useState<string | null>(null);
   const { data: session, status } = useSession();
 
   // Get the callback URL (where to redirect after successful login)
@@ -28,17 +27,6 @@ function LoginForm() {
     }
   }, [searchParams]);
 
-  // Add debugging for authentication process
-  useEffect(() => {
-    if (status === 'loading') {
-      setDebugMessage('Authentication in progress...');
-    } else if (status === 'authenticated') {
-      setDebugMessage('Authentication successful! User: ' + session?.user?.name);
-    } else if (status === 'unauthenticated') {
-      setDebugMessage('Not authenticated');
-    }
-  }, [status, session]);
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -50,8 +38,6 @@ function LoginForm() {
         password,
         redirect: false,
       });
-      
-      setDebugMessage('Sign-in result: ' + JSON.stringify(result));
       
       if (result?.error) {
         setAuthError(result.error);
@@ -67,7 +53,6 @@ function LoginForm() {
     } catch (error) {
       console.error('Authentication error:', error);
       setAuthError('An unexpected error occurred during authentication');
-      setDebugMessage('Auth error: ' + JSON.stringify(error));
       setIsLoading(false);
     }
   };
@@ -104,21 +89,6 @@ function LoginForm() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   {error}
-                </div>
-              </motion.div>
-            )}
-            
-            {successMessage && (
-              <motion.div 
-                className="mb-4 p-2 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] text-[rgba(var(--mg-success),0.8)] text-xs rounded-sm"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5 13l4 4L19 7" />
-                  </svg>
-                  {successMessage}
                 </div>
               </motion.div>
             )}
@@ -184,21 +154,17 @@ function LoginForm() {
         </div>
       </motion.div>
       
-      {/* Add debug information if present */}
-      {debugMessage && process.env.NODE_ENV === 'development' && (
-        <div className="mt-4 p-2 bg-black/50 text-white text-xs rounded">
-          <div className="font-mono overflow-auto max-h-24">
-            <strong>Debug:</strong> {debugMessage}
-          </div>
+      {/* Display authentication errors */}
+      {authError && (
+        <div className="mt-4 p-2 bg-[rgba(var(--mg-danger),0.1)] border border-[rgba(var(--mg-danger),0.3)] text-[rgba(var(--mg-danger),1)] text-xs rounded">
+          {authError}
         </div>
       )}
       
-      {/* Display authentication errors */}
-      {authError && (
-        <div className="mt-4 p-2 bg-red-900/50 text-white text-xs rounded">
-          <div className="font-mono">
-            <strong>Error:</strong> {authError}
-          </div>
+      {/* Display success message */}
+      {successMessage && (
+        <div className="mt-4 p-2 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] text-[rgba(var(--mg-success),1)] text-xs rounded">
+          {successMessage}
         </div>
       )}
     </div>

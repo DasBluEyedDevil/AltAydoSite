@@ -12,11 +12,6 @@ import SecureConnectionIndicator from '../components/SecureConnectionIndicator';
 
 const inter = Inter({ subsets: ['latin'] });
 
-// Dynamically import AuthDebugger to avoid server rendering issues
-const AuthDebugger = dynamic(() => import('../components/AuthDebugger'), {
-  ssr: false,
-});
-
 export { metadata };
 
 export default function RootLayout({
@@ -65,9 +60,6 @@ export default function RootLayout({
               
               {/* Secure Connection Indicator - only shows when user is logged in */}
               <SecureConnectionIndicator />
-              
-              {/* Auth Debugger component - only visible in development */}
-              <AuthDebugger />
             </div>
           </AuthProvider>
         </UserProviderWrapper>
