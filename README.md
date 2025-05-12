@@ -5,7 +5,7 @@ Official website for Aydo Intergalactic Corporation, a leading provider of inter
 ## Features
 
 - Modern, responsive design with advanced UI/UX
-- Secure employee portal with multi-factor authentication
+- Secure employee portal with authentication
 - Interactive interface with real-time updates
 - Comprehensive information about our services and operations
 - Secure contact system and corporate communications
@@ -17,7 +17,7 @@ Official website for Aydo Intergalactic Corporation, a leading provider of inter
 - TypeScript for enhanced reliability
 - Tailwind CSS for modern styling
 - Framer Motion for interface animations
-- Auth0 for secure authentication
+- NextAuth for secure authentication
 - React for dynamic components
 
 ## Development Setup
@@ -35,12 +35,9 @@ npm install
 
 3. Create a `.env.local` file in the root directory with the following configuration:
 ```env
-AUTH0_SECRET='[Generate with: openssl rand -hex 32]'
-AUTH0_BASE_URL='http://localhost:3000'
-AUTH0_ISSUER_BASE_URL='https://dev-ton75slvnl1y0ooy.us.auth0.com'
-AUTH0_CLIENT_ID='0TwGb8sq5DooSqDHDgOQX4IpAO2CQnta'
-AUTH0_CLIENT_SECRET='mOncH5sYZklVbK7sSlXwmcsfN6mXTjrSMlW1MfYHf8vvLsZAtTR9x4sH1WBFlAkz'
-AUTH0_AUDIENCE='https://api.aydocorp.space'
+NEXTAUTH_SECRET='[Generate with: openssl rand -hex 32]'
+NEXTAUTH_URL='http://localhost:3000'
+DATABASE_URL='your-database-connection-string'
 ```
 
 4. Run the development server:
