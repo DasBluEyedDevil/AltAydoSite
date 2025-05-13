@@ -3,6 +3,13 @@ frontend:
   phases:
     preBuild:
       commands:
+        # Handle Auth0 dependency check that's being executed in the build process
+        - echo 'Checking for Auth0 dependencies'
+        # Create a copy of package.json without Auth0 dependencies (if any)
+        # This is a no-op if there are no Auth0 dependencies
+        - grep -v "auth0" package.json > package.json.new || true
+        - mv package.json.new package.json || true
+        # Install dependencies
         - npm ci --legacy-peer-deps --cache .npm --prefer-offline
     build:
       commands:
