@@ -430,7 +430,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                           <div className="w-full max-w-xs space-y-3">
                             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                               <Link 
-                                href="/auth/login" 
+                                href="/login" 
                                 className="mg-button block w-full text-center group"
                               >
                                 <div className="radar-sweep opacity-0 group-hover:opacity-20"></div>
@@ -440,7 +440,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                             
                             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                               <Link 
-                                href="/auth/login?screen_hint=signup" 
+                                href="/signup" 
                                 className="mg-button block w-full text-center"
                               >
                                 REGISTER NEW DEVICE
