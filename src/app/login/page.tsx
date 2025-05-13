@@ -9,16 +9,16 @@ import Link from 'next/link';
 function LoginForm() {
   const [aydoHandle, setAydoHandle] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [authError, setAuthError] = useState<string | null>(null);
-  const { data: session, status } = useSession();
-
-  // Get the callback URL (where to redirect after successful login)
-  const callbackUrl = searchParams?.get('from') || '/dashboard';
+  // We're not using session or status here, so we can skip destructuring them
+  const { /* data: session, status */ } = useSession();
+  
+  // We use this in the useEffect and handleSubmit functions
+  // const callbackUrl = searchParams?.get('from') || '/dashboard';
 
   useEffect(() => {
     // Check if redirected from successful signup
@@ -78,7 +78,7 @@ function LoginForm() {
           </div>
           
           <form onSubmit={handleSubmit}>
-            {error && (
+            {authError && (
               <motion.div 
                 className="mb-4 p-2 bg-[rgba(var(--mg-error),0.1)] border border-[rgba(var(--mg-error),0.3)] text-[rgba(var(--mg-error),0.8)] text-xs rounded-sm"
                 initial={{ opacity: 0, x: -10 }}
@@ -88,7 +88,7 @@ function LoginForm() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  {error}
+                  {authError}
                 </div>
               </motion.div>
             )}
@@ -116,6 +116,7 @@ function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm px-3 py-2 text-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none transition-colors font-quantify tracking-wide"
                   placeholder="••••••••••••"
+                  autoComplete="current-password"
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
