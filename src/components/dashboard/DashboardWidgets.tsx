@@ -234,8 +234,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       setClearanceLevel(user.clearanceLevel);
     }
     
-    // Check if user has admin role (will be properly implemented with Auth0 integration)
-    // For now, we'll add a placeholder check for the demo
+    // Check if user has admin role
     if (user?.email === "shatteredobsidian@yahoo.com" || user?.clearanceLevel === 3) {
       setIsAdmin(true);
     }
