@@ -31,6 +31,10 @@ module.exports = {
         'data-stream': 'data-stream 10s linear infinite',
         'text-flicker': 'text-flicker 8s linear infinite',
         'spin-slow': 'spin 15s linear infinite',
+        'scanline': 'scanline 3s linear infinite',
+        'scanline-vertical': 'scanline-vertical 3s linear infinite',
+        'scan': 'scan 4s linear infinite',
+        'pulse-delay': 'pulse 2s infinite',
       },
       keyframes: {
         twinkle: {
@@ -77,6 +81,18 @@ module.exports = {
           '0%, 100%': { opacity: 1 },
           '98%': { opacity: 1 },
           '99%': { opacity: 0.8 },
+        },
+        'scanline': {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(100%)' }
+        },
+        'scanline-vertical': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        },
+        'scan': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
         },
       },
       backgroundImage: {

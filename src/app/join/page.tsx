@@ -3,8 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import Navigation from '../../components/Navigation';
-import Footer from '../../components/Footer';
 
 const benefits = [
   {
@@ -28,8 +26,6 @@ const benefits = [
 export default function Join() {
   return (
     <main className="min-h-screen bg-black text-white">
-      <Navigation />
-
       {/* Hero Section */}
       <section className="relative pt-32 pb-16">
         <div className="absolute inset-0 z-0">
@@ -161,8 +157,6 @@ export default function Join() {
           </motion.div>
         </div>
       </section>
-
-      <Footer />
     </main>
   );
 } 

@@ -110,15 +110,6 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
       ref={containerRef}
       className="relative min-h-[90vh] flex flex-col items-center justify-center py-8 overflow-hidden"
     >
-      {/* System clock */}
-      <div className="fixed top-24 right-6 z-30">
-        <div className="mg-container p-2 text-sm">
-          <div className="mg-flicker text-[rgba(var(--mg-primary),0.9)]">
-            {time.toLocaleTimeString()} | {time.toLocaleDateString()}
-          </div>
-        </div>
-      </div>
-      
       {/* Main holographic display */}
       <div className="relative z-20 container mx-auto px-4">
         <motion.div 
@@ -134,13 +125,65 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
               <div className="holo-noise"></div>
               <div className="holo-scan"></div>
               <div className="line-noise"></div>
+              <div className="absolute inset-0 shadow-[inset_0_0_10px_rgba(var(--mg-primary),0.3)]"></div>
+              {/* Circuit pattern overlay */}
+              <div className="absolute inset-0 opacity-10 circuit-bg"></div>
             </div>
             
-            {/* Minimal corner brackets */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-l border-t border-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute top-0 right-0 w-8 h-8 border-r border-t border-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute bottom-0 left-0 w-8 h-8 border-l border-b border-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-r border-b border-[rgba(var(--mg-primary),0.6)]"></div>
+            {/* Enhanced corner brackets with glowing effect */}
+            <div className="absolute top-0 left-0 w-12 h-12">
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute top-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute top-2 left-2 w-3 h-3 border-l border-t border-[rgba(var(--mg-primary),0.8)]"></div>
+              <div className="absolute top-6 left-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
+              <div className="absolute top-0 left-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
+            </div>
+            
+            <div className="absolute top-0 right-0 w-12 h-12">
+              <div className="absolute top-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute top-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute top-2 right-2 w-3 h-3 border-r border-t border-[rgba(var(--mg-primary),0.8)]"></div>
+              <div className="absolute top-6 right-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
+              <div className="absolute top-0 right-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
+            </div>
+            
+            <div className="absolute bottom-0 left-0 w-12 h-12">
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute bottom-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute bottom-2 left-2 w-3 h-3 border-l border-b border-[rgba(var(--mg-primary),0.8)]"></div>
+              <div className="absolute bottom-6 left-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
+              <div className="absolute bottom-0 left-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
+            </div>
+            
+            <div className="absolute bottom-0 right-0 w-12 h-12">
+              <div className="absolute bottom-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute bottom-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute bottom-2 right-2 w-3 h-3 border-r border-b border-[rgba(var(--mg-primary),0.8)]"></div>
+              <div className="absolute bottom-6 right-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
+              <div className="absolute bottom-0 right-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
+            </div>
+            
+            {/* Diagonal accent elements */}
+            <div className="absolute top-0 left-[25%] w-[2px] h-6 bg-[rgba(var(--mg-primary),0.4)] skew-x-[45deg]"></div>
+            <div className="absolute top-0 right-[25%] w-[2px] h-6 bg-[rgba(var(--mg-primary),0.4)] skew-x-[-45deg]"></div>
+            <div className="absolute bottom-0 left-[25%] w-[2px] h-6 bg-[rgba(var(--mg-primary),0.4)] skew-x-[-45deg]"></div>
+            <div className="absolute bottom-0 right-[25%] w-[2px] h-6 bg-[rgba(var(--mg-primary),0.4)] skew-x-[45deg]"></div>
+            
+            {/* Left and right edge accents */}
+            <div className="absolute left-0 top-1/3 w-3 h-[2px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+            <div className="absolute left-0 top-2/3 w-3 h-[2px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+            <div className="absolute right-0 top-1/3 w-3 h-[2px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+            <div className="absolute right-0 top-2/3 w-3 h-[2px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+            
+            {/* Animated scanning lines */}
+            <div className="absolute left-0 top-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.4)] animate-scanline"></div>
+            <div className="absolute left-0 top-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.4)] animate-scanline-vertical"></div>
+            
+            {/* Random tech elements */}
+            <div className="absolute top-1/4 left-0 w-1 h-1 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
+            <div className="absolute top-3/4 left-0 w-1 h-1 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+            <div className="absolute top-1/4 right-0 w-1 h-1 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute top-3/4 right-0 w-1 h-1 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
             
             {/* Content */}
             <div className="relative z-10 p-4">
@@ -159,11 +202,11 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                   >
                     <div className="inline-block">
                       <h1 className="mg-title text-4xl md:text-5xl mb-2 tracking-wider">
-                        AYDO<span className="opacity-80">CORP</span>
+                        <span className="text-[rgba(var(--mg-primary),1)]">AYDO</span><span className="text-[rgba(var(--mg-text),0.9)]">CORP</span>
                       </h1>
                       
                       <div className="mg-subtitle text-base md:text-lg opacity-90 tracking-widest">
-                        <span className="mg-flicker">MOBIGLASS INTERFACE</span>
+                        <span className="mg-flicker">MOBIGLAS INTERFACE</span>
                         <span className="ml-2 opacity-60 text-xs">[v3.9.4]</span>
                       </div>
                     </div>
@@ -181,7 +224,38 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                       <div className="mg-container p-2 h-full relative">
                         <div className="absolute inset-0 overflow-hidden pointer-events-none">
                           <div className="radar-sweep opacity-5"></div>
+                          {/* Circuit pattern background */}
+                          <div className="absolute inset-0 opacity-5 circuit-bg bg-[length:50px_50px]"></div>
                         </div>
+                        
+                        {/* Weird tech-inspired corners for left panel */}
+                        <div className="absolute top-0 left-0 w-5 h-5">
+                          <div className="absolute top-0 left-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-2 left-2 w-5 h-[1px] bg-[rgba(var(--mg-primary),0.5)] rotate-45 origin-left"></div>
+                        </div>
+                        
+                        <div className="absolute top-0 right-0 w-5 h-5">
+                          <div className="absolute top-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-2 right-2 w-5 h-[1px] bg-[rgba(var(--mg-primary),0.5)] -rotate-45 origin-right"></div>
+                        </div>
+                        
+                        <div className="absolute bottom-0 left-0 w-5 h-5">
+                          <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-2 left-2 w-5 h-[1px] bg-[rgba(var(--mg-primary),0.5)] -rotate-45 origin-left"></div>
+                        </div>
+                        
+                        <div className="absolute bottom-0 right-0 w-5 h-5">
+                          <div className="absolute bottom-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-2 right-2 w-5 h-[1px] bg-[rgba(var(--mg-primary),0.5)] rotate-45 origin-right"></div>
+                        </div>
+                        
+                        {/* Random tech dots */}
+                        <div className="absolute top-3 left-1/4 w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.6)] animate-pulse"></div>
+                        <div className="absolute bottom-3 right-1/4 w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.6)] animate-pulse" style={{ animationDelay: '0.7s' }}></div>
                         
                         <div className="mg-header text-xs text-center">
                           <div className="mg-subtitle">SYSTEM STATUS</div>
@@ -278,7 +352,47 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                       <div className="mg-container h-full">
                         <div className="absolute inset-0 pointer-events-none overflow-hidden">
                           <div className="hexagon-bg opacity-5"></div>
+                          {/* Digital circuit pattern */}
+                          <div className="absolute inset-0 opacity-10 circuit-bg"></div>
                         </div>
+                        
+                        {/* Super weird corners for center panel */}
+                        <div className="absolute top-0 left-0 w-8 h-8">
+                          <div className="absolute top-0 left-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+                          <div className="absolute top-0 left-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+                          <div className="absolute top-0 left-4 h-3 w-3 border-l border-b border-[rgba(var(--mg-primary),0.6)] rotate-[135deg]"></div>
+                          <div className="absolute top-4 left-4 h-2 w-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
+                        </div>
+                        
+                        <div className="absolute top-0 right-0 w-8 h-8">
+                          <div className="absolute top-0 right-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+                          <div className="absolute top-0 right-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+                          <div className="absolute top-0 right-4 h-3 w-3 border-r border-b border-[rgba(var(--mg-primary),0.6)] rotate-[225deg]"></div>
+                          <div className="absolute top-4 right-4 h-2 w-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                        </div>
+                        
+                        <div className="absolute bottom-0 left-0 w-8 h-8">
+                          <div className="absolute bottom-0 left-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+                          <div className="absolute bottom-0 left-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+                          <div className="absolute bottom-0 left-4 h-3 w-3 border-l border-t border-[rgba(var(--mg-primary),0.6)] rotate-[45deg]"></div>
+                          <div className="absolute bottom-4 left-4 h-2 w-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
+                        </div>
+                        
+                        <div className="absolute bottom-0 right-0 w-8 h-8">
+                          <div className="absolute bottom-0 right-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+                          <div className="absolute bottom-0 right-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+                          <div className="absolute bottom-0 right-4 h-3 w-3 border-r border-t border-[rgba(var(--mg-primary),0.6)] rotate-[-45deg]"></div>
+                          <div className="absolute bottom-4 right-4 h-2 w-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+                        </div>
+                        
+                        {/* Diagonal accent lines */}
+                        <div className="absolute top-0 left-[30%] w-[20%] h-[2px] bg-[rgba(var(--mg-primary),0.4)] origin-left rotate-[20deg]"></div>
+                        <div className="absolute top-0 right-[30%] w-[20%] h-[2px] bg-[rgba(var(--mg-primary),0.4)] origin-right rotate-[-20deg]"></div>
+                        <div className="absolute bottom-0 left-[30%] w-[20%] h-[2px] bg-[rgba(var(--mg-primary),0.4)] origin-left rotate-[-20deg]"></div>
+                        <div className="absolute bottom-0 right-[30%] w-[20%] h-[2px] bg-[rgba(var(--mg-primary),0.4)] origin-right rotate-[20deg]"></div>
+                        
+                        {/* Animated scanning line */}
+                        <div className="absolute left-0 top-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent animate-scan"></div>
                         
                         <div className="p-6 flex flex-col items-center justify-center">
                           <motion.div 
@@ -294,11 +408,13 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                           >
                             <div className="absolute inset-0 border-2 border-[rgba(var(--mg-primary),0.3)] flex items-center justify-center overflow-hidden rounded-full">
                               <div className="radar-sweep"></div>
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-[rgba(var(--mg-primary),1)]">
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 md:h-16 md:w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                  </svg>
+                              <div className="absolute inset-0 flex items-center justify-center flex-col">
+                                <div className="h-38 w-38 md:h-46 md:w-46 relative">
+                                  <img 
+                                    src="/images/Aydo_Corp_3x3k_RSI.png" 
+                                    alt="AydoCorp Logo" 
+                                    className="object-contain w-full h-full"
+                                  />
                                 </div>
                               </div>
                             </div>
@@ -307,7 +423,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                           <div className="mg-text text-sm mb-6 text-center max-w-md">
                             <div className="mg-subtitle mb-2">BIOMETRIC VERIFICATION REQUIRED</div>
                             <p className="text-xs leading-relaxed text-[rgba(var(--mg-text),0.7)]">
-                              Mobiglass interface requires secure authentication. All activities are logged and monitored.
+                              MobiGlas interface requires secure authentication. All activities are logged and monitored.
                             </p>
                           </div>
                           
@@ -327,7 +443,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                 href="/auth/login?screen_hint=signup" 
                                 className="mg-button block w-full text-center"
                               >
-                                REGISTER NEW IMPLANT
+                                REGISTER NEW DEVICE
                               </Link>
                             </motion.div>
                           </div>
@@ -343,6 +459,49 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                       className="col-span-12 md:col-span-3"
                     >
                       <div className="mg-container h-full">
+                        {/* Weird tech-inspired corners for right panel */}
+                        <div className="absolute top-0 left-0 w-5 h-5">
+                          <div className="absolute top-0 left-0 w-4 h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-0 left-0 h-4 w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-[5px] left-[5px] w-3 h-3">
+                            <div className="absolute top-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+                            <div className="absolute top-0 left-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+                          </div>
+                        </div>
+                        
+                        <div className="absolute top-0 right-0 w-5 h-5">
+                          <div className="absolute top-0 right-0 w-4 h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-0 right-0 h-4 w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-[5px] right-[5px] w-3 h-3">
+                            <div className="absolute top-0 right-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+                            <div className="absolute top-0 right-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+                          </div>
+                        </div>
+                        
+                        <div className="absolute bottom-0 left-0 w-5 h-5">
+                          <div className="absolute bottom-0 left-0 w-4 h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-0 left-0 h-4 w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-[5px] left-[5px] w-3 h-3">
+                            <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+                            <div className="absolute bottom-0 left-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+                          </div>
+                        </div>
+                        
+                        <div className="absolute bottom-0 right-0 w-5 h-5">
+                          <div className="absolute bottom-0 right-0 w-4 h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-0 right-0 h-4 w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-[5px] right-[5px] w-3 h-3">
+                            <div className="absolute bottom-0 right-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+                            <div className="absolute bottom-0 right-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
+                          </div>
+                        </div>
+                        
+                        {/* Edge markers */}
+                        <div className="absolute top-1/3 right-0 w-2 h-2 border-r border-t border-[rgba(var(--mg-primary),0.6)]"></div>
+                        <div className="absolute top-2/3 right-0 w-2 h-2 border-r border-b border-[rgba(var(--mg-primary),0.6)]"></div>
+                        <div className="absolute top-1/3 left-0 w-2 h-2 border-l border-t border-[rgba(var(--mg-primary),0.6)]"></div>
+                        <div className="absolute top-2/3 left-0 w-2 h-2 border-l border-b border-[rgba(var(--mg-primary),0.6)]"></div>
+                        
                         <div className="mg-header text-xs text-center">
                           <div className="mg-subtitle">NAVIGATION</div>
                         </div>

@@ -896,4 +896,71 @@ img {
   z-index: -1;
   opacity: 0.2;
   pointer-events: none;
+}
+
+/* Circuit pattern background */
+.circuit-bg {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZyBmaWxsPSJub25lIiBzdHJva2U9IiMwMGQ3ZmYiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjIiPjxwYXRoIGQ9Ik0xMCAxMGg4MHY4MEgxMHoiLz48cGF0aCBkPSJNMzAgMTB2MjBNNTAgMTB2ODBNNZPIDY1aDMwTTEwIDcwaDMwTTMwIDkwSDEwTTkwIDMwSDcwIi8+PGNpcmNsZSBjeD0iNzAiIGN5PSI3MCIgcj0iMTAiLz48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSI1Ii8+PHBhdGggZD0iTTEwIDMwaDEwTTEwIDUwaDMwIi8+PC9nPjwvc3ZnPg==');
+  background-repeat: repeat;
+  background-size: 150px 150px;
+  opacity: 0.07;
+  mix-blend-mode: screen;
+}
+
+/* Additional scan animations */
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes scanline-vertical {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-scanline {
+  animation: scanline 4s linear infinite;
+}
+
+.animate-scanline-vertical {
+  animation: scanline-vertical 4s linear infinite;
+}
+
+.animate-scan {
+  animation: scan 4s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+/* Add new utilities near the animation utility section */
+.skew-x-45 {
+  transform: skewX(45deg);
+}
+
+.skew-x--45 {
+  transform: skewX(-45deg);
+}
+
+.rotate-20 {
+  transform: rotate(20deg);
+}
+
+.rotate--20 {
+  transform: rotate(-20deg);
 } 
