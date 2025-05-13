@@ -1,0 +1,290 @@
+Devil
+iaminthedetails
+Online
+
+Below are a list of all current employees who have earned certifications:
+:aydoproud: General Certs: Flight Patrol (FP)Large Ship Flight (LSF)Small Ship Flight (SSF)Basic Firearms (BF)Ground Patrol (GP)Turret Operator (TO)Basic First Aid (BFA)First Responder (FR)Multi-Tool Usage (MTU) :aydoexpress: AydoExpress Certs: Cargo Handler (CH)Transporter (TR)High Risk Transporter (HRT)Trading & Sourcing Specialist (TSS)Surveyor (S) :empyrion: Empyrion Industries Certs: Ship Mining (SM)Ground Mining (GM)Ship & Handheld Salvaging (SHS)Hand Repair (HR)Refueling (R)Towing - Single (TS)Towing - Multi (TM)
+List of Certifications
+UdonMan
+OP
+ — 5/1/2025 5:56 PM
+:aydoproud: General Certs:
+
+Flight Patrol (FP)
+Large Ship Flight (LSF)
+Small Ship Flight (SSF)
+Basic Firearms (BF)
+Ground Patrol (GP)
+Turret Operator (TO)
+Basic First Aid (BFA)
+First Responder (FR)
+Multi-Tool Usage (MTU)
+
+:aydoexpress: AydoExpress Certs:
+
+Cargo Handler (CH)
+Transporter (TR)
+High Risk Transporter (HRT)
+Trading & Sourcing Specialist (TSS)
+Surveyor (S)
+
+:empyrion: Empyrion Industries Certs:
+
+Ship Mining (SM)
+Ground Mining (GM)
+Ship & Handheld Salvaging (SHS)
+Hand Repair (HR)
+Refueling (R)
+Towing - Single (TS)
+Towing - Multi (TM)
+UdonMan
+OP
+ — 5/1/2025 5:56 PM
+File for explanation of what is evaluated to earn the certs:
+NOTE: Certs marked with an * are those that employees get when passing their intern evaluation.
+
+General Certs:
+Flight:
+Flight Patrol - FP
+Trainee demonstrates the ability to have adequate awareness skills and the ability to perform offensive and defensive security operations.
+Expand
+message.txt
+10 KB
+﻿
+NOTE: Certs marked with an * are those that employees get when passing their intern evaluation.
+
+General Certs:
+Flight:
+Flight Patrol - FP
+Trainee demonstrates the ability to have adequate awareness skills and the ability to perform offensive and defensive security operations.
+Items of note for the trainee to learn and pass cert:
+Knows how to scan and target
+Knows how to switch and set fire-groups
+Has a basic understanding of ship components and weapons (i.e. the difference of the effects ballistic weapons have vs laser ones)
+Knows how and when to use countermeasures
+Knows how to use missiles
+Is able to put weapons on target with effectiveness
+Is able to follow positioning commands and operate as a team player without devolving into lone-wolf behavior
+Large Ship Flight - LSF
+Trainee demonstrates the ability to safely fly and land a large ship to and from a space station and landing zone.
+Trainee needs the small ship cert in order to obtain this one.
+The only item to note is that the trainee is able to deal with the ungainly nature of larger ships as opposed to smaller ones; no real special training required other than a review of the proper skills gone over in the small ship cert training.
+Small Ship Flight - SSF*
+Trainee demonstrates the ability to safely fly and land a small ship to and from a space station and landing zone.
+Items of note for the trainee to learn and pass cert:
+Can turn on and off the power and engines
+Has a basic understanding of ship MFDs and switching between them
+Can turn the ship lights on and off
+Knows how to contact the ATC with keybindings, the mobiGlass, and MFD
+Can properly lift off and land (while also using VTOL if applicable, as well as extending/retracting landing gear at the appropriate times)
+Knows how to scan
+Has general basic awareness
+Security:
+Basic Firearms - BF*
+Trainee demonstrates the ability to load/reload a firearm as well as being able to properly shoot at a target.
+Items of note are as follows:
+Knows where to obtain weapons
+Knows how to equip ammo
+Knows how to equip weapon
+Can properly load the weapon and shoot at target
+Is able to reload and consolidate mags
+Ground Patrol - GP
+Trainee demonstrates the ability to have adequate awareness skills and the ability to perform offensive and defensive security operations.
+Items of note are as follows:
+Able to follow chain of command
+Understands and adheres to key squad roles:
+Leader/officer
+Pointman
+Assault
+Machine-gunner / support
+Grenadier / heavy weapons specialist
+Marksman
+Medic
+Is able to perform basic tactical maneuvers
+Cover / suppression
+Moving as a unit in formation
+Basic CQB (i.e. clearing corners and covering doorways)
+Keeps in mind to not flag friendlies and holding weapon lowered when not in active combat.
+Turret Operator - TO*
+Trainee demonstrates the ability to operate a turret with adequate performance.
+Items of note are as follows:
+Knows to turn on turret
+Knows how to switch modes (e.g. gyro mode)
+Is able to target and switch targets quickly
+Is able to listen to pilot’s commands during chaotic moments
+Medical:
+Basic First-Aid - BFA*
+Trainee demonstrates the ability to use the medpen to heal and revive.
+Items of note:
+Should know what the medpen looks like (red injector) and how to equip it.
+Learns how to inject oneself to heal, as well as to inject others to heal and/or revive them.
+First Responder - FR
+Trainee demonstrates the ability to use all of the medical injectors for their appropriate usage as well as using the med-gun.
+Items of note:
+Has understanding of what all injectors/medications look like and what they do:
+MedPen / Hemozal: Restores health and stops bleeding, recovers from incapacitated state
+DetoxPen / Resurgera: Revives overdosed person (if not incapacitated), doubles decay rate of Blood Drug Level
+AdrenaPen / Demexatrine: Reduces concussion symptoms, normalizes weapon handling and movement speed
+CorticoPen / Sterogen: Reduces vision and hearing symptoms, normalizes stamina
+DeconPen / Canoiodide: Reduces injuries from radiation
+OpioPen / Roxaphen: Reduces pain symptoms, normalizes movement ability
+Is able to use the proper medication for the needed injury
+Knows how to use the med-gun in lieu of carrying individual injectors
+Tool Usage:
+Multi-tool - MT*
+Trainee demonstrates the ability to use the multi-tool in its various capacities
+Items of note:
+Is aware of the various attachments for the multi-tool and what they’re used for:
+Cutter
+Mining beam
+Tractor beam
+Salvage / repair beam
+Medical beam
+Is aware of the dedicated salvage/repair and tractor beam tools
+Demonstrates the ability to switch out attachment heads
+
+AydoExpress Certs:
+Cargo Handler - CH
+Trainee demonstrates the ability to move around cargo in an orderly and safe fashion.
+Items of note:
+Knows the limits of the tractor beam devices and appropriate use cases for them are (including the ATLS suit)
+Learns appropriate handling of cargo when working alone or with others; safety is prioritized, as well as efficiency
+Organization skills are a must, it’s not just about throwing boxes wherever
+Transporter - TR
+Trainee demonstrates the ability to move around passengers in a ship or ground vehicle in an orderly and safe fashion.
+Items of note:
+Is able to direct passengers to the appropriate seating in a firm manner to encourage timely departures
+Is able to fly the ship in a careful and steady manner to avoid standing passengers from falling down [too much] as well as avoiding heavy Gs
+Has impeccable landing and takeoff skills for the smoothest flights possible, as well as quickly being able to determine flat [enough] landing spots to help ensure that
+High-risk Transporter - HRT
+Trainee demonstrates the ability to transport passengers and/or vehicles in dangerous environments.
+Items of note:
+Must be able to multi-task and receive instruction on the fly depending on changing conditions in the hazard area
+Landings and takeoffs are able to be conducted in a speedy, but still safe, manner
+Trading & Sourcing Specialist - TSS
+Trainee demonstrates the ability to look up trading and item location data and have familiarization with the most common websites/tools that display such information.
+Items of note:
+Has a basic understanding of what commodities are and where to purchase/sell them
+Has a basic understanding of profit margins and that more expensive goods don’t necessarily mean greater profits
+Learns about the more common tools/websites to figure out pricing of commodities and where best to source and sell them
+Is made aware of the niche player to player item market and its growing and future importance 
+Surveyor - S
+Trainee demonstrates the ability to seek out ideal land and resources
+Items of note: 
+Has the capacity to be good with remembering locations and knowing the “lay of the land” (essentially, knows specific regions of space…preferably an entire star system…quite well)
+Learns about the more common tools/websites to use for helping in finding locations
+Has the ability to concisely log location info to be able to share with others
+Is aware that the future of surveying will involve base-building and thus surveying activities will need to be done with that in mind
+
+Empyrion Industries Certs:
+Mining:
+Ship Mining - SM
+Trainee demonstrates the ability to successfully use a ship mining laser to crack a rock and then to extract the materials.
+Items of note:
+Knows how to active mining mode and switch between fracturing and extraction
+Understands how to raise power level of laser to successfully fracture rock
+Is aware of the more common sites to get information on ores and refineries to maximize profits
+Ground Mining - GM
+Trainee demonstrates the ability to successfully use a vehicle/exosuit/handheld mining laser to crack a rock and then to extract the materials.
+Items of note:
+Same as above for ship mining 
+Salvaging:
+Ship & Handheld Salvaging - SHS
+Trainee demonstrates the ability to successfully use a salvage beam to strip the hull of a ship/vehicle and then to ‘munch’ the ship after.
+Items of note:
+Knows how to active salvaging mode and to switch between the tractor beam and salvaging beam
+Is aware of general guidelines for hull-stripping (being slow and steady)
+Understands how to ‘hull munch’ after the ship/vehicle has been stripped
+Repair:
+Hand Repair - HR
+Trainee demonstrates the ability to load the repair device with material in order to make patch repairs on a ship/vehicle.
+Items of note:
+Uses understanding of how multitools work in order to load it with a can of reclaimed material and then spray it on the part of their ship/vehicle they want to repair
+Refueling - R
+Trainee demonstrates the ability to successfully refuel a ship as well as being able to give clear and concise instructions to those refueling to help aid that process.
+Items of note:
+Has awareness of the different nozzle and tank types
+Knows how to start the initiation/docking process for refueling recipient
+Is able to manage the MFD to properly refuel the ship without dumping fuel outside
+Is able to personally dock and refuel oneself to be able to direct to others what they need to do to refuel
+Towing 
+Single - TS
+Trainee demonstrates the ability to safely tow a ship with the SRV 
+Items of note:
+Has the awareness skills to tow a ship without hitting things with it
+Is able to tow a ship into QT
+Can deposit a ship without damaging it
+Multi - TM
+Trainee demonstrates the ability to safely tow a ship with an SRV alongside other towers
+Items of note:
+Same as above, with the only difference being the ability for good communication with the other towers and keeping their pathing in relatively straight, smooth lines to avoid dropping their load and/or hitting things with it
+message.txt
+10 KB
+
+
+Based in the Ellis system on the planet Green, the Aydo Intergalactic Corporation (more commonly referred to as “AydoCorp”) is an amalgamation of not only several companies within the system but also containing subsidiaries in a multitude of other systems. Aptly named due to its headquarters located in the city of Aydo, the corporation had its humble beginnings as a small one-man delivery company run by none other than the current, esteemed CEO Christoff Revan. Over the years the company would grow and expand, what was once known as “Aydo City Delivery” eventually became “Aydo Amalgamated Industries” after a merger with Seahorse Fisheries, which was based out of Neo Taurii on Kampos. After acquiring multiple subsidiaries and having greater expansions, the company would transform into the corporation we now know as “AydoCorp”, serving many clients throughout human and even alien space.
+
+The corporation as a whole provides shipping and resource consolidation services to its clients, and while the largest clients exist within the Sol-Terra trading sectors, AydoCorp also carries out business within Xi’an and Banu systems and anywhere in-between. Daily operations carried out by the organization include regular shipments of cargo transported on behalf of companies that either do not have the time or resources to do so, or simply wish to have expanded services by contracting out to the corporation. The safe transportation of goods is ensured by AIC’s main security contractor, Rogue Squadron, with onboard security being a baseline requirement on all large shipments, with particularly valuable commodities being escorted by top-of-the-line fighter craft.
+
+Though shipping is one of the main focuses of the corporation, it certainly is not the only operation it carries out. Another main function that is contracted out to AIC is resource consolidation, which simply refers to other companies delegating the supervision of some or even all their operations over to the corporation so that they have better cohesion and efficiency. In addition, AIC also retains a modest but superb transportation division that caters to the safe and speedy transport of all AIC staff as well as the employees of its clients. Private charters are also available upon request, with transportation also being provided to unaffiliated civilians on cargo vessels on a first-come-first-served basis. AIC’s various subsidiaries provide a wide-range of other services, please refer to our brochure for more information on them.
+
+Rank Hierarchy:
+N/A. PROSPECTIVE HIRE
+Someone potentially interested in joining. Required to be around for at least two weeks before becoming an actual member, but this period can be longer in case one needs more time to make the decision. There are no requirements other than a good temperament and being 18+ years of age to join!
+
+INTERN
+The first real rank, an intern signifies becoming a fully-fledged member of AydoCorp. As this is a transitional rank, we encourage interns to move up to the next rank within two weeks of joining or at least as soon as they are able.
+
+1.5. FREELANCER
+Someone who has freelancer status is one that’s been an intern for more than a month or so but hasn’t yet made the proper steps to become an employee. We encourage members to not hold this rank, but we understand that IRL circumstances may make that difficult. Org leadership will move interns to this rank at their discretion if it’s been viewed that one has been an intern for an overly long period.
+
+EMPLOYEE
+Becoming an employee means proving that one knows the basics of how to play the game and thus know how to handle oneself in addition to becoming a member of a subsidiary.
+
+SENIOR EMPLOYEE
+This rank is for employees who have attained the 4th rank in any given subsidiary, and/or have been employees for more than 2 years (whichever comes first). These employees have shown themselves both competent in their chosen area of gameplay, as well as showing a great amount of activity and/or seniority within the organization. Those at this stage are seasoned members and trusted with more responsibilities during operations.
+
+SUPERVISOR
+Being the last ‘standard’ rank, this is a fusion between normal membership and leadership. To get this promotion, a Senior Employee must achieve the 5th rank in a subsidiary. Supervisors are given the ability to lead small groups of members during operations; this authority does not carry over outside of operations unless otherwise specified. A member achieving this promotion does not need to open themselves up to be a leader if they do not wish to, but they are always given the option if they decide later on that they would like to be more active and involved in things.
+
+MANAGER
+The first ‘true’ leadership rank, managers are members that show more commitment than on average as a baseline for even being considered. Managers support subsidiary directors in running things, which can include being given a specific role to play or at the very least help share the burden of leadership in a more general capacity. This position requires one to achieve the 7th rank in a subsidiary. In addition, a manager needs to have been a member for a minimum of six months before being able to be considered. Those of this rank hold minimal moderation capabilities on the server, but regardless are representatives of leadership and as such should be listened to.
+
+DIRECTOR
+One of the most pivotal positions in the organization, directors are directly appointed and approved by the board to run subsidiaries and a small number of alternative roles. Ranks of supervisor and up are allowed to apply for a directorship, but being a manager is preferred with a minimum of 6 months previous membership required to even be considered. Directors are the go-to for all subsidiary-related concerns, and they are the ones that members will be interacting with the most for activities and events. Those of this rank also hold higher levels of moderation abilities than managers.
+
+BOARD MEMBER
+As the highest position in the org, board members hold full admin privileges and hold immense responsibility to AydoCorp. The CEO has the wherewithal to appoint a member for consideration, with a unanimous vote being needed by the rest of board members for acceptance. Board members are directly involved in the inner workings of the organization and commit a great deal of time and energy in how things are run. This position requires a lot of personal time spent in crafting the organization to its fullest potential and should not be entered into lightly.
+
+What are our subsidiaries?
+Put simply, the subsidiaries at AydoCorp are subsets of the organization designed to cater to a specific kind of gameplay loop/career. Currently there are two, with future subsidiaries planned to accommodate later growth. Our goal with subsidiaries is to always keep the feeling of having a tight-knit community even as the organization gets bigger; being a part of a subsidiary means you get to focus on the gameplay that you enjoy most while having value within a smaller group of members, all while still having the support of AydoCorp at large. While as an intern you will have the time to figure out where you would like to be placed, since part of becoming an employee means joining one of them. In light of that, included further on are descriptions of the subsidiaries to help you in making the choice… but, if you need more guidance feel free to ask any director and they can assist you!
+
+Joining a subsidiary does NOT mean that you can’t participate with members of the other two, nor does it mean that you cannot engage in other gameplay loops. Being an employee of a subsidiary means you are a part of their “family”, and you have the ability to train and rank up with them as you progress in the organization; but, if other subsidiaries have events themed around the gameplay loop they center around, any members from the other two can join in. The main incentive to being part of a specific subsidiary is being part of the culture they provide, and having priority consideration for filling roles in an operation - this means that, for example, if AydoExpress conducted a hauling activity then the pilot and cargo-handlers would be first filled by AydoExpress members; if at that time there are any open slots available, they will be able to be filled by those outside of the subsidiary.
+
+Like stated previously, entering into a subsidiary means you get to be a part of the culture that they have that is based around the specific gameplay niche that they practice. Members of that subsidiary are more likely to engage in that niche the most, and thus you are surrounded by members that are like-minded in the gameplay that they enjoy. While we have a light amount of general organizational ranks, you can also earn your way through the ranks of subsidiaries as well! To do so, you will be able to participate in training and certification sessions to become more knowledgeable in a specific gameplay specialization, as well as engage in routine subsidiary events that engage in specific gameplay of their niche.
+
+The benefit of moving through the ranks is that members will receive increasing amounts of rewards (credits, items, vehicles, etc.), which will be more than what one could get for participating if they stayed as an intern or freelancer. Employees make significantly more than interns, so if you’d like to be better rewarded for your participation with the organization then that could be a good incentive to join a subsidiary. As the game progresses, there will be more benefits added to being an employee, as well as different perks for each rank; currently the game does not support as many options as we would like, but keep in mind that seniority within a subsidiary can also open the way for leadership opportunities as well!
+Subsidiary Listings:
+AydoExpress:
+
+The bread and butter of the organization, AydoExpress deals with cargo hauling and personnel transport. Gameplay offered are things like trading, deliveries, transport, and really just hauling anything in general that the organization needs. As the game gets more complex, this gameplay will become more and more important, with it also being more engaging and purposeful. To keep the organization working smoothly we will need the help of everyone in AydoExpress, without them there would be no movement of people and resources and operations would be at a halt.
+
+Another thing to keep in consideration is that this subsidiary is meant to be the face of the organization as it conducts the lion’s share of external services to other organizations and individual players, whereas the others are almost purely internal services. This does not make the other subsidiaries any less important, as none of the subsidiaries could survive without each other; however, if you enjoy such logistical gameplay and/or like working behind-the-scenes and knowing that what you do ensures that the organization can keep functioning, then please consider AydoExpress! If you’d like to know more, please contact the current interim director, @UdonMan, for more information!
+
+Empyrion Industries:
+
+Keeping the coffers full, Empyrion Industries deals with industrial gameplay to sustain the organization with resources and a great deal of profits. Gameplay offered are things like mining and salvaging operations, as well as refueling. The operations that this subsidiary carries out are meant to help drive the greatest amount of income for the organization, in addition to providing the resources for the rest of the subsidiaries to take advantage of. When things like refining, full manual repair, engineering, and more come to the game there will be many more endeavors to be a part of with this subsidiary. If you’d like to know more, please contact the current interim director, @UdonMan, for more information!
+
+Congratulations on becoming a member! What's next?
+The intern position is meant to be short-term on your way to becoming an employee; what’s the difference between one and an intern? To put it simply, an employee is a member who has passed basic gameplay evaluations and joined one of our two subsidiaries (think of them like ‘divisions’ in other orgs), AydoExpress and Empyrion Industries. Thus, that’s going to be your main goal as a new member, which we’d ideally like you to do so with the first two weeks of being a member. That being said, real life comes first, so we completely understand if it takes longer for you to do so.
+
+Think of these evaluations more like a tutorial - if you’re a relatively new player, we’ll essentially be going over all the basics to help you succeed in the game and have a strong footing. If you’re already seasoned and don’t really need this training, then we’ll simply do a brief check that you do indeed know what you’re doing and then fast-track you to employee status. In order to get these tutorials/evaluations done, just check our events tab at the top left, we have sessions going on a twice a month basis; if it’s impossible for you to make those times, let someone in leadership know in the #interview-chat channel and we’ll try our best to accommodate you.
+
+If you want to put your best foot forward, please read through our org lore and subsidiary info; the latter is especially useful as you’ll need that knowledge to make your decision of which one to join. Notwithstanding, we do not and will never have time commitments required of members, so once you’re an employee you can be rest assured knowing your spot in the org remains secure. Like stated before, real life comes first! We’re not a hardcore org, and we’ve tried our best to thread the line between casual play and structured play to give the best of both worlds; never feel like you are pressured to do anything!
+
+That being said, while we are a casual org, to participate in our big "official" events, we require members to have certifications for the pertinent roles required for the event. Those who do not have certs won't necessarily be barred from attending, but they will not be able to have their choice of what role to take as those who do have certs get preferential selection as well as increased payment. New certs can be earned by attending our bi-monthly training sessions or by requesting an alternate time for a 1 on 1 session. Please take a look in our #certifications forum channel in the Staff Hub category to learn more!
+
+Thought to repost this seeing as we have our new forum section on the server now, it's short but sweet!
+
+🔗 Video: https://www.youtube.com/watch?v=09tIsGZ6-ec&t=1s
+
