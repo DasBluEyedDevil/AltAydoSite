@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import ErrorBoundary from '../../components/ErrorBoundary';
+import AlliesSection from '../../components/AlliesSection';
 
 // Timeline Node Component
 const TimelineNode = ({ 
@@ -244,6 +245,7 @@ export default function About() {
   const [connectionProgress, setConnectionProgress] = useState(0);
   const [connectionComplete, setConnectionComplete] = useState(false);
   const [connectionMessages, setConnectionMessages] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState('subsidiaries');
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -819,129 +821,286 @@ export default function About() {
                 </div>
                 
                 {/* Interactive Timeline */}
-                <div className="relative max-w-3xl mx-auto">
-                  <div className="relative border-l border-[rgba(var(--mg-primary),0.3)] ml-2 pl-6 py-6">
-                    {/* Timeline nodes */}
-                    <TimelineNode 
-                      year="2911"
-                      title="FOUNDING"
-                      subtitle="Aydo City Delivery"
-                      content="Christoff Revan establishes a small courier service in Aydo City on planet Green in the Ellis system, focusing on reliable local deliveries."
-                      delay={0.1}
-                    />
-                    
-                    <TimelineNode 
-                      year="2925"
-                      title="EXPANSION"
-                      subtitle="Planetary Coverage"
-                      content="After years of consistent growth, operations expand to cover the entire planet Green, establishing regional hubs in major cities."
-                      delay={0.2}
-                    />
-                    
-                    <TimelineNode 
-                      year="2938"
-                      title="MERGER"
-                      subtitle="Aydo Amalgamated Industries"
-                      content="Strategic merger with Seahorse Fisheries of Neo Taurii leads to the formation of Aydo Amalgamated Industries, expanding operations beyond logistics into resource management."
-                      delay={0.3}
-                    />
-                    
-                    <TimelineNode 
-                      year="2945"
-                      title="INTERSTELLAR LAUNCH"
-                      subtitle="First System Jump"
-                      content="Acquisition of the first Hull-series freighter marks AydoCorp's entry into interstellar shipping, establishing routes to neighboring Stanton system."
-                      delay={0.4}
-                    />
-                    
-                    <TimelineNode 
-                      year="2948"
-                      title="INCORPORATION"
-                      subtitle="Aydo Intergalactic Corporation"
-                      content="Following rapid expansion and multiple acquisitions, the company officially becomes Aydo Intergalactic Corporation, establishing headquarters in a state-of-the-art facility in Aydo City."
-                      delay={0.5}
-                    />
-                    
-                    {/* Present day indicator */}
-                    <motion.div
-                      className="relative mb-0 pl-0"
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.6 }}
-                      viewport={{ once: true }}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="relative">
+                    <div className="relative border-l border-[rgba(var(--mg-primary),0.3)] ml-2 pl-6 py-6">
+                      {/* Timeline nodes */}
+                      <TimelineNode 
+                        year="2911"
+                        title="FOUNDING"
+                        subtitle="Aydo City Delivery"
+                        content="Christoff Revan establishes a small courier service in Aydo City on planet Green in the Ellis system, focusing on reliable local deliveries."
+                        delay={0.1}
+                      />
+                      
+                      <TimelineNode 
+                        year="2925"
+                        title="EXPANSION"
+                        subtitle="Planetary Coverage"
+                        content="After years of consistent growth, operations expand to cover the entire planet Green, establishing regional hubs in major cities."
+                        delay={0.2}
+                      />
+                      
+                      <TimelineNode 
+                        year="2938"
+                        title="MERGER"
+                        subtitle="Aydo Amalgamated Industries"
+                        content="Strategic merger with Seahorse Fisheries of Neo Taurii leads to the formation of Aydo Amalgamated Industries, expanding operations beyond logistics into resource management."
+                        delay={0.3}
+                      />
+                      
+                      <TimelineNode 
+                        year="2940"
+                        title="FOUNDING"
+                        subtitle="Aydo City Delivery"
+                        content="The corporation had its humble beginnings as a small one-man delivery company founded by CEO Christoff Revan after his honorable discharge from the UEE Navy."
+                        delay={0.4}
+                      />
+                      
+                      <TimelineNode 
+                        year="2943"
+                        title="First Expansion"
+                        subtitle="Aydo Amalgamated Industries"
+                        content="After a merger with Seahorse Fisheries based out of Neo Taurii on Kampos, Aydo City Delivery was renamed to Aydo Amalgamated Industries, marking the first significant expansion."
+                        delay={0.5}
+                      />
+                      
+                      <TimelineNode 
+                        year="2945"
+                        title="INTERSTELLAR LAUNCH"
+                        subtitle="First System Jump"
+                        content="Acquisition of the first Hull-series freighter marks AydoCorp's entry into interstellar shipping, establishing routes to neighboring Stanton system."
+                        delay={0.6}
+                      />
+                      
+                      <TimelineNode 
+                        year="2945"
+                        title="Corporate Formation"
+                        subtitle="Aydo Intergalactic Corporation"
+                        content="After acquiring multiple subsidiaries and expanding operations, the company transformed into the corporation now known as 'AydoCorp', serving many clients throughout human and alien space."
+                        delay={0.7}
+                      />
+                      
+                      <TimelineNode 
+                        year="2948"
+                        title="INCORPORATION"
+                        subtitle="Aydo Intergalactic Corporation"
+                        content="Following rapid expansion and multiple acquisitions, the company officially becomes Aydo Intergalactic Corporation, establishing headquarters in a state-of-the-art facility in Aydo City."
+                        delay={0.8}
+                      />
+                      
+                      <TimelineNode 
+                        year="2948"
+                        title="Security Partnership"
+                        subtitle="Rogue Squadron Security"
+                        content="Formed security partnership with Rogue Squadron to provide enhanced security for valuable shipments and escort services for high-profile transports."
+                        delay={0.9}
+                      />
+                      
+                      <TimelineNode 
+                        year="2951"
+                        title="Present Day"
+                        subtitle="Expanding Operations"
+                        content="Today, AydoCorp continues to expand its reach across systems, with operations in both human and alien space, focusing on transportation, logistics, and resource consolidation."
+                        delay={1.0}
+                      />
+                      
+                      {/* Present day indicator */}
+                      <motion.div
+                        className="relative mb-0 pl-0"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 1.1 }}
+                        viewport={{ once: true }}
+                      >
+                        <div className="flex items-center">
+                          <motion.div
+                            className="w-3 h-3 rounded-full mr-4"
+                            style={{ backgroundColor: "rgba(0, 215, 255, 0.8)" }}
+                            animate={{ 
+                              scale: [1, 1.2, 1],
+                              boxShadow: [
+                                '0 0 0 0 rgba(0, 215, 255, 0.4)',
+                                '0 0 0 10px rgba(0, 215, 255, 0)',
+                                '0 0 0 0 rgba(0, 215, 255, 0)'
+                              ]
+                            }}
+                            transition={{ 
+                              duration: 2, 
+                              repeat: Infinity, 
+                              repeatType: "loop"
+                            }}
+                          />
+                          <div>
+                            <div className="text-[rgba(var(--mg-primary),1)] text-sm font-quantify">PRESENT DAY</div>
+                            <div className="text-[rgba(var(--mg-text),0.6)] text-xs">GALACTIC PRESENCE</div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <motion.div 
+                      className="mg-container mb-4"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
                     >
-                      <div className="flex items-center">
-                        <div
-                          className="w-3 h-3 rounded-full mr-4"
-                          style={{ backgroundColor: "rgba(0, 215, 255, 0.8)" }}
-                        />
-                        <div>
-                          <div className="text-[rgba(var(--mg-primary),1)] text-sm font-quantify">PRESENT DAY</div>
-                          <div className="text-[rgba(var(--mg-text),0.6)] text-xs">GALACTIC PRESENCE</div>
+                      <div className="p-4">
+                        <h2 className="mg-subtitle text-lg mb-3">CORPORATE HISTORY</h2>
+                        <p className="text-sm text-[rgba(var(--mg-text),0.8)] leading-relaxed mb-4">
+                          Over the years the company would grow and expand, what was once known as "Aydo City Delivery" eventually became "Aydo Amalgamated Industries" after a merger with Seahorse Fisheries, which was based out of Neo Taurii on Kampos.
+                        </p>
+                        
+                        <p className="text-sm text-[rgba(var(--mg-text),0.8)] leading-relaxed">
+                          After acquiring multiple subsidiaries and having greater expansions, the company would transform into the corporation we now know as "AydoCorp", serving many clients throughout human and even alien space.
+                        </p>
+                        
+                        <div className="flex items-center justify-between mt-4 text-[rgba(var(--mg-text),0.7)] text-xs">
+                          <div className="flex items-center">
+                            <motion.div 
+                              className="w-2 h-2 rounded-full bg-[rgba(var(--mg-primary),0.8)] mr-2"
+                              animate={{ 
+                                scale: [1, 1.3, 1],
+                                opacity: [0.7, 1, 0.7]
+                              }}
+                              transition={{ duration: 2, repeat: Infinity }}
+                            ></motion.div>
+                            <span>HISTORICAL RECORD AUTHENTICATED</span>
+                          </div>
+                          <span className="text-[rgba(var(--mg-primary),0.9)]">CONFIDENCE: 98.7%</span>
                         </div>
                       </div>
                     </motion.div>
-                  </div>
-                </div>
-                
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.7 }}
-                  viewport={{ once: true }}
-                  className="mg-container p-0.5 border border-[rgba(var(--mg-primary),0.3)] mt-16 relative overflow-hidden"
-                >
-                  {/* Corner elements */}
-                  <div className="absolute top-0 left-0 w-8 h-8">
-                    <div className="absolute top-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)]"></div>
-                    <div className="absolute top-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)]"></div>
-                  </div>
-                  <div className="absolute top-0 right-0 w-8 h-8">
-                    <div className="absolute top-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)]"></div>
-                    <div className="absolute top-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)]"></div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 w-8 h-8">
-                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)]"></div>
-                    <div className="absolute bottom-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)]"></div>
-                  </div>
-                  <div className="absolute bottom-0 right-0 w-8 h-8">
-                    <div className="absolute bottom-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)]"></div>
-                    <div className="absolute bottom-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)]"></div>
-                  </div>
-                  
-                  <div className="relative overflow-hidden rounded">
-                    <div className="relative h-64 md:h-80">
-                      <Image
-                        src="/images/Hull_E.jpg"
-                        alt="AydoCorp Fleet"
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
+                    
+                    <div className="grid grid-cols-1 gap-4">
+                      <motion.div 
+                        className="relative overflow-hidden rounded mg-container p-0.5"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.7 }}
+                      >
+                        <div className="h-48 relative">
+                          <img 
+                            src="/images/AydoOffice1.png" 
+                            alt="AydoCorp Headquarters" 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                          <motion.div 
+                            className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"
+                            animate={{ 
+                              boxShadow: [
+                                'inset 0 0 0px rgba(0, 215, 255, 0.2)',
+                                'inset 0 0 20px rgba(0, 215, 255, 0.4)',
+                                'inset 0 0 0px rgba(0, 215, 255, 0.2)'
+                              ]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          ></motion.div>
+                          <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50">
+                            <p className="text-[rgba(var(--mg-primary),1)] text-xs text-center">
+                              AydoCorp Headquarters - Aydo City, Planet Green, Ellis System
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
                       
-                      <div className="absolute bottom-0 left-0 w-full p-4">
-                        <h3 className="text-lg font-quantify tracking-wider text-[rgba(var(--mg-primary),0.9)]">CORPORATE FLEET</h3>
-                        <p className="text-sm text-[rgba(var(--mg-text),0.8)]">
-                          From humble beginnings with a single shuttle to a diverse fleet of specialized vessels, AydoCorp's growth reflects our commitment to excellence in interstellar logistics.
-                        </p>
-                        
+                      <motion.div 
+                        className="relative overflow-hidden rounded mg-container p-0.5"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 1.0 }}
+                        viewport={{ once: true }}
+                      >
                         <motion.div 
-                          className="mt-2 flex items-center"
-                          initial={{ opacity: 0 }}
-                          whileInView={{ opacity: 1 }}
-                          transition={{ delay: 0.8 }}
-                          viewport={{ once: true }}
+                          className="relative h-48"
+                          whileHover={{ scale: 1.03 }}
+                          transition={{ duration: 0.3 }}
                         >
-                          <span className="text-xs text-[rgba(var(--mg-primary),0.9)] mr-2">VESSEL COUNT:</span>
-                          <span className="text-xs text-[rgba(var(--mg-accent),1)]">48</span>
-                          <span className="mx-2 h-3 w-px bg-[rgba(var(--mg-primary),0.4)]"></span>
-                          <span className="text-xs text-[rgba(var(--mg-primary),0.9)] mr-2">SYSTEMS COVERED:</span>
-                          <span className="text-xs text-[rgba(var(--mg-accent),1)]">15+</span>
+                          <Image
+                            src="/images/Hull_E.jpg"
+                            alt="AydoCorp Fleet"
+                            fill
+                            className="object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
+                          
+                          {/* Animated scanning effect overlay */}
+                          <motion.div 
+                            className="absolute inset-0 overflow-hidden pointer-events-none"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.5, delay: 1.2 }}
+                          >
+                            <motion.div 
+                              className="absolute top-0 w-full h-1"
+                              style={{ 
+                                background: 'linear-gradient(to right, transparent, rgba(0, 215, 255, 0.4), transparent)'
+                              }}
+                              animate={{
+                                top: ['0%', '100%', '0%']
+                              }}
+                              transition={{
+                                duration: 4,
+                                repeat: Infinity,
+                                ease: "linear"
+                              }}
+                            />
+                          </motion.div>
+                          
+                          <div className="absolute bottom-0 left-0 w-full p-4">
+                            <motion.h3 
+                              className="text-base font-quantify tracking-wider text-[rgba(var(--mg-primary),0.9)]"
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ duration: 0.5, delay: 1.3 }}
+                            >
+                              CORPORATE FLEET
+                            </motion.h3>
+                            
+                            <div className="flex items-center justify-between mt-2 text-xs">
+                              <div className="flex items-center">
+                                <span className="text-[rgba(var(--mg-primary),0.9)] mr-1">VESSELS:</span>
+                                <motion.span 
+                                  className="text-[rgba(var(--mg-accent),1)]"
+                                  animate={{ 
+                                    textShadow: [
+                                      '0 0 5px rgba(0, 215, 255, 0.5)',
+                                      '0 0 10px rgba(0, 215, 255, 0.8)',
+                                      '0 0 5px rgba(0, 215, 255, 0.5)'
+                                    ]
+                                  }}
+                                  transition={{ duration: 2, repeat: Infinity }}
+                                >
+                                  48
+                                </motion.span>
+                              </div>
+                              
+                              <div className="flex items-center">
+                                <span className="text-[rgba(var(--mg-primary),0.9)] mr-1">SYSTEMS:</span>
+                                <motion.span 
+                                  className="text-[rgba(var(--mg-accent),1)]"
+                                  animate={{ 
+                                    textShadow: [
+                                      '0 0 5px rgba(0, 215, 255, 0.5)',
+                                      '0 0 10px rgba(0, 215, 255, 0.8)',
+                                      '0 0 5px rgba(0, 215, 255, 0.5)'
+                                    ]
+                                  }}
+                                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                                >
+                                  15+
+                                </motion.span>
+                              </div>
+                            </div>
+                          </div>
                         </motion.div>
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </motion.div>
             </div>
           </section>
@@ -1141,6 +1300,369 @@ export default function About() {
             </div>
           </section>
         )}
+
+        {/* Tab-based Content - Add this after the initial about section */}
+        <section className="py-16 bg-black relative">
+          <div className="max-w-7xl mx-auto px-4 relative z-10">
+            <div className="mg-container p-0.5 relative overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute inset-0">
+                <div className="absolute inset-0 holo-noise opacity-10"></div>
+                <div className="absolute inset-0 circuit-bg opacity-5"></div>
+                <div className="absolute inset-0 mg-grid-bg opacity-5"></div>
+                <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(var(--mg-primary),0.1)]"></div>
+              </div>
+              
+              {/* Content container */}
+              <div className="relative z-10 bg-black/80 p-6">
+                {/* Tab navigation */}
+                <div className="flex flex-wrap border-b border-[rgba(var(--mg-primary),0.3)] mb-8">
+                  <button
+                    onClick={() => setActiveTab('subsidiaries')}
+                    className={`px-6 py-3 text-sm transition-colors duration-300 mr-2 ${
+                      activeTab === 'subsidiaries'
+                        ? 'text-[rgba(var(--mg-primary),1)] border-b-2 border-[rgba(var(--mg-primary),1)]'
+                        : 'text-[rgba(var(--mg-text),0.7)] hover:text-[rgba(var(--mg-text),0.9)]'
+                    }`}
+                  >
+                    SUBSIDIARIES
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('operations')}
+                    className={`px-6 py-3 text-sm transition-colors duration-300 mr-2 ${
+                      activeTab === 'operations'
+                        ? 'text-[rgba(var(--mg-primary),1)] border-b-2 border-[rgba(var(--mg-primary),1)]'
+                        : 'text-[rgba(var(--mg-text),0.7)] hover:text-[rgba(var(--mg-text),0.9)]'
+                    }`}
+                  >
+                    OPERATIONS
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('leadership')}
+                    className={`px-6 py-3 text-sm transition-colors duration-300 ${
+                      activeTab === 'leadership'
+                        ? 'text-[rgba(var(--mg-primary),1)] border-b-2 border-[rgba(var(--mg-primary),1)]'
+                        : 'text-[rgba(var(--mg-text),0.7)] hover:text-[rgba(var(--mg-text),0.9)]'
+                    }`}
+                  >
+                    LEADERSHIP
+                  </button>
+                </div>
+                
+                {/* Tab content */}
+                <div className="min-h-[400px]">
+                  {/* Subsidiaries Tab */}
+                  {activeTab === 'subsidiaries' && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-8"
+                    >
+                      <p className="text-[rgba(var(--mg-text),0.8)] mb-6 leading-relaxed">
+                        The subsidiaries at AydoCorp are subsets of the organization designed to cater to specific gameplay loops and career paths. Our goal with subsidiaries is to always keep the feeling of a tight-knit community even as the organization grows. Being part of a subsidiary means you focus on the gameplay you enjoy most while having value within a smaller group of members, all while still having the support of AydoCorp at large.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* AydoExpress */}
+                        <div className="mg-container p-0.5">
+                          <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
+                            <div className="flex items-center mb-4">
+                              <div className="mr-4">
+                                <img 
+                                  src="/images/Aydo_Express.png" 
+                                  alt="AydoExpress Logo" 
+                                  className="w-16 h-16 object-contain"
+                                />
+                              </div>
+                              <div>
+                                <h3 className="mg-title text-xl">AYDO EXPRESS</h3>
+                                <div className="mg-subtitle text-xs">LOGISTICS & TRANSPORT DIVISION</div>
+                              </div>
+                            </div>
+                            
+                            <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
+                              The bread and butter of the organization, AydoExpress deals with cargo hauling and personnel transport. Gameplay offered includes trading, deliveries, transport, and general hauling operations that are critical to the organization's function.
+                            </p>
+                            
+                            <div className="relative mt-4 overflow-hidden rounded-md h-48">
+                              <img 
+                                src="/images/Hull_E.jpg" 
+                                alt="AydoExpress Fleet" 
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                              <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50">
+                                <p className="text-[rgba(var(--mg-primary),1)] text-xs text-center">
+                                  AydoExpress Transport Vessel
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Empyrion Industries */}
+                        <div className="mg-container p-0.5">
+                          <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
+                            <div className="flex items-center mb-4">
+                              <div className="mr-4">
+                                <img 
+                                  src="/images/Empyrion_Industries.png" 
+                                  alt="Empyrion Industries Logo" 
+                                  className="w-16 h-16 object-contain"
+                                />
+                              </div>
+                              <div>
+                                <h3 className="mg-title text-xl">EMPYRION INDUSTRIES</h3>
+                                <div className="mg-subtitle text-xs">RESOURCE & INDUSTRIAL DIVISION</div>
+                              </div>
+                            </div>
+                            
+                            <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
+                              Keeping the coffers full, Empyrion Industries deals with industrial gameplay to sustain the organization with resources and profits. Gameplay offered includes mining and salvaging operations, as well as refueling and resource processing.
+                            </p>
+                            
+                            <div className="relative mt-4 overflow-hidden rounded-md h-48">
+                              <img 
+                                src="/images/reclaimer.0.jpg" 
+                                alt="Empyrion Industries Operations" 
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                              <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50">
+                                <p className="text-[rgba(var(--mg-primary),1)] text-xs text-center">
+                                  Empyrion Industries Salvage Vessel
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                  
+                  {/* Operations Tab */}
+                  {activeTab === 'operations' && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                    >
+                      <DirectiveCard
+                        icon={<path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2h2a2 2 0 002-2v-1a2 2 0 012-2h1.945M5 20h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v9a2 2 0 002 2z" />}
+                        title="Transport & Shipping"
+                        description="Safe transportation of goods throughout human and alien space"
+                        items={[
+                          "Regular shipments of cargo on behalf of client companies",
+                          "Secure transport with onboard security for all large shipments",
+                          "Top-of-the-line fighter craft escorts for valuable commodities",
+                          "Service routes throughout Sol-Terra trading sectors",
+                          "Operations in Xi'an and Banu systems"
+                        ]}
+                        delay={0.1}
+                      />
+                      
+                      <DirectiveCard
+                        icon={<path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />}
+                        title="Resource Consolidation"
+                        description="Enhanced efficiency for client business operations"
+                        items={[
+                          "Supervision of client operations for better cohesion",
+                          "Resource management and allocation services",
+                          "Logistical planning and implementation",
+                          "Operational efficiency consulting",
+                          "Supply chain management and optimization"
+                        ]}
+                        delay={0.2}
+                      />
+                      
+                      <DirectiveCard
+                        icon={<path d="M12 14l9-5-9-5-9 5 9 5z" />}
+                        title="Personnel Transport"
+                        description="Safe and speedy transport services for staff and clients"
+                        items={[
+                          "Transportation for all AIC staff and client employees",
+                          "Private charter services available upon request",
+                          "Civilian transport on cargo vessels (space available basis)",
+                          "VIP transportation with enhanced security measures",
+                          "Interspecies cultural liaison services for alien space travel"
+                        ]}
+                        delay={0.3}
+                      />
+                    </motion.div>
+                  )}
+                  
+                  {/* Leadership Tab */}
+                  {activeTab === 'leadership' && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-8"
+                    >
+                      {/* CEO positioned at top-middle */}
+                      <div className="flex justify-center mb-6">
+                        <div className="mg-container p-0.5 w-full max-w-md">
+                          <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
+                            <div className="flex items-center justify-center mb-4">
+                              <img
+                                src="/images/Board_member_tag.png"
+                                alt="Board Member"
+                                className="w-32 h-auto"
+                              />
+                            </div>
+                            
+                            <div className="text-center mb-4">
+                              <h3 className="mg-title text-xl">CHRISTOFF REVAN</h3>
+                              <div className="mg-subtitle text-xs">CHIEF EXECUTIVE OFFICER</div>
+                            </div>
+                            
+                            <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
+                              Hailing from Neo Taurii, Christoff served with distinction in the UEE Navy before founding what would become AydoCorp. A visionary leader who expanded a small delivery service into an intergalactic corporation.
+                            </p>
+                            
+                            <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
+                              <div className="flex justify-between mb-1">
+                                <span>Age</span>
+                                <span>28</span>
+                              </div>
+                              <div className="flex justify-between mb-1">
+                                <span>Origin</span>
+                                <span>Kampos, Ellis System</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Prior Service</span>
+                                <span>UEE Navy</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Other three executives in a row below */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* CMO */}
+                        <div className="mg-container p-0.5">
+                          <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
+                            <div className="flex items-center justify-center mb-4">
+                              <img
+                                src="/images/Board_member_tag.png"
+                                alt="Board Member"
+                                className="w-32 h-auto"
+                              />
+                            </div>
+                            
+                            <div className="text-center mb-4">
+                              <h3 className="mg-title text-xl">ZANE MAKAY</h3>
+                              <div className="mg-subtitle text-xs">CHIEF MARKETING OFFICER</div>
+                            </div>
+                            
+                            <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
+                              A former UEE Army dropship pilot with experience flying the Hercules M2 and Anvil Valkyrie. Known for his friendly nature and insightful ideas that quickly elevated him to his executive position.
+                            </p>
+                            
+                            <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
+                              <div className="flex justify-between mb-1">
+                                <span>Age</span>
+                                <span>22</span>
+                              </div>
+                              <div className="flex justify-between mb-1">
+                                <span>Origin</span>
+                                <span>Delamar, Nix System</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Prior Service</span>
+                                <span>UEE Army</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* COO */}
+                        <div className="mg-container p-0.5">
+                          <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
+                            <div className="flex items-center justify-center mb-4">
+                              <img
+                                src="/images/Board_member_tag.png"
+                                alt="Board Member"
+                                className="w-32 h-auto"
+                              />
+                            </div>
+                            
+                            <div className="text-center mb-4">
+                              <h3 className="mg-title text-xl">KAIBO ZABER</h3>
+                              <div className="mg-subtitle text-xs">CHIEF OPERATIONS OFFICER</div>
+                            </div>
+                            
+                            <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
+                              A UEE Navy veteran and former privateer providing security and medical services. Known for his perseverance and experience leading groups of spacecraft in tense situations.
+                            </p>
+                            
+                            <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
+                              <div className="flex justify-between mb-1">
+                                <span>Age</span>
+                                <span>34</span>
+                              </div>
+                              <div className="flex justify-between mb-1">
+                                <span>Origin</span>
+                                <span>Gen, Terra System</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Prior Service</span>
+                                <span>UEE Navy, Privateer</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* CSO */}
+                        <div className="mg-container p-0.5">
+                          <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
+                            <div className="flex items-center justify-center mb-4">
+                              <img
+                                src="/images/Board_member_tag.png"
+                                alt="Board Member"
+                                className="w-32 h-auto"
+                              />
+                            </div>
+                            
+                            <div className="text-center mb-4">
+                              <h3 className="mg-title text-xl">CHRISTUS SANCTUS</h3>
+                              <div className="mg-subtitle text-xs">CHIEF SAFETY OFFICER</div>
+                            </div>
+                            
+                            <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
+                              Former Chief Medical Officer aboard the exploration vessel "Rasalas," with extensive experience in emergency response. Known for exceptional medical skills and ability to remain calm under extreme pressure.
+                            </p>
+                            
+                            <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
+                              <div className="flex justify-between mb-1">
+                                <span>Handle</span>
+                                <span>Devil</span>
+                              </div>
+                              <div className="flex justify-between mb-1">
+                                <span>Origin</span>
+                                <span>Mining Platform "Salvation"</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Prior Service</span>
+                                <span>Medical Officer, Carrack "Rasalas"</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Strategic Alliances Section */}
+        <AlliesSection />
       </>
     </ErrorBoundary>
   );

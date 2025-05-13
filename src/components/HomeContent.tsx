@@ -20,7 +20,20 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
     security: isLoggedIn ? 100 : 50,
   });
   const [time, setTime] = useState(new Date());
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Featured ship images
+  const shipImages = [
+    '/images/MISCFreelancer_Asteroids_122018-Min.png',
+    '/images/StarCitizen_ArenaCommander_092.png',
+    '/images/Star_Citizen_Ships_510048_2560x1440.jpg',
+    '/images/jan-urschel-banu-defender-i.jpg',
+    '/images/Carrack_Front_Top_Space.png',
+    '/images/ANVL_Hawk_City_122018-Min.png',
+    '/images/MSR8K.jpg',
+    '/images/Sabre_Firing_Concept.jpg'
+  ];
+  
   // Animation for system scan effect
   const [scanning, setScanning] = useState(false);
 
@@ -32,8 +45,16 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
       setTime(new Date());
     }, 1000);
     
-    return () => clearInterval(timer);
-  }, []);
+    // Auto-advance carousel
+    const carouselTimer = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % shipImages.length);
+    }, 5000);
+    
+    return () => {
+      clearInterval(timer);
+      clearInterval(carouselTimer);
+    };
+  }, [shipImages.length]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -399,6 +420,58 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                         <div className="absolute left-0 top-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent animate-scan"></div>
                         
                         <div className="p-6 flex flex-col items-center justify-center">
+                          <motion.div 
+                            className="w-full relative mb-6 overflow-hidden rounded-lg"
+                            style={{ height: '220px' }}
+                          >
+                            {/* Ship image carousel */}
+                            <AnimatePresence mode="wait">
+                              <motion.div
+                                key={currentImageIndex}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 1 }}
+                                className="absolute inset-0 flex items-center justify-center"
+                              >
+                                <div className="relative w-full h-full">
+                                  <img 
+                                    src={shipImages[currentImageIndex]} 
+                                    alt="AydoCorp Fleet" 
+                                    className="object-cover w-full h-full"
+                                  />
+                                  <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"></div>
+                                  <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50">
+                                    <p className="text-[rgba(var(--mg-primary),1)] text-xs text-center">
+                                      AydoCorp Fleet - Excellence in Intergalactic Operations
+                                    </p>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            </AnimatePresence>
+                            
+                            {/* Carousel controls */}
+                            <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-2">
+                              {shipImages.map((_, index) => (
+                                <button
+                                  key={index}
+                                  onClick={() => setCurrentImageIndex(index)}
+                                  className={`w-2 h-2 rounded-full ${
+                                    currentImageIndex === index
+                                      ? 'bg-[rgba(var(--mg-primary),1)]'
+                                      : 'bg-[rgba(var(--mg-primary),0.4)]'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+
+                            {/* Holographic overlay effect */}
+                            <div className="absolute inset-0 pointer-events-none">
+                              <div className="absolute inset-0 holo-noise opacity-30"></div>
+                              <div className="absolute inset-0 holo-scan opacity-20"></div>
+                            </div>
+                          </motion.div>
+                          
                           <motion.div 
                             className="w-32 h-32 md:w-40 md:h-40 relative mb-6"
                             animate={{ 
