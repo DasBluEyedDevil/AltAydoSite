@@ -32,7 +32,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       // You can render any custom fallback UI
       return this.props.fallback || (
         <div className="min-h-screen flex items-center justify-center bg-black text-white">
-          <div className="text-center max-w-md mx-auto p-6 border border-gray-700 rounded-lg bg-gray-900">
+          <div className="text-center max-w-md mx-auto p-6 border border-[rgba(var(--mg-primary),0.3)] rounded-lg bg-gray-900">
             <h2 className="text-xl font-bold mb-4">Something went wrong</h2>
             <p className="mb-4 text-gray-400 text-sm">
               We encountered an error while rendering this page. Please try again later.
@@ -42,7 +42,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             </div>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 bg-[rgba(var(--mg-primary),0.2)] border border-[rgba(var(--mg-primary),0.5)] text-white rounded hover:bg-[rgba(var(--mg-primary),0.3)]"
             >
               Reload Page
             </button>
