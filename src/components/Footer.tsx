@@ -63,8 +63,8 @@ export default function Footer() {
               </motion.h3>
               <ul className="space-y-1 text-xs">
                 {[
-                  { name: 'ABOUT', path: '/about' },
                   { name: 'SERVICES', path: '/services' },
+                  { name: 'ABOUT', path: '/about' },
                   { name: 'JOIN US', path: '/join' },
                   { name: 'CONTACT', path: '/contact' }
                 ].map((item, idx) => (
