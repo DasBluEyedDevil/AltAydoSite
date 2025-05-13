@@ -135,6 +135,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
               <div className="absolute top-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
               <div className="absolute top-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
               <div className="absolute top-2 left-2 w-3 h-3 border-l border-t border-[rgba(var(--mg-primary),0.8)]"></div>
+              <div className="absolute top-2 left-2 h-1.5 w-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
               <div className="absolute top-6 left-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
               <div className="absolute top-0 left-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
             </div>
@@ -143,6 +144,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
               <div className="absolute top-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
               <div className="absolute top-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
               <div className="absolute top-2 right-2 w-3 h-3 border-r border-t border-[rgba(var(--mg-primary),0.8)]"></div>
+              <div className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
               <div className="absolute top-6 right-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
               <div className="absolute top-0 right-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
             </div>
@@ -151,6 +153,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
               <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
               <div className="absolute bottom-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
               <div className="absolute bottom-2 left-2 w-3 h-3 border-l border-b border-[rgba(var(--mg-primary),0.8)]"></div>
+              <div className="absolute bottom-2 left-2 h-1.5 w-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
               <div className="absolute bottom-6 left-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
               <div className="absolute bottom-0 left-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
             </div>
@@ -159,6 +162,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
               <div className="absolute bottom-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
               <div className="absolute bottom-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
               <div className="absolute bottom-2 right-2 w-3 h-3 border-r border-b border-[rgba(var(--mg-primary),0.8)]"></div>
+              <div className="absolute bottom-2 right-2 h-1.5 w-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
               <div className="absolute bottom-6 right-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
               <div className="absolute bottom-0 right-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
             </div>
@@ -228,34 +232,34 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                           <div className="absolute inset-0 opacity-5 circuit-bg bg-[length:50px_50px]"></div>
                         </div>
                         
-                        {/* Weird tech-inspired corners for left panel */}
+                        {/* Symmetrical Corner Elements for Left Panel */}
+                        {/* Top Left */}
                         <div className="absolute top-0 left-0 w-5 h-5">
                           <div className="absolute top-0 left-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                           <div className="absolute top-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute top-2 left-2 w-5 h-[1px] bg-[rgba(var(--mg-primary),0.5)] rotate-45 origin-left"></div>
+                          <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
                         </div>
                         
+                        {/* Top Right */}
                         <div className="absolute top-0 right-0 w-5 h-5">
                           <div className="absolute top-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                           <div className="absolute top-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute top-2 right-2 w-5 h-[1px] bg-[rgba(var(--mg-primary),0.5)] -rotate-45 origin-right"></div>
+                          <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                         </div>
                         
+                        {/* Bottom Left */}
                         <div className="absolute bottom-0 left-0 w-5 h-5">
                           <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                           <div className="absolute bottom-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute bottom-2 left-2 w-5 h-[1px] bg-[rgba(var(--mg-primary),0.5)] -rotate-45 origin-left"></div>
+                          <div className="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
                         </div>
                         
+                        {/* Bottom Right */}
                         <div className="absolute bottom-0 right-0 w-5 h-5">
                           <div className="absolute bottom-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                           <div className="absolute bottom-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute bottom-2 right-2 w-5 h-[1px] bg-[rgba(var(--mg-primary),0.5)] rotate-45 origin-right"></div>
+                          <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
                         </div>
-                        
-                        {/* Random tech dots */}
-                        <div className="absolute top-3 left-1/4 w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.6)] animate-pulse"></div>
-                        <div className="absolute bottom-3 right-1/4 w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.6)] animate-pulse" style={{ animationDelay: '0.7s' }}></div>
                         
                         <div className="mg-header text-xs text-center">
                           <div className="mg-subtitle">SYSTEM STATUS</div>
@@ -356,33 +360,33 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                           <div className="absolute inset-0 opacity-10 circuit-bg"></div>
                         </div>
                         
-                        {/* Super weird corners for center panel */}
+                        {/* Symmetrical Corner Elements */}
+                        {/* Top Left */}
                         <div className="absolute top-0 left-0 w-8 h-8">
                           <div className="absolute top-0 left-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                           <div className="absolute top-0 left-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-                          <div className="absolute top-0 left-4 h-3 w-3 border-l border-b border-[rgba(var(--mg-primary),0.6)] rotate-[135deg]"></div>
-                          <div className="absolute top-4 left-4 h-2 w-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
+                          <div className="absolute top-2 left-2 w-2 h-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
                         </div>
                         
+                        {/* Top Right */}
                         <div className="absolute top-0 right-0 w-8 h-8">
                           <div className="absolute top-0 right-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                           <div className="absolute top-0 right-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-                          <div className="absolute top-0 right-4 h-3 w-3 border-r border-b border-[rgba(var(--mg-primary),0.6)] rotate-[225deg]"></div>
-                          <div className="absolute top-4 right-4 h-2 w-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                          <div className="absolute top-2 right-2 w-2 h-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                         </div>
                         
+                        {/* Bottom Left */}
                         <div className="absolute bottom-0 left-0 w-8 h-8">
                           <div className="absolute bottom-0 left-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                           <div className="absolute bottom-0 left-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-                          <div className="absolute bottom-0 left-4 h-3 w-3 border-l border-t border-[rgba(var(--mg-primary),0.6)] rotate-[45deg]"></div>
-                          <div className="absolute bottom-4 left-4 h-2 w-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
+                          <div className="absolute bottom-2 left-2 w-2 h-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
                         </div>
                         
+                        {/* Bottom Right */}
                         <div className="absolute bottom-0 right-0 w-8 h-8">
                           <div className="absolute bottom-0 right-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                           <div className="absolute bottom-0 right-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-                          <div className="absolute bottom-0 right-4 h-3 w-3 border-r border-t border-[rgba(var(--mg-primary),0.6)] rotate-[-45deg]"></div>
-                          <div className="absolute bottom-4 right-4 h-2 w-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+                          <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
                         </div>
                         
                         {/* Diagonal accent lines */}
@@ -430,7 +434,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                           <div className="w-full max-w-xs space-y-3">
                             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                               <Link 
-                                href="/login" 
+                                href="/auth/login" 
                                 className="mg-button block w-full text-center group"
                               >
                                 <div className="radar-sweep opacity-0 group-hover:opacity-20"></div>
@@ -459,44 +463,36 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                       className="col-span-12 md:col-span-3"
                     >
                       <div className="mg-container h-full">
-                        {/* Weird tech-inspired corners for right panel */}
+                        {/* Symmetrical Corner Elements for Right Panel */}
+                        {/* Top Left */}
                         <div className="absolute top-0 left-0 w-5 h-5">
-                          <div className="absolute top-0 left-0 w-4 h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute top-0 left-0 h-4 w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute top-[5px] left-[5px] w-3 h-3">
-                            <div className="absolute top-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                            <div className="absolute top-0 left-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                          </div>
+                          <div className="absolute top-0 left-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
                         </div>
                         
+                        {/* Top Right */}
                         <div className="absolute top-0 right-0 w-5 h-5">
-                          <div className="absolute top-0 right-0 w-4 h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute top-0 right-0 h-4 w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute top-[5px] right-[5px] w-3 h-3">
-                            <div className="absolute top-0 right-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                            <div className="absolute top-0 right-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                          </div>
+                          <div className="absolute top-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                         </div>
                         
+                        {/* Bottom Left */}
                         <div className="absolute bottom-0 left-0 w-5 h-5">
-                          <div className="absolute bottom-0 left-0 w-4 h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute bottom-0 left-0 h-4 w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute bottom-[5px] left-[5px] w-3 h-3">
-                            <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                            <div className="absolute bottom-0 left-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                          </div>
+                          <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
                         </div>
                         
+                        {/* Bottom Right */}
                         <div className="absolute bottom-0 right-0 w-5 h-5">
-                          <div className="absolute bottom-0 right-0 w-4 h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute bottom-0 right-0 h-4 w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-                          <div className="absolute bottom-[5px] right-[5px] w-3 h-3">
-                            <div className="absolute bottom-0 right-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                            <div className="absolute bottom-0 right-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                          </div>
+                          <div className="absolute bottom-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
+                          <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
                         </div>
                         
-                        {/* Edge markers */}
+                        {/* Additional edge markers */}
                         <div className="absolute top-1/3 right-0 w-2 h-2 border-r border-t border-[rgba(var(--mg-primary),0.6)]"></div>
                         <div className="absolute top-2/3 right-0 w-2 h-2 border-r border-b border-[rgba(var(--mg-primary),0.6)]"></div>
                         <div className="absolute top-1/3 left-0 w-2 h-2 border-l border-t border-[rgba(var(--mg-primary),0.6)]"></div>
@@ -509,8 +505,8 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                         <div className="p-3">
                           <ul className="space-y-2">
                             {[
-                              { title: 'ABOUT US', path: '/about', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
                               { title: 'SERVICES', path: '/services', icon: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z' },
+                              { title: 'ABOUT US', path: '/about', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
                               { title: 'JOIN US', path: '/join', icon: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z' },
                               { title: 'CONTACT', path: '/contact', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' }
                             ].map((item, idx) => (

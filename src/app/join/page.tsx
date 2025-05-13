@@ -3,6 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import Navigation from '../../components/Navigation';
+import Footer from '../../components/Footer';
 
 const benefits = [
   {
@@ -26,6 +28,8 @@ const benefits = [
 export default function Join() {
   return (
     <main className="min-h-screen bg-black text-white">
+      <Navigation />
+
       {/* Hero Section */}
       <section className="relative pt-32 pb-16">
         <div className="absolute inset-0 z-0">
@@ -130,33 +134,59 @@ export default function Join() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="bg-gray-800/50 p-8 rounded-lg"
+            className="mg-container p-8 border border-[rgba(var(--mg-primary),0.3)] relative overflow-hidden"
           >
-            <h2 className="text-3xl font-bold mb-8">Ready to Begin Your Journey?</h2>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Take the first step towards a rewarding career in interstellar logistics. Connect with our recruitment team today.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="https://discord.gg/aydocorp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
-              >
-                Contact Recruitment
-              </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-8 py-3 border border-blue-400 text-base font-medium rounded-md text-blue-400 hover:bg-blue-400/10 transition-colors"
-              >
-                View Corporate Profile
-              </a>
+            {/* Enhanced corner brackets with glowing effect */}
+            <div className="absolute top-0 left-0 w-12 h-12">
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute top-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+            </div>
+            
+            <div className="absolute top-0 right-0 w-12 h-12">
+              <div className="absolute top-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute top-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+            </div>
+            
+            <div className="absolute bottom-0 left-0 w-12 h-12">
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute bottom-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+            </div>
+            
+            <div className="absolute bottom-0 right-0 w-12 h-12">
+              <div className="absolute bottom-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+              <div className="absolute bottom-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
+            </div>
+            
+            {/* Decorative elements */}
+            <div className="absolute top-0 left-0 w-full h-full">
+              <h2 className="text-3xl font-bold mb-8">Ready to Begin Your Journey?</h2>
+              <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                Take the first step towards a rewarding career in interstellar logistics. Connect with our recruitment team today.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="https://discord.gg/aydocorp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                >
+                  Contact Recruitment
+                </a>
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-8 py-3 border border-blue-400 text-base font-medium rounded-md text-blue-400 hover:bg-blue-400/10 transition-colors"
+                >
+                  View Corporate Profile
+                </a>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 } 
