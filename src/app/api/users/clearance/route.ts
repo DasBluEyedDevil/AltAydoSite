@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { PrismaClient } from '@prisma/client';
-import { isAdmin } from '../../../../lib/auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { isAdmin } from '@/lib/auth';
+import { authOptions } from '../../auth/auth';
 
 const prisma = new PrismaClient();
 
 // GET - Retrieve users with their clearance levels
-export async function GET(request: Request) {
+export async function GET() {
   try {
     // Check if user is authenticated and has admin rights
     const session = await getServerSession(authOptions);

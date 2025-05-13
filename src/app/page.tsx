@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import HomeContent from '../components/HomeContent';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]/route';
+import { authOptions } from './api/auth/auth';
 
 export const metadata: Metadata = {
   title: 'AydoCorp | Intergalactic Logistics & Transport',
