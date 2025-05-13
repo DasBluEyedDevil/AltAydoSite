@@ -1,4 +1,6 @@
 import { Session } from 'next-auth';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/auth";
 
 export type UserSession = Session & {
   user: {
@@ -10,6 +12,14 @@ export type UserSession = Session & {
     clearanceLevel?: number;
   };
 };
+
+/**
+ * Gets the current session using the auth options
+ * Wrapper to simplify getting the session throughout the app
+ */
+export async function getSession() {
+  return getServerSession(authOptions);
+}
 
 /**
  * Check if a user has the required clearance level
@@ -26,6 +36,16 @@ export function hasRequiredClearance(
   }
   
   return session.user.clearanceLevel >= requiredLevel;
+}
+
+/**
+ * Checks if a user has a minimum clearance level
+ * @param session The user session from NextAuth
+ * @param level The minimum clearance level required
+ * @returns boolean indicating if user meets clearance requirement
+ */
+export function hasClearance(session: UserSession | null, level: number): boolean {
+  return hasRequiredClearance(session, level);
 }
 
 /**
@@ -53,4 +73,4 @@ export function isManager(session: UserSession | null): boolean {
  */
 export function isMember(session: UserSession | null): boolean {
   return hasRequiredClearance(session, 1);
-} 
+}
