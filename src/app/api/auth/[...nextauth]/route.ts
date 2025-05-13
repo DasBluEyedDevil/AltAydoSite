@@ -3,7 +3,21 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
+// Create a new Prisma client instance with better error handling
+let prisma: PrismaClient;
+
+try {
+  prisma = new PrismaClient();
+} catch (error) {
+  console.error("Failed to initialize Prisma client:", error);
+  // Fallback to prevent server crash
+  prisma = {} as PrismaClient;
+}
+
+// Make sure the secret is set properly for all environments
+if (!process.env.NEXTAUTH_SECRET) {
+  console.warn('Missing NEXTAUTH_SECRET environment variable. Using fallback secret (not recommended for production)');
+}
 
 const handler = NextAuth({
   providers: [
@@ -19,6 +33,12 @@ const handler = NextAuth({
         }
 
         try {
+          // Check if Prisma is properly initialized
+          if (!prisma.user) {
+            console.error("Prisma client is not properly initialized");
+            return null;
+          }
+
           // Find the user by AydoCorp Handle
           const user = await prisma.user.findUnique({
             where: { aydoHandle: credentials.aydoHandle }
@@ -60,20 +80,31 @@ const handler = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role;
-        token.clearanceLevel = user.clearanceLevel as number | undefined;
+      try {
+        if (user) {
+          token.role = user.role;
+          token.clearanceLevel = user.clearanceLevel as number | undefined;
+        }
+        return token;
+      } catch (error) {
+        console.error("JWT callback error:", error);
+        return token;
       }
-      return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.role = token.role;
-        session.user.clearanceLevel = token.clearanceLevel as number;
+      try {
+        if (session.user) {
+          session.user.role = token.role;
+          session.user.clearanceLevel = token.clearanceLevel as number;
+        }
+        return session;
+      } catch (error) {
+        console.error("Session callback error:", error);
+        return session;
       }
-      return session;
     },
   },
+  // Set explicit secret configuration - make sure environment variable is prioritized
   secret: process.env.NEXTAUTH_SECRET || "c9c3fa66d0c46cfa96ef9b3dfbcb2f30b62cee09f33c9f16a1cc39993a7a1984",
   debug: process.env.NODE_ENV === "development",
 });
