@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
 const navItems = [
-  { name: 'SERVICES', href: '/#services' },
-  { name: 'ABOUT', href: '/#about' },
-  { name: 'JOIN', href: '/#join' },
+  { name: 'SERVICES', href: '/services' },
+  { name: 'ABOUT', href: '/about' },
+  { name: 'JOIN', href: '/join' },
   { name: 'CONTACT', href: '/contact' },
 ];
 

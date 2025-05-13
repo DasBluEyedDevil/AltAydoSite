@@ -162,6 +162,28 @@ export default function Footer() {
                 <span className="mx-2 text-[rgba(var(--mg-primary),0.4)]">|</span>
                 <span className="text-[rgba(var(--mg-text),0.4)]">DEMO PURPOSES ONLY</span>
               </motion.div>
+
+              <motion.div
+                className="mt-3 md:mt-0 md:ml-4 flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <div className="relative w-24 h-auto overflow-hidden mg-container bg-transparent p-1 border-[rgba(var(--mg-primary),0.15)]">
+                  <img 
+                    src="/images/MadeByTheCommunity_Black.png" 
+                    alt="Made By The Community" 
+                    className="w-full h-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+                  />
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-0 w-2 h-2 border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
+                    <div className="absolute top-0 right-0 w-2 h-2 border-r border-t border-[rgba(var(--mg-primary),0.4)]"></div>
+                    <div className="absolute bottom-0 left-0 w-2 h-2 border-l border-b border-[rgba(var(--mg-primary),0.4)]"></div>
+                    <div className="absolute bottom-0 right-0 w-2 h-2 border-r border-b border-[rgba(var(--mg-primary),0.4)]"></div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
