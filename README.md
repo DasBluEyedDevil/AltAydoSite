@@ -13,7 +13,7 @@ Official website for Aydo Intergalactic Corporation, a leading provider of inter
 
 ## Tech Stack
 
-- Next.js 14 with App Router
+- Next.js 14.2.4 with App Router (security patched)
 - TypeScript for enhanced reliability
 - Tailwind CSS for modern styling
 - Framer Motion for interface animations
@@ -47,6 +47,19 @@ npm run dev
 
 5. Access the development environment at [http://localhost:3000](http://localhost:3000)
 
+## Deployment with AWS Amplify
+
+This project is configured for deployment with AWS Amplify. The configuration is defined in the `amplify.yml` file.
+
+1. Connect your GitHub repository to AWS Amplify
+2. Amplify will automatically detect the configuration in `amplify.yml`
+3. Make sure to set the required environment variables in the Amplify Console:
+   - NEXTAUTH_SECRET
+   - NEXTAUTH_URL (set to your production URL)
+   - DATABASE_URL
+
+Note: The build process has been optimized to handle dependencies correctly and avoid issues with deprecated packages.
+
 ## Project Structure
 
 ```
@@ -61,6 +74,17 @@ src/
 ├── components/            # Interface components
 └── styles/               # Visual styling
 ```
+
+## Security
+
+This project is regularly updated to address security vulnerabilities. Recent security updates include:
+
+- Updated to Next.js 14.2.4 to address the following vulnerabilities:
+  - CVE-2025-29927 (9.1) - Authorization Bypass in Next.js Middleware
+  - CVE-2024-46982 (7.5) - Authorization Bypass Through User-Controlled Key
+  - CVE-2024-51479 (7.5) - Authorization bypass in Next.js
+  - CVE-2024-47831 (5.9) - Uncontrolled Recursion
+  - CVE-2024-56332 (5.3) - Next.js Vulnerable to Denial of Service (DoS) with Server Actions
 
 ## Contributing
 
