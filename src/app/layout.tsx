@@ -9,10 +9,28 @@ import StarfieldWrapper from '../components/StarfieldWrapper';
 import UserProviderWrapper from '../components/UserProviderWrapper';
 import dynamic from 'next/dynamic';
 import SecureConnectionIndicator from '../components/SecureConnectionIndicator';
+import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export { metadata };
+
+function ErrorFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      <div className="text-center">
+        <h2 className="text-xl font-bold mb-4">Something went wrong</h2>
+        <p className="mb-4">We're experiencing technical difficulties. Please try again later.</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Reload Page
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function RootLayout({
   children,
@@ -49,11 +67,17 @@ export default function RootLayout({
               
               <div className="relative z-20 flex flex-col flex-1">
                 <header className="flex flex-col">
-                  <Profile />
-                  <Navigation />
+                  <Suspense fallback={<div>Loading profile...</div>}>
+                    <Profile />
+                  </Suspense>
+                  <Suspense fallback={<div>Loading navigation...</div>}>
+                    <Navigation />
+                  </Suspense>
                 </header>
                 <main className="flex-1">
-                  {children}
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading content...</div>}>
+                    {children}
+                  </Suspense>
                 </main>
                 <Footer />
               </div>
