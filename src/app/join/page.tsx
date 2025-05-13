@@ -26,6 +26,20 @@ const benefits = [
 export default function Join() {
   return (
     <>
+      {/* Status Bar */}
+      <div className="bg-black/80 border-b border-cyan-900/30 py-1 px-4 text-xs text-cyan-400/80 flex justify-between">
+        <div className="flex items-center gap-2">
+          <span className="inline-block h-2 w-2 rounded-full bg-green-500"></span>
+          SYSTEM ONLINE
+          <span className="text-gray-500 mx-4">|</span>
+          USER ACCESS: <span className="text-cyan-400 ml-1">CIVILIAN</span>
+        </div>
+        <div className="flex items-center gap-2">
+          QUANTUM LINK: <span className="text-green-500 ml-1">ACTIVE</span>
+          <span className="ml-4 font-mono text-cyan-400/80">03:12 PM</span>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="relative pt-32 pb-16">
         <div className="absolute inset-0 z-0">
@@ -36,6 +50,7 @@ export default function Join() {
             className="object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black" />
+          <div className="absolute inset-0 circuit-bg"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -132,30 +147,9 @@ export default function Join() {
             viewport={{ once: true }}
             className="mg-container p-8 border border-[rgba(var(--mg-primary),0.3)] relative overflow-hidden"
           >
-            {/* Enhanced corner brackets with glowing effect */}
-            <div className="absolute top-0 left-0 w-12 h-12">
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-              <div className="absolute top-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-            </div>
-            
-            <div className="absolute top-0 right-0 w-12 h-12">
-              <div className="absolute top-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-              <div className="absolute top-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-            </div>
-            
-            <div className="absolute bottom-0 left-0 w-12 h-12">
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-              <div className="absolute bottom-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-            </div>
-            
-            <div className="absolute bottom-0 right-0 w-12 h-12">
-              <div className="absolute bottom-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-              <div className="absolute bottom-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
-            </div>
-            
-            {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-full">
-              <h2 className="text-3xl font-bold mb-8">Ready to Begin Your Journey?</h2>
+            {/* Content with futuristic design */}
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Ready to Begin Your Journey?</h2>
               <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 Take the first step towards a rewarding career in interstellar logistics. Connect with our recruitment team today.
               </p>
@@ -164,17 +158,19 @@ export default function Join() {
                   href="https://discord.gg/aydocorp"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-8 py-3 border border-cyan-500 text-base font-medium rounded-md text-white bg-transparent hover:bg-cyan-900/30 transition-all duration-300 group relative overflow-hidden"
                 >
-                  Contact Recruitment
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-500 to-blue-500 opacity-30 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                  <span className="relative z-10">Contact Recruitment</span>
                 </a>
                 <a
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-8 py-3 border border-blue-400 text-base font-medium rounded-md text-blue-400 hover:bg-blue-400/10 transition-colors"
+                  className="inline-flex items-center px-8 py-3 border border-cyan-500 text-base font-medium rounded-md text-white bg-transparent hover:bg-cyan-900/30 transition-all duration-300 group relative overflow-hidden"
                 >
-                  View Corporate Profile
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-500 to-blue-500 opacity-30 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                  <span className="relative z-10">View Corporate Profile</span>
                 </a>
               </div>
             </div>
