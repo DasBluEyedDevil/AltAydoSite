@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth';
 import { PrismaClient } from '@prisma/client';
 import { isAdmin } from '../../../../lib/auth';
+import { authOptions } from '../../auth/[...nextauth]/route';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +10,7 @@ const prisma = new PrismaClient();
 export async function GET(request: Request) {
   try {
     // Check if user is authenticated and has admin rights
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!isAdmin(session)) {
       return NextResponse.json(
         { error: 'Unauthorized. Requires clearance level 3.' },
@@ -48,7 +49,7 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   try {
     // Check if user is authenticated and has admin rights
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!isAdmin(session)) {
       return NextResponse.json(
         { error: 'Unauthorized. Requires clearance level 3.' },

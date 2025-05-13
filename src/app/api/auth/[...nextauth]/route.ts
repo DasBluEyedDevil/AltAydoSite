@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { AuthOptions } from "next-auth";
 
 // Create a new Prisma client instance with better error handling
 let prisma: PrismaClient;
@@ -19,7 +20,8 @@ if (!process.env.NEXTAUTH_SECRET) {
   console.warn('Missing NEXTAUTH_SECRET environment variable. Using fallback secret (not recommended for production)');
 }
 
-const handler = NextAuth({
+// Export auth options for use with getServerSession
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "AYDO Credentials",
@@ -107,6 +109,8 @@ const handler = NextAuth({
   // Set explicit secret configuration - make sure environment variable is prioritized
   secret: process.env.NEXTAUTH_SECRET || "c9c3fa66d0c46cfa96ef9b3dfbcb2f30b62cee09f33c9f16a1cc39993a7a1984",
   debug: process.env.NODE_ENV === "development",
-});
+};
 
-export { handler as GET, handler as POST }; 
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };
