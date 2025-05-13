@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import HomeContent from '../components/HomeContent';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]/route';
 
 export const metadata: Metadata = {
   title: 'AydoCorp | Intergalactic Logistics & Transport',
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading home content...</div>}>
@@ -18,4 +19,4 @@ export default async function Home() {
       </div>
     </Suspense>
   );
-} 
+}
