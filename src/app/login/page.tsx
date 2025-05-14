@@ -71,6 +71,7 @@ function LoginForm() {
         aydoHandle,
         password,
         redirect: false,
+        callbackUrl: '/dashboard'
       });
 
       console.log("SignIn result:", result);
@@ -92,9 +93,11 @@ function LoginForm() {
           // Force a session update and wait for it to complete
           await update();
           
-          // Use router.replace to avoid adding to history stack
+          // Use router.push instead of replace to ensure proper navigation
           setIsLoading(false);
-          router.replace('/dashboard');
+          console.log("Redirecting to dashboard...");
+          // Make sure we're using the correct URL path
+          router.push('/dashboard');
         } catch (updateError) {
           console.error("Error updating session:", updateError);
           setAuthError("Failed to establish session. Please try again.");

@@ -40,8 +40,9 @@ export async function middleware(request: NextRequest) {
 
       // If no token, redirect to login
       if (!token) {
-        // Create URL for redirection
-        const url = new URL('/login', request.url);
+        // Create URL for redirection with correct base
+        const baseUrl = request.nextUrl.origin;
+        const url = new URL('/login', baseUrl);
         // Store the original path for potential redirect back after login
         url.searchParams.set('from', path);
         // Use a clean redirect to avoid potential redirect loops
@@ -51,7 +52,8 @@ export async function middleware(request: NextRequest) {
       // Check if token is expired
       const tokenExpiration = token.exp as number | undefined;
       if (tokenExpiration && tokenExpiration < Math.floor(Date.now() / 1000)) {
-        const url = new URL('/login', request.url);
+        const baseUrl = request.nextUrl.origin;
+        const url = new URL('/login', baseUrl);
         url.searchParams.set('error', 'token_expired');
         return NextResponse.redirect(url);
       }
@@ -61,7 +63,8 @@ export async function middleware(request: NextRequest) {
     } catch (error) {
       console.error('Error checking authentication token:', error);
       // If there's an error, redirect to login to be safe
-      const url = new URL('/login', request.url);
+      const baseUrl = request.nextUrl.origin;
+      const url = new URL('/login', baseUrl);
       url.searchParams.set('error', 'session_error');
       return NextResponse.redirect(url);
     }
