@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { SessionProvider } from 'next-auth/react';
 import ErrorBoundary from './ErrorBoundary';
 
 // Create a context for storing random IDs consistently
@@ -63,11 +62,9 @@ export default function UserProviderWrapper({
 
   return (
     <ErrorBoundary>
-      <SessionProvider session={null} refetchInterval={60 * 5}>
-        <RandomIdContext.Provider value={{ randomId }}>
-          {children}
-        </RandomIdContext.Provider>
-      </SessionProvider>
+      <RandomIdContext.Provider value={{ randomId }}>
+        {children}
+      </RandomIdContext.Provider>
     </ErrorBoundary>
   );
 } 
