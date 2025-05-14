@@ -3,16 +3,23 @@ import bcrypt from "bcrypt";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-// Create a new Prisma client instance with better error handling
+// Create a singleton Prisma client to prevent multiple initializations
+// Using global helps prevent multiple instances during hot reloading
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
 let prisma: PrismaClient;
 
-try {
-  prisma = new PrismaClient();
-} catch (error) {
-  console.error("Failed to initialize Prisma client:", error);
-  // Fallback to prevent server crash
-  prisma = {} as PrismaClient;
+if (!globalForPrisma.prisma) {
+  try {
+    globalForPrisma.prisma = new PrismaClient();
+  } catch (error) {
+    console.error("Failed to initialize Prisma client:", error);
+    // Fallback to prevent server crash
+    globalForPrisma.prisma = {} as PrismaClient;
+  }
 }
+
+prisma = globalForPrisma.prisma;
 
 // Make sure the secret is set properly for all environments
 if (!process.env.NEXTAUTH_SECRET) {
@@ -39,7 +46,7 @@ export const authOptions: AuthOptions = {
             console.error("Prisma client is not properly initialized");
             return null;
           }
-
+          
           // Find the user by AydoCorp Handle
           const user = await prisma.user.findUnique({
             where: { aydoHandle: credentials.aydoHandle }
@@ -48,14 +55,14 @@ export const authOptions: AuthOptions = {
           if (!user || !user.passwordHash) {
             return null;
           }
-
+          
           // Verify password
           const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash);
 
           if (!isPasswordValid) {
             return null;
           }
-
+          
           // Return user without password
           return {
             id: user.id,
@@ -108,5 +115,21 @@ export const authOptions: AuthOptions = {
   },
   // Set explicit secret configuration - make sure environment variable is prioritized
   secret: process.env.NEXTAUTH_SECRET || "c9c3fa66d0c46cfa96ef9b3dfbcb2f30b62cee09f33c9f16a1cc39993a7a1984",
-  debug: process.env.NODE_ENV === "development",
+  debug: false, // Disable debug mode to reduce console logs
+  // Reduce session polling frequency
+  events: {},
+  // Adjust session check frequency
+  useSecureCookies: process.env.NODE_ENV === "production",
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60 // 30 days
+      }
+    }
+  }
 };

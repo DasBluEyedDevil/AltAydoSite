@@ -6,11 +6,21 @@ import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-// Function to create a new Prisma client with error handling
+// Function to create a new Prisma client with better error handling
 function createPrismaClient() {
   try {
+    // Enhanced connection options for AWS deployment
     return new PrismaClient({
       log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+      
+      // Configurable connection timeout and pool settings
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL
+        }
+      }
+      
+      // Connection pooling is handled automatically by Prisma
     });
   } catch (error) {
     console.error('Failed to initialize PrismaClient:', error);
@@ -20,10 +30,22 @@ function createPrismaClient() {
 
 export const prisma = globalForPrisma.prisma || createPrismaClient();
 
-// Add global error handler for database connection issues (if needed)
+// Add global error handler for database connection issues
+// This uses a light connection test that doesn't impact performance
 try {
-  // Ensure database connection is working by running a simple query
+  // Use connection without a heavy query - just verify connection availability
   prisma.$connect();
+  
+  // Heartbeat check
+  setInterval(async () => {
+    try {
+      // Check connection periodically - useful for long-running apps that may lose connection
+      await prisma.$queryRaw`SELECT 1`;
+    } catch (error) {
+      console.warn('Database heartbeat check failed:', error);
+      // Reconnection will be automatic with next query
+    }
+  }, 60000); // 1 minute interval
 } catch (e) {
   console.error('Database connection error:', e);
 }

@@ -51,7 +51,7 @@ const employeeOfMonth: EmployeeOfMonthData = {
   username: 'Delta_Dart_42',
   position: 'AydoExpress Manager',
   achievement: 'Leading a successful rescue operation of a stranded cargo vessel in the Aaron Halo, saving both crew and valuable cargo.',
-  image: '/images/employee_month.jpg'
+  image: '/images/AydoOffice1.png'
 };
 
 const Announcements = () => {
