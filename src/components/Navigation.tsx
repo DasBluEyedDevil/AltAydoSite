@@ -129,22 +129,6 @@ export default function Navigation() {
                   className="mg-highlight"
                 >
                   <Link
-                    href="/userprofile"
-                    className="mg-button py-1 px-3 text-xs flex items-center justify-center group"
-                  >
-                    <span className="relative z-10 tracking-wider font-quantify">MY PROFILE</span>
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="radar-sweep"></div>
-                    </div>
-                  </Link>
-                </motion.div>
-                
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mg-highlight"
-                >
-                  <Link
                     href="/dashboard"
                     className="mg-button py-1 px-3 text-xs flex items-center justify-center group"
                   >
@@ -268,13 +252,6 @@ export default function Navigation() {
               >
                 {session ? (
                   <div className="space-y-2">
-                    <Link
-                      href="/userprofile"
-                      className="mg-button block w-full text-center py-1 text-xs font-quantify tracking-wider"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      MY PROFILE
-                    </Link>
                     <Link
                       href="/dashboard"
                       className="mg-button block w-full text-center py-1 text-xs font-quantify tracking-wider"
