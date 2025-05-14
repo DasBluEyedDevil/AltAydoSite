@@ -21,16 +21,16 @@ function LoginForm() {
     // Only redirect if we have a confirmed authenticated session
     // and we're not in the middle of a login attempt
     if (status === 'authenticated' && session && session.user && !isLoading) {
-      console.log("Login page - User is authenticated, preparing to redirect to dashboard", 
+      console.log("Login page - User is authenticated, preparing to redirect to landing page", 
         "user:", session.user.name, "clearance:", session.user.clearanceLevel);
 
       // Check if we have a reset parameter - if so, don't auto-redirect
       if (searchParams?.get('reset') === 'true') {
-        console.log("Reset parameter detected, not auto-redirecting to dashboard");
+        console.log("Reset parameter detected, not auto-redirecting to landing page");
         return;
       }
 
-      router.replace('/dashboard');
+      router.replace('/');
     }
   }, [status, router, session, isLoading, searchParams]);
 
@@ -71,7 +71,7 @@ function LoginForm() {
         aydoHandle,
         password,
         redirect: false,
-        callbackUrl: '/dashboard'
+        callbackUrl: '/'
       });
 
       console.log("SignIn result:", result);
@@ -95,9 +95,9 @@ function LoginForm() {
           
           // Use router.push instead of replace to ensure proper navigation
           setIsLoading(false);
-          console.log("Redirecting to dashboard...");
+          console.log("Redirecting to landing page...");
           // Make sure we're using the correct URL path
-          router.push('/dashboard');
+          router.push('/');
         } catch (updateError) {
           console.error("Error updating session:", updateError);
           setAuthError("Failed to establish session. Please try again.");
