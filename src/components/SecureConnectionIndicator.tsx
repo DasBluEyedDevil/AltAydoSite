@@ -14,7 +14,7 @@ export default function SecureConnectionIndicator() {
   
   return (
     <div
-      className="fixed top-20 right-4 z-50 bg-[rgba(0,20,40,0.8)] px-3 py-1.5 rounded-sm border border-[rgba(var(--mg-primary),0.2)] shadow-lg"
+      className="z-50 bg-[rgba(0,20,40,0.8)] px-3 py-1.5 rounded-sm border border-[rgba(var(--mg-primary),0.2)] shadow-lg mt-4 mr-4"
     >
       <div className="text-xs text-gray-400 flex items-center">
         <div className="h-1.5 w-1.5 rounded-full bg-[rgba(var(--mg-primary),0.8)] mr-2 animate-pulse"></div>

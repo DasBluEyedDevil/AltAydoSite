@@ -9,6 +9,162 @@ interface HomeContentProps {
   userName?: string;
 }
 
+function MobiGlasTerminal({ userName }: { userName?: string }) {
+  const [step, setStep] = useState(0); // 0: scanning, 1: success, 2: welcome, 3: fade
+  const [visible, setVisible] = useState(true);
+  const [messageIdx, setMessageIdx] = useState(0);
+  const [typed, setTyped] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+
+  // Shorter, in-universe scan messages
+  const scanMessages = [
+    'Quantum handshake established...',
+    'Decrypting biometric hash...',
+    'Secure commlink active.'
+  ];
+
+  // Typewriter effect for messages
+  useEffect(() => {
+    if (step !== 0) return;
+    if (messageIdx >= scanMessages.length) return;
+    setTyped('');
+    let i = 0;
+    const msg = scanMessages[messageIdx];
+    const interval = setInterval(() => {
+      setTyped(msg.slice(0, i + 1));
+      i++;
+      if (i >= msg.length) {
+        clearInterval(interval);
+        setTimeout(() => setMessageIdx((idx) => idx + 1), 350);
+      }
+    }, 10 + Math.random() * 15);
+    return () => clearInterval(interval);
+  }, [messageIdx, step]);
+
+  // Animation sequence
+  useEffect(() => {
+    if (step === 0 && messageIdx >= scanMessages.length) {
+      setTimeout(() => setStep(1), 350);
+    }
+    if (step === 1) {
+      setTimeout(() => setStep(2), 600);
+    }
+    if (step === 2) {
+      setTimeout(() => setStep(3), 700);
+    }
+    if (step === 3) {
+      setTimeout(() => setVisible(false), 400);
+    }
+  }, [messageIdx, step]);
+
+  // Blinking cursor
+  useEffect(() => {
+    const interval = setInterval(() => setShowCursor((c) => !c), 400);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -30 }}
+          transition={{ duration: 0.7 }}
+          className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+        >
+          <div className="relative w-full max-w-xl mx-auto p-0 md:p-2">
+            {/* Terminal shell */}
+            <div className="relative bg-black/90 border-2 border-cyan-400/40 rounded-xl shadow-2xl overflow-hidden mobiglas-terminal-glow">
+              {/* Grid and scanline overlays for extra polish */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute inset-0 mg-grid-bg opacity-10"></div>
+                <div className="absolute inset-0 circuit-bg opacity-10"></div>
+                <div className="absolute top-0 w-full h-[2px] bg-cyan-400/30 animate-scanline"></div>
+                <div className="absolute left-0 h-full w-[2px] bg-cyan-400/30 animate-scanline-vertical"></div>
+                <div className="absolute inset-0 holo-noise opacity-10"></div>
+                <div className="absolute inset-0 holo-scan opacity-10"></div>
+              </div>
+              {/* Glowing border corners */}
+              <div className="absolute top-0 left-0 w-8 h-8">
+                <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400/80 shadow-[0_0_8px_cyan]" />
+                <div className="absolute top-0 left-0 h-full w-0.5 bg-cyan-400/80 shadow-[0_0_8px_cyan]" />
+              </div>
+              <div className="absolute top-0 right-0 w-8 h-8">
+                <div className="absolute top-0 right-0 w-full h-0.5 bg-cyan-400/80 shadow-[0_0_8px_cyan]" />
+                <div className="absolute top-0 right-0 h-full w-0.5 bg-cyan-400/80 shadow-[0_0_8px_cyan]" />
+              </div>
+              <div className="absolute bottom-0 left-0 w-8 h-8">
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-400/80 shadow-[0_0_8px_cyan]" />
+                <div className="absolute bottom-0 left-0 h-full w-0.5 bg-cyan-400/80 shadow-[0_0_8px_cyan]" />
+              </div>
+              <div className="absolute bottom-0 right-0 w-8 h-8">
+                <div className="absolute bottom-0 right-0 w-full h-0.5 bg-cyan-400/80 shadow-[0_0_8px_cyan]" />
+                <div className="absolute bottom-0 right-0 h-full w-0.5 bg-cyan-400/80 shadow-[0_0_8px_cyan]" />
+              </div>
+              {/* Terminal content */}
+              <div className="relative z-10 p-8 md:p-12 flex flex-col items-center">
+                {/* Animated spinner for scan phase */}
+                {step === 0 && (
+                  <motion.div
+                    className="mb-6 flex items-center justify-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <motion.div
+                      className="relative w-16 h-16"
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
+                    >
+                      <div className="absolute inset-0 rounded-full border-4 border-cyan-400/40 border-t-cyan-300 border-b-cyan-500 shadow-[0_0_24px_4px_rgba(34,211,238,0.3)]" />
+                      <div className="absolute inset-2 rounded-full border-2 border-cyan-300/30 border-t-cyan-400/60 border-b-cyan-200/40 blur-sm" />
+                      <div className="absolute inset-4 rounded-full bg-cyan-400/30 blur-xl animate-pulse" />
+                      <div className="absolute inset-5 rounded-full bg-cyan-300/40 blur-md" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="h-3 w-3 rounded-full bg-cyan-300 shadow-[0_0_8px_2px_cyan] animate-pulse" />
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+                {/* Terminal message area */}
+                <div className="w-full max-w-md min-h-[48px] font-mono text-cyan-200 text-base md:text-lg bg-black/40 rounded p-4 border border-cyan-400/10 shadow-inner mb-4 flex flex-col justify-center">
+                  {step === 0 && (
+                    <span>
+                      {typed}
+                      {showCursor && <span className="text-cyan-400 animate-pulse">_</span>}
+                    </span>
+                  )}
+                  {step === 1 && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="text-green-400 font-bold tracking-widest mobiglas-terminal-flicker"
+                    >
+                      BIOMETRIC VERIFICATION SUCCESSFUL
+                    </motion.span>
+                  )}
+                  {step === 2 && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="text-cyan-300 font-bold text-xl mobiglas-terminal-flicker"
+                    >
+                      Welcome back, {userName || 'User'}!
+                    </motion.span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) {
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -214,12 +370,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
             <div className="relative z-10 p-4">
               {/* Show the same landing page for both logged-in and logged-out users, with a subtle banner for logged-in users */}
               {isLoggedIn && (
-                <div className="mb-8 text-center">
-                  <div className="inline-block bg-[rgba(var(--mg-primary),0.12)] border-2 border-[rgba(var(--mg-primary),0.5)] rounded-xl px-8 py-4 shadow-lg">
-                    <span className="block text-2xl md:text-3xl font-bold text-[rgba(var(--mg-primary),1)] mb-1">Welcome back, {userName}!</span>
-                    <span className="block text-base text-[rgba(var(--mg-text),0.85)]">You are securely logged in.</span>
-                  </div>
-                </div>
+                <MobiGlasTerminal userName={userName} />
               )}
               {/* Always render the main landing page content below */}
               <div className="py-8">
@@ -506,12 +657,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                         </motion.div>
                         
                         {isLoggedIn ? (
-                          <div className="mg-text text-lg mb-6 text-center max-w-md">
-                            <div className="mg-subtitle mb-2 text-[rgba(var(--mg-success),1)]">BIOMETRIC VERIFICATION SUCCESSFUL</div>
-                            <p className="text-base leading-relaxed text-[rgba(var(--mg-text),0.85)]">
-                              You are securely logged in. Welcome to AydoCorp's MobiGlas interface.
-                            </p>
-                          </div>
+                          <></>
                         ) : (
                           <>
                             <div className="mg-text text-sm mb-6 text-center max-w-md">
