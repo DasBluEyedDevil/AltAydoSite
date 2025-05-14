@@ -3,8 +3,6 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
 import SecureConnectionIndicator from '../../components/SecureConnectionIndicator';
-import Navigation from '../../components/Navigation';
-import Profile from '../../components/Profile';
 
 export default function DashboardClient({
   children,

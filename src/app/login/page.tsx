@@ -14,19 +14,26 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [authError, setAuthError] = useState<string | null>(null);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   
-  // Redirect to dashboard if already authenticated
+  // Redirect to dashboard only if explicitly authenticated
   useEffect(() => {
-    if (status === 'authenticated') {
+    // Only redirect if we have a confirmed authenticated session
+    if (status === 'authenticated' && session && session.user) {
+      console.log("User is authenticated, redirecting to dashboard");
       router.replace('/dashboard');
     }
-  }, [status, router]);
+  }, [status, router, session]);
 
   useEffect(() => {
     // Check if redirected from successful signup
     if (searchParams?.get('signup') === 'success') {
       setSuccessMessage('Account created successfully. Please log in.');
+    }
+    
+    // Check if there was an error parameter
+    if (searchParams?.get('error')) {
+      setAuthError('Authentication failed. Please check your credentials and try again.');
     }
   }, [searchParams]);
 
@@ -34,6 +41,12 @@ function LoginForm() {
     event.preventDefault();
     setIsLoading(true);
     setAuthError(null);
+    
+    if (!aydoHandle || !password) {
+      setAuthError("Please enter both your AydoCorp Handle and password.");
+      setIsLoading(false);
+      return;
+    }
     
     console.log("Login attempt starting for:", aydoHandle);
     
@@ -43,7 +56,6 @@ function LoginForm() {
         aydoHandle,
         password,
         redirect: false,
-        callbackUrl: '/dashboard',
       });
       
       console.log("SignIn result:", result);
@@ -54,22 +66,27 @@ function LoginForm() {
         if (result.error.includes("Database connection error")) {
           setAuthError("Database connection failed. The system is currently unavailable. Please try again later or contact support.");
         } else {
-          setAuthError(result.error);
+          setAuthError("Invalid credentials. Please check your AydoCorp Handle and password.");
         }
         setIsLoading(false);
-      } else if (result?.url) {
-        // Successfully authenticated with URL to redirect to
-        console.log("Authentication successful, redirecting to:", result.url);
+      } else if (result?.ok === true) {
+        // Wait for the session to be updated before redirecting
+        console.log("Authentication successful, updating session");
         
-        // Use replace instead of push and force a hard navigation
-        window.location.href = result.url;
+        // Force a session update
+        await update();
+        
+        // Wait a moment for the session to be properly updated
+        setTimeout(async () => {
+          console.log("Session updated, redirecting to dashboard");
+          // Use Next.js router for navigation instead of window.location
+          router.push('/dashboard');
+        }, 500);
       } else {
-        // Successfully authenticated but no URL provided
-        console.log("Authentication successful, redirecting to dashboard");
-        
-        // Force a hard navigation to dashboard
-        const redirectUrl = searchParams?.get('from') || '/dashboard';
-        window.location.href = redirectUrl;
+        // Unexpected result
+        console.error("Unexpected authentication result:", result);
+        setAuthError("An unexpected error occurred during authentication. Please try again.");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Authentication error:', error);
@@ -78,15 +95,20 @@ function LoginForm() {
     }
   };
 
+  // If still loading the session, show loading state
+  if (status === 'loading') {
+    return <LoginLoading />;
+  }
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
       <motion.div 
         className="w-full max-w-md"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="mg-panel bg-[rgba(var(--mg-panel),0.8)] backdrop-blur-md p-6 rounded-sm relative">
+        <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.8)] backdrop-blur-md p-6 rounded-sm relative">
           {/* Corner brackets */}
           <div className="absolute top-0 left-0 w-5 h-5 border-l border-t border-[rgba(var(--mg-primary),0.5)]"></div>
           <div className="absolute top-0 right-0 w-5 h-5 border-r border-t border-[rgba(var(--mg-primary),0.5)]"></div>
@@ -123,6 +145,7 @@ function LoginForm() {
                   onChange={(e) => setAydoHandle(e.target.value)}
                   className="mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm px-3 py-2 text-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none transition-colors font-quantify tracking-wide"
                   placeholder="ENTER HANDLE"
+                  autoComplete="username"
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
@@ -176,13 +199,6 @@ function LoginForm() {
         </div>
       </motion.div>
       
-      {/* Display authentication errors */}
-      {authError && (
-        <div className="mt-4 p-2 bg-[rgba(var(--mg-danger),0.1)] border border-[rgba(var(--mg-danger),0.3)] text-[rgba(var(--mg-danger),1)] text-xs rounded">
-          {authError}
-        </div>
-      )}
-      
       {/* Display success message */}
       {successMessage && (
         <div className="mt-4 p-2 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] text-[rgba(var(--mg-success),1)] text-xs rounded">
@@ -196,7 +212,7 @@ function LoginForm() {
 // Simple loading component for suspense
 function LoginLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
       <div className="text-center">
         <div className="mb-2">
           <div className="inline-block w-6 h-6 border-2 border-[rgba(var(--mg-primary),0.5)] border-t-[rgba(var(--mg-primary),1)] rounded-full animate-spin"></div>

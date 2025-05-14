@@ -6,24 +6,44 @@ import { motion } from 'framer-motion';
 
 const images = [
   {
-    src: '/images/Reclaimer_-_Near_world_lookings_at_wreckage.jpg',
-    alt: 'AydoCorp Salvage Operation',
-    caption: 'Reclaimer Salvage Operation in Progress'
-  },
-  {
-    src: '/images/Star_Citizen_Ships_510048_2560x1440.jpg',
-    alt: 'AydoCorp Fleet Display',
-    caption: 'Corporate Fleet Showcase Event'
+    src: '/images/RSI_AYDO_Corp_image.png',
+    alt: 'AydoCorp Official Fleet',
+    caption: 'AydoCorp Fleet Formation - Annual Corporate Showcase'
   },
   {
     src: '/images/Hull_E.jpg',
-    alt: 'AydoExpress Cargo Transport',
-    caption: 'Hull E Cargo Transport Mission'
+    alt: 'AydoExpress Logistics',
+    caption: 'Hull-E Cargo Transport - Backbone of AydoExpress Operations'
   },
   {
     src: '/images/Prospector_-_Hovering_mining_on_cliffside_1.jpg',
-    alt: 'Empyrion Mining Operation',
-    caption: 'Prospector Mining Operation on Microtech'
+    alt: 'Empyrion Industries Mining',
+    caption: 'Empyrion Industries Prospector Mining Operations on Microtech'
+  },
+  {
+    src: '/images/Reclaimer_-_Near_world_lookings_at_wreckage.jpg',
+    alt: 'Salvage Operations',
+    caption: 'Reclaimer Salvage Operation - Resource Recovery Division'
+  },
+  {
+    src: '/images/logisticsoffice.jpg',
+    alt: 'AydoCorp Logistics Office',
+    caption: 'Corporate Headquarters - Logistics Command Center'
+  },
+  {
+    src: '/images/Star_Citizen_Ships_510048_2560x1440.jpg',
+    alt: 'Corporate Fleet Display',
+    caption: 'AydoCorp Fleet Showcase - Annual Corporate Event'
+  },
+  {
+    src: '/images/MISCFreelancer_Asteroids_122018-Min.png',
+    alt: 'Freelancer Operations',
+    caption: 'MISC Freelancer on Assignment - Asteroid Field Navigation'
+  },
+  {
+    src: '/images/1_Taurus_CargoCapacity_ProposedFinal-Min.jpg',
+    alt: 'Constellation Taurus',
+    caption: 'Constellation Taurus - Medium Cargo Transport Operations'
   }
 ];
 
@@ -53,8 +73,19 @@ const EventCarousel = () => {
   return (
     <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-4 rounded-sm overflow-hidden relative">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
+      <div className="flex items-center mb-2">
+        <div className="h-5 w-5 relative mr-2">
+          <Image 
+            src="/images/Aydo_Corp_logo_Silver.png" 
+            alt="AydoCorp Logo" 
+            fill 
+            className="object-contain"
+          />
+        </div>
+        <h2 className="mg-title text-sm font-quantify tracking-wider">CORPORATE OPERATIONS</h2>
+      </div>
       
-      <div className="relative h-[300px] w-full overflow-hidden">
+      <div className="relative h-[350px] w-full overflow-hidden rounded-sm">
         {images.map((image, index) => (
           <motion.div
             key={index}

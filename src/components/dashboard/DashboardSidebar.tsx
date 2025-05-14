@@ -4,12 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface NavItem {
   name: string;
   href: string;
   icon: string;
   children?: NavItem[];
+  badge?: string;
 }
 
 const navItems: NavItem[] = [
@@ -46,7 +48,26 @@ const navItems: NavItem[] = [
     ]
   },
   {
-    name: 'Promotional Pathway',
+    name: 'Subsidiaries',
+    href: '/dashboard/subsidiaries',
+    icon: 'M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3',
+    children: [
+      {
+        name: 'AydoExpress',
+        href: '/dashboard/subsidiaries/express',
+        icon: 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12',
+        badge: 'Logistics'
+      },
+      {
+        name: 'Empyrion Industries',
+        href: '/dashboard/subsidiaries/empyrion',
+        icon: 'M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z',
+        badge: 'Mining'
+      }
+    ]
+  },
+  {
+    name: 'Career Development',
     href: '/dashboard/promotion',
     icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
     children: [
@@ -59,6 +80,33 @@ const navItems: NavItem[] = [
         name: 'Certifications',
         href: '/dashboard/promotion/certifications',
         icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z'
+      },
+      {
+        name: 'Rank Advancement',
+        href: '/dashboard/promotion/ranks',
+        icon: 'M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+      }
+    ]
+  },
+  {
+    name: 'Operations',
+    href: '/dashboard/operations',
+    icon: 'M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z',
+    children: [
+      {
+        name: 'Fleet Management',
+        href: '/dashboard/operations/fleet',
+        icon: 'M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0'
+      },
+      {
+        name: 'Logistics Routes',
+        href: '/dashboard/operations/routes',
+        icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'
+      },
+      {
+        name: 'Mission Planning',
+        href: '/dashboard/operations/missions',
+        icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01'
       }
     ]
   },
@@ -66,6 +114,17 @@ const navItems: NavItem[] = [
     name: 'Employee Database',
     href: '/dashboard/employees',
     icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
+  },
+  {
+    name: 'Events Calendar',
+    href: '/dashboard/events',
+    icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
+  },
+  {
+    name: 'Communications',
+    href: '/dashboard/communications',
+    icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',
+    badge: 'New'
   }
 ];
 
@@ -89,16 +148,27 @@ const DashboardSidebar = () => {
   };
 
   const isExpanded = (name: string) => {
-    return expandedItems.includes(name);
+    return expandedItems.includes(name) || navItems.some(item => 
+      item.name === name && 
+      item.children?.some(child => pathname.startsWith(child.href))
+    );
   };
 
   return (
-    <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] rounded-sm h-full overflow-hidden">
-      <div className="p-4 border-b border-[rgba(var(--mg-primary),0.15)]">
-        <h2 className="mg-subtitle text-sm tracking-wider">NAVIGATION</h2>
+    <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] rounded-sm h-full overflow-hidden flex flex-col">
+      <div className="p-4 border-b border-[rgba(var(--mg-primary),0.15)] flex items-center">
+        <div className="h-6 w-6 relative mr-2">
+          <Image 
+            src="/images/Aydo_Corp_logo_employees.png" 
+            alt="AydoCorp Logo" 
+            fill 
+            className="object-contain"
+          />
+        </div>
+        <h2 className="mg-subtitle text-sm tracking-wider">EMPLOYEE PORTAL</h2>
       </div>
       
-      <div className="p-2">
+      <div className="p-2 flex-grow overflow-y-auto custom-scrollbar">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.name}>
@@ -117,6 +187,11 @@ const DashboardSidebar = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={item.icon} />
                       </svg>
                       <span>{item.name}</span>
+                      {item.badge && (
+                        <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
+                          {item.badge}
+                        </span>
+                      )}
                     </div>
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
@@ -150,6 +225,11 @@ const DashboardSidebar = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={child.icon} />
                               </svg>
                               <span>{child.name}</span>
+                              {child.badge && (
+                                <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
+                                  {child.badge}
+                                </span>
+                              )}
                             </div>
                           </Link>
                         </li>
@@ -170,12 +250,23 @@ const DashboardSidebar = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={item.icon} />
                     </svg>
                     <span>{item.name}</span>
+                    {item.badge && (
+                      <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
+                        {item.badge}
+                      </span>
+                    )}
                   </div>
                 </Link>
               )}
             </li>
           ))}
         </ul>
+      </div>
+      
+      <div className="p-3 border-t border-[rgba(var(--mg-primary),0.15)] text-center">
+        <div className="text-xs text-[rgba(var(--mg-text),0.6)]">
+          AYDO INTERGALACTIC CORPORATION
+        </div>
       </div>
     </div>
   );
