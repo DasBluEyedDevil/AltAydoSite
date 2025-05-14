@@ -6,24 +6,24 @@ import { motion } from 'framer-motion';
 
 const images = [
   {
-    src: '/images/carousel/org_event1.jpg',
-    alt: 'AydoCorp Organization Event',
-    caption: 'Annual Meeting in Stanton System'
+    src: '/images/Reclaimer_-_Near_world_lookings_at_wreckage.jpg',
+    alt: 'AydoCorp Salvage Operation',
+    caption: 'Reclaimer Salvage Operation in Progress'
   },
   {
-    src: '/images/carousel/org_event2.jpg',
-    alt: 'Empyrion Industries Mining Operation',
-    caption: 'Mining Operation in Yela Asteroid Belt'
+    src: '/images/Star_Citizen_Ships_510048_2560x1440.jpg',
+    alt: 'AydoCorp Fleet Display',
+    caption: 'Corporate Fleet Showcase Event'
   },
   {
-    src: '/images/carousel/org_event3.jpg',
-    alt: 'AydoExpress Fleet Launch',
-    caption: 'New Fleet Launch Ceremony'
+    src: '/images/Hull_E.jpg',
+    alt: 'AydoExpress Cargo Transport',
+    caption: 'Hull E Cargo Transport Mission'
   },
   {
-    src: '/images/carousel/org_event4.jpg',
-    alt: 'Corporate Training Session',
-    caption: 'Staff Training on the Hull E'
+    src: '/images/Prospector_-_Hovering_mining_on_cliffside_1.jpg',
+    alt: 'Empyrion Mining Operation',
+    caption: 'Prospector Mining Operation on Microtech'
   }
 ];
 

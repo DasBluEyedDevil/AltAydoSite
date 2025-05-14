@@ -14,11 +14,14 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [authError, setAuthError] = useState<string | null>(null);
-  // We're not using session or status here, so we can skip destructuring them
-  const { /* data: session, status */ } = useSession();
+  const { data: session, status } = useSession();
   
-  // We use this in the useEffect and handleSubmit functions
-  // const callbackUrl = searchParams?.get('from') || '/dashboard';
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/dashboard');
+    }
+  }, [status, router]);
 
   useEffect(() => {
     // Check if redirected from successful signup
@@ -32,27 +35,45 @@ function LoginForm() {
     setIsLoading(true);
     setAuthError(null);
     
+    console.log("Login attempt starting for:", aydoHandle);
+    
     try {
+      console.log("Calling signIn with credentials provider");
       const result = await signIn('credentials', {
         aydoHandle,
         password,
         redirect: false,
+        callbackUrl: '/dashboard',
       });
       
+      console.log("SignIn result:", result);
+      
       if (result?.error) {
-        setAuthError(result.error);
-        setIsLoading(false);
-      } else {
-        // Successfully authenticated
-        if (searchParams?.get('from')) {
-          router.push(searchParams.get('from') as string);
+        console.error("Authentication error:", result.error);
+        // Improved error handling for specific connection issues
+        if (result.error.includes("Database connection error")) {
+          setAuthError("Database connection failed. The system is currently unavailable. Please try again later or contact support.");
         } else {
-          router.push('/dashboard');
+          setAuthError(result.error);
         }
+        setIsLoading(false);
+      } else if (result?.url) {
+        // Successfully authenticated with URL to redirect to
+        console.log("Authentication successful, redirecting to:", result.url);
+        
+        // Use replace instead of push and force a hard navigation
+        window.location.href = result.url;
+      } else {
+        // Successfully authenticated but no URL provided
+        console.log("Authentication successful, redirecting to dashboard");
+        
+        // Force a hard navigation to dashboard
+        const redirectUrl = searchParams?.get('from') || '/dashboard';
+        window.location.href = redirectUrl;
       }
     } catch (error) {
       console.error('Authentication error:', error);
-      setAuthError('An unexpected error occurred during authentication');
+      setAuthError('An unexpected error occurred during authentication. Please try again later.');
       setIsLoading(false);
     }
   };

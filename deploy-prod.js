@@ -108,6 +108,39 @@ try {
   versionErrors = true;
 }
 
+// Verify database connection
+console.log('\n✓ Checking database configuration...');
+try {
+  // Check if DATABASE_URL is set for AWS environment
+  if (process.env.DATABASE_URL) {
+    // Check if it looks like a valid Postgres URL
+    if (process.env.DATABASE_URL.startsWith('postgresql://')) {
+      verificationResults.database.status = 'passed';
+      verificationResults.database.details.push('✓ DATABASE_URL is properly formatted');
+      
+      // Display AWS RDS connection reminder
+      console.log('✓ DATABASE_URL is set. For AWS deployment, ensure:');
+      console.log('  1. RDS security group allows connections from AWS Amplify IP range');
+      console.log('  2. Use the full RDS endpoint in the DATABASE_URL');
+      console.log('  3. Database user has proper permissions');
+    } else {
+      verificationResults.database.status = 'warning';
+      verificationResults.database.details.push('⚠️ DATABASE_URL does not look like a valid PostgreSQL URL');
+      console.log('⚠️ DATABASE_URL does not appear to be a valid PostgreSQL URL');
+      console.log('   Format should be: postgresql://USER:PASSWORD@HOST:PORT/DATABASE');
+    }
+  } else {
+    verificationResults.database.status = 'failed';
+    verificationResults.database.details.push('❌ DATABASE_URL environment variable is not set');
+    console.log('❌ DATABASE_URL environment variable is not set');
+    console.log('   For AWS Amplify deployment, set DATABASE_URL in the environment variables section');
+  }
+} catch (error) {
+  verificationResults.database.status = 'error';
+  verificationResults.database.details.push(`❌ Error checking database: ${error.message}`);
+  console.error('❌ Error checking database configuration:', error);
+}
+
 // Build the application
 console.log('\n🔨 Building the application...');
 try {
@@ -125,6 +158,7 @@ try {
 console.log('\n📋 Deployment Check Summary:');
 console.log(`Environment Variables: ${verificationResults.environmentVariables.status.toUpperCase()}`);
 console.log(`Security Versions: ${verificationResults.securityVersions.status.toUpperCase()}`);
+console.log(`Database Configuration: ${verificationResults.database.status.toUpperCase()}`);
 console.log(`Build: ${verificationResults.build.status.toUpperCase()}`);
 
 // Exit with appropriate code
@@ -144,6 +178,18 @@ if (
   console.log('2. Ensure your production environment has all required environment variables set');
   console.log('3. Monitor your application for any runtime errors');
   console.log('4. Regularly check for security updates to Next.js and other dependencies');
+
+  // Add AWS-specific deployment notes
+  console.log('\n📝 AWS Amplify Deployment Notes:');
+  console.log('1. In the AWS Amplify Console, navigate to Environment Variables');
+  console.log('2. Ensure these variables are correctly set:');
+  console.log('   - NEXTAUTH_SECRET: Your secure secret key');
+  console.log('   - NEXTAUTH_URL: Your app\'s production URL (e.g., https://main.xxxxxxxxxxxx.amplifyapp.com)');
+  console.log('   - DATABASE_URL: Your AWS RDS PostgreSQL connection string');
+  console.log('3. For database connectivity, ensure:');
+  console.log('   - RDS is in a VPC accessible to Amplify');
+  console.log('   - Security groups allow traffic from Amplify IPs');
+  console.log('   - Database user has sufficient permissions');
 
   process.exit(0);
 } 
