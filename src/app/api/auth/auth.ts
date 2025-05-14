@@ -63,6 +63,8 @@ export const authOptions: AuthOptions = {
             return null;
           }
           
+          console.log("Auth provider: User authenticated successfully:", user.aydoHandle);
+          
           // Return user without password
           return {
             id: user.id,
@@ -85,15 +87,23 @@ export const authOptions: AuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       try {
-        if (user) {
-          token.role = user.role;
-          token.clearanceLevel = user.clearanceLevel as number | undefined;
+        // Initial sign in
+        if (account && user) {
+          console.log("JWT callback: Initial sign in", user.name);
+          return {
+            ...token,
+            id: user.id,
+            role: user.role,
+            clearanceLevel: user.clearanceLevel as number | undefined,
+          };
         }
+        
+        // Return previous token on subsequent calls
         return token;
       } catch (error) {
         console.error("JWT callback error:", error);
@@ -103,7 +113,9 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       try {
         if (session.user) {
-          session.user.role = token.role;
+          console.log("Session callback: Setting user data", token.name);
+          session.user.id = token.id as string;
+          session.user.role = token.role as string;
           session.user.clearanceLevel = token.clearanceLevel as number;
         }
         return session;
@@ -115,14 +127,23 @@ export const authOptions: AuthOptions = {
   },
   // Set explicit secret configuration - make sure environment variable is prioritized
   secret: process.env.NEXTAUTH_SECRET || "c9c3fa66d0c46cfa96ef9b3dfbcb2f30b62cee09f33c9f16a1cc39993a7a1984",
-  debug: false, // Disable debug mode to reduce console logs
-  // Reduce session polling frequency
-  events: {},
+  debug: true, // Enable debug mode in development to see detailed logs
+  logger: {
+    error(code, metadata) {
+      console.error(`NextAuth error: ${code}`, metadata);
+    },
+    warn(code) {
+      console.warn(`NextAuth warning: ${code}`);
+    },
+    debug(code, metadata) {
+      console.log(`NextAuth debug: ${code}`, metadata);
+    },
+  },
   // Adjust session check frequency
   useSecureCookies: process.env.NODE_ENV === "production",
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",
