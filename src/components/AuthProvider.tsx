@@ -8,5 +8,13 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  return <SessionProvider refetchInterval={60 * 5}>{children}</SessionProvider>;
+  return (
+    <SessionProvider 
+      refetchInterval={60 * 5} 
+      refetchOnWindowFocus={true}
+      basePath="/api/auth"
+    >
+      {children}
+    </SessionProvider>
+  );
 } 
