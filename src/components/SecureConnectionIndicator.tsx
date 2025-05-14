@@ -13,16 +13,13 @@ export default function SecureConnectionIndicator() {
   }
   
   return (
-    <motion.div 
-      className="fixed top-20 right-4 z-40 bg-[rgba(0,20,40,0.8)] px-3 py-1.5 rounded-sm border border-[rgba(var(--mg-primary),0.2)]"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
+    <div
+      className="fixed top-20 right-4 z-50 bg-[rgba(0,20,40,0.8)] px-3 py-1.5 rounded-sm border border-[rgba(var(--mg-primary),0.2)] shadow-lg"
     >
       <div className="text-xs text-gray-400 flex items-center">
         <div className="h-1.5 w-1.5 rounded-full bg-[rgba(var(--mg-primary),0.8)] mr-2 animate-pulse"></div>
         SECURE CONNECTION
       </div>
-    </motion.div>
+    </div>
   );
 } 
