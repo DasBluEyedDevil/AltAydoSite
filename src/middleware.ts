@@ -17,19 +17,19 @@ const getSecretKey = () => {
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  
+
   // Check if the path is protected
   const isPathProtected = protectedPaths.some(protectedPath => 
     path === protectedPath || path.startsWith(`${protectedPath}/`)
   );
-  
+
   // Extract cookies for debugging
   const cookies = request.cookies.toString();
-  console.log(`Middleware inspecting path: ${path}, has auth cookies: ${cookies.includes('next-auth')}`);
-  
+  console.log(`Middleware inspecting path: ${path}, has auth cookies: ${cookies.includes('next-auth')}, cookie length: ${cookies.length}`);
+
   if (isPathProtected) {
     const secret = getSecretKey();
-    
+
     try {
       // Get token with explicit secret
       const token = await getToken({
@@ -37,23 +37,27 @@ export async function middleware(request: NextRequest) {
         secret: secret,
         secureCookie: process.env.NODE_ENV === "production",
       });
-      
-      // Detailed debug logging
-      console.log(`Middleware checking auth for path: ${path}, token exists: ${!!token}`);
-      if (token) {
-        console.log(`Token found for user: ${token.email || 'unknown'}`);
-      }
-      
+
       // If no token, redirect to login
       if (!token) {
-        console.log(`No auth token found, redirecting to login from: ${path}`);
+        // Create URL for redirection
         const url = new URL('/login', request.url);
+        // Store the original path for potential redirect back after login
         url.searchParams.set('from', path);
+        // Use a clean redirect to avoid potential redirect loops
         return NextResponse.redirect(url);
       }
-      
-      // Token exists, allow access
-      console.log(`Auth token verified, allowing access to: ${path}`);
+
+      // Check if token is expired
+      const tokenExpiration = token.exp as number | undefined;
+      if (tokenExpiration && tokenExpiration < Math.floor(Date.now() / 1000)) {
+        const url = new URL('/login', request.url);
+        url.searchParams.set('error', 'token_expired');
+        return NextResponse.redirect(url);
+      }
+
+      // Token exists and is valid, allow access
+      console.log(`Auth token verified for user: ${token.name || 'unknown'}`);
     } catch (error) {
       console.error('Error checking authentication token:', error);
       // If there's an error, redirect to login to be safe
@@ -62,7 +66,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
   }
-  
+
   return NextResponse.next();
 }
 

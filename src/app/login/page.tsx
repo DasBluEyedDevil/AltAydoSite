@@ -15,25 +15,40 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const [authError, setAuthError] = useState<string | null>(null);
   const { data: session, status, update } = useSession();
-  
+
   // Redirect to dashboard only if explicitly authenticated
   useEffect(() => {
     // Only redirect if we have a confirmed authenticated session
-    if (status === 'authenticated' && session && session.user) {
-      console.log("User is authenticated, redirecting to dashboard");
+    // and we're not in the middle of a login attempt
+    if (status === 'authenticated' && session && session.user && !isLoading) {
+      console.log("Login page - User is authenticated, preparing to redirect to dashboard", 
+        "user:", session.user.name, "clearance:", session.user.clearanceLevel);
+
+      // Check if we have a reset parameter - if so, don't auto-redirect
+      if (searchParams?.get('reset') === 'true') {
+        console.log("Reset parameter detected, not auto-redirecting to dashboard");
+        return;
+      }
+
       router.replace('/dashboard');
     }
-  }, [status, router, session]);
+  }, [status, router, session, isLoading, searchParams]);
 
   useEffect(() => {
     // Check if redirected from successful signup
     if (searchParams?.get('signup') === 'success') {
       setSuccessMessage('Account created successfully. Please log in.');
     }
-    
+
     // Check if there was an error parameter
     if (searchParams?.get('error')) {
-      setAuthError('Authentication failed. Please check your credentials and try again.');
+      if (searchParams.get('error') === 'token_expired') {
+        setAuthError('Your session has expired. Please log in again.');
+      } else if (searchParams.get('error') === 'session_error') {
+        setAuthError('There was a problem with your session. Please log in again.');
+      } else {
+        setAuthError('Authentication failed. Please check your credentials and try again.');
+      }
     }
   }, [searchParams]);
 
@@ -41,15 +56,15 @@ function LoginForm() {
     event.preventDefault();
     setIsLoading(true);
     setAuthError(null);
-    
+
     if (!aydoHandle || !password) {
       setAuthError("Please enter both your AydoCorp Handle and password.");
       setIsLoading(false);
       return;
     }
-    
+
     console.log("Login attempt starting for:", aydoHandle);
-    
+
     try {
       console.log("Calling signIn with credentials provider");
       const result = await signIn('credentials', {
@@ -57,9 +72,9 @@ function LoginForm() {
         password,
         redirect: false,
       });
-      
+
       console.log("SignIn result:", result);
-      
+
       if (result?.error) {
         console.error("Authentication error:", result.error);
         // Improved error handling for specific connection issues
@@ -72,16 +87,19 @@ function LoginForm() {
       } else if (result?.ok === true) {
         // Wait for the session to be updated before redirecting
         console.log("Authentication successful, updating session");
-        
-        // Force a session update
-        await update();
-        
-        // Wait a moment for the session to be properly updated
-        setTimeout(async () => {
-          console.log("Session updated, redirecting to dashboard");
-          // Use Next.js router for navigation instead of window.location
-          router.push('/dashboard');
-        }, 500);
+
+        try {
+          // Force a session update and wait for it to complete
+          await update();
+          
+          // Use router.replace to avoid adding to history stack
+          setIsLoading(false);
+          router.replace('/dashboard');
+        } catch (updateError) {
+          console.error("Error updating session:", updateError);
+          setAuthError("Failed to establish session. Please try again.");
+          setIsLoading(false);
+        }
       } else {
         // Unexpected result
         console.error("Unexpected authentication result:", result);
@@ -114,28 +132,44 @@ function LoginForm() {
           <div className="absolute top-0 right-0 w-5 h-5 border-r border-t border-[rgba(var(--mg-primary),0.5)]"></div>
           <div className="absolute bottom-0 left-0 w-5 h-5 border-l border-b border-[rgba(var(--mg-primary),0.5)]"></div>
           <div className="absolute bottom-0 right-0 w-5 h-5 border-r border-b border-[rgba(var(--mg-primary),0.5)]"></div>
-          
+
           <div className="text-center mb-6">
             <h2 className="mg-title text-xl mb-1">AYDO<span className="mg-subtitle font-light">CORP</span></h2>
             <div className="mg-subtitle text-xs tracking-wider">EMPLOYEE AUTHENTICATION</div>
           </div>
-          
+
+          {/* Success message for signup */}
+          {successMessage && (
+            <motion.div 
+              className="mb-4 p-2 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] text-[rgba(var(--mg-success),0.8)] text-xs rounded-sm"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5 13l4 4L19 7" />
+                </svg>
+                {successMessage}
+              </div>
+            </motion.div>
+          )}
+
+          {authError && (
+            <motion.div 
+              className="mb-4 p-2 bg-[rgba(var(--mg-error),0.1)] border border-[rgba(var(--mg-error),0.3)] text-[rgba(var(--mg-error),0.8)] text-xs rounded-sm"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {authError}
+              </div>
+            </motion.div>
+          )}
+
           <form onSubmit={handleSubmit}>
-            {authError && (
-              <motion.div 
-                className="mb-4 p-2 bg-[rgba(var(--mg-error),0.1)] border border-[rgba(var(--mg-error),0.3)] text-[rgba(var(--mg-error),0.8)] text-xs rounded-sm"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {authError}
-                </div>
-              </motion.div>
-            )}
-            
             <div className="mg-input-group mb-4">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">AYDOCORP HANDLE</label>
               <div className="relative">
@@ -150,7 +184,7 @@ function LoginForm() {
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
             </div>
-            
+
             <div className="mg-input-group mb-6">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">PASSWORD</label>
               <div className="relative">
@@ -165,7 +199,7 @@ function LoginForm() {
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
             </div>
-            
+
             <motion.button
               type="submit"
               className={`mg-button w-full py-2 px-4 relative overflow-hidden ${isLoading ? 'opacity-80' : 'hover:bg-[rgba(var(--mg-primary),0.1)]'}`}
@@ -175,7 +209,7 @@ function LoginForm() {
               <div className="relative z-10 font-quantify tracking-wider text-sm">
                 {isLoading ? 'AUTHENTICATING...' : 'ACCESS SYSTEM'}
               </div>
-              
+
               {/* Loading indicator */}
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -184,40 +218,32 @@ function LoginForm() {
               )}
             </motion.button>
           </form>
-          
-          <div className="mt-4 text-center text-[rgba(var(--mg-text),0.5)] text-xs">
-            <span>Don't have an account? <Link href="/signup" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)]">Sign up here</Link></span>
-          </div>
-        </div>
-        
-        <div className="mg-text text-xs text-center mt-4 text-[rgba(var(--mg-text),0.6)]">
-          <div className="inline-flex items-center">
-            <div className="w-1 h-1 bg-[rgba(var(--mg-primary),0.4)] mr-1 rounded-full"></div>
-            <span className="font-quantify tracking-wide">AYDO CORP SECURITY SYSTEM</span>
-            <div className="w-1 h-1 bg-[rgba(var(--mg-primary),0.4)] ml-1 rounded-full"></div>
+
+          {/* Sign up link */}
+          <div className="mt-6 text-center text-xs text-[rgba(var(--mg-text),0.6)]">
+            <span>Don't have an account? </span>
+            <Link href="/signup" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)] hover:underline">
+              Register here
+            </Link>
           </div>
         </div>
       </motion.div>
-      
-      {/* Display success message */}
-      {successMessage && (
-        <div className="mt-4 p-2 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] text-[rgba(var(--mg-success),1)] text-xs rounded">
-          {successMessage}
-        </div>
-      )}
     </div>
   );
 }
 
-// Simple loading component for suspense
+// Loading component
 function LoginLoading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
-      <div className="text-center">
-        <div className="mb-2">
-          <div className="inline-block w-6 h-6 border-2 border-[rgba(var(--mg-primary),0.5)] border-t-[rgba(var(--mg-primary),1)] rounded-full animate-spin"></div>
+      <div className="mg-loading-spinner">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 relative">
+            <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.2)] rounded-sm"></div>
+            <div className="absolute inset-0 border-t-2 border-l-2 border-[rgba(var(--mg-primary),0.8)] rounded-sm animate-spin"></div>
+          </div>
+          <div className="mt-4 font-quantify tracking-wider text-xs">ACCESSING SYSTEM</div>
         </div>
-        <div className="text-xs text-[rgba(var(--mg-text),0.7)]">Loading authentication...</div>
       </div>
     </div>
   );

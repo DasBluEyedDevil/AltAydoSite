@@ -17,24 +17,41 @@ export default function DashboardPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Check authentication status
   useEffect(() => {
     // Wait for the session check to complete
     if (status === 'loading') {
       return;
     }
-    
-    // Session check completed
-    setIsLoading(false);
-    
-    if (status === 'unauthenticated') {
-      console.log("User is not authenticated, redirecting to login");
-      router.push('/login');
-    } else if (status === 'authenticated' && session) {
-      console.log("User is authenticated:", session.user);
-      setIsAuthenticated(true);
-    }
+
+    // Add a small delay to ensure session is fully established
+    // This helps prevent authentication loops due to race conditions
+    const timer = setTimeout(() => {
+      console.log("Dashboard auth check - status:", status, "session exists:", !!session, 
+        "user:", session?.user?.name, "clearance:", session?.user?.clearanceLevel);
+
+      // Session check completed
+      setIsLoading(false);
+
+      if (status === 'unauthenticated' || !session || !session.user) {
+        console.log("User is not authenticated or session is invalid, redirecting to login");
+
+        // Clear any stale session data by forcing a hard reload of the login page
+        // This ensures we don't get stuck in a loop with invalid session data
+        window.location.href = '/login?reset=true';
+      } else if (status === 'authenticated' && session && session.user) {
+        console.log("User is authenticated with valid session data:", session.user);
+        setIsAuthenticated(true);
+
+        // Store authentication timestamp in localStorage to help debug potential issues
+        localStorage.setItem('last_auth_time', new Date().toISOString());
+        localStorage.setItem('last_auth_user', session.user.name || 'unknown');
+      }
+    }, 800); // 800ms delay to ensure session is fully established
+
+    // Clean up timer on unmount
+    return () => clearTimeout(timer);
   }, [status, router, session]);
 
   // Show loading state while checking authentication
@@ -69,7 +86,7 @@ export default function DashboardPage() {
             Your session is not valid. Please log in to access the Employee Portal.
           </p>
           <button 
-            onClick={() => router.push('/login')}
+            onClick={() => router.replace('/login')}
             className="mg-button py-2 px-4 font-quantify tracking-wider text-sm"
           >
             GO TO LOGIN
@@ -99,7 +116,7 @@ export default function DashboardPage() {
             <h1 className="mg-title text-3xl mb-1 text-[rgba(var(--mg-primary),0.9)]">EMPLOYEE PORTAL</h1>
             <div className="mg-subtitle text-sm tracking-wider">WELCOME BACK, {getUserDisplayName().toUpperCase()}</div>
           </div>
-          
+
           <div className="mt-4 md:mt-0 flex items-center">
             <div className="h-10 w-10 relative mr-3">
               <Image 
@@ -117,7 +134,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </motion.div>
-        
+
         {/* Main Dashboard Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar */}
@@ -129,7 +146,7 @@ export default function DashboardPage() {
           >
             <DashboardSidebar />
           </motion.div>
-          
+
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
             {/* Image Carousel */}
@@ -140,7 +157,7 @@ export default function DashboardPage() {
             >
               <EventCarousel />
             </motion.div>
-            
+
             {/* Dashboard Widgets */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -158,7 +175,7 @@ export default function DashboardPage() {
                 } />
               </div>
             </motion.div>
-            
+
             {/* Events and Announcements */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Events Calendar */}
@@ -170,7 +187,7 @@ export default function DashboardPage() {
               >
                 <EventsCalendar />
               </motion.div>
-              
+
               {/* Announcements */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -181,7 +198,7 @@ export default function DashboardPage() {
                 <Announcements />
               </motion.div>
             </div>
-            
+
             {/* Footer */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
