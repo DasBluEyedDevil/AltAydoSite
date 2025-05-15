@@ -75,9 +75,17 @@ export default function DbTestPage() {
           
           <Link href="/db-diagnostics/insert">
             <button 
-              className="mg-button py-2 px-4 relative overflow-hidden w-full bg-[rgba(var(--mg-warning),0.1)]"
+              className="mg-button py-2 px-4 relative overflow-hidden w-full"
             >
               Test INSERT Permissions
+            </button>
+          </Link>
+          
+          <Link href="/db-diagnostics/signup-test">
+            <button 
+              className="mg-button py-2 px-4 relative overflow-hidden w-full bg-[rgba(var(--mg-warning),0.1)]"
+            >
+              Test Signup Flow
             </button>
           </Link>
           
