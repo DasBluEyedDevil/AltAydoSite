@@ -97,6 +97,14 @@ export default function DbTestPage() {
             </button>
           </Link>
           
+          <Link href="/db-diagnostics/connection-pool">
+            <button 
+              className="mg-button py-2 px-4 relative overflow-hidden w-full bg-[rgba(var(--mg-warning),0.1)]"
+            >
+              Connection Pool Test ⚡
+            </button>
+          </Link>
+          
           <Link href="/signup">
             <button 
               className="mg-button py-2 px-4 relative overflow-hidden w-full col-span-1 md:col-span-2"

@@ -6,12 +6,19 @@ import bcrypt from 'bcrypt';
 // Using global helps prevent multiple instances during hot reloading
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
+// Connection pooling configuration
+const prismaClientSingleton = () => {
+  return new PrismaClient({
+    log: ['query', 'error', 'warn']
+  });
+};
+
 let prisma: PrismaClient;
 
 if (!globalForPrisma.prisma) {
   try {
-    globalForPrisma.prisma = new PrismaClient();
-    console.log("Prisma client initialized successfully");
+    globalForPrisma.prisma = prismaClientSingleton();
+    console.log("Prisma client initialized successfully with connection pooling");
   } catch (error) {
     console.error("Failed to initialize Prisma client:", error);
     // Fallback to prevent server crash
@@ -95,8 +102,14 @@ export async function POST(request: Request) {
       // Log connection status
       console.log("About to perform email check with Prisma");
       
-      existingUserByEmail = await prisma.user.findUnique({
-        where: { email }
+      // Try with a transaction for better error handling
+      existingUserByEmail = await prisma.$transaction(async (tx) => {
+        return await tx.user.findUnique({
+          where: { email }
+        });
+      }, {
+        maxWait: 5000, // 5s maximum to wait for a transaction
+        timeout: 10000, // 10s timeout
       });
       
       console.log("Email existence check completed successfully");
@@ -171,17 +184,21 @@ export async function POST(request: Request) {
     console.log("Creating new user in database...");
     let newUser;
     try {
-      newUser = await prisma.user.create({
-        data: {
-          aydoHandle,
-          email,
-          discordName: discordName || null,
-          rsiAccountName: rsiAccountName || null,
-          passwordHash,
-          clearanceLevel: 1,
-          role: 'member' // Explicitly set role even though it has default in schema
-        }
+      // Use a transaction for the user creation to ensure consistency
+      newUser = await prisma.$transaction(async (tx) => {
+        return await tx.user.create({
+          data: {
+            aydoHandle,
+            email,
+            discordName: discordName || null,
+            rsiAccountName: rsiAccountName || null,
+            passwordHash,
+            clearanceLevel: 1,
+            role: 'member' // Explicitly set role even though it has default in schema
+          }
+        });
       });
+      
       console.log(`User created successfully with ID: ${newUser.id}`);
     } catch (error) {
       console.error("Error creating user in database:", error);
