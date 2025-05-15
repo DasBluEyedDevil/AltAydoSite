@@ -32,12 +32,40 @@ export async function GET() {
     
     // Test 1: Get database stats
     try {
+      console.log("Attempting to run database stats query...");
+      
+      // Use the simpler query first to test basic connectivity
+      const testConnection = await prisma.$queryRaw`SELECT 1`;
+      console.log("Basic connectivity test successful:", testConnection);
+      
+      // Now try the full stats query
       const dbStats = await prisma.$queryRaw`SELECT version(), current_timestamp, current_database()`;
       results.stats.data = dbStats;
       results.stats.success = true;
     } catch (error) {
+      // Enhanced error logging
       results.stats.error = error instanceof Error ? error.message : 'Unknown error';
       console.error("Database stats check failed:", error);
+      
+      // Add detailed logging for Prisma errors
+      if (error instanceof Error) {
+        console.error("Error details:", {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        });
+        
+        // Log additional Prisma-specific error properties
+        if ('code' in (error as any)) {
+          console.error("Prisma error code:", (error as any).code);
+        }
+        if ('clientVersion' in (error as any)) {
+          console.error("Prisma client version:", (error as any).clientVersion);
+        }
+        if ('meta' in (error as any)) {
+          console.error("Prisma error metadata:", (error as any).meta);
+        }
+      }
     }
 
     // Test 2: Get active connections to database
