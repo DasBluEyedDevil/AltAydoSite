@@ -111,6 +111,11 @@ export default function SignupPage() {
                   </svg>
                   {error}
                 </div>
+                {error.includes('Failed to create user') && (
+                  <div className="mt-2 text-[rgba(var(--mg-text),0.7)]">
+                    <p>Database connection issue? <Link href="/db-diagnostics" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)] underline">Check database diagnostics</Link></p>
+                  </div>
+                )}
               </motion.div>
             )}
 
