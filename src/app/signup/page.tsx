@@ -66,12 +66,15 @@ export default function SignupPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        // Log the full response for debugging
+        console.error('Signup error response:', data);
         throw new Error(data.error || 'Failed to create account');
       }
 
       // Redirect to login page on success
       router.push('/login?signup=success');
     } catch (error) {
+      console.error('Signup error:', error);
       setError(error instanceof Error ? error.message : 'An error occurred during signup');
     } finally {
       setIsLoading(false);

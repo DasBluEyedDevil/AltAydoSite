@@ -154,12 +154,25 @@ export async function POST(request: Request) {
           discordName: discordName || null,
           rsiAccountName: rsiAccountName || null,
           passwordHash,
-          clearanceLevel: 1
+          clearanceLevel: 1,
+          role: 'member' // Explicitly set role even though it has default in schema
         }
       });
       console.log(`User created successfully with ID: ${newUser.id}`);
     } catch (error) {
       console.error("Error creating user in database:", error);
+      
+      // More detailed error logging
+      if (error instanceof Error) {
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+        
+        // Check for Prisma-specific errors
+        if ('code' in (error as any)) {
+          console.error("Prisma error code:", (error as any).code);
+        }
+      }
       
       // Provide more specific error message if possible
       let errorMessage = 'Failed to create user';
