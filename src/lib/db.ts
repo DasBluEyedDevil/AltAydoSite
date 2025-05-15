@@ -1,7 +1,5 @@
 import { config } from 'aws-sdk';
 import { PrismaClient } from '@prisma/client'
-import { fromEnv } from '@aws-sdk/credential-providers';
-import { getIniConfig } from '@aws-sdk/shared-ini-file-loader';
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -10,7 +8,11 @@ import { getIniConfig } from '@aws-sdk/shared-ini-file-loader';
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
 // Set AWS region for IAM authentication
-config.update({ region: 'us-east-1' });
+config.update({ 
+  region: 'us-east-1'
+  // Credentials will be automatically loaded from the environment
+  // In AWS Amplify, the instance role provides credentials
+});
 
 // Configure AWS SDK to use available credentials
 process.env.AWS_SDK_LOAD_CONFIG = '1';
