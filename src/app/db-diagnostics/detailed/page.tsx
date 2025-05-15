@@ -165,7 +165,7 @@ export default function DetailedDbTestPage() {
         
         <div className="mt-6 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
           <Link 
-            href="/api/db-test"
+            href="/db-diagnostics"
             className="text-sm text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)]"
           >
             « Back to Basic DB Test

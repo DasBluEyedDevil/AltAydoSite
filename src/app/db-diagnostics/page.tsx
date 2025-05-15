@@ -41,7 +41,7 @@ export default function DbTestPage() {
             {loading ? 'Testing...' : 'Quick Connection Test'}
           </button>
           
-          <Link href="/api/db-test/detailed">
+          <Link href="/db-diagnostics/detailed">
             <button 
               className="mg-button py-2 px-4 relative overflow-hidden w-full"
             >
@@ -49,7 +49,7 @@ export default function DbTestPage() {
             </button>
           </Link>
           
-          <Link href="/api/db-test/env">
+          <Link href="/db-diagnostics/env">
             <button 
               className="mg-button py-2 px-4 relative overflow-hidden w-full"
             >
