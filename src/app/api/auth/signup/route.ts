@@ -60,7 +60,12 @@ export async function POST(request: Request) {
     }
 
     const { aydoHandle, email, discordName, rsiAccountName, password } = body;
-    console.log(`Signup attempt for handle: ${aydoHandle}, email: ${email}`);
+    
+    // Debug logging for email value
+    console.log(`Signup attempt for handle: ${aydoHandle}, email: "${email}"`);
+    console.log("Email type:", typeof email);
+    console.log("Email length:", email?.length);
+    console.log("Email validation regex test:", /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || ""));
 
     // Validate required fields
     if (!aydoHandle || !email || !password) {
@@ -84,14 +89,33 @@ export async function POST(request: Request) {
     console.log("Checking for existing users...");
     
     // Check if user already exists - with error handling
+    console.log("Starting email existence check for:", email);
     let existingUserByEmail;
     try {
+      // Log connection status
+      console.log("About to perform email check with Prisma");
+      
       existingUserByEmail = await prisma.user.findUnique({
         where: { email }
       });
-      console.log("Email existence check completed");
+      
+      console.log("Email existence check completed successfully");
+      console.log("User found with this email?", existingUserByEmail ? "Yes" : "No");
     } catch (error) {
       console.error("Error checking for existing email:", error);
+      
+      // More detailed error logging
+      if (error instanceof Error) {
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+        
+        // Check for Prisma-specific errors
+        if ('code' in (error as any)) {
+          console.error("Prisma error code:", (error as any).code);
+        }
+      }
+      
       return NextResponse.json(
         { error: 'Database query failed when checking email' },
         { status: 500 }
