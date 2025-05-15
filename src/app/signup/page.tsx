@@ -192,7 +192,7 @@ export default function SignupPage() {
                   className="mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm px-3 py-2 text-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none transition-colors font-quantify tracking-wide"
                   placeholder="••••••••••••"
                   required
-                  autocomplete="new-password"
+                  autoComplete="new-password"
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
@@ -213,7 +213,7 @@ export default function SignupPage() {
                       'border border-[rgba(var(--mg-primary),0.2)] focus:border-[rgba(var(--mg-primary),0.5)]'}`}
                   placeholder="••••••••••••"
                   required
-                  autocomplete="new-password"
+                  autoComplete="new-password"
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
 
