@@ -68,11 +68,11 @@ export default function SignupPage() {
       if (!response.ok) {
         // Log the full response for debugging
         console.error('Signup error response:', data);
-        throw new Error(data.error || 'Failed to create account');
+        setError(data.error || 'Failed to create account');
+      } else {
+        // Redirect to login page on success
+        router.push('/login?signup=success');
       }
-
-      // Redirect to login page on success
-      router.push('/login?signup=success');
     } catch (error) {
       console.error('Signup error:', error);
       setError(error instanceof Error ? error.message : 'An error occurred during signup');
@@ -116,7 +116,7 @@ export default function SignupPage() {
                 </div>
                 {error.includes('Failed to create user') && (
                   <div className="mt-2 text-[rgba(var(--mg-text),0.7)]">
-                    <p>Database connection issue? <Link href="/db-diagnostics" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)] underline">Check database diagnostics</Link></p>
+                    <p>Database connection issue? <Link href="/db-diagnostics/email-test" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)] underline">Run email check diagnostics</Link></p>
                   </div>
                 )}
               </motion.div>
