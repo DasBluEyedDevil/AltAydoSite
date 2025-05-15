@@ -57,9 +57,17 @@ export default function DbTestPage() {
             </button>
           </Link>
           
-          <Link href="/signup">
+          <Link href="/db-diagnostics/schema">
             <button 
               className="mg-button py-2 px-4 relative overflow-hidden w-full"
+            >
+              Database Schema Analysis
+            </button>
+          </Link>
+          
+          <Link href="/signup">
+            <button 
+              className="mg-button py-2 px-4 relative overflow-hidden w-full col-span-1 md:col-span-2"
             >
               Return to Signup Page
             </button>
