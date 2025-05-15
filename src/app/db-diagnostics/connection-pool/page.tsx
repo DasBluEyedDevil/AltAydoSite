@@ -13,10 +13,22 @@ export default function ConnectionPoolPage() {
     setError(null);
     
     try {
+      console.log("Making request to /api/db-test/connection-pool...");
       const response = await fetch('/api/db-test/connection-pool');
+      console.log("Received response:", response.status, response.statusText);
+      
+      if (!response.ok) {
+        console.error("API returned error status:", response.status);
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
+      }
+      
       const data = await response.json();
+      console.log("API response data:", data);
       setResults(data);
     } catch (err) {
+      console.error("Error running connection test:", err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);

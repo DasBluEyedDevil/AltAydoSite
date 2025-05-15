@@ -10,6 +10,19 @@ export async function GET() {
   try {
     console.log("Running connection pool diagnostics");
     
+    // Log DATABASE_URL format (without credentials)
+    try {
+      const dbUrl = process.env.DATABASE_URL || '';
+      const urlParts = dbUrl.split('@');
+      if (urlParts.length > 1) {
+        console.log(`Database connection using: ${urlParts[0].split(':')[0]}://*****@${urlParts[1]}`);
+      } else {
+        console.log("Database URL format could not be logged safely");
+      }
+    } catch (err) {
+      console.error("Error logging database URL format:", err);
+    }
+    
     const results = {
       stats: { success: false, data: null as any, error: null as string | null },
       connections: { success: false, data: null as any, error: null as string | null },
