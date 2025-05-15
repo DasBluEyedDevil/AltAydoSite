@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 export async function GET(_request: Request) {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({
+    log: ['query', 'error', 'warn']
+  });
   
   try {
     console.log("Testing email check functionality");
@@ -21,12 +23,39 @@ export async function GET(_request: Request) {
     
     // Step 1: Test basic connection
     try {
+      console.log("Testing basic database connection...");
+      
+      // Try to connect
+      await prisma.$connect();
+      console.log("Prisma connection successful");
+      
+      // Try a simple query
       await prisma.$queryRaw`SELECT 1 as connected`;
       results.connection.success = true;
-      console.log("Database connection successful");
+      console.log("Database connectivity test successful");
     } catch (error) {
       results.connection.error = error instanceof Error ? error.message : 'Unknown error';
       console.error("Database connection test failed:", error);
+      
+      // Enhanced error logging
+      if (error instanceof Error) {
+        console.error("Error details:", {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        });
+        
+        // Log additional Prisma-specific error properties
+        if ('code' in (error as any)) {
+          console.error("Prisma error code:", (error as any).code);
+        }
+        if ('clientVersion' in (error as any)) {
+          console.error("Prisma client version:", (error as any).clientVersion);
+        }
+        if ('meta' in (error as any)) {
+          console.error("Prisma error metadata:", (error as any).meta);
+        }
+      }
     }
     
     // If connection failed, return early
