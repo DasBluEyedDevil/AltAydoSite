@@ -6,6 +6,7 @@ frontend:
         # Install dependencies
         - npm ci --legacy-peer-deps --cache .npm --prefer-offline
         - npx prisma generate
+        - echo "import { config } from 'aws-sdk'; config.update({ region: 'us-east-1' });" > setRegion.js
     build:
       commands:
         - npm run build
