@@ -2,7 +2,23 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
-const prisma = new PrismaClient();
+// Create a singleton Prisma client to prevent multiple initializations
+// Using global helps prevent multiple instances during hot reloading
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+let prisma: PrismaClient;
+
+if (!globalForPrisma.prisma) {
+  try {
+    globalForPrisma.prisma = new PrismaClient();
+  } catch (error) {
+    console.error("Failed to initialize Prisma client:", error);
+    // Fallback to prevent server crash
+    globalForPrisma.prisma = {} as PrismaClient;
+  }
+}
+
+prisma = globalForPrisma.prisma;
 
 export async function POST(request: Request) {
   try {

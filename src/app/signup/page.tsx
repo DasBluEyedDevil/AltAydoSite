@@ -39,21 +39,21 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate form fields
     if (!formData.aydoHandle || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('Please fill in all required fields');
       return;
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    
+
     setIsLoading(true);
     setError('');
-    
+
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -62,13 +62,13 @@ export default function SignupPage() {
         },
         body: JSON.stringify(formData),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to create account');
       }
-      
+
       // Redirect to login page on success
       router.push('/login?signup=success');
     } catch (error) {
@@ -92,12 +92,12 @@ export default function SignupPage() {
           <div className="absolute top-0 right-0 w-5 h-5 border-r border-t border-[rgba(var(--mg-primary),0.5)]"></div>
           <div className="absolute bottom-0 left-0 w-5 h-5 border-l border-b border-[rgba(var(--mg-primary),0.5)]"></div>
           <div className="absolute bottom-0 right-0 w-5 h-5 border-r border-b border-[rgba(var(--mg-primary),0.5)]"></div>
-          
+
           <div className="text-center mb-6">
             <h2 className="mg-title text-xl mb-1">AYDO<span className="mg-subtitle font-light">CORP</span></h2>
             <div className="mg-subtitle text-xs tracking-wider">CREATE NEW ACCOUNT</div>
           </div>
-          
+
           <form onSubmit={handleSubmit}>
             {error && (
               <motion.div 
@@ -113,7 +113,7 @@ export default function SignupPage() {
                 </div>
               </motion.div>
             )}
-            
+
             {/* AydoCorp Handle */}
             <div className="mg-input-group mb-4">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">AYDOCORP HANDLE*</label>
@@ -130,7 +130,7 @@ export default function SignupPage() {
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
             </div>
-            
+
             {/* Email Address */}
             <div className="mg-input-group mb-4">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">EMAIL ADDRESS*</label>
@@ -147,7 +147,7 @@ export default function SignupPage() {
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
             </div>
-            
+
             {/* Discord Name */}
             <div className="mg-input-group mb-4">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">DISCORD NAME</label>
@@ -163,7 +163,7 @@ export default function SignupPage() {
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
             </div>
-            
+
             {/* RSI Account Name */}
             <div className="mg-input-group mb-4">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">RSI ACCOUNT NAME</label>
@@ -179,7 +179,7 @@ export default function SignupPage() {
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
             </div>
-            
+
             {/* Password */}
             <div className="mg-input-group mb-4">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">PASSWORD*</label>
@@ -192,11 +192,12 @@ export default function SignupPage() {
                   className="mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm px-3 py-2 text-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none transition-colors font-quantify tracking-wide"
                   placeholder="••••••••••••"
                   required
+                  autocomplete="new-password"
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
             </div>
-            
+
             {/* Confirm Password */}
             <div className="mg-input-group mb-4">
               <label className="mg-subtitle text-xs mb-1 block tracking-wider">CONFIRM PASSWORD*</label>
@@ -212,9 +213,10 @@ export default function SignupPage() {
                       'border border-[rgba(var(--mg-primary),0.2)] focus:border-[rgba(var(--mg-primary),0.5)]'}`}
                   placeholder="••••••••••••"
                   required
+                  autocomplete="new-password"
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
-                
+
                 {/* Status indicator for password matching */}
                 <AnimatePresence>
                   {passwordMatch && (
@@ -278,7 +280,7 @@ export default function SignupPage() {
                   )}
                 </AnimatePresence>
               </div>
-              
+
               {/* Password match message with sci-fi theme */}
               <AnimatePresence>
                 {passwordMatch && (
@@ -315,7 +317,7 @@ export default function SignupPage() {
                 )}
               </AnimatePresence>
             </div>
-            
+
             <motion.button
               type="submit"
               className={`mg-button w-full py-2 px-4 relative overflow-hidden mt-6 ${isLoading ? 'opacity-80' : 'hover:bg-[rgba(var(--mg-primary),0.1)]'}`}
@@ -325,7 +327,7 @@ export default function SignupPage() {
               <div className="relative z-10 font-quantify tracking-wider text-sm">
                 {isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
               </div>
-              
+
               {/* Loading indicator */}
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -334,12 +336,12 @@ export default function SignupPage() {
               )}
             </motion.button>
           </form>
-          
+
           <div className="mt-4 text-center text-[rgba(var(--mg-text),0.5)] text-xs">
             <span>Already have an account? <Link href="/login" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)]">Login instead</Link></span>
           </div>
         </div>
-        
+
         <div className="mg-text text-xs text-center mt-4 text-[rgba(var(--mg-text),0.6)]">
           <div className="inline-flex items-center">
             <div className="w-1 h-1 bg-[rgba(var(--mg-primary),0.4)] mr-1 rounded-full"></div>
