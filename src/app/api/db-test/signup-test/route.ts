@@ -64,11 +64,16 @@ export async function GET() {
 
     // Step 3: Test user creation with exact same fields as signup
     try {
+      // Ensure passwordHash is not undefined
+      if (!passwordHash) {
+        throw new Error("Password hash is undefined");
+      }
+      
       const newUser = await prisma.user.create({
         data: {
           aydoHandle: testHandle,
           email: testEmail,
-          passwordHash,
+          passwordHash: passwordHash, // Explicitly assign to avoid TypeScript error
           clearanceLevel: 1,
           role: 'member',
           discordName: 'test_discord',
