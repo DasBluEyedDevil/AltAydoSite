@@ -1,4 +1,4 @@
-import '../setRegion';
+import { config } from 'aws-sdk';
 import { PrismaClient } from '@prisma/client'
 
 // PrismaClient is attached to the `global` object in development to prevent
@@ -6,6 +6,9 @@ import { PrismaClient } from '@prisma/client'
 // Learn more: https://pris.ly/d/help/next-js-best-practices
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
+
+// Set AWS region for IAM authentication
+config.update({ region: 'us-east-1' });
 
 // Function to create a new Prisma client with better error handling
 function createPrismaClient() {
