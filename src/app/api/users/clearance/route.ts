@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { PrismaClient } from '@prisma/client';
 import { isAdmin } from '@/lib/auth';
 import { authOptions } from '../../auth/auth';
-
-const prisma = new PrismaClient();
+import { createServiceClient } from '@/lib/supabase';
 
 // This route is disabled during static export
 export async function GET() {
@@ -44,18 +42,23 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Update user's clearance level
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { clearanceLevel },
-      select: {
-        id: true,
-        aydoHandle: true,
-        email: true,
-        clearanceLevel: true,
-        role: true
-      }
-    });
+    // Update user's clearance level using Supabase service role client
+    const supabase = createServiceClient();
+
+    const { data: updatedUser, error } = await supabase
+      .from('users')
+      .update({ clearanceLevel })
+      .eq('id', userId)
+      .select('id, aydoHandle, email, clearanceLevel, role')
+      .single();
+
+    if (error) {
+      console.error('Error updating user clearance:', error);
+      return NextResponse.json(
+        { error: 'Failed to update user clearance level' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(updatedUser);
   } catch (error) {

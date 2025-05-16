@@ -15,6 +15,10 @@ frontend:
         - export DATABASE_URL=mock_connection_string_for_export
         - export NEXT_PUBLIC_SUPABASE_URL=https://ohhnbxsbxzxyjgynxevi.supabase.co
         - export NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oaG5ieHNieHp4eWpneW54ZXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTE2NTIsImV4cCI6MjA2Mjk4NzY1Mn0.HUFfJIjw_Vwv8qdGaZRVw6kZvdI2PZX7HDe3pSCyuW8
+        - export SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oaG5ieHNieHp4eWpneW54ZXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTE2NTIsImV4cCI6MjA2Mjk4NzY1Mn0.HUFfJIjw_Vwv8qdGaZRVw6kZvdI2PZX7HDe3pSCyuW8
+        - export SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oaG5ieHNieHp4eWpneW54ZXZpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NzQxMTY1MiwiZXhwIjoyMDYyOTg3NjUyfQ.Zl5VXwHhgHuB9qpj9hbNm87AAYnQHM3cpd3c6qbLAeQ
+        - export NEXTAUTH_SECRET=31+JQF80VHx4JsOB0LuY8qH4WOTulqDNY6TSsMlR2Mc91jzjpGutkFs3b6xVwtm5ffuLmBM4GzKjYr58uBdxfA==
+        - export NEXTAUTH_URL=https://${AWS_BRANCH}.${AWS_APP_ID}.amplifyapp.com
         - next build
   artifacts:
     baseDirectory: out
