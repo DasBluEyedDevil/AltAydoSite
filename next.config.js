@@ -19,12 +19,6 @@ const nextConfig = {
   trailingSlash: false,
   // Configure static export for app directory
   distDir: 'out',
-  
-  // Special config for static export in Amplify
-  experimental: {
-    // Allow static export with app directory
-    appDir: true,
-  }
 }
 
 module.exports = nextConfig 
