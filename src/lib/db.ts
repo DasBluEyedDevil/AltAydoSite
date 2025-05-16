@@ -6,13 +6,26 @@ import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
+// Log environment variables (sanitized) for debugging
+console.log('Database URL available:', !!process.env.DATABASE_URL);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
 // Function to create a new Prisma client with better error handling
 function createPrismaClient() {
   try {
     // Check DATABASE_URL format
     const dbUrl = process.env.DATABASE_URL || '';
     
-    if (!dbUrl.startsWith('postgresql://')) {
+    if (!dbUrl) {
+      console.error('DATABASE_URL is not defined in environment variables');
+      // Provide a fallback for build-time
+      if (process.env.NODE_ENV === 'production') {
+        console.log('Using fallback connection string for build-time');
+        process.env.DATABASE_URL = "postgresql://postgres:IHateGeico1!@db.ohhnbxsbxzxyjgynxevi.supabase.co:5432/postgres";
+      }
+    }
+    
+    if (!process.env.DATABASE_URL?.startsWith('postgresql://')) {
       console.error('Invalid DATABASE_URL format. Must start with postgresql://');
     }
     
