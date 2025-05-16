@@ -19,6 +19,8 @@
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "@prisma/client": "5.22.0",
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/supabase-js": "^2.49.4",
     "@types/bcrypt": "^5.0.2",
     "aws-sdk": "^2.1531.0",
     "axios": "^1.6.7",
