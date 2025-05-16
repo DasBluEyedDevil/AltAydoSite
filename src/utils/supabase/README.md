@@ -10,9 +10,12 @@ The application is configured to use Supabase for database operations. The follo
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-url.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
 These are already set up in the `.env.local` file.
+
+The `SUPABASE_SERVICE_ROLE_KEY` is used for server-side operations that require elevated permissions. This key has full access to your database without any Row Level Security (RLS) restrictions, so it should only be used on the server and never exposed to the client.
 
 ## Database Schema
 
@@ -109,6 +112,33 @@ export default function YourClientComponent() {
       ))}
     </div>
   );
+}
+```
+
+## Using Service Role Client
+
+For server-side operations that require elevated permissions (like admin operations or bypassing Row Level Security), you can use the service role client:
+
+```tsx
+import { createServiceClient } from '@/lib/supabase';
+
+// This should only be used in server-side code (API routes, Server Components, etc.)
+export async function adminOperation() {
+  // Create a client with the service role key
+  const supabase = createServiceClient();
+
+  // This operation will bypass Row Level Security
+  const { data, error } = await supabase
+    .from('users')
+    .select('*');
+
+  // Handle the result
+  if (error) {
+    console.error('Error:', error);
+    return null;
+  }
+
+  return data;
 }
 ```
 

@@ -13,26 +13,10 @@ const nextConfig = {
   },
   // Use export output to create static files
   output: 'export',
-  // Disable API routes during static export
-  exportPathMap: async function (defaultPathMap) {
-    // Filter out API routes
-    const filteredPaths = {};
-    for (const [path, page] of Object.entries(defaultPathMap)) {
-      if (!path.startsWith('/api/')) {
-        filteredPaths[path] = page;
-      }
-    }
-    return filteredPaths;
-  },
   // Skip adding trailingSlash
   trailingSlash: false,
-  // Disable image optimization during static export
-  experimental: {
-    // Skip specific paths in static export
-    staticRoutes: {
-      '/api': { fallback: true }
-    }
-  }
+  // Configure static export for app directory
+  distDir: 'out',
 }
 
 module.exports = nextConfig 
