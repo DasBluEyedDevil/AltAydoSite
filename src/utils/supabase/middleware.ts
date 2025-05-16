@@ -14,21 +14,26 @@ export const createClient = (request: NextRequest) => {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
+        get(name) {
+          return request.cookies.get(name)?.value;
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+        set(name, value, options) {
+          request.cookies.set(name, value);
           supabaseResponse = NextResponse.next({
             request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+          });
+          supabaseResponse.cookies.set(name, value, options);
+        },
+        remove(name, options) {
+          request.cookies.delete(name);
+          supabaseResponse = NextResponse.next({
+            request,
+          });
+          supabaseResponse.cookies.set(name, "", { ...options, maxAge: 0 });
         },
       },
     },
   );
 
-  return supabaseResponse
+  return supabaseResponse;
 }; 
