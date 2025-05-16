@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { signIn, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSession, signIn } from 'next-auth/react';
 
 function LoginForm() {
   const [aydoHandle, setAydoHandle] = useState('');
@@ -92,7 +92,7 @@ function LoginForm() {
         try {
           // Force a session update and wait for it to complete
           await update();
-          
+
           // Use router.push instead of replace to ensure proper navigation
           setIsLoading(false);
           console.log("Redirecting to landing page...");
