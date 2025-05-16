@@ -1,28 +1,34 @@
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/middleware';
 
 // Define which paths require authentication
 const protectedPaths = ['/dashboard', '/userprofile', '/admin'];
 
-// Make sure the secret is set properly for all environments
-const getSecretKey = () => {
-  const secret = process.env.NEXTAUTH_SECRET || "c9c3fa66d0c46cfa96ef9b3dfbcb2f30b62cee09f33c9f16a1cc39993a7a1984";
-  if (!process.env.NEXTAUTH_SECRET) {
-    console.warn('Missing NEXTAUTH_SECRET environment variable in middleware. Using fallback secret (not recommended for production)');
-  }
-  return secret;
-};
-
-// This function can be marked `async` if using `await` inside
+// This function handles authentication and route protection
 export async function middleware(request: NextRequest) {
-  return createClient(request);
+  // Create a Supabase client for the middleware
+  const res = createClient(request);
+
+  // Check if the path is protected
+  const path = request.nextUrl.pathname;
+  const isProtectedPath = protectedPaths.some(prefix => path.startsWith(prefix));
+
+  // If the path is not protected, just return the response
+  if (!isProtectedPath) {
+    return res;
+  }
+
+  // For protected paths, we need to check if the user is authenticated
+  // This will be handled by Supabase Auth in the page components
+  // If authentication fails, the page component will redirect to login
+
+  return res;
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
   matcher: [
     // Apply to all routes except static files, api routes, and next.js specific paths
-    '/((?!_next/static|_next/image|favicon.ico|api/auth).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }; 

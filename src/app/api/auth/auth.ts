@@ -1,25 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
-// Create a singleton Prisma client to prevent multiple initializations
-// Using global helps prevent multiple instances during hot reloading
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-let prisma: PrismaClient;
-
-if (!globalForPrisma.prisma) {
-  try {
-    globalForPrisma.prisma = new PrismaClient();
-  } catch (error) {
-    console.error("Failed to initialize Prisma client:", error);
-    // Fallback to prevent server crash
-    globalForPrisma.prisma = {} as PrismaClient;
-  }
-}
-
-prisma = globalForPrisma.prisma;
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
 // Make sure the secret is set properly for all environments
 if (!process.env.NEXTAUTH_SECRET) {
@@ -41,30 +24,30 @@ export const authOptions: AuthOptions = {
         }
 
         try {
-          // Check if Prisma is properly initialized
-          if (!prisma.user) {
-            console.error("Prisma client is not properly initialized");
-            return null;
-          }
-          
-          // Find the user by AydoCorp Handle
-          const user = await prisma.user.findUnique({
-            where: { aydoHandle: credentials.aydoHandle }
-          });
+          const cookieStore = cookies();
+          const supabase = createClient(cookieStore);
 
-          if (!user || !user.passwordHash) {
+          // Find the user by AydoCorp Handle
+          const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('aydoHandle', credentials.aydoHandle)
+            .single();
+
+          if (error || !user || !user.passwordHash) {
+            console.error("User lookup error:", error);
             return null;
           }
-          
+
           // Verify password
           const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash);
 
           if (!isPasswordValid) {
             return null;
           }
-          
+
           console.log("Auth provider: User authenticated successfully:", user.aydoHandle);
-          
+
           // Return user without password
           return {
             id: user.id,
@@ -102,7 +85,7 @@ export const authOptions: AuthOptions = {
             clearanceLevel: user.clearanceLevel as number | undefined,
           };
         }
-        
+
         // Return previous token on subsequent calls
         return token;
       } catch (error) {

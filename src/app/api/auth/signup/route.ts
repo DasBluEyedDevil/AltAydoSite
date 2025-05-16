@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
-import { prisma } from '@/lib/db';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
 // Validation schema for user registration
 const userSchema = z.object({
@@ -40,10 +41,23 @@ export async function POST(request: Request) {
 
     const { email, aydoHandle, password, discordName, rsiAccountName } = result.data;
 
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+
     // Check if email already exists
-    const existingEmail = await prisma.user.findUnique({
-      where: { email },
-    });
+    const { data: existingEmail, error: emailError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if (emailError && emailError.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+      console.error("Email check error:", emailError);
+      return NextResponse.json(
+        { success: false, message: "Error checking email availability" },
+        { status: 500 }
+      );
+    }
 
     if (existingEmail) {
       return NextResponse.json(
@@ -53,9 +67,19 @@ export async function POST(request: Request) {
     }
 
     // Check if AYDO handle already exists
-    const existingHandle = await prisma.user.findUnique({
-      where: { aydoHandle },
-    });
+    const { data: existingHandle, error: handleError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('aydoHandle', aydoHandle)
+      .single();
+
+    if (handleError && handleError.code !== 'PGRST116') {
+      console.error("Handle check error:", handleError);
+      return NextResponse.json(
+        { success: false, message: "Error checking handle availability" },
+        { status: 500 }
+      );
+    }
 
     if (existingHandle) {
       return NextResponse.json(
@@ -68,18 +92,45 @@ export async function POST(request: Request) {
     const passwordHash = await bcrypt.hash(password, 10);
 
     // Create user
-    const user = await prisma.user.create({
-      data: {
-        email,
-        aydoHandle,
-        passwordHash,
-        discordName,
-        rsiAccountName,
-        profile: {
-          create: {} // Create empty profile
+    const { data: user, error: createError } = await supabase
+      .from('users')
+      .insert([
+        {
+          email,
+          aydoHandle,
+          passwordHash,
+          discordName,
+          rsiAccountName,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          clearanceLevel: 1,
+          role: 'member'
         }
-      },
-    });
+      ])
+      .select()
+      .single();
+
+    if (createError) {
+      console.error("User creation error:", createError);
+      return NextResponse.json(
+        { success: false, message: "Error creating user" },
+        { status: 500 }
+      );
+    }
+
+    // Create empty profile
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert([
+        {
+          userId: user.id
+        }
+      ]);
+
+    if (profileError) {
+      console.error("Profile creation error:", profileError);
+      // Continue anyway as the user was created successfully
+    }
 
     // Return success response with user data (excluding password)
     return NextResponse.json({
