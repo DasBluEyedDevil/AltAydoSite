@@ -6,43 +6,13 @@ import { authOptions } from '../../auth/auth';
 
 const prisma = new PrismaClient();
 
-// GET - Retrieve users with their clearance levels
+// This route is disabled during static export
 export async function GET() {
-  try {
-    // Check if user is authenticated and has admin rights
-    const session = await getServerSession(authOptions);
-    if (!isAdmin(session)) {
-      return NextResponse.json(
-        { error: 'Unauthorized. Requires clearance level 3.' },
-        { status: 403 }
-      );
-    }
-
-    // Get users with their clearance levels
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        aydoHandle: true,
-        email: true,
-        clearanceLevel: true,
-        role: true,
-        createdAt: true,
-        discordName: true,
-        rsiAccountName: true
-      },
-      orderBy: {
-        clearanceLevel: 'desc'
-      }
-    });
-
-    return NextResponse.json(users);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch users' },
-      { status: 500 }
-    );
-  }
+  // Simplified static response to make export work
+  return NextResponse.json({
+    message: 'API routes are not available in static export',
+    disabled: true
+  });
 }
 
 // PUT - Update a user's clearance level
