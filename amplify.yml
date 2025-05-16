@@ -4,19 +4,23 @@ frontend:
     preBuild:
       commands:
         # Install dependencies
-        - npm ci --legacy-peer-deps --cache .npm --prefer-offline
-        - npx prisma generate
+        - npm ci
+        - npm install -g next
     build:
       commands:
-        - NODE_ENV=production npm run build
+        # Skip Prisma generation since we don't need it for build
+        - export NODE_ENV=production
+        - export DATABASE_URL=postgresql://postgres:IHateGeico1!@db.ohhnbxsbxzxyjgynxevi.supabase.co:5432/postgres 
+        - export NEXT_PUBLIC_SUPABASE_URL=https://ohhnbxsbxzxyjgynxevi.supabase.co
+        - export NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oaG5ieHNieHp4eWpneW54ZXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTE2NTIsImV4cCI6MjA2Mjk4NzY1Mn0.HUFfJIjw_Vwv8qdGaZRVw6kZvdI2PZX7HDe3pSCyuW8
+        - next build
   artifacts:
-    baseDirectory: .next
+    baseDirectory: out
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
-      - .next/cache/**/*
   customHeaders:
     - pattern: '**/*'
       headers:
