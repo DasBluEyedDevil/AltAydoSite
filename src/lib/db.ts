@@ -51,28 +51,33 @@ function createPrismaClient() {
 
   try {
     // Check DATABASE_URL format
-    const dbUrl = process.env.DATABASE_URL || '';
-    
-    if (!dbUrl) {
-      console.error('DATABASE_URL is not defined in environment variables');
+    let dbUrl = process.env.DATABASE_URL || '';
+
+    // Handle mock connection string for static export
+    if (!dbUrl || dbUrl === 'mock_connection_string_for_export') {
+      console.error('DATABASE_URL is not defined or set to mock value');
       // Provide a fallback for build-time
       if (process.env.NODE_ENV === 'production') {
         console.log('Using fallback connection string for build-time');
-        process.env.DATABASE_URL = "postgresql://postgres:IHateGeico1!@db.ohhnbxsbxzxyjgynxevi.supabase.co:5432/postgres";
+        dbUrl = "postgresql://postgres:IHateGeico1!@db.ohhnbxsbxzxyjgynxevi.supabase.co:5432/postgres";
+        // Only set the environment variable if it's not the mock string
+        if (process.env.DATABASE_URL !== 'mock_connection_string_for_export') {
+          process.env.DATABASE_URL = dbUrl;
+        }
       }
     }
-    
+
     if (!process.env.DATABASE_URL?.startsWith('postgresql://')) {
       console.error('Invalid DATABASE_URL format. Must start with postgresql://');
     }
-    
+
     // Enhanced connection options
     return new PrismaClient({
       log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-      
+
       datasources: {
         db: {
-          url: process.env.DATABASE_URL
+          url: process.env.DATABASE_URL === 'mock_connection_string_for_export' ? dbUrl : process.env.DATABASE_URL
         }
       }
     });
@@ -96,11 +101,11 @@ if (process.env.NEXT_PHASE !== 'phase-export' && process.env.IS_STATIC_EXPORT !=
   try {
     // Use connection without a heavy query - just verify connection availability
     console.log('Testing Prisma client connectivity...');
-    
+
     // Connect to the database
     prisma.$connect().then(() => {
       console.log('Prisma client initialized successfully with connection pooling');
-      
+
       // Heartbeat check
       setInterval(async () => {
         try {
