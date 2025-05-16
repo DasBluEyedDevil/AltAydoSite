@@ -30,10 +30,8 @@ export const createClient = (request: NextRequest) => {
           supabaseResponse = NextResponse.next({
             request,
           })
-          // Fix for Next.js 15.x compatibility
-          supabaseResponse.cookies.delete(name, { 
-            ...options
-          })
+          // Next.js 15.x compatibility fix
+          supabaseResponse.cookies.delete(name)
         },
       },
     },
