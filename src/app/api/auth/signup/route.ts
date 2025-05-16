@@ -1,31 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
+import { PrismaClient } from '@prisma/client';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
-// In a real application, this would be imported from a database module
-// For now, we'll use the same in-memory store as in auth.ts
-const users = [
-  {
-    id: '1',
-    aydoHandle: 'admin',
-    email: 'admin@aydocorp.com',
-    password: '$2b$10$8OxDFt.GT.LV4xmX9ATR8.w4kGhJZgXnqnZqf5wn3EHQ8GqOAFMaK', // "password123"
-    clearanceLevel: 5,
-    role: 'admin',
-    discordName: 'admin#1234',
-    rsiAccountName: 'admin_rsi'
-  },
-  {
-    id: '2',
-    aydoHandle: 'user',
-    email: 'user@aydocorp.com',
-    password: '$2b$10$8OxDFt.GT.LV4xmX9ATR8.w4kGhJZgXnqnZqf5wn3EHQ8GqOAFMaK', // "password123"
-    clearanceLevel: 1,
-    role: 'user',
-    discordName: 'user#5678',
-    rsiAccountName: 'user_rsi'
-  }
-];
+const prisma = new PrismaClient();
 
 // Define validation schema for signup data
 const signupSchema = z.object({
@@ -55,10 +35,15 @@ export async function POST(request: NextRequest) {
     
     const { aydoHandle, email, password, discordName, rsiAccountName } = result.data;
     
-    // Check if user already exists
-    const existingUser = users.find(
-      u => u.aydoHandle === aydoHandle || u.email === email
-    );
+    // Check if user already exists in the database
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { aydoHandle },
+          { email }
+        ]
+      }
+    });
     
     if (existingUser) {
       return NextResponse.json(
@@ -70,22 +55,40 @@ export async function POST(request: NextRequest) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    // Create a new user
-    // In a real application, this would be a database insert
-    const newUser = {
-      id: (users.length + 1).toString(),
-      aydoHandle,
-      email,
-      password: hashedPassword,
-      clearanceLevel: 1, // Default clearance level for new users
-      role: 'user', // Default role for new users
-      discordName: discordName || '',
-      rsiAccountName: rsiAccountName || ''
-    };
+    // Create a new user in the Prisma database
+    const newUser = await prisma.user.create({
+      data: {
+        aydoHandle,
+        email,
+        password: hashedPassword,
+        clearanceLevel: 1, // Default clearance level for new users
+        role: 'user', // Default role for new users
+        discordName: discordName || null,
+        rsiAccountName: rsiAccountName || null
+      }
+    });
     
-    // Add the user to our in-memory store
-    // In a real application, this would be a database insert
-    users.push(newUser);
+    // Also create the user in Supabase
+    const cookieStore = cookies();
+    const supabase = await createClient(cookieStore);
+    
+    // Create user in Supabase
+    const { error: supabaseError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          aydoHandle,
+          role: 'user',
+          clearanceLevel: 1
+        }
+      }
+    });
+    
+    if (supabaseError) {
+      console.error('Supabase signup error:', supabaseError);
+      // Continue even if Supabase user creation fails, as we have the Prisma user
+    }
     
     // Return success response
     return NextResponse.json(

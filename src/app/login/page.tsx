@@ -30,7 +30,9 @@ function LoginForm() {
         return;
       }
 
-      router.replace('/');
+      // Get the callback URL if it exists
+      const callbackUrl = searchParams?.get('callbackUrl') || '/';
+      router.replace(callbackUrl);
     }
   }, [status, router, session, isLoading, searchParams]);
 
@@ -71,7 +73,7 @@ function LoginForm() {
         aydoHandle,
         password,
         redirect: false,
-        callbackUrl: '/'
+        callbackUrl: searchParams?.get('callbackUrl') || '/'
       });
 
       console.log("SignIn result:", result);
@@ -97,7 +99,7 @@ function LoginForm() {
           setIsLoading(false);
           console.log("Redirecting to landing page...");
           // Make sure we're using the correct URL path
-          router.push('/');
+          router.push(result.url || '/');
         } catch (updateError) {
           console.error("Error updating session:", updateError);
           setAuthError("Failed to establish session. Please try again.");

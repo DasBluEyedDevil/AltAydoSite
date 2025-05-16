@@ -1,6 +1,12 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
+
+const prisma = new PrismaClient();
 
 // In a real application, this would be replaced with a database call
 const users = [
@@ -27,6 +33,7 @@ const users = [
 ];
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'AydoCorp Credentials',
@@ -40,10 +47,18 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // In a real application, this would be a database lookup
-          const user = users.find(u => u.aydoHandle === credentials.aydoHandle);
+          // Get the user from the database
+          const user = await prisma.user.findUnique({
+            where: { aydoHandle: credentials.aydoHandle }
+          });
           
           if (!user) {
+            return null;
+          }
+
+          // Ensure the user has a password
+          if (!user.password) {
+            console.error('User missing password');
             return null;
           }
 
@@ -58,7 +73,10 @@ export const authOptions: NextAuthOptions = {
             name: user.aydoHandle,
             email: user.email,
             clearanceLevel: user.clearanceLevel,
-            role: user.role
+            role: user.role,
+            aydoHandle: user.aydoHandle,
+            discordName: user.discordName || null,
+            rsiAccountName: user.rsiAccountName || null
           };
         } catch (error) {
           console.error('Authentication error:', error);
@@ -68,12 +86,21 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.clearanceLevel = user.clearanceLevel;
-        token.role = user.role;
+    async jwt({ token, user, account }) {
+      // Initial sign in
+      if (account && user) {
+        return {
+          ...token,
+          id: user.id,
+          clearanceLevel: user.clearanceLevel,
+          role: user.role,
+          aydoHandle: user.aydoHandle,
+          discordName: user.discordName,
+          rsiAccountName: user.rsiAccountName
+        };
       }
+      
+      // Return previous token if the access token has not expired
       return token;
     },
     async session({ session, token }) {
@@ -81,6 +108,9 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.clearanceLevel = token.clearanceLevel as number;
         session.user.role = token.role as string;
+        session.user.aydoHandle = token.aydoHandle as string;
+        session.user.discordName = token.discordName as string | null;
+        session.user.rsiAccountName = token.rsiAccountName as string | null;
       }
       return session;
     }
@@ -93,7 +123,7 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  secret: process.env.NEXTAUTH_SECRET || 'your-secret-key-change-in-production',
+  secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
 };
 
