@@ -116,7 +116,7 @@ export default function SignupPage() {
                 </div>
                 {error.includes('Failed to create user') && (
                   <div className="mt-2 text-[rgba(var(--mg-text),0.7)]">
-                    <p>Database connection issue? <Link href="/db-diagnostics/email-test" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)] underline">Run email check diagnostics</Link></p>
+                    <p>Database connection issue. Please try again later or contact support.</p>
                   </div>
                 )}
               </motion.div>
