@@ -1,255 +1,100 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import { prisma } from '@/lib/db';
 
-// Create a singleton Prisma client to prevent multiple initializations
-// Using global helps prevent multiple instances during hot reloading
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-// Connection pooling configuration
-const prismaClientSingleton = () => {
-  return new PrismaClient({
-    log: ['query', 'error', 'warn']
-  });
-};
-
-let prisma: PrismaClient;
-
-if (!globalForPrisma.prisma) {
-  try {
-    globalForPrisma.prisma = prismaClientSingleton();
-    console.log("Prisma client initialized successfully with connection pooling");
-  } catch (error) {
-    console.error("Failed to initialize Prisma client:", error);
-    // Fallback to prevent server crash
-    globalForPrisma.prisma = {} as PrismaClient;
-  }
-}
-
-prisma = globalForPrisma.prisma;
+// Validation schema for user registration
+const userSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  aydoHandle: z.string().min(3, "Handle must be at least 3 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  discordName: z.string().optional(),
+  rsiAccountName: z.string().optional(),
+});
 
 export async function POST(request: Request) {
-  console.log("Signup request received");
+  // For static export, return mock response
+  if (process.env.IS_STATIC_EXPORT === 'true' || process.env.NEXT_PHASE === 'phase-export') {
+    return NextResponse.json({
+      success: true,
+      message: "Mock signup response for static build",
+    });
+  }
+
   try {
-    // First check if Prisma client is properly initialized
-    if (!prisma.user) {
-      console.error("Prisma client is not properly initialized for signup");
-      return NextResponse.json(
-        { error: 'Database client initialization failed' },
-        { status: 500 }
-      );
-    }
+    const body = await request.json();
 
-    // Log database URL format (without credentials)
-    try {
-      const dbUrl = process.env.DATABASE_URL || '';
-      const urlParts = dbUrl.split('@');
-      if (urlParts.length > 1) {
-        console.log(`Database connection using: ${urlParts[0].split(':')[0]}://*****@${urlParts[1]}`);
-      } else {
-        console.log("Database URL format could not be logged safely");
-      }
-    } catch (err) {
-      console.error("Error logging database URL format:", err);
-    }
-
-    // Parse request body
-    let body;
-    try {
-      body = await request.json();
-      console.log("Request body parsed successfully");
-    } catch (error) {
-      console.error("Error parsing request body:", error);
+    // Validate input
+    const result = userSchema.safeParse(body);
+    if (!result.success) {
+      const { errors } = result.error;
       return NextResponse.json(
-        { error: 'Invalid request format' },
+        { 
+          success: false, 
+          message: "Validation error", 
+          errors 
+        },
         { status: 400 }
       );
     }
 
-    const { aydoHandle, email, discordName, rsiAccountName, password } = body;
-    
-    // Debug logging for email value
-    console.log(`Signup attempt for handle: ${aydoHandle}, email: "${email}"`);
-    console.log("Email type:", typeof email);
-    console.log("Email length:", email?.length);
-    console.log("Email validation regex test:", /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || ""));
+    const { email, aydoHandle, password, discordName, rsiAccountName } = result.data;
 
-    // Validate required fields
-    if (!aydoHandle || !email || !password) {
-      console.log("Required fields missing", { aydoHandle: !!aydoHandle, email: !!email, password: !!password });
+    // Check if email already exists
+    const existingEmail = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingEmail) {
       return NextResponse.json(
-        { error: 'Required fields missing' },
-        { status: 400 }
+        { success: false, message: "Email already in use" },
+        { status: 409 }
       );
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      console.log(`Invalid email format: ${email}`);
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      );
-    }
+    // Check if AYDO handle already exists
+    const existingHandle = await prisma.user.findUnique({
+      where: { aydoHandle },
+    });
 
-    console.log("Checking for existing users...");
-    
-    // Check if user already exists - with error handling
-    console.log("Starting email existence check for:", email);
-    let existingUserByEmail;
-    try {
-      // Log connection status
-      console.log("About to perform email check with Prisma");
-      
-      // Try with a transaction for better error handling
-      existingUserByEmail = await prisma.$transaction(async (tx) => {
-        return await tx.user.findUnique({
-          where: { email }
-        });
-      }, {
-        maxWait: 5000, // 5s maximum to wait for a transaction
-        timeout: 10000, // 10s timeout
-      });
-      
-      console.log("Email existence check completed successfully");
-      console.log("User found with this email?", existingUserByEmail ? "Yes" : "No");
-    } catch (error) {
-      console.error("Error checking for existing email:", error);
-      
-      // More detailed error logging
-      if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
-        
-        // Check for Prisma-specific errors
-        if ('code' in (error as any)) {
-          console.error("Prisma error code:", (error as any).code);
-        }
-      }
-      
+    if (existingHandle) {
       return NextResponse.json(
-        { error: 'Database query failed when checking email' },
-        { status: 500 }
-      );
-    }
-
-    if (existingUserByEmail) {
-      console.log(`Email already in use: ${email}`);
-      return NextResponse.json(
-        { error: 'Email already in use' },
-        { status: 400 }
-      );
-    }
-
-    let existingUserByHandle;
-    try {
-      existingUserByHandle = await prisma.user.findUnique({
-        where: { aydoHandle }
-      });
-      console.log("Handle existence check completed");
-    } catch (error) {
-      console.error("Error checking for existing handle:", error);
-      return NextResponse.json(
-        { error: 'Database query failed when checking handle' },
-        { status: 500 }
-      );
-    }
-
-    if (existingUserByHandle) {
-      console.log(`Handle already in use: ${aydoHandle}`);
-      return NextResponse.json(
-        { error: 'AydoCorp Handle already in use' },
-        { status: 400 }
+        { success: false, message: "AYDO handle already in use" },
+        { status: 409 }
       );
     }
 
     // Hash password
-    console.log("Hashing password...");
-    let passwordHash;
-    try {
-      const saltRounds = 10;
-      passwordHash = await bcrypt.hash(password, saltRounds);
-      console.log("Password hashed successfully");
-    } catch (error) {
-      console.error("Error hashing password:", error);
-      return NextResponse.json(
-        { error: 'Password encryption failed' },
-        { status: 500 }
-      );
-    }
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    // Create new user with clearance level 1 by default
-    console.log("Creating new user in database...");
-    let newUser;
-    try {
-      // Use a transaction for the user creation to ensure consistency
-      newUser = await prisma.$transaction(async (tx) => {
-        return await tx.user.create({
-          data: {
-            aydoHandle,
-            email,
-            discordName: discordName || null,
-            rsiAccountName: rsiAccountName || null,
-            passwordHash,
-            clearanceLevel: 1,
-            role: 'member' // Explicitly set role even though it has default in schema
-          }
-        });
-      });
-      
-      console.log(`User created successfully with ID: ${newUser.id}`);
-    } catch (error) {
-      console.error("Error creating user in database:", error);
-      
-      // More detailed error logging
-      if (error instanceof Error) {
-        console.error("Error type:", error.constructor.name);
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
-        
-        // Check for Prisma-specific errors
-        if ('code' in (error as any)) {
-          console.error("Prisma error code:", (error as any).code);
+    // Create user
+    const user = await prisma.user.create({
+      data: {
+        email,
+        aydoHandle,
+        passwordHash,
+        discordName,
+        rsiAccountName,
+        profile: {
+          create: {} // Create empty profile
         }
-      }
-      
-      // Provide more specific error message if possible
-      let errorMessage = 'Failed to create user';
-      if (error instanceof Error) {
-        // Log the full error for debugging
-        console.error("Error details:", error.message);
-        
-        if (error.message.includes('Foreign key constraint')) {
-          errorMessage = 'Foreign key constraint failed';
-        } else if (error.message.includes('duplicate key')) {
-          errorMessage = 'Duplicate entry detected';
-        } else if (error.message.includes('constraint')) {
-          errorMessage = 'Database constraint violation';
-        }
-      }
-      
-      return NextResponse.json(
-        { error: errorMessage },
-        { status: 500 }
-      );
-    }
+      },
+    });
 
-    // Return user without password
-    const { passwordHash: _, ...userWithoutPassword } = newUser;
-    console.log("Signup successful, returning user data");
-    return NextResponse.json(userWithoutPassword, { status: 201 });
+    // Return success response with user data (excluding password)
+    return NextResponse.json({
+      success: true,
+      message: "User created successfully",
+      user: {
+        id: user.id,
+        email: user.email,
+        aydoHandle: user.aydoHandle,
+      },
+    });
   } catch (error) {
-    console.error('Unexpected error during user creation:', error);
-    
-    // Return a more detailed error if available
-    const errorMessage = error instanceof Error 
-      ? `Failed to create user: ${error.message}`
-      : 'Failed to create user: Unknown error';
-    
+    console.error("Error in signup route:", error);
     return NextResponse.json(
-      { error: errorMessage },
+      { success: false, message: "An error occurred during signup" },
       { status: 500 }
     );
   }
