@@ -5,13 +5,10 @@ frontend:
       commands:
         # Install dependencies
         - npm ci --legacy-peer-deps --cache .npm --prefer-offline
-        - echo "DATABASE_URL=${DATABASE_URL}" >> .env
-        - echo "NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}" >> .env
-        - echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}" >> .env
         - npx prisma generate
     build:
       commands:
-        - npm run build
+        - NODE_ENV=production npm run build
   artifacts:
     baseDirectory: .next
     files:

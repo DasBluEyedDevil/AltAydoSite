@@ -11,7 +11,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // Use direct connection string for build-time compatibility with Amplify
+  url      = "postgresql://postgres:IHateGeico1!@db.ohhnbxsbxzxyjgynxevi.supabase.co:5432/postgres"
 }
 
 // User model

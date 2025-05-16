@@ -7,13 +7,16 @@ const nextConfig = {
   },
   // Ensure environment variables are properly processed
   env: {
-    DATABASE_URL: process.env.DATABASE_URL,
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    DATABASE_URL: process.env.DATABASE_URL || "postgresql://postgres:IHateGeico1!@db.ohhnbxsbxzxyjgynxevi.supabase.co:5432/postgres",
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ohhnbxsbxzxyjgynxevi.supabase.co",
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oaG5ieHNieHp4eWpneW54ZXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTE2NTIsImV4cCI6MjA2Mjk4NzY1Mn0.HUFfJIjw_Vwv8qdGaZRVw6kZvdI2PZX7HDe3pSCyuW8",
   },
+  // Disable automatic static optimization for API routes
+  output: 'standalone',
   experimental: {
-    // Skip static generation for dynamic API routes
-    outputFileTracingIncludes: {
+    // Exclude API routes from static generation
+    outputFileTracingIncludes: {},
+    outputFileTracingExcludes: {
       '/api/**': true
     }
   }
