@@ -24,7 +24,7 @@ export const authOptions: AuthOptions = {
         }
 
         try {
-          const cookieStore = cookies();
+          const cookieStore = await cookies();
           const supabase = createClient(cookieStore);
 
           // Find the user by AydoCorp Handle
