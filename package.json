@@ -12,7 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:amplify": "npx ampx generate outputs"
+    "build:amplify": "npx ampx generate outputs --app-id \"$AWS_APP_ID\" --branch \"$AWS_BRANCH\""
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.812.0",
