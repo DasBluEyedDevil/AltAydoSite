@@ -28,7 +28,7 @@ const schema = a.schema({
       time: a.string(),
       read: a.boolean(),
       // Relationships
-      user: a.belongsTo('User'),
+      user: a.belongsTo('User', 'user'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -41,7 +41,7 @@ const schema = a.schema({
       type: a.enum(['general', 'express', 'empyrion']),
       description: a.string(),
       // Relationships
-      user: a.belongsTo('User'),
+      user: a.belongsTo('User', 'user'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -54,7 +54,7 @@ const schema = a.schema({
       important: a.boolean(),
       category: a.enum(['general', 'express', 'empyrion', 'corporate']),
       // Relationships
-      user: a.belongsTo('User'),
+      user: a.belongsTo('User', 'user'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -68,7 +68,7 @@ const schema = a.schema({
       image: a.string(),
       subsidiary: a.string(),
       // Relationships
-      user: a.belongsTo('User'),
+      user: a.belongsTo('User', 'user'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
