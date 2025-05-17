@@ -71,7 +71,7 @@ frontend:
               console.log('Error checking Amplify exports:', e.message);
             }
           "
-        - npx ampx generate
+        - npx ampx generate outputs --app-id "$AWS_APP_ID" --branch "$AWS_BRANCH" || echo "Skipping amplify generate outputs due to permission issues"
   artifacts:
     baseDirectory: .next
     files:
