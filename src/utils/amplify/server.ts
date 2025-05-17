@@ -8,7 +8,6 @@ const configureAmplify = () => {
     Amplify.configure({
       // Auth configuration will be automatically loaded from aws-exports.js
       // or you can specify it manually here
-      ssr: true
     });
   } catch (error) {
     console.error("Error configuring Amplify:", error);
