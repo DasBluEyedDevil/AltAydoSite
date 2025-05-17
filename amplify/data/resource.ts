@@ -23,9 +23,9 @@ const schema = a.schema({
       createdAt: a.datetime(),
       updatedAt: a.datetime(),
       // Relationships
-      messages: a.hasMany('Message'),
-      announcements: a.hasMany('Announcement'),
-      events: a.hasMany('Event'),
+      messages: a.hasMany('Message', ['id']),
+      announcements: a.hasMany('Announcement', ['id']),
+      events: a.hasMany('Event', ['id']),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -36,8 +36,9 @@ const schema = a.schema({
       content: a.string(),
       time: a.string(),
       read: a.boolean(),
+      userId: a.string(),
       // Relationships
-      user: a.belongsTo('User'),
+      user: a.belongsTo('User', ['userId']),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -49,8 +50,9 @@ const schema = a.schema({
       time: a.string(),
       type: a.enum(['general', 'express', 'empyrion']),
       description: a.string(),
+      userId: a.string(),
       // Relationships
-      user: a.belongsTo('User'),
+      user: a.belongsTo('User', ['userId']),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -62,8 +64,9 @@ const schema = a.schema({
       date: a.string(),
       important: a.boolean(),
       category: a.enum(['general', 'express', 'empyrion', 'corporate']),
+      userId: a.string(),
       // Relationships
-      user: a.belongsTo('User'),
+      user: a.belongsTo('User', ['userId']),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -76,8 +79,9 @@ const schema = a.schema({
       achievement: a.string(),
       image: a.string(),
       subsidiary: a.string(),
+      userId: a.string(),
       // Relationships
-      user: a.belongsTo('User'),
+      user: a.belongsTo('User', ['userId']),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
