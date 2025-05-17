@@ -13,8 +13,8 @@ backend:
       commands:
         - echo "Building Amplify backend..."
         - npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
-        - npx amplify status || echo "Amplify not initialized, skipping status check"
-        - npx amplify push --yes || echo "Amplify not initialized, skipping push"
+        - npx ampx status || echo "Amplify not initialized, skipping status check"
+        - npx ampx push --yes || echo "Amplify not initialized, skipping push"
 frontend:
   phases:
     preBuild:
@@ -25,11 +25,53 @@ frontend:
     build:
       commands:
         - echo "Setting up environment for NextAuth and Amplify..."
-        - node -e "const fs=require('fs'); try { if (!fs.existsSync('.env.local') && process.env.NEXTAUTH_SECRET) { fs.writeFileSync('.env.local', `NEXTAUTH_SECRET=${process.env.NEXTAUTH_SECRET}\n` + `NEXTAUTH_URL=${process.env.NEXTAUTH_URL || process.env.DEPLOY_URL || ''}\n` + `NEXT_PUBLIC_GRAPHQL_ENDPOINT=${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || ''}\n` + `NEXT_PUBLIC_GRAPHQL_API_KEY=${process.env.NEXT_PUBLIC_GRAPHQL_API_KEY || ''}\n` + `NEXT_PUBLIC_AWS_REGION=${process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1'}\n`); console.log('Created .env.local'); }} catch(e) { console.error(e); }"
+        - |
+          node -e "
+            const fs = require('fs');
+            try {
+              if (!fs.existsSync('.env.local') && process.env.NEXTAUTH_SECRET) {
+                let envContent = '';
+                envContent += 'NEXTAUTH_SECRET=' + process.env.NEXTAUTH_SECRET + '\n';
+                envContent += 'NEXTAUTH_URL=' + (process.env.NEXTAUTH_URL || process.env.DEPLOY_URL || '') + '\n';
+                envContent += 'NEXT_PUBLIC_GRAPHQL_ENDPOINT=' + (process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || '') + '\n';
+                envContent += 'NEXT_PUBLIC_GRAPHQL_API_KEY=' + (process.env.NEXT_PUBLIC_GRAPHQL_API_KEY || '') + '\n';
+                envContent += 'NEXT_PUBLIC_AWS_REGION=' + (process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1') + '\n';
+                fs.writeFileSync('.env.local', envContent);
+                console.log('Created .env.local');
+              } else {
+                console.log('.env.local already exists or NEXTAUTH_SECRET not available');
+              }
+            } catch(e) {
+              console.error('Error creating .env.local:', e);
+            }
+          "
         - echo "Building Next.js application..."
         - npm run build
         - echo "Creating amplify_outputs.json if needed..."
-        - node -e "const fs=require('fs'); try { const amplifyDir = './amplify'; if (fs.existsSync(amplifyDir)) { if (fs.existsSync('./amplify/output.json')) { const amplifyExports = require('./amplify/output.json'); fs.writeFileSync('./public/amplify_outputs.json', JSON.stringify(amplifyExports, null, 2)); console.log('Created amplify_outputs.json from output.json'); } else { console.log('amplify/output.json does not exist'); } } else { console.log('amplify directory does not exist'); }} catch(e) { console.log('Error checking Amplify exports:', e.message); }"
+        - |
+          node -e "
+            const fs = require('fs');
+            try {
+              const amplifyDir = './amplify';
+              if (fs.existsSync(amplifyDir)) {
+                if (fs.existsSync('./amplify/backend.out.json')) {
+                  const amplifyExports = require('./amplify/backend.out.json');
+                  fs.writeFileSync('./public/amplify_outputs.json', JSON.stringify(amplifyExports, null, 2));
+                  console.log('Created amplify_outputs.json from backend.out.json');
+                } else if (fs.existsSync('./amplify/output.json')) {
+                  const amplifyExports = require('./amplify/output.json');
+                  fs.writeFileSync('./public/amplify_outputs.json', JSON.stringify(amplifyExports, null, 2));
+                  console.log('Created amplify_outputs.json from output.json');
+                } else {
+                  console.log('amplify output files do not exist');
+                }
+              } else {
+                console.log('amplify directory does not exist');
+              }
+            } catch(e) {
+              console.log('Error checking Amplify exports:', e.message);
+            }
+          "
   artifacts:
     baseDirectory: .next
     files:
