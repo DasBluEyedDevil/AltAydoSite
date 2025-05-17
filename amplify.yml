@@ -14,7 +14,6 @@ backend:
         - echo "Building Amplify backend..."
         - npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
         - npx ampx info || echo "Amplify not initialized, skipping status check"
-        - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID || echo "Amplify not initialized, skipping deployment"
 frontend:
   phases:
     preBuild:
@@ -72,6 +71,7 @@ frontend:
               console.log('Error checking Amplify exports:', e.message);
             }
           "
+        - npx ampx generate
   artifacts:
     baseDirectory: .next
     files:
