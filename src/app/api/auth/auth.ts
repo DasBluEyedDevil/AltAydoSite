@@ -1,11 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { createClient } from '@/utils/supabase/server';
-
-const prisma = new PrismaClient();
 
 // In a real application, this would be replaced with a database call
 const users = [
@@ -32,7 +27,6 @@ const users = [
 ];
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'AydoCorp Credentials',
@@ -46,11 +40,9 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // Get the user from the database
-          const user = await prisma.user.findUnique({
-            where: { aydoHandle: credentials.aydoHandle }
-          });
-          
+          // Find user in the hardcoded array
+          const user = users.find(u => u.aydoHandle === credentials.aydoHandle);
+
           if (!user) {
             return null;
           }
@@ -62,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash);
-          
+
           if (!isPasswordValid) {
             return null;
           }
@@ -79,7 +71,7 @@ export const authOptions: NextAuthOptions = {
           };
         } catch (error) {
           console.error('Authentication error:', error);
-          throw new Error('Database connection error');
+          throw new Error('Authentication error');
         }
       }
     })
@@ -98,7 +90,7 @@ export const authOptions: NextAuthOptions = {
           rsiAccountName: user.rsiAccountName
         };
       }
-      
+
       // Return previous token if the access token has not expired
       return token;
     },

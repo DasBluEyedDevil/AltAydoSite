@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
-import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
 
-const prisma = new PrismaClient();
+// TODO: Import AWS SDK and configure DynamoDB client
+// import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+// import { DynamoDBDocumentClient, PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 
 // Define validation schema for signup data
 const signupSchema = z.object({
@@ -23,7 +22,7 @@ const signupSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Validate the request body
     const result = signupSchema.safeParse(body);
     if (!result.success) {
@@ -32,63 +31,66 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     const { aydoHandle, email, password, discordName, rsiAccountName } = result.data;
-    
-    // Check if user already exists in the database
-    const existingUser = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { aydoHandle },
-          { email }
-        ]
-      }
-    });
-    
+
+    // TODO: Check if user already exists in DynamoDB
+    // Example implementation:
+    // const params = {
+    //   TableName: 'Users',
+    //   IndexName: 'EmailIndex',
+    //   KeyConditionExpression: 'email = :email',
+    //   ExpressionAttributeValues: {
+    //     ':email': email
+    //   }
+    // };
+    // const existingUserByEmail = await dynamoDb.send(new QueryCommand(params));
+
+    // For now, we'll use a placeholder
+    const existingUser = null;
+
     if (existingUser) {
       return NextResponse.json(
         { error: 'User with this handle or email already exists' },
         { status: 409 }
       );
     }
-    
+
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    // Create a new user in the Prisma database
-    const newUser = await prisma.user.create({
-      data: {
-        aydoHandle,
-        email,
-        passwordHash: hashedPassword,
-        clearanceLevel: 1, // Default clearance level for new users
-        role: 'user', // Default role for new users
-        discordName: discordName || null,
-        rsiAccountName: rsiAccountName || null
-      }
-    });
-    
-    // Also create the user in Supabase
-    const supabase = createClient();
-    
-    // Create user in Supabase
-    const { error: supabaseError } = await supabase.auth.signUp({
+
+    // TODO: Create a new user in DynamoDB
+    // Example implementation:
+    // const userId = crypto.randomUUID();
+    // const params = {
+    //   TableName: 'Users',
+    //   Item: {
+    //     id: userId,
+    //     aydoHandle,
+    //     email,
+    //     passwordHash: hashedPassword,
+    //     clearanceLevel: 1,
+    //     role: 'user',
+    //     discordName: discordName || null,
+    //     rsiAccountName: rsiAccountName || null,
+    //     createdAt: new Date().toISOString(),
+    //     updatedAt: new Date().toISOString()
+    //   }
+    // };
+    // await dynamoDb.send(new PutCommand(params));
+
+    // For now, we'll create a mock user
+    const newUser = {
+      id: '123',
+      aydoHandle,
       email,
-      password,
-      options: {
-        data: {
-          aydoHandle,
-          role: 'user',
-          clearanceLevel: 1
-        }
-      }
-    });
-    
-    if (supabaseError) {
-      console.error('Supabase signup error:', supabaseError);
-      // Continue even if Supabase user creation fails, as we have the Prisma user
-    }
-    
+      passwordHash: hashedPassword,
+      clearanceLevel: 1,
+      role: 'user',
+      discordName: discordName || null,
+      rsiAccountName: rsiAccountName || null
+    };
+
     // Return success response
     return NextResponse.json(
       { 
@@ -104,7 +106,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-    
+
   } catch (error) {
     console.error('Signup error:', error);
     return NextResponse.json(
