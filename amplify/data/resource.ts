@@ -14,9 +14,9 @@ const schema = a.schema({
       timezone: a.string(),
       preferredGameplayLoops: a.string().array(),
       // Relationships
-      messages: a.hasMany('Message'),
-      announcements: a.hasMany('Announcement'),
-      events: a.hasMany('Event'),
+      messages: a.hasMany('Message', 'user'),
+      announcements: a.hasMany('Announcement', 'user'),
+      events: a.hasMany('Event', 'user'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
