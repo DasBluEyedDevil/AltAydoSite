@@ -13,8 +13,8 @@ backend:
       commands:
         - echo "Building Amplify backend..."
         - npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
-        - npx amplify-cli status
-        - npx amplify-cli push --yes
+        - npx amplify status || echo "Amplify not initialized, skipping status check"
+        - npx amplify push --yes || echo "Amplify not initialized, skipping push"
 frontend:
   phases:
     preBuild:
@@ -29,7 +29,7 @@ frontend:
         - echo "Building Next.js application..."
         - npm run build
         - echo "Creating amplify_outputs.json if needed..."
-        - node -e "const fs=require('fs'); try { const amplifyExports = require('./amplify/output.json'); fs.writeFileSync('./public/amplify_outputs.json', JSON.stringify(amplifyExports, null, 2)); console.log('Created amplify_outputs.json'); } catch(e) { console.log('No Amplify exports found or error creating exports file:', e.message); }"
+        - node -e "const fs=require('fs'); try { const amplifyDir = './amplify'; if (fs.existsSync(amplifyDir)) { if (fs.existsSync('./amplify/output.json')) { const amplifyExports = require('./amplify/output.json'); fs.writeFileSync('./public/amplify_outputs.json', JSON.stringify(amplifyExports, null, 2)); console.log('Created amplify_outputs.json from output.json'); } else { console.log('amplify/output.json does not exist'); } } else { console.log('amplify directory does not exist'); }} catch(e) { console.log('Error checking Amplify exports:', e.message); }"
   artifacts:
     baseDirectory: .next
     files:
