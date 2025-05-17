@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createClient } from './utils/supabase/middleware';
+import { createClient, isAuthenticated } from './utils/amplify/middleware';
 
 // Protected routes that require authentication
 const protectedRoutes = [
@@ -11,29 +11,29 @@ const protectedRoutes = [
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   // Check if the pathname is a protected route
   const isProtectedRoute = protectedRoutes.some(route => 
     pathname.startsWith(route)
   );
-  
+
   if (isProtectedRoute) {
-    const { supabase, supabaseResponse } = createClient(request);
-    
-    // Get the user's session
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    // If no session, redirect to login
-    if (!session) {
+    const { amplifyResponse } = createClient(request);
+
+    // Check if the user is authenticated
+    const isUserAuthenticated = await isAuthenticated();
+
+    // If not authenticated, redirect to login
+    if (!isUserAuthenticated) {
       const url = new URL('/login', request.url);
       url.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(url);
     }
-    
+
     // User is authenticated, allow the request
-    return supabaseResponse;
+    return amplifyResponse;
   }
-  
+
   // Not a protected route, continue as normal
   return NextResponse.next();
 }
