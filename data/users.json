@@ -1,0 +1,14 @@
+[
+  {
+    "id": "394c0baf-bc2a-4b79-88ce-34ec644ed205",
+    "aydoHandle": "Test",
+    "email": "test@test.com",
+    "passwordHash": "$2b$10$w61cPUwRrsn2pm0weo3age/NwvKOHtrF/ojSJNQyTFexnmCT6BNDG",
+    "clearanceLevel": 1,
+    "role": "user",
+    "discordName": "test",
+    "rsiAccountName": "test",
+    "createdAt": "2025-05-17T18:36:14.395Z",
+    "updatedAt": "2025-05-17T18:36:14.395Z"
+  }
+]
