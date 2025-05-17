@@ -22,6 +22,7 @@ const configureAmplify = () => {
           endpoint: endpoint || '',
           apiKey: apiKey || '',
           region: region,
+          defaultAuthMode: 'apiKey'
         }
       }
     });
