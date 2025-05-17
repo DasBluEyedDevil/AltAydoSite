@@ -3,12 +3,15 @@ import { Session } from 'next-auth';
 // Extended session type with additional user properties
 export interface UserSession extends Session {
   user: {
-    id?: string;
-    name?: string;
-    email?: string;
-    image?: string;
-    clearanceLevel?: number;
-    role?: string;
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    clearanceLevel: number;
+    role: string;
+    aydoHandle: string;
+    discordName?: string | null;
+    rsiAccountName?: string | null;
   };
 }
 

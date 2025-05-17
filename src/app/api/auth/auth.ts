@@ -4,7 +4,6 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +13,7 @@ const users = [
     id: '1',
     aydoHandle: 'admin',
     email: 'admin@aydocorp.com',
-    password: '$2b$10$8OxDFt.GT.LV4xmX9ATR8.w4kGhJZgXnqnZqf5wn3EHQ8GqOAFMaK', // "password123"
+    passwordHash: '$2b$10$8OxDFt.GT.LV4xmX9ATR8.w4kGhJZgXnqnZqf5wn3EHQ8GqOAFMaK', // "password123"
     clearanceLevel: 5,
     role: 'admin',
     discordName: 'admin#1234',
@@ -24,7 +23,7 @@ const users = [
     id: '2',
     aydoHandle: 'user',
     email: 'user@aydocorp.com',
-    password: '$2b$10$8OxDFt.GT.LV4xmX9ATR8.w4kGhJZgXnqnZqf5wn3EHQ8GqOAFMaK', // "password123"
+    passwordHash: '$2b$10$8OxDFt.GT.LV4xmX9ATR8.w4kGhJZgXnqnZqf5wn3EHQ8GqOAFMaK', // "password123"
     clearanceLevel: 1,
     role: 'user',
     discordName: 'user#5678',
@@ -56,13 +55,13 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
-          // Ensure the user has a password
-          if (!user.password) {
-            console.error('User missing password');
+          // Ensure the user has a passwordHash
+          if (!user.passwordHash) {
+            console.error('User missing passwordHash');
             return null;
           }
 
-          const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash);
           
           if (!isPasswordValid) {
             return null;
