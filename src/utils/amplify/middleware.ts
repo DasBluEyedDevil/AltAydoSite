@@ -1,13 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Amplify } from "aws-amplify";
+import { getToken } from "next-auth/jwt";
 
 // Initialize Amplify with your configuration
 // This should match the configuration in your Amplify setup
 const configureAmplify = () => {
   try {
+    // Only configure Amplify for data access, not for auth
+    const endpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+    const apiKey = process.env.NEXT_PUBLIC_GRAPHQL_API_KEY;
+    const region = process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1';
+
+    if (!endpoint || !apiKey) {
+      console.warn("Middleware: Missing GraphQL endpoint or API key. Amplify will not be fully functional.");
+      console.warn("Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.");
+    }
+
     Amplify.configure({
-      // Auth configuration will be automatically loaded from aws-exports.js
-      // or you can specify it manually here
+      API: {
+        GraphQL: {
+          endpoint: endpoint || '',
+          apiKey: apiKey || '',
+          region: region,
+        }
+      }
     });
   } catch (error) {
     console.error("Error configuring Amplify:", error);
@@ -26,20 +42,27 @@ export const createClient = (request: NextRequest) => {
   configureAmplify();
 
   // Return the Amplify client and response
-  // Handle authentication and response
-  // because Amplify handles auth tokens differently
   return { amplifyResponse };
 };
 
-// Helper function to check if a user is authenticated
-// This will need to be implemented based on your Amplify auth setup
-export const isAuthenticated = async () => {
+// Helper function to check if a user is authenticated using NextAuth
+export const isAuthenticated = async (request?: NextRequest) => {
   try {
-    // In a real implementation, you would use Amplify Auth to check the session
-    // For example: const user = await Auth.currentAuthenticatedUser();
-    // For now, we'll return false to indicate not authenticated
-    return false;
+    if (!request) {
+      console.warn("No request object provided to isAuthenticated");
+      return false;
+    }
+
+    // Use NextAuth's getToken to check if the user is authenticated
+    const token = await getToken({ 
+      req: request as any, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+
+    // If we have a token, the user is authenticated
+    return !!token;
   } catch (error) {
+    console.error("Error checking authentication:", error);
     return false;
   }
 };

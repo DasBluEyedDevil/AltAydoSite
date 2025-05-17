@@ -14,23 +14,34 @@ let amplifyAvailable = false;
 let amplifyClient: any = null;
 
 try {
-  // Configure Amplify if running server-side
-  Amplify.configure({
-    // Configuration will be loaded from amplify_outputs.json or environment variables
-    API: {
-      GraphQL: {
-        endpoint: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || '',
-        apiKey: process.env.NEXT_PUBLIC_GRAPHQL_API_KEY || '',
-        region: process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1',
-        defaultAuthMode: 'apiKey',
+  // Get configuration values
+  const endpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+  const apiKey = process.env.NEXT_PUBLIC_GRAPHQL_API_KEY;
+  const region = process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1';
+
+  if (!endpoint || !apiKey) {
+    console.warn("Auth: Missing GraphQL endpoint or API key. Amplify authentication will fall back to alternative methods.");
+    console.warn("Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.");
+    amplifyAvailable = false;
+  } else {
+    // Configure Amplify if running server-side
+    Amplify.configure({
+      // Configuration will be loaded from amplify_outputs.json or environment variables
+      API: {
+        GraphQL: {
+          endpoint: endpoint,
+          apiKey: apiKey,
+          region: region,
+          defaultAuthMode: 'apiKey',
+        },
       },
-    },
-  });
-  
-  // Generate client for server-side operations
-  amplifyClient = generateClient();
-  amplifyAvailable = true;
-  console.log('Amplify client configured successfully for auth');
+    });
+
+    // Generate client for server-side operations
+    amplifyClient = generateClient();
+    amplifyAvailable = true;
+    console.log('Amplify client configured successfully for auth');
+  }
 } catch (error) {
   console.error('Error configuring Amplify client for auth:', error);
   amplifyAvailable = false;
@@ -68,12 +79,12 @@ const getLocalUsers = (): User[] => {
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }
-  
+
   if (!fs.existsSync(usersFilePath)) {
     fs.writeFileSync(usersFilePath, JSON.stringify([]), 'utf8');
     return [];
   }
-  
+
   try {
     const data = fs.readFileSync(usersFilePath, 'utf8');
     return JSON.parse(data) as User[];
@@ -141,7 +152,7 @@ export const authOptions: NextAuthOptions = {
               const response = await amplifyClient.models.User.list({
                 filter: { aydoHandle: { eq: credentials.aydoHandle } }
               });
-              
+
               if (response.data && response.data.length > 0) {
                 // Convert Amplify user to our User type
                 const amplifyUser = response.data[0];
@@ -176,9 +187,9 @@ export const authOptions: NextAuthOptions = {
                   ':aydoHandle': credentials.aydoHandle
                 }
               };
-              
+
               const response = await docClient.send(new QueryCommand(params));
-              
+
               if (response.Items && response.Items.length > 0) {
                 user = response.Items[0] as User;
                 console.log(`User found in DynamoDB: ${user.aydoHandle}`);
@@ -202,7 +213,7 @@ export const authOptions: NextAuthOptions = {
               console.log(`User found in local storage: ${user.aydoHandle}`);
             }
           }
-          
+
           if (!user) {
             console.log(`No user found with handle: ${credentials.aydoHandle}`);
             return null;

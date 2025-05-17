@@ -18,20 +18,32 @@ export async function middleware(request: NextRequest) {
   );
 
   if (isProtectedRoute) {
+    // Create Amplify client with the request context
     const { amplifyResponse } = createClient(request);
 
-    // Check if the user is authenticated
-    const isUserAuthenticated = await isAuthenticated();
+    try {
+      // Check if the user is authenticated
+      const isUserAuthenticated = await isAuthenticated(request);
 
-    // If not authenticated, redirect to login
-    if (!isUserAuthenticated) {
+      // If not authenticated, redirect to login
+      if (!isUserAuthenticated) {
+        console.log("User not authenticated, redirecting to login");
+        const url = new URL('/login', request.url);
+        url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
+        return NextResponse.redirect(url);
+      }
+
+      // User is authenticated, allow the request
+      console.log("User authenticated, allowing access to protected route");
+      return amplifyResponse;
+    } catch (error) {
+      console.error("Error in authentication middleware:", error);
+      // On error, redirect to login as a fallback
       const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', pathname);
+      url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
+      url.searchParams.set('error', 'AuthError');
       return NextResponse.redirect(url);
     }
-
-    // User is authenticated, allow the request
-    return amplifyResponse;
   }
 
   // Not a protected route, continue as normal
