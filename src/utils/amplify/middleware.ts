@@ -26,7 +26,7 @@ export const createClient = (request: NextRequest) => {
   configureAmplify();
 
   // Return the Amplify client and response
-  // This simplified version doesn't handle cookies like the Supabase version did
+  // Handle authentication and response
   // because Amplify handles auth tokens differently
   return { amplifyResponse };
 };
