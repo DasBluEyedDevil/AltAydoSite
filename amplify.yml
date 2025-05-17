@@ -1,34 +1,26 @@
 version: 1
+backend:
+  phases:
+    # preBuild, build, postBuild phases for the backend
+    # Amplify automatically handles deploying changes in the 'amplify' folder (like your resource.ts)
+    # during these backend phases if it detects any.
+    # You usually don't need to add explicit 'npx ampx deploy' commands here.
+    build:
+      commands:
+      # Example: if you had backend tests or other checks
+      # - npm run backend-test
 frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
-        - npx prisma generate
-        - npx prisma db push --accept-data-loss
+        - npm ci # Or yarn install, pnpm install
     build:
       commands:
-        - env | grep -e NEXT_PUBLIC_ -e DATABASE_URL -e DIRECT_URL -e NEXTAUTH_ -e SUPABASE_ >> .env.production
-        - npm run build
+        - npm run build # Or your framework's build command (e.g., next build)
   artifacts:
-    baseDirectory: .next
+    baseDirectory: .next # Or dist, build, out, depending on your framework
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
-      - .next/cache/**/*
-  customHeaders:
-    - pattern: '/_next/static/**/*'
-      headers:
-        - key: 'Cache-Control'
-          value: 'public, max-age=31536000, immutable'
-  environment:
-    variables:
-      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      DATABASE_URL: ${DATABASE_URL}
-      DIRECT_URL: ${DIRECT_URL}
-      NEXTAUTH_URL: ${NEXTAUTH_URL}
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY} 
