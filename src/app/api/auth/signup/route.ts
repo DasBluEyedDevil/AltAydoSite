@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       data: {
         aydoHandle,
         email,
-        password: hashedPassword,
+        passwordHash: hashedPassword,
         clearanceLevel: 1, // Default clearance level for new users
         role: 'user', // Default role for new users
         discordName: discordName || null,
@@ -69,8 +69,7 @@ export async function POST(request: NextRequest) {
     });
     
     // Also create the user in Supabase
-    const cookieStore = cookies();
-    const supabase = await createClient(cookieStore);
+    const supabase = createClient();
     
     // Create user in Supabase
     const { error: supabaseError } = await supabase.auth.signUp({
