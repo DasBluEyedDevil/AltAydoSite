@@ -1,6 +1,5 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
-import AuthProvider from '../components/providers/AuthProvider';
 import Profile from '../components/Profile';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
@@ -10,6 +9,7 @@ import UserProviderWrapper from '../components/UserProviderWrapper';
 import SecureConnectionIndicator from '../components/SecureConnectionIndicator';
 import { Suspense } from 'react';
 import ClientErrorBoundary from '../components/ClientErrorBoundary';
+import Providers from '../components/providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -41,8 +41,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-quantify bg-black text-white min-h-screen antialiased overflow-x-hidden text-sm">
         <ClientErrorBoundary>
-          <UserProviderWrapper>
-            <AuthProvider>
+          <Providers>
+            <UserProviderWrapper>
               <div className="relative min-h-screen flex flex-col">
                 <StarfieldWrapper />
 
@@ -86,8 +86,8 @@ export default function RootLayout({
                 {/* Secure Connection Indicator - only shows when user is logged in */}
                 <SecureConnectionIndicator />
               </div>
-            </AuthProvider>
-          </UserProviderWrapper>
+            </UserProviderWrapper>
+          </Providers>
         </ClientErrorBoundary>
       </body>
     </html>

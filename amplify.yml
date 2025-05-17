@@ -5,22 +5,49 @@ backend:
     # Amplify automatically handles deploying changes in the 'amplify' folder (like your resource.ts)
     # during these backend phases if it detects any.
     # You usually don't need to add explicit 'npx ampx deploy' commands here.
+    preBuild:
+      commands:
+        - npm ci
+        - npm install -g @aws-amplify/cli
     build:
       commands:
-      # Example: if you had backend tests or other checks
-      # - npm run backend-test
+        - echo "Building Amplify backend..."
+        - npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
+        - npx amplify-cli status
+        - npx amplify-cli push --yes
 frontend:
   phases:
     preBuild:
       commands:
-        - npm ci # Or yarn install, pnpm install
+        - echo "Installing frontend dependencies..."
+        - npm ci
+        - node -e "const fs=require('fs'); try { if (!fs.existsSync('./amplify_outputs.json')) { fs.writeFileSync('./amplify_outputs.json', JSON.stringify({}, null, 2)); console.log('Created empty amplify_outputs.json'); }} catch(e) { console.error(e); }"
     build:
       commands:
-        - npm run build # Or your framework's build command (e.g., next build)
+        - echo "Setting up environment for NextAuth and Amplify..."
+        - node -e "const fs=require('fs'); try { if (!fs.existsSync('.env.local') && process.env.NEXTAUTH_SECRET) { fs.writeFileSync('.env.local', `NEXTAUTH_SECRET=${process.env.NEXTAUTH_SECRET}\n` + `NEXTAUTH_URL=${process.env.NEXTAUTH_URL || process.env.DEPLOY_URL || ''}\n` + `NEXT_PUBLIC_GRAPHQL_ENDPOINT=${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || ''}\n` + `NEXT_PUBLIC_GRAPHQL_API_KEY=${process.env.NEXT_PUBLIC_GRAPHQL_API_KEY || ''}\n` + `NEXT_PUBLIC_AWS_REGION=${process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1'}\n`); console.log('Created .env.local'); }} catch(e) { console.error(e); }"
+        - echo "Building Next.js application..."
+        - npm run build
+        - echo "Creating amplify_outputs.json if needed..."
+        - node -e "const fs=require('fs'); try { const amplifyExports = require('./amplify/output.json'); fs.writeFileSync('./public/amplify_outputs.json', JSON.stringify(amplifyExports, null, 2)); console.log('Created amplify_outputs.json'); } catch(e) { console.log('No Amplify exports found or error creating exports file:', e.message); }"
   artifacts:
-    baseDirectory: .next # Or dist, build, out, depending on your framework
+    baseDirectory: .next
     files:
       - '**/*'
+      - '../public/**/*'
   cache:
     paths:
       - node_modules/**/*
+      - .next/cache/**/*
+  customHeaders:
+    - pattern: '**/*'
+      headers:
+        - key: 'Strict-Transport-Security'
+          value: 'max-age=31536000; includeSubDomains'
+        - key: 'X-Content-Type-Options'
+          value: 'nosniff'
+        - key: 'X-XSS-Protection'
+          value: '1; mode=block'
+  environment:
+    variables:
+      NODE_ENV: 'production'

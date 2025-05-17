@@ -4,15 +4,24 @@ const schema = a.schema({
   // User model based on UserProfile interface
   User: a
     .model({
+      id: a.id(), // Primary key
       name: a.string(),
       handle: a.string(),
-      photo: a.string(),
-      subsidiary: a.string(),
-      payGrade: a.string(),
-      position: a.string(),
-      email: a.string(),
-      timezone: a.string(),
-      preferredGameplayLoops: a.string().array(),
+      aydoHandle: a.string().required(),
+      email: a.string().required(),
+      passwordHash: a.string().required(),
+      clearanceLevel: a.integer().required(),
+      role: a.string().required(),
+      discordName: a.string().nullable(),
+      rsiAccountName: a.string().nullable(),
+      photo: a.string().nullable(),
+      subsidiary: a.string().nullable(),
+      payGrade: a.string().nullable(),
+      position: a.string().nullable(),
+      timezone: a.string().nullable(),
+      preferredGameplayLoops: a.string().array().nullable(),
+      createdAt: a.datetime().nullable(),
+      updatedAt: a.datetime().nullable(),
       // Relationships
       messages: a.hasMany('Message', 'user'),
       announcements: a.hasMany('Announcement', 'user'),
