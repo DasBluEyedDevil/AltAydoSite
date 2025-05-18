@@ -9,6 +9,7 @@ backend:
     build:
       commands:
         - npx tsc
+        - npm run build:amplify
 frontend:
   phases:
     preBuild:
