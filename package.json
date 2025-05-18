@@ -12,7 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:amplify": "npx ampx generate outputs --app-id \"$AMPLIFY_APP_ID\" --branch \"$AMPLIFY_BRANCH\" || node -e \"const fs=require('fs'); fs.writeFileSync('./amplify/backend.out.json', JSON.stringify({}, null, 2)); console.log('Created fallback backend.out.json file');\""
+    "build:amplify": "npx ampx generate outputs --app-id \"%AMPLIFY_APP_ID%\" --branch \"%AMPLIFY_BRANCH%\" || node -e \"const fs=require('fs'); fs.writeFileSync('./amplify/backend.out.json', JSON.stringify({}, null, 2)); console.log('Created fallback backend.out.json file');\""
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.812.0",

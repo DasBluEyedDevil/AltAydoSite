@@ -30,22 +30,17 @@ This project is a Next.js application that uses NextAuth for authentication and 
    npm install
    ```
 
-3. Initialize Amplify (if not already initialized):
+3. Generate the Amplify backend resources:
    ```bash
-   npx ampx init
+   npx ampx generate outputs --app-id "your-app-id" --branch "your-branch"
    ```
 
-4. Generate the Amplify backend resources:
-   ```bash
-   npx ampx generate
-   ```
-
-5. Create a `.env.local` file with the following variables (copy from `.env` and update with your values):
+4. Create a `.env.local` file with the following variables (copy from `.env` and update with your values):
    ```
    # NextAuth.js Configuration
    NEXTAUTH_URL=http://localhost:3000
    NEXTAUTH_SECRET=your-secret-key
-   
+
    # Amplify GraphQL API Configuration
    NEXT_PUBLIC_GRAPHQL_ENDPOINT=https://your-api-id.appsync-api.region.amazonaws.com/graphql
    NEXT_PUBLIC_GRAPHQL_API_KEY=your-api-key-from-amplify-console

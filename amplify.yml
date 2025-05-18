@@ -9,6 +9,7 @@ backend:
     build:
       commands:
         - npx tsc
+        - npx ampx generate outputs --app-id "%AMPLIFY_APP_ID%" --branch "%AMPLIFY_BRANCH%"
         - npm run build:amplify
 frontend:
   phases:
