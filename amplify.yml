@@ -8,7 +8,7 @@ backend:
         - npm install -g @aws-amplify/cli
     build:
       commands:
-        - echo "No manual backend build/deploy needed for Amplify Gen 2. Skipping explicit backend deploy commands."
+        - npx tsc
 frontend:
   phases:
     preBuild:
