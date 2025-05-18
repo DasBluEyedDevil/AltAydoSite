@@ -1,20 +1,14 @@
 version: 1
 backend:
   phases:
-    # preBuild, build, postBuild phases for the backend
-    # Amplify automatically handles deploying changes in the 'amplify' folder (like your resource.ts)
-    # during these backend phases if it detects any.
-    # You usually don't need to add explicit 'npx ampx deploy' commands here.
+    # In Amplify Gen 2, backend deployment is handled automatically by Amplify Console.
     preBuild:
       commands:
         - npm ci
         - npm install -g @aws-amplify/cli
     build:
       commands:
-        - echo "Building Amplify backend..."
-        - npx ampx pipeline-deploy --app-id "${AWS_APP_ID}" --branch "${AWS_BRANCH}" || echo "Skipping ampx pipeline-deploy due to issues"
-        - npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
-        - npx ampx info || echo "Amplify not initialized, skipping status check"
+        - echo "No manual backend build/deploy needed for Amplify Gen 2. Skipping explicit backend deploy commands."
 frontend:
   phases:
     preBuild:
@@ -72,7 +66,6 @@ frontend:
               console.log('Error checking Amplify exports:', e.message);
             }
           "
-        - npx ampx generate outputs --app-id "$AWS_APP_ID" --branch "$AWS_BRANCH" || echo "Skipping amplify generate outputs due to permission issues"
   artifacts:
     baseDirectory: .next
     files:
