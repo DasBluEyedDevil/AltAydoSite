@@ -1,8 +1,8 @@
-2025-05-18T17:28:19.876Z [INFO]: # Cloning repository: git@github.com:DasBluEyedDevil/AltAydoSite.git
-2025-05-18T17:28:24.340Z [INFO]: 
-2025-05-18T17:28:24.425Z [INFO]: Cloning into 'AltAydoSite'...
-2025-05-18T17:28:24.425Z [INFO]: # Switching to commit: 16f91211defc923c36eb8e938268cb921963d44c
-2025-05-18T17:28:24.669Z [INFO]: Note: switching to '16f91211defc923c36eb8e938268cb921963d44c'.
+2025-05-18T20:43:59.793Z [INFO]: # Cloning repository: git@github.com:DasBluEyedDevil/AltAydoSite.git
+2025-05-18T20:44:04.517Z [INFO]: 
+2025-05-18T20:44:04.609Z [INFO]: Cloning into 'AltAydoSite'...
+2025-05-18T20:44:04.610Z [INFO]: # Switching to commit: 847d189e904c56cd9963c0789a0c1c19cf01fcf6
+2025-05-18T20:44:05.072Z [INFO]: Note: switching to '847d189e904c56cd9963c0789a0c1c19cf01fcf6'.
                                  You are in 'detached HEAD' state. You can look around, make experimental
                                  changes and commit them, and you can discard any commits you make in this
                                  state without impacting any branches by switching back to a branch.
@@ -12,47 +12,46 @@
                                  Or undo this operation with:
                                  git switch -
                                  Turn off this advice by setting config variable advice.detachedHead to false
-                                 HEAD is now at 16f9121 Refactor backend deployment commands in amplify.yml to simplify and clarify Amplify Gen 2 handling
-2025-05-18T17:28:24.726Z [INFO]: Successfully cleaned up Git credentials
-2025-05-18T17:28:24.726Z [INFO]: # Checking for Git submodules at: /codebuild/output/src3059065171/src/AltAydoSite/.gitmodules
-2025-05-18T17:28:24.737Z [INFO]: # Retrieving environment cache...
-2025-05-18T17:28:24.811Z [INFO]: # Retrieved environment cache
-2025-05-18T17:28:24.811Z [INFO]: ---- Setting Up SSM Secrets ----
-2025-05-18T17:28:24.811Z [INFO]: SSM params {"Path":"/amplify/d3ohapvt0eajka/main/","WithDecryption":true}
-2025-05-18T17:28:24.857Z [WARNING]: !Failed to set up process.env.secrets
-2025-05-18T17:28:25.411Z [INFO]: # No package override configuration found.
-2025-05-18T17:28:25.416Z [INFO]: # Retrieving cache...
-2025-05-18T17:28:45.162Z [INFO]: # Extracting cache...
-2025-05-18T17:29:24.481Z [INFO]: # Extraction completed
-2025-05-18T17:29:24.735Z [INFO]: # Retrieved cache
-2025-05-18T17:29:45.632Z [INFO]: ## Starting Backend Build
+                                 HEAD is now at 847d189 fix: run npx tsc for backend build so Amplify deploys backend resources
+2025-05-18T20:44:05.124Z [INFO]: Successfully cleaned up Git credentials
+2025-05-18T20:44:05.124Z [INFO]: # Checking for Git submodules at: /codebuild/output/src2992619298/src/AltAydoSite/.gitmodules
+2025-05-18T20:44:05.135Z [INFO]: # Retrieving environment cache...
+2025-05-18T20:44:05.215Z [INFO]: # Retrieved environment cache
+2025-05-18T20:44:05.215Z [INFO]: ---- Setting Up SSM Secrets ----
+2025-05-18T20:44:05.215Z [INFO]: SSM params {"Path":"/amplify/d1yp755hftiq2j/main/","WithDecryption":true}
+2025-05-18T20:44:05.796Z [INFO]: # No package override configuration found.
+2025-05-18T20:44:05.802Z [INFO]: # Retrieving cache...
+2025-05-18T20:44:34.654Z [INFO]: # Extracting cache...
+2025-05-18T20:45:17.754Z [INFO]: # Extraction completed
+2025-05-18T20:45:18.025Z [INFO]: # Retrieved cache
+2025-05-18T20:45:38.137Z [INFO]: ## Starting Backend Build
                                  # Starting phase: preBuild
                                  # Executing command: npm ci
-2025-05-18T17:32:27.487Z [INFO]: added 2278 packages in 3m
-2025-05-18T17:32:27.519Z [INFO]: # Executing command: npm install -g @aws-amplify/cli
-2025-05-18T17:32:36.068Z [WARNING]: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
-2025-05-18T17:32:36.082Z [WARNING]: npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
-2025-05-18T17:32:36.087Z [WARNING]: npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
-2025-05-18T17:32:50.395Z [INFO]: changed 47 packages in 23s
-2025-05-18T17:32:50.400Z [INFO]: 12 packages are looking for funding
-                                 run `npm fund` for details
-2025-05-18T17:32:50.408Z [INFO]: # Completed phase: preBuild
+2025-05-18T20:48:21.242Z [INFO]: added 2278 packages in 3m
+2025-05-18T20:48:21.283Z [INFO]: # Executing command: npm install -g @aws-amplify/cli
+2025-05-18T20:48:29.418Z [WARNING]: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2025-05-18T20:48:29.429Z [WARNING]: npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+2025-05-18T20:48:29.436Z [WARNING]: npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+2025-05-18T20:48:44.683Z [INFO]: changed 47 packages in 23s
+                                 12 packages are looking for funding
+2025-05-18T20:48:44.688Z [INFO]: run `npm fund` for details
+2025-05-18T20:48:44.697Z [INFO]: # Completed phase: preBuild
                                  # Starting phase: build
-                                 # Executing command: echo "No manual backend build/deploy needed for Amplify Gen 2. Skipping explicit backend deploy commands."
-                                 No manual backend build/deploy needed for Amplify Gen 2. Skipping explicit backend deploy commands.
-2025-05-18T17:32:51.750Z [INFO]: # Completed phase: build
+                                 # Executing command: npx tsc
+2025-05-18T20:48:57.583Z [INFO]: # Completed phase: build
                                  ## Completed Backend Build
-2025-05-18T17:32:51.754Z [INFO]: ## Starting Frontend Build
+2025-05-18T20:48:57.588Z [INFO]: {"backendDuration": 199}
+                                 ## Starting Frontend Build
                                  # Starting phase: preBuild
-2025-05-18T17:32:51.754Z [INFO]: # Executing command: echo "Installing frontend dependencies..."
+                                 # Executing command: echo "Installing frontend dependencies..."
                                  Installing frontend dependencies...
                                  # Executing command: npm ci
-2025-05-18T17:35:22.896Z [INFO]: added 2278 packages in 3m
-2025-05-18T17:35:22.990Z [INFO]: # Executing command: node -e "const fs=require('fs'); try { if (!fs.existsSync('./amplify_outputs.json')) { fs.writeFileSync('./amplify_outputs.json', JSON.stringify({}, null, 2)); console.log('Created empty amplify_outputs.json'); }} catch(e) { console.error(e); }"
-2025-05-18T17:35:23.019Z [INFO]: Created empty amplify_outputs.json
-2025-05-18T17:35:23.022Z [INFO]: # Completed phase: preBuild
+2025-05-18T20:51:29.803Z [INFO]: added 2278 packages in 3m
+2025-05-18T20:51:29.905Z [INFO]: # Executing command: node -e "const fs=require('fs'); try { if (!fs.existsSync('./amplify_outputs.json')) { fs.writeFileSync('./amplify_outputs.json', JSON.stringify({}, null, 2)); console.log('Created empty amplify_outputs.json'); }} catch(e) { console.error(e); }"
+2025-05-18T20:51:29.939Z [INFO]: Created empty amplify_outputs.json
+2025-05-18T20:51:29.943Z [INFO]: # Completed phase: preBuild
                                  # Starting phase: build
-2025-05-18T17:35:23.023Z [INFO]: # Executing command: echo "Setting up environment for NextAuth and Amplify..."
+2025-05-18T20:51:29.943Z [INFO]: # Executing command: echo "Setting up environment for NextAuth and Amplify..."
                                  Setting up environment for NextAuth and Amplify...
                                  # Executing command: node -e "
                                  const fs = require('fs');
@@ -78,39 +77,36 @@
                                  console.error('Error creating .env.local:', e);
                                  }
                                  "
-2025-05-18T17:35:23.051Z [INFO]: Created .env.local
-2025-05-18T17:35:23.054Z [INFO]: # Executing command: echo "Building Next.js application..."
+2025-05-18T20:51:29.974Z [INFO]: Created .env.local
+2025-05-18T20:51:29.977Z [INFO]: # Executing command: echo "Building Next.js application..."
                                  Building Next.js application...
-2025-05-18T17:35:23.055Z [INFO]: # Executing command: npm run build
-2025-05-18T17:35:23.190Z [INFO]: > aydocorp-website@0.1.0 build
+2025-05-18T20:51:29.977Z [INFO]: # Executing command: npm run build
+2025-05-18T20:51:30.108Z [INFO]: > aydocorp-website@0.1.0 build
                                  > next build
-2025-05-18T17:35:23.980Z [INFO]: ▲ Next.js 15.3.2
-2025-05-18T17:35:23.981Z [INFO]: - Environments: .env.local, .env
-2025-05-18T17:35:24.058Z [INFO]: Creating an optimized production build ...
-2025-05-18T17:35:56.233Z [INFO]: ✓ Compiled successfully in 28.0s
-2025-05-18T17:35:56.239Z [INFO]: Linting and checking validity of types ...
-2025-05-18T17:36:13.056Z [INFO]: Collecting page data ...
-2025-05-18T17:36:13.693Z [INFO]: Amplify client configured successfully for signup
-2025-05-18T17:36:13.711Z [WARNING]: Auth: Missing GraphQL endpoint or API key. Amplify authentication will fall back to alternative methods.
-2025-05-18T17:36:13.712Z [WARNING]: Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.
-2025-05-18T17:36:13.783Z [WARNING]: Auth: Missing GraphQL endpoint or API key. Amplify authentication will fall back to alternative methods.
-2025-05-18T17:36:13.783Z [WARNING]: Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.
-2025-05-18T17:36:15.784Z [INFO]: Generating static pages (0/15) ...
-2025-05-18T17:36:16.739Z [INFO]: Generating static pages (3/15)
-2025-05-18T17:36:16.746Z [INFO]: Generating static pages (7/15)
-                                 Amplify client configured successfully for signup
-2025-05-18T17:36:16.798Z [WARNING]: Auth: Missing GraphQL endpoint or API key. Amplify authentication will fall back to alternative methods.
-                                    Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.
-2025-05-18T17:36:16.837Z [INFO]: Generating static pages (11/15)
-2025-05-18T17:36:16.838Z [INFO]: ✓ Generating static pages (15/15)
-2025-05-18T17:36:17.370Z [INFO]: Finalizing page optimization ...
-                                 Collecting build traces ...
-2025-05-18T17:36:30.588Z [INFO]: 
-2025-05-18T17:36:30.599Z [INFO]: Route (app)                                 Size  First Load JS
+2025-05-18T20:51:30.861Z [INFO]: ▲ Next.js 15.3.2
+2025-05-18T20:51:30.861Z [INFO]: - Environments: .env.local, .env
+2025-05-18T20:51:30.934Z [INFO]: Creating an optimized production build ...
+2025-05-18T20:52:03.547Z [INFO]: ✓ Compiled successfully in 28.0s
+2025-05-18T20:52:03.563Z [INFO]: Linting and checking validity of types ...
+2025-05-18T20:52:20.408Z [INFO]: Collecting page data ...
+2025-05-18T20:52:21.035Z [INFO]: Amplify client configured successfully for signup
+2025-05-18T20:52:21.104Z [INFO]: Amplify client configured successfully for auth
+2025-05-18T20:52:21.171Z [INFO]: Amplify client configured successfully for auth
+2025-05-18T20:52:23.203Z [INFO]: Generating static pages (0/15) ...
+2025-05-18T20:52:24.075Z [INFO]: Generating static pages (3/15)
+2025-05-18T20:52:24.081Z [INFO]: Generating static pages (7/15)
+2025-05-18T20:52:24.138Z [INFO]: Amplify client configured successfully for signup
+2025-05-18T20:52:24.289Z [INFO]: Amplify client configured successfully for auth
+2025-05-18T20:52:24.289Z [INFO]: Generating static pages (11/15)
+                                 ✓ Generating static pages (15/15)
+2025-05-18T20:52:24.852Z [INFO]: Finalizing page optimization ...
+2025-05-18T20:52:24.853Z [INFO]: Collecting build traces ...
+2025-05-18T20:52:37.961Z [INFO]: 
+2025-05-18T20:52:37.974Z [INFO]: Route (app)                                 Size  First Load JS
                                  ┌ ○ /                                    6.86 kB         153 kB
                                  ├ ○ /_not-found                            141 B         101 kB
                                  ├ ○ /about                               11.7 kB         154 kB
-                                 ├ ƒ /admin                                 184 B         110 kB
+                                 ├ ƒ /admin                                 185 B         110 kB
                                  ├ ƒ /api/auth/[...nextauth]                141 B         101 kB
                                  ├ ƒ /api/auth/signup                       141 B         101 kB
                                  ├ ○ /contact                             7.86 kB         147 kB
@@ -118,19 +114,19 @@
                                  ├ ○ /join                                5.15 kB         144 kB
                                  ├ ○ /login                               2.64 kB         149 kB
                                  ├ ○ /references                          1.56 kB         103 kB
-                                 ├ ○ /services                            9.29 kB         148 kB
-                                 ├ ○ /signup                              4.26 kB         141 kB
+                                 ├ ○ /services                             9.3 kB         148 kB
+                                 ├ ○ /signup                              4.27 kB         141 kB
                                  └ ○ /userprofile                         1.47 kB         144 kB
                                  + First Load JS shared by all             101 kB
                                  ├ chunks/4bd1b696-efd78cc6b189421a.js  53.2 kB
                                  ├ chunks/684-51c7b8077c59b2e4.js       45.8 kB
                                  └ other shared chunks (total)          1.93 kB
                                  ƒ Middleware                             71.3 kB
-2025-05-18T17:36:30.600Z [INFO]: ○  (Static)   prerendered as static content
+2025-05-18T20:52:37.974Z [INFO]: ○  (Static)   prerendered as static content
                                  ƒ  (Dynamic)  server-rendered on demand
-2025-05-18T17:36:30.632Z [INFO]: # Executing command: echo "Creating amplify_outputs.json if needed..."
+2025-05-18T20:52:38.006Z [INFO]: # Executing command: echo "Creating amplify_outputs.json if needed..."
                                  Creating amplify_outputs.json if needed...
-2025-05-18T17:36:30.632Z [INFO]: # Executing command: node -e "
+2025-05-18T20:52:38.006Z [INFO]: # Executing command: node -e "
                                  const fs = require('fs');
                                  try {
                                  const amplifyDir = './amplify';
@@ -153,23 +149,23 @@
                                  console.log('Error checking Amplify exports:', e.message);
                                  }
                                  "
-2025-05-18T17:36:30.660Z [INFO]: amplify output files do not exist
-2025-05-18T17:36:30.664Z [INFO]: # Completed phase: build
+2025-05-18T20:52:38.035Z [INFO]: amplify output files do not exist
+2025-05-18T20:52:38.038Z [INFO]: # Completed phase: build
                                  ## Completed Frontend Build
-2025-05-18T17:36:30.979Z [INFO]: ## Build completed successfully
-2025-05-18T17:36:30.981Z [INFO]: # Starting caching...
-2025-05-18T17:36:30.991Z [INFO]: # Creating cache artifact...
-2025-05-18T17:37:27.588Z [INFO]: # Created cache artifact
-2025-05-18T17:37:27.700Z [INFO]: # Uploading cache artifact...
-2025-05-18T17:37:43.961Z [INFO]: # Uploaded cache artifact
-2025-05-18T17:37:44.095Z [INFO]: # Caching completed
-2025-05-18T17:37:44.101Z [INFO]: Found customHeaders section in amplify.yml, applying custom headers...
-2025-05-18T17:37:44.101Z [WARNING]: [DEPRECATION WARNING] using amplify.yml to modify custom headers is being deprecated.
-2025-05-18T17:37:44.101Z [WARNING]: Going forward, in order to configure your custom headers via deploy, please use customHttp.yml instead.
-2025-05-18T17:37:44.101Z [WARNING]: Learn more: https://docs.aws.amazon.com/amplify/latest/userguide/custom-headers.html
-2025-05-18T17:37:44.101Z [INFO]: # Found custom headers config file.
-2025-05-18T17:38:10.960Z [INFO]: # Starting environment caching...
-2025-05-18T17:38:11.086Z [INFO]: # Uploading environment cache artifact...
-2025-05-18T17:38:11.154Z [INFO]: # Uploaded environment cache artifact
-2025-05-18T17:38:11.155Z [INFO]: # Environment caching completed
+2025-05-18T20:52:38.355Z [INFO]: ## Build completed successfully
+2025-05-18T20:52:38.358Z [INFO]: # Starting caching...
+2025-05-18T20:52:38.367Z [INFO]: # Creating cache artifact...
+2025-05-18T20:53:34.896Z [INFO]: # Created cache artifact
+2025-05-18T20:53:35.008Z [INFO]: # Uploading cache artifact...
+2025-05-18T20:53:51.116Z [INFO]: # Uploaded cache artifact
+2025-05-18T20:53:51.212Z [INFO]: # Caching completed
+2025-05-18T20:53:51.216Z [INFO]: Found customHeaders section in amplify.yml, applying custom headers...
+2025-05-18T20:53:51.216Z [WARNING]: [DEPRECATION WARNING] using amplify.yml to modify custom headers is being deprecated.
+2025-05-18T20:53:51.216Z [WARNING]: Going forward, in order to configure your custom headers via deploy, please use customHttp.yml instead.
+2025-05-18T20:53:51.216Z [WARNING]: Learn more: https://docs.aws.amazon.com/amplify/latest/userguide/custom-headers.html
+2025-05-18T20:53:51.216Z [INFO]: # Found custom headers config file.
+2025-05-18T20:54:18.478Z [INFO]: # Starting environment caching...
+2025-05-18T20:54:18.589Z [INFO]: # Uploading environment cache artifact...
+2025-05-18T20:54:18.670Z [INFO]: # Uploaded environment cache artifact
+2025-05-18T20:54:18.670Z [INFO]: # Environment caching completed
 
