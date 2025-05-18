@@ -23,9 +23,9 @@ const schema = a.schema({
       createdAt: a.datetime(),
       updatedAt: a.datetime(),
       // Relationships
-      messages: a.hasMany('Message', ['id']),
-      announcements: a.hasMany('Announcement', ['id']),
-      events: a.hasMany('Event', ['id']),
+      messages: a.hasMany('Message'),
+      announcements: a.hasMany('Announcement'),
+      events: a.hasMany('Event'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -38,7 +38,7 @@ const schema = a.schema({
       read: a.boolean(),
       userId: a.string(),
       // Relationships
-      user: a.belongsTo('User', ['userId']),
+      user: a.belongsTo('User'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -52,7 +52,7 @@ const schema = a.schema({
       description: a.string(),
       userId: a.string(),
       // Relationships
-      user: a.belongsTo('User', ['userId']),
+      user: a.belongsTo('User'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -66,7 +66,7 @@ const schema = a.schema({
       category: a.enum(['general', 'express', 'empyrion', 'corporate']),
       userId: a.string(),
       // Relationships
-      user: a.belongsTo('User', ['userId']),
+      user: a.belongsTo('User'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -81,7 +81,7 @@ const schema = a.schema({
       subsidiary: a.string(),
       userId: a.string(),
       // Relationships
-      user: a.belongsTo('User', ['userId']),
+      user: a.belongsTo('User'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
