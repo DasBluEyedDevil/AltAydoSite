@@ -12,7 +12,7 @@ backend:
     build:
       commands:
         - echo "Building Amplify backend..."
-        - npx ampx pipeline-deploy || echo "Skipping ampx pipeline-deploy due to issues"
+        - npx ampx pipeline-deploy --app-id "${AWS_APP_ID}" --branch "${AWS_BRANCH}" || echo "Skipping ampx pipeline-deploy due to issues"
         - npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
         - npx ampx info || echo "Amplify not initialized, skipping status check"
 frontend:

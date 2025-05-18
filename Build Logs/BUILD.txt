@@ -1,0 +1,69 @@
+2025-05-17T23:58:11.064Z [INFO]: # Cloning repository: git@github.com:DasBluEyedDevil/AltAydoSite.git
+2025-05-17T23:58:15.469Z [INFO]: 
+2025-05-17T23:58:15.545Z [INFO]: Cloning into 'AltAydoSite'...
+2025-05-17T23:58:15.546Z [INFO]: # Switching to commit: 05621da1b824a3ddac98d01f6322a1e26f6c9521
+2025-05-17T23:58:15.942Z [INFO]: Note: switching to '05621da1b824a3ddac98d01f6322a1e26f6c9521'.
+                                 You are in 'detached HEAD' state. You can look around, make experimental
+                                 changes and commit them, and you can discard any commits you make in this
+                                 state without impacting any branches by switching back to a branch.
+                                 If you want to create a new branch to retain commits you create, you may
+                                 do so (now or later) by using -c with the switch command. Example:
+                                 git switch -c <new-branch-name>
+                                 Or undo this operation with:
+                                 git switch -
+                                 Turn off this advice by setting config variable advice.detachedHead to false
+                                 HEAD is now at 05621da Fix Amplify command to use pipeline-deploy
+2025-05-17T23:58:15.986Z [INFO]: Successfully cleaned up Git credentials
+2025-05-17T23:58:15.987Z [INFO]: # Checking for Git submodules at: /codebuild/output/src2914729105/src/AltAydoSite/.gitmodules
+2025-05-17T23:58:15.997Z [INFO]: # Retrieving environment cache...
+2025-05-17T23:58:16.069Z [INFO]: # Retrieved environment cache
+2025-05-17T23:58:16.069Z [INFO]: ---- Setting Up SSM Secrets ----
+2025-05-17T23:58:16.069Z [INFO]: SSM params {"Path":"/amplify/d3ohapvt0eajka/main/","WithDecryption":true}
+2025-05-17T23:58:16.118Z [WARNING]: !Failed to set up process.env.secrets
+2025-05-17T23:58:16.888Z [INFO]: # No package override configuration found.
+2025-05-17T23:58:16.893Z [INFO]: # Retrieving cache...
+2025-05-17T23:58:39.576Z [INFO]: # Extracting cache...
+2025-05-17T23:59:18.344Z [INFO]: # Extraction completed
+2025-05-17T23:59:18.596Z [INFO]: # Retrieved cache
+2025-05-17T23:59:22.751Z [INFO]: ## Starting Backend Build
+                                 # Starting phase: preBuild
+                                 # Executing command: npm ci
+2025-05-18T00:01:59.862Z [INFO]: added 2278 packages in 3m
+2025-05-18T00:01:59.896Z [INFO]: # Executing command: npm install -g @aws-amplify/cli
+2025-05-18T00:02:09.774Z [WARNING]: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2025-05-18T00:02:09.787Z [WARNING]: npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+2025-05-18T00:02:09.791Z [WARNING]: npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+2025-05-18T00:02:22.803Z [INFO]: changed 47 packages in 23s
+2025-05-18T00:02:22.808Z [INFO]: 12 packages are looking for funding
+                                 run `npm fund` for details
+2025-05-18T00:02:22.815Z [INFO]: # Completed phase: preBuild
+                                 # Starting phase: build
+2025-05-18T00:02:22.816Z [INFO]: # Executing command: echo "Building Amplify backend..."
+                                 Building Amplify backend...
+                                 # Executing command: npx ampx pipeline-deploy || echo "Skipping ampx pipeline-deploy due to issues"
+2025-05-18T00:02:26.658Z [INFO]: 
+2025-05-18T00:02:26.663Z [INFO]: [Error] Missing required arguments: branch, app-id
+2025-05-18T00:02:26.663Z [WARNING]: ampx pipeline-deploy
+                                    Command to deploy backends in a custom CI/CD pipeline. This command is not inten
+                                    ded to be used locally.
+                                    Options:
+                                    --debug            Print debug logs to the console
+                                    [boolean] [default: false]
+                                    --branch           Name of the git branch being deployed
+                                    [string] [required]
+                                    --app-id           The app id of the target Amplify app[string] [required]
+                                    --outputs-out-dir  A path to directory where amplify_outputs is written. I
+                                    f not provided defaults to current process working dire
+                                    ctory.                                         [string]
+                                    --outputs-version  Version of the configuration. Version 0 represents clas
+                                    sic amplify-cli config file amplify-configuration and 1
+                                    represents newer config file amplify_outputs
+                                    [string] [choices: "0", "1", "1.1", "1.2", "1.3", "1.4"] [default: "1.4"]
+                                    --outputs-format   amplify_outputs file format
+                                    [string] [choices: "mjs", "json", "json-mobile", "ts", "dart"]
+                                    -h, --help             Show help                                     [boolean]
+2025-05-18T00:02:26.718Z [INFO]: Skipping ampx pipeline-deploy due to issues
+2025-05-18T00:02:26.718Z [INFO]: # Executing command: npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
+2025-05-18T00:02:26.843Z [INFO]: > aydocorp-website@0.1.0 build:amplify
+                                 > npx ampx generate outputs --app-id "$AWS_APP_ID" --branch "$AWS_BRANCH" || node -e "const fs=require('fs'); fs.writeFileSync('./amplify/backend.out.json', JSON.stringify({}, null, 2)); console.log('Created fallback backend.out.json file');"
+2025-05-18T00:02:30.556Z [INFO]: 12:02:30 AM Both the legacy 'AWS_DEFAULT_REGION' and preferred 'AWS_REGION' environment variables detected. Using 'AWS_REGION'
