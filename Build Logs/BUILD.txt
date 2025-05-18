@@ -1,8 +1,8 @@
-2025-05-18T03:59:37.301Z [INFO]: # Cloning repository: git@github.com:DasBluEyedDevil/AltAydoSite.git
-2025-05-18T03:59:41.661Z [INFO]: 
-2025-05-18T03:59:41.743Z [INFO]: Cloning into 'AltAydoSite'...
-2025-05-18T03:59:41.744Z [INFO]: # Switching to commit: f9eb38d02d203c126d616c3c5fca83879f5604e0
-2025-05-18T03:59:42.166Z [INFO]: Note: switching to 'f9eb38d02d203c126d616c3c5fca83879f5604e0'.
+2025-05-18T17:03:09.103Z [INFO]: # Cloning repository: git@github.com:DasBluEyedDevil/AltAydoSite.git
+2025-05-18T17:03:13.611Z [INFO]: 
+2025-05-18T17:03:13.696Z [INFO]: Cloning into 'AltAydoSite'...
+2025-05-18T17:03:13.696Z [INFO]: # Switching to commit: 746cee69247cd52cff3994aca738f888bb2f52e3
+2025-05-18T17:03:14.151Z [INFO]: Note: switching to '746cee69247cd52cff3994aca738f888bb2f52e3'.
                                  You are in 'detached HEAD' state. You can look around, make experimental
                                  changes and commit them, and you can discard any commits you make in this
                                  state without impacting any branches by switching back to a branch.
@@ -12,46 +12,46 @@
                                  Or undo this operation with:
                                  git switch -
                                  Turn off this advice by setting config variable advice.detachedHead to false
-                                 HEAD is now at f9eb38d Update ampx pipeline-deploy command to include app ID and branch variables
-2025-05-18T03:59:42.209Z [INFO]: Successfully cleaned up Git credentials
-2025-05-18T03:59:42.210Z [INFO]: # Checking for Git submodules at: /codebuild/output/src435082077/src/AltAydoSite/.gitmodules
-2025-05-18T03:59:42.220Z [INFO]: # Retrieving environment cache...
-2025-05-18T03:59:42.288Z [INFO]: # Retrieved environment cache
-2025-05-18T03:59:42.288Z [INFO]: ---- Setting Up SSM Secrets ----
-2025-05-18T03:59:42.288Z [INFO]: SSM params {"Path":"/amplify/d3ohapvt0eajka/main/","WithDecryption":true}
-2025-05-18T03:59:42.345Z [WARNING]: !Failed to set up process.env.secrets
-2025-05-18T03:59:42.921Z [INFO]: # No package override configuration found.
-2025-05-18T03:59:42.925Z [INFO]: # Retrieving cache...
-2025-05-18T04:00:01.744Z [INFO]: # Extracting cache...
-2025-05-18T04:00:40.719Z [INFO]: # Extraction completed
-2025-05-18T04:00:41.006Z [INFO]: # Retrieved cache
-2025-05-18T04:00:45.016Z [INFO]: ## Starting Backend Build
+                                 HEAD is now at 746cee6 Refactor resource schema relationships to simplify definitions by removing explicit reference fields for hasMany and belongsTo relationships in Amplify data model.
+2025-05-18T17:03:14.193Z [INFO]: Successfully cleaned up Git credentials
+2025-05-18T17:03:14.194Z [INFO]: # Checking for Git submodules at: /codebuild/output/src1676858899/src/AltAydoSite/.gitmodules
+2025-05-18T17:03:14.204Z [INFO]: # Retrieving environment cache...
+2025-05-18T17:03:14.293Z [INFO]: # Retrieved environment cache
+2025-05-18T17:03:14.293Z [INFO]: ---- Setting Up SSM Secrets ----
+2025-05-18T17:03:14.293Z [INFO]: SSM params {"Path":"/amplify/d3ohapvt0eajka/main/","WithDecryption":true}
+2025-05-18T17:03:14.346Z [WARNING]: !Failed to set up process.env.secrets
+2025-05-18T17:03:15.105Z [INFO]: # No package override configuration found.
+2025-05-18T17:03:15.110Z [INFO]: # Retrieving cache...
+2025-05-18T17:03:41.420Z [INFO]: # Extracting cache...
+2025-05-18T17:04:21.111Z [INFO]: # Extraction completed
+2025-05-18T17:04:21.374Z [INFO]: # Retrieved cache
+2025-05-18T17:04:24.683Z [INFO]: ## Starting Backend Build
                                  # Starting phase: preBuild
                                  # Executing command: npm ci
-2025-05-18T04:03:20.942Z [INFO]: added 2278 packages in 3m
-2025-05-18T04:03:20.975Z [INFO]: # Executing command: npm install -g @aws-amplify/cli
-2025-05-18T04:03:30.611Z [WARNING]: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
-2025-05-18T04:03:30.626Z [WARNING]: npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
-2025-05-18T04:03:30.627Z [WARNING]: npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
-2025-05-18T04:03:44.268Z [INFO]: changed 47 packages in 23s
-2025-05-18T04:03:44.274Z [INFO]: 12 packages are looking for funding
+2025-05-18T17:07:05.241Z [INFO]: added 2278 packages in 3m
+2025-05-18T17:07:05.274Z [INFO]: # Executing command: npm install -g @aws-amplify/cli
+2025-05-18T17:07:15.451Z [WARNING]: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2025-05-18T17:07:15.465Z [WARNING]: npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+2025-05-18T17:07:15.468Z [WARNING]: npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+2025-05-18T17:07:29.083Z [INFO]: changed 47 packages in 24s
+2025-05-18T17:07:29.088Z [INFO]: 12 packages are looking for funding
                                  run `npm fund` for details
-2025-05-18T04:03:44.280Z [INFO]: # Completed phase: preBuild
+2025-05-18T17:07:29.097Z [INFO]: # Completed phase: preBuild
                                  # Starting phase: build
                                  # Executing command: echo "Building Amplify backend..."
                                  Building Amplify backend...
                                  # Executing command: npx ampx pipeline-deploy --app-id "${AWS_APP_ID}" --branch "${AWS_BRANCH}" || echo "Skipping ampx pipeline-deploy due to issues"
-2025-05-18T04:03:48.235Z [INFO]: 4:03:47 AM Synthesizing backend...
-2025-05-18T04:03:48.240Z [INFO]: 
-2025-05-18T04:03:49.325Z [WARNING]: Bundling asset amplify-d3ohapvt0eajka-main-branch-28445516db/AmplifyBranchLinker/CustomResourceLambda/Code/Stage...
-2025-05-18T04:03:49.737Z [WARNING]: ...6a0144db12e23a342fa3ee36de5dbfa45a16a794cf5c8f-building/index.js  861.4kb
-                                    ⚡ Done in 57ms
-2025-05-18T04:03:49.848Z [INFO]: 4:03:49 AM ✔ Backend synthesized in 1.96 seconds
-2025-05-18T04:03:49.848Z [INFO]: 4:03:49 AM Running type checks...
-2025-05-18T04:03:55.911Z [INFO]: 4:03:55 AM ✔ Type checks completed in 6.06 seconds
-2025-05-18T04:03:56.157Z [INFO]: 
-2025-05-18T04:03:56.158Z [INFO]: 
-2025-05-18T04:03:56.158Z [WARNING]: ampx pipeline-deploy
+2025-05-18T17:07:32.842Z [INFO]: 5:07:32 PM Synthesizing backend...
+2025-05-18T17:07:32.848Z [INFO]: 
+2025-05-18T17:07:33.958Z [WARNING]: Bundling asset amplify-d3ohapvt0eajka-main-branch-28445516db/AmplifyBranchLinker/CustomResourceLambda/Code/Stage...
+2025-05-18T17:07:34.369Z [WARNING]: ...7fc29bfff7fdd243c8dc6e410c8a93791325a5d5d9befd-building/index.js  861.4kb
+                                    ⚡ Done in 56ms
+2025-05-18T17:07:34.483Z [INFO]: 5:07:34 PM ✔ Backend synthesized in 1.84 seconds
+2025-05-18T17:07:34.483Z [INFO]: 5:07:34 PM Running type checks...
+2025-05-18T17:07:40.649Z [INFO]: 5:07:40 PM ✔ Type checks completed in 6.16 seconds
+2025-05-18T17:07:40.655Z [INFO]: 
+2025-05-18T17:07:40.825Z [INFO]: 
+2025-05-18T17:07:40.825Z [WARNING]: ampx pipeline-deploy
                                     Command to deploy backends in a custom CI/CD pipeline. This command is not inten
                                     ded to be used locally.
                                     Options:
@@ -70,21 +70,66 @@
                                     --outputs-format   amplify_outputs file format
                                     [string] [choices: "mjs", "json", "json-mobile", "ts", "dart"]
                                     -h, --help             Show help                                     [boolean]
-2025-05-18T04:03:56.159Z [INFO]: [BackendBuildError] Unable to deploy due to CDK Assembly Error
-                                 ∟ Caused by: [_AssemblyError] Assembly builder failed
-                                 ∟ Caused by: [InvalidSchemaError] Unable to find associated relationship definition in Message for User.messages: [Message] @hasMany(references: ['id'])
-                                 ∟ Caused by: [Error] Unable to find associated relationship definition in Message for User.messages: [Message] @hasMany(references: ['id'])
-                                 Resolution: Check your data schema definition for syntax and type errors.
-                                 Resolution: Check the Caused by error and fix any issues in your backend code
-2025-05-18T04:03:56.217Z [INFO]: Skipping ampx pipeline-deploy due to issues
-2025-05-18T04:03:56.218Z [INFO]: # Executing command: npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
-2025-05-18T04:03:56.345Z [INFO]: > aydocorp-website@0.1.0 build:amplify
+2025-05-18T17:07:40.825Z [INFO]: [SyntaxError] TypeScript validation check failed.
+                                 Resolution: Fix the syntax and type errors in your backend definition.
+                                 Details: amplify/data/resource.ts:26:19 - error TS2554: Expected 2 arguments, but got 1.
+                                 26       messages: a.hasMany('Message'),
+                                 ~~~~~~~
+                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:138:70
+                                 138 export declare function hasMany<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.hasMany, true>, RM, "required", undefined>;
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                 An argument for 'references' was not provided.
+                                 amplify/data/resource.ts:27:24 - error TS2554: Expected 2 arguments, but got 1.
+                                 27       announcements: a.hasMany('Announcement'),
+                                 ~~~~~~~
+                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:138:70
+                                 138 export declare function hasMany<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.hasMany, true>, RM, "required", undefined>;
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                 An argument for 'references' was not provided.
+                                 amplify/data/resource.ts:28:17 - error TS2554: Expected 2 arguments, but got 1.
+                                 28       events: a.hasMany('Event'),
+                                 ~~~~~~~
+                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:138:70
+                                 138 export declare function hasMany<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.hasMany, true>, RM, "required", undefined>;
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                 An argument for 'references' was not provided.
+                                 amplify/data/resource.ts:41:15 - error TS2554: Expected 2 arguments, but got 1.
+                                 41       user: a.belongsTo('User'),
+                                 ~~~~~~~~~
+                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:186:72
+                                 186 export declare function belongsTo<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.belongsTo, false>, RM, "required" | "valueRequired", undefined>;
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                 An argument for 'references' was not provided.
+                                 amplify/data/resource.ts:55:15 - error TS2554: Expected 2 arguments, but got 1.
+                                 55       user: a.belongsTo('User'),
+                                 ~~~~~~~~~
+                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:186:72
+                                 186 export declare function belongsTo<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.belongsTo, false>, RM, "required" | "valueRequired", undefined>;
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                 An argument for 'references' was not provided.
+                                 amplify/data/resource.ts:69:15 - error TS2554: Expected 2 arguments, but got 1.
+                                 69       user: a.belongsTo('User'),
+                                 ~~~~~~~~~
+                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:186:72
+                                 186 export declare function belongsTo<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.belongsTo, false>, RM, "required" | "valueRequired", undefined>;
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                 An argument for 'references' was not provided.
+                                 amplify/data/resource.ts:84:15 - error TS2554: Expected 2 arguments, but got 1.
+                                 84       user: a.belongsTo('User'),
+                                 ~~~~~~~~~
+                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:186:72
+                                 186 export declare function belongsTo<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.belongsTo, false>, RM, "required" | "valueRequired", undefined>;
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                 An argument for 'references' was not provided.
+2025-05-18T17:07:40.879Z [INFO]: Skipping ampx pipeline-deploy due to issues
+2025-05-18T17:07:40.879Z [INFO]: # Executing command: npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
+2025-05-18T17:07:41.005Z [INFO]: > aydocorp-website@0.1.0 build:amplify
                                  > npx ampx generate outputs --app-id "$AWS_APP_ID" --branch "$AWS_BRANCH" || node -e "const fs=require('fs'); fs.writeFileSync('./amplify/backend.out.json', JSON.stringify({}, null, 2)); console.log('Created fallback backend.out.json file');"
-2025-05-18T04:04:00.556Z [INFO]: 4:04:00 AM Both the legacy 'AWS_DEFAULT_REGION' and preferred 'AWS_REGION' environment variables detected. Using 'AWS_REGION'
-2025-05-18T04:04:00.562Z [INFO]: 
-2025-05-18T04:04:00.745Z [INFO]: 
-2025-05-18T04:04:00.746Z [INFO]: 
-2025-05-18T04:04:00.746Z [WARNING]: ampx generate outputs
+2025-05-18T17:07:45.092Z [INFO]: 5:07:45 PM Both the legacy 'AWS_DEFAULT_REGION' and preferred 'AWS_REGION' environment variables detected. Using 'AWS_REGION'
+2025-05-18T17:07:45.096Z [INFO]: 
+2025-05-18T17:07:45.313Z [INFO]: 
+2025-05-18T17:07:45.313Z [INFO]: 
+2025-05-18T17:07:45.313Z [WARNING]: ampx generate outputs
                                     Generates Amplify backend outputs
                                     Stack identifier
                                     --stack  A stack name that contains an Amplify backend            [string]
@@ -106,15 +151,15 @@
                                     represents newer config file amplify_outputs
                                     [string] [choices: "0", "1", "1.1", "1.2", "1.3", "1.4"] [default: "1.4"]
                                     -h, --help             Show help                                     [boolean]
-2025-05-18T04:04:00.746Z [INFO]: [StackDoesNotExistError] Stack does not exist.
+2025-05-18T17:07:45.314Z [INFO]: [StackDoesNotExistError] Stack does not exist.
                                  ∟ Caused by: [Error] Stack with id amplify-d3ohapvt0eajka-main-branch-28445516db does not exist
                                  Resolution: Ensure the CloudFormation stack ID or Amplify App ID and branch specified are correct and exists, then re-run this command.
-2025-05-18T04:04:00.822Z [INFO]: Created fallback backend.out.json file
-2025-05-18T04:04:00.830Z [INFO]: # Executing command: npx ampx info || echo "Amplify not initialized, skipping status check"
-2025-05-18T04:04:21.657Z [INFO]: System:
+2025-05-18T17:07:45.394Z [INFO]: Created fallback backend.out.json file
+2025-05-18T17:07:45.401Z [INFO]: # Executing command: npx ampx info || echo "Amplify not initialized, skipping status check"
+2025-05-18T17:08:06.713Z [INFO]: System:
                                  OS: Linux 4.14 Amazon Linux 2023
                                  CPU: (4) x64 Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz
-                                 Memory: 5.91 GB / 7.49 GB
+                                 Memory: 5.92 GB / 7.49 GB
                                  Shell: /bin/bash
                                  Binaries:
                                  Node: 18.20.8 - ~/.nvm/versions/node/v18.20.8/bin/node
@@ -152,11 +197,11 @@
                                  AWS environment variables:
                                  AWS_AMPLIFY_WEB_DYNAMIC_RUNTIME = nodejs16.x
                                  AWS_EXECUTION_ENV = AWS_ECS_EC2
-                                 AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = /v2/credentials/d8befe98-e8d5-4dbd-984f-8926cd5ea608
+                                 AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = /v2/credentials/849d8f60-5725-4cbb-9976-8932a1c69345
                                  AWS_AMPLIFY_AL2023_DEFAULT_BUILD_IMAGE = true
                                  AWS_STEP_NAME = BUILD
                                  AWS_BRANCH = main
-                                 AWS_JOB_ID = 0000000029
+                                 AWS_JOB_ID = 0000000030
                                  AWS_DEFAULT_REGION = us-east-1
                                  AWS_GITHUB_SSH_PUBLIC_KEYS = github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
                                  github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
@@ -164,180 +209,15 @@
                                  AWS_REGION = us-east-1
                                  AWS_AMPLIFY_SKEW_PROTECTION_ENABLED = false
                                  AWS_APP_ID = d3ohapvt0eajka
-                                 AWS_PREVIOUS_COMMIT_ID = 05621da1b824a3ddac98d01f6322a1e26f6c9521
+                                 AWS_PREVIOUS_COMMIT_ID = f9eb38d02d203c126d616c3c5fca83879f5604e0
                                  AWS_FRAMEWORK = Next.js - SSR
                                  AWS_PLATFORM = WEB_COMPUTE
                                  AWS_AMPLIFY_BUILD_IMAGE_VERSION = 2023-11
                                  AWS_BRANCH_ARN = arn:aws:amplify:us-east-1:992382615681:apps/d3ohapvt0eajka/branches/main
                                  AWS_AMPLIFY_INTERNAL_IMAGE_OPTIMIZATION = true
                                  AWS_BUILDSPEC_CONTENT = dmVyc2lvbjogMQpiYWNrZW5kOgogIHBoYXNlczoKICAgICMgcHJlQnVpbGQsIGJ1aWxkLCBwb3N0QnVpbGQgcGhhc2VzIGZvciB0aGUgYmFja2VuZAogICAgIyBBbXBsaWZ5IGF1dG9tYXRpY2FsbHkgaGFuZGxlcyBkZXBsb3lpbmcgY2hhbmdlcyBpbiB0aGUgJ2FtcGxpZnknIGZvbGRlciAobGlrZSB5b3VyIHJlc291cmNlLnRzKQogICAgIyBkdXJpbmcgdGhlc2UgYmFja2VuZCBwaGFzZXMgaWYgaXQgZGV0ZWN0cyBhbnkuCiAgICAjIFlvdSB1c3VhbGx5IGRvbid0IG5lZWQgdG8gYWRkIGV4cGxpY2l0ICducHggYW1weCBkZXBsb3knIGNvbW1hbmRzIGhlcmUuCiAgICBwcmVCdWlsZDoKICAgICAgY29tbWFuZHM6CiAgICAgICAgLSBucG0gY2kKICAgICAgICAtIG5wbSBpbnN0YWxsIC1nIEBhd3MtYW1wbGlmeS9jbGkKICAgIGJ1aWxkOgogICAgICBjb21tYW5kczoKICAgICAgICAtIGVjaG8gIkJ1aWxkaW5nIEFtcGxpZnkgYmFja2VuZC4uLiIKICAgICAgICAtIG5wbSBydW4gYnVpbGQ6YW1wbGlmeSB8fCBlY2hvICJObyBidWlsZDphbXBsaWZ5IHNjcmlwdCBmb3VuZCwgdXNpbmcgZGVmYXVsdCBBbXBsaWZ5IGhhbmRsaW5nIgogICAgICAgIC0gbnB4IGFtcHggaW5mbyB8fCBlY2hvICJBbXBsaWZ5IG5vdCBpbml0aWFsaXplZCwgc2tpcHBpbmcgc3RhdHVzIGNoZWNrIgpmcm9udGVuZDoKICBwaGFzZXM6CiAgICBwcmVCdWlsZDoKICAgICAgY29tbWFuZHM6CiAgICAgICAgLSBlY2hvICJJbnN0YWxsaW5nIGZyb250ZW5kIGRlcGVuZGVuY2llcy4uLiIKICAgICAgICAtIG5wbSBjaQogICAgICAgIC0gbm9kZSAtZSAiY29uc3QgZnM9cmVxdWlyZSgnZnMnKTsgdHJ5IHsgaWYgKCFmcy5leGlzdHNTeW5jKCcuL2FtcGxpZnlfb3V0cHV0cy5qc29uJykpIHsgZnMud3JpdGVGaWxlU3luYygnLi9hbXBsaWZ5X291dHB1dHMuanNvbicsIEpTT04uc3RyaW5naWZ5KHt9LCBudWxsLCAyKSk7IGNvbnNvbGUubG9nKCdDcmVhdGVkIGVtcHR5IGFtcGxpZnlfb3V0cHV0cy5qc29uJyk7IH19IGNhdGNoKGUpIHsgY29uc29sZS5lcnJvcihlKTsgfSIKICAgIGJ1aWxkOgogICAgICBjb21tYW5kczoKICAgICAgICAtIGVjaG8gIlNldHRpbmcgdXAgZW52aXJvbm1lbnQgZm9yIE5leHRBdXRoIGFuZCBBbXBsaWZ5Li4uIgogICAgICAgIC0gfAogICAgICAgICAgbm9kZSAtZSAiCiAgICAgICAgICAgIGNvbnN0IGZzID0gcmVxdWlyZSgnZnMnKTsKICAgICAgICAgICAgdHJ5IHsKICAgICAgICAgICAgICBpZiAoIWZzLmV4aXN0c1N5bmMoJy5lbnYubG9jYWwnKSAmJiBwcm9jZXNzLmVudi5ORVhUQVVUSF9TRUNSRVQpIHsKICAgICAgICAgICAgICAgIGxldCBlbnZDb250ZW50ID0gJyc7CiAgICAgICAgICAgICAgICBlbnZDb250ZW50ICs9ICdORVhUQVVUSF9TRUNSRVQ9JyArIHByb2Nlc3MuZW52Lk5FWFRBVVRIX1NFQ1JFVCArICdcbic7CiAgICAgICAgICAgICAgICBlbnZDb250ZW50ICs9ICdORVhUQVVUSF9VUkw9JyArIChwcm9jZXNzLmVudi5ORVhUQVVUSF9VUkwgfHwgcHJvY2Vzcy5lbnYuREVQTE9ZX1VSTCB8fCAnJykgKyAnXG4nOwogICAgICAgICAgICAgICAgZW52Q29udGVudCArPSAnTkVYVF9QVUJMSUNfR1JBUEhRTF9FTkRQT0lOVD0nICsgKHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX0dSQVBIUUxfRU5EUE9JTlQgfHwgJycpICsgJ1xuJzsKICAgICAgICAgICAgICAgIGVudkNvbnRlbnQgKz0gJ05FWFRfUFVCTElDX0dSQVBIUUxfQVBJX0tFWT0nICsgKHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX0dSQVBIUUxfQVBJX0tFWSB8fCAnJykgKyAnXG4nOwogICAgICAgICAgICAgICAgZW52Q29udGVudCArPSAnTkVYVF9QVUJMSUNfQVdTX1JFR0lPTj0nICsgKHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX0FXU19SRUdJT04gfHwgJ3VzLWVhc3QtMScpICsgJ1xuJzsKICAgICAgICAgICAgICAgIGZzLndyaXRlRmlsZVN5bmMoJy5lbnYubG9jYWwnLCBlbnZDb250ZW50KTsKICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdDcmVhdGVkIC5lbnYubG9jYWwnKTsKICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgY29uc29sZS5sb2coJy5lbnYubG9jYWwgYWxyZWFkeSBleGlzdHMgb3IgTkVYVEFVVEhfU0VDUkVUIG5vdCBhdmFpbGFibGUnKTsKICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0gY2F0Y2goZSkgewogICAgICAgICAgICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIGNyZWF0aW5nIC5lbnYubG9jYWw6JywgZSk7CiAgICAgICAgICAgIH0KICAgICAgICAgICIKICAgICAgICAtIGVjaG8gIkJ1aWxkaW5nIE5leHQuanMgYXBwbGljYXRpb24uLi4iCiAgICAgICAgLSBucG0gcnVuIGJ1aWxkCiAgICAgICAgLSBlY2hvICJDcmVhdGluZyBhbXBsaWZ5X291dHB1dHMuanNvbiBpZiBuZWVkZWQuLi4iCiAgICAgICAgLSB8CiAgICAgICAgICBub2RlIC1lICIKICAgICAgICAgICAgY29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwogICAgICAgICAgICB0cnkgewogICAgICAgICAgICAgIGNvbnN0IGFtcGxpZnlEaXIgPSAnLi9hbXBsaWZ5JzsKICAgICAgICAgICAgICBpZiAoZnMuZXhpc3RzU3luYyhhbXBsaWZ5RGlyKSkgewogICAgICAgICAgICAgICAgaWYgKGZzLmV4aXN0c1N5bmMoJy4vYW1wbGlmeS9iYWNrZW5kLm91dC5qc29uJykpIHsKICAgICAgICAgICAgICAgICAgY29uc3QgYW1wbGlmeUV4cG9ydHMgPSByZXF1aXJlKCcuL2FtcGxpZnkvYmFja2VuZC5vdXQuanNvbicpOwogICAgICAgICAgICAgICAgICBmcy53cml0ZUZpbGVTeW5jKCcuL3B1YmxpYy9hbXBsaWZ5X291dHB1dHMuanNvbicsIEpTT04uc3RyaW5naWZ5KGFtcGxpZnlFeHBvcnRzLCBudWxsLCAyKSk7CiAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdDcmVhdGVkIGFtcGxpZnlfb3V0cHV0cy5qc29uIGZyb20gYmFja2VuZC5vdXQuanNvbicpOwogICAgICAgICAgICAgICAgfSBlbHNlIGlmIChmcy5leGlzdHNTeW5jKCcuL2FtcGxpZnkvb3V0cHV0Lmpzb24nKSkgewogICAgICAgICAgICAgICAgICBjb25zdCBhbXBsaWZ5RXhwb3J0cyA9IHJlcXVpcmUoJy4vYW1wbGlmeS9vdXRwdXQuanNvbicpOwogICAgICAgICAgICAgICAgICBmcy53cml0ZUZpbGVTeW5jKCcuL3B1YmxpYy9hbXBsaWZ5X291dHB1dHMuanNvbicsIEpTT04uc3RyaW5naWZ5KGFtcGxpZnlFeHBvcnRzLCBudWxsLCAyKSk7CiAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdDcmVhdGVkIGFtcGxpZnlfb3V0cHV0cy5qc29uIGZyb20gb3V0cHV0Lmpzb24nKTsKICAgICAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdhbXBsaWZ5IG91dHB1dCBmaWxlcyBkbyBub3QgZXhpc3QnKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgY29uc29sZS5sb2coJ2FtcGxpZnkgZGlyZWN0b3J5IGRvZXMgbm90IGV4aXN0Jyk7CiAgICAgICAgICAgICAgfQogICAgICAgICAgICB9IGNhdGNoKGUpIHsKICAgICAgICAgICAgICBjb25zb2xlLmxvZygnRXJyb3IgY2hlY2tpbmcgQW1wbGlmeSBleHBvcnRzOicsIGUubWVzc2FnZSk7CiAgICAgICAgICAgIH0KICAgICAgICAgICIKICAgICAgICAtIG5weCBhbXB4IGdlbmVyYXRlCiAgYXJ0aWZhY3RzOgogICAgYmFzZURpcmVjdG9yeTogLm5leHQKICAgIGZpbGVzOgogICAgICAtICcqKi8qJwogICAgICAtICcuLi9wdWJsaWMvKiovKicKICBjYWNoZToKICAgIHBhdGhzOgogICAgICAtIG5vZGVfbW9kdWxlcy8qKi8qCiAgICAgIC0gLm5leHQvY2FjaGUvKiovKgogIGN1c3RvbUhlYWRlcnM6CiAgICAtIHBhdHRlcm46ICcqKi8qJwogICAgICBoZWFkZXJzOgogICAgICAgIC0ga2V5OiAnU3RyaWN0LVRyYW5zcG9ydC1TZWN1cml0eScKICAgICAgICAgIHZhbHVlOiAnbWF4LWFnZT0zMTUzNjAwMDsgaW5jbHVkZVN1YkRvbWFpbnMnCiAgICAgICAgLSBrZXk6ICdYLUNvbnRlbnQtVHlwZS1PcHRpb25zJwogICAgICAgICAgdmFsdWU6ICdub3NuaWZmJwogICAgICAgIC0ga2V5OiAnWC1YU1MtUHJvdGVjdGlvbicKICAgICAgICAgIHZhbHVlOiAnMTsgbW9kZT1ibG9jaycKICBlbnZpcm9ubWVudDoKICAgIHZhcmlhYmxlczoKICAgICAgTk9ERV9FTlY6ICdwcm9kdWN0aW9uJw==
-                                 AWS_COMMIT_ID = f9eb38d02d203c126d616c3c5fca83879f5604e0
+                                 AWS_COMMIT_ID = 746cee69247cd52cff3994aca738f888bb2f52e3
                                  AWS_CLONE_URL = git@github.com:DasBluEyedDevil/AltAydoSite.git
-                                 AWS_AMPLIFY_DEPLOYMENT_ID = cbead7a9-1048-4b92-a3df-a41f929d8872
-                                 AWS_REQUEST_ID = 680fbb90-db87-4d2b-9ab4-3d58e13f143d
+                                 AWS_AMPLIFY_DEPLOYMENT_ID = deddc915-268e-4477-a431-cc79ca9ebaca
+                                 AWS_REQUEST_ID = 33fb6938-bcaa-4b4b-8652-35b0da5d65b9
                                  No CDK environment variables
-2025-05-18T04:04:21.661Z [INFO]: 
-2025-05-18T04:04:21.902Z [INFO]: # Completed phase: build
-                                 ## Completed Backend Build
-2025-05-18T04:04:21.906Z [INFO]: ## Starting Frontend Build
-                                 # Starting phase: preBuild
-2025-05-18T04:04:21.907Z [INFO]: # Executing command: echo "Installing frontend dependencies..."
-                                 Installing frontend dependencies...
-                                 # Executing command: npm ci
-2025-05-18T04:06:46.498Z [INFO]: added 2278 packages in 2m
-2025-05-18T04:06:46.587Z [INFO]: # Executing command: node -e "const fs=require('fs'); try { if (!fs.existsSync('./amplify_outputs.json')) { fs.writeFileSync('./amplify_outputs.json', JSON.stringify({}, null, 2)); console.log('Created empty amplify_outputs.json'); }} catch(e) { console.error(e); }"
-2025-05-18T04:06:46.617Z [INFO]: Created empty amplify_outputs.json
-2025-05-18T04:06:46.620Z [INFO]: # Completed phase: preBuild
-                                 # Starting phase: build
-2025-05-18T04:06:46.620Z [INFO]: # Executing command: echo "Setting up environment for NextAuth and Amplify..."
-                                 Setting up environment for NextAuth and Amplify...
-                                 # Executing command: node -e "
-                                 const fs = require('fs');
-                                 try {
-                                 if (!fs.existsSync('.env.local') && process.env.NEXTAUTH_SECRET) {
-                                 let envContent = '';
-                                 envContent += 'NEXTAUTH_SECRET=' + process.env.NEXTAUTH_SECRET + '
-                                 ';
-                                 envContent += 'NEXTAUTH_URL=' + (process.env.NEXTAUTH_URL || process.env.DEPLOY_URL || '') + '
-                                 ';
-                                 envContent += 'NEXT_PUBLIC_GRAPHQL_ENDPOINT=' + (process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || '') + '
-                                 ';
-                                 envContent += 'NEXT_PUBLIC_GRAPHQL_API_KEY=' + (process.env.NEXT_PUBLIC_GRAPHQL_API_KEY || '') + '
-                                 ';
-                                 envContent += 'NEXT_PUBLIC_AWS_REGION=' + (process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1') + '
-                                 ';
-                                 fs.writeFileSync('.env.local', envContent);
-                                 console.log('Created .env.local');
-                                 } else {
-                                 console.log('.env.local already exists or NEXTAUTH_SECRET not available');
-                                 }
-                                 } catch(e) {
-                                 console.error('Error creating .env.local:', e);
-                                 }
-                                 "
-2025-05-18T04:06:46.649Z [INFO]: Created .env.local
-2025-05-18T04:06:46.652Z [INFO]: # Executing command: echo "Building Next.js application..."
-                                 Building Next.js application...
-2025-05-18T04:06:46.652Z [INFO]: # Executing command: npm run build
-2025-05-18T04:06:46.785Z [INFO]: > aydocorp-website@0.1.0 build
-                                 > next build
-2025-05-18T04:06:47.504Z [INFO]: ▲ Next.js 15.3.2
-2025-05-18T04:06:47.504Z [INFO]: - Environments: .env.local, .env
-2025-05-18T04:06:47.576Z [INFO]: Creating an optimized production build ...
-2025-05-18T04:07:18.262Z [INFO]: ✓ Compiled successfully in 27.0s
-2025-05-18T04:07:18.276Z [INFO]: Linting and checking validity of types ...
-2025-05-18T04:07:34.460Z [INFO]: Collecting page data ...
-2025-05-18T04:07:35.049Z [INFO]: Amplify client configured successfully for signup
-2025-05-18T04:07:35.118Z [WARNING]: Auth: Missing GraphQL endpoint or API key. Amplify authentication will fall back to alternative methods.
-2025-05-18T04:07:35.118Z [WARNING]: Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.
-2025-05-18T04:07:35.176Z [WARNING]: Auth: Missing GraphQL endpoint or API key. Amplify authentication will fall back to alternative methods.
-2025-05-18T04:07:35.176Z [WARNING]: Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.
-2025-05-18T04:07:37.018Z [INFO]: Generating static pages (0/15) ...
-2025-05-18T04:07:37.761Z [INFO]: Generating static pages (3/15)
-2025-05-18T04:07:37.767Z [INFO]: Generating static pages (7/15)
-2025-05-18T04:07:37.828Z [INFO]: Amplify client configured successfully for signup
-2025-05-18T04:07:37.965Z [WARNING]: Auth: Missing GraphQL endpoint or API key. Amplify authentication will fall back to alternative methods.
-                                    Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.
-2025-05-18T04:07:37.966Z [INFO]: Generating static pages (11/15)
-                                 ✓ Generating static pages (15/15)
-2025-05-18T04:07:38.497Z [INFO]: Finalizing page optimization ...
-2025-05-18T04:07:38.497Z [INFO]: Collecting build traces ...
-2025-05-18T04:07:50.944Z [INFO]: 
-2025-05-18T04:07:50.959Z [INFO]: Route (app)                                 Size  First Load JS
-                                 ┌ ○ /                                    6.86 kB         153 kB
-                                 ├ ○ /_not-found                            141 B         101 kB
-                                 ├ ○ /about                               11.7 kB         154 kB
-                                 ├ ƒ /admin                                 185 B         110 kB
-                                 ├ ƒ /api/auth/[...nextauth]                141 B         101 kB
-                                 ├ ƒ /api/auth/signup                       141 B         101 kB
-                                 ├ ○ /contact                             7.86 kB         147 kB
-                                 ├ ○ /dashboard                           11.3 kB         163 kB
-                                 ├ ○ /join                                5.15 kB         144 kB
-                                 ├ ○ /login                               2.64 kB         149 kB
-                                 ├ ○ /references                          1.56 kB         103 kB
-                                 ├ ○ /services                             9.3 kB         148 kB
-                                 ├ ○ /signup                              4.27 kB         141 kB
-                                 └ ○ /userprofile                         1.47 kB         144 kB
-                                 + First Load JS shared by all             101 kB
-                                 ├ chunks/4bd1b696-efd78cc6b189421a.js  53.2 kB
-                                 ├ chunks/684-51c7b8077c59b2e4.js       45.8 kB
-                                 └ other shared chunks (total)          1.93 kB
-                                 ƒ Middleware                               71 kB
-                                 ○  (Static)   prerendered as static content
-                                 ƒ  (Dynamic)  server-rendered on demand
-2025-05-18T04:07:50.986Z [INFO]: # Executing command: echo "Creating amplify_outputs.json if needed..."
-                                 Creating amplify_outputs.json if needed...
-2025-05-18T04:07:50.986Z [INFO]: # Executing command: node -e "
-                                 const fs = require('fs');
-                                 try {
-                                 const amplifyDir = './amplify';
-                                 if (fs.existsSync(amplifyDir)) {
-                                 if (fs.existsSync('./amplify/backend.out.json')) {
-                                 const amplifyExports = require('./amplify/backend.out.json');
-                                 fs.writeFileSync('./public/amplify_outputs.json', JSON.stringify(amplifyExports, null, 2));
-                                 console.log('Created amplify_outputs.json from backend.out.json');
-                                 } else if (fs.existsSync('./amplify/output.json')) {
-                                 const amplifyExports = require('./amplify/output.json');
-                                 fs.writeFileSync('./public/amplify_outputs.json', JSON.stringify(amplifyExports, null, 2));
-                                 console.log('Created amplify_outputs.json from output.json');
-                                 } else {
-                                 console.log('amplify output files do not exist');
-                                 }
-                                 } else {
-                                 console.log('amplify directory does not exist');
-                                 }
-                                 } catch(e) {
-                                 console.log('Error checking Amplify exports:', e.message);
-                                 }
-                                 "
-2025-05-18T04:07:51.017Z [INFO]: Created amplify_outputs.json from backend.out.json
-2025-05-18T04:07:51.020Z [INFO]: # Executing command: npx ampx generate outputs --app-id "$AWS_APP_ID" --branch "$AWS_BRANCH" || echo "Skipping amplify generate outputs due to permission issues"
-2025-05-18T04:07:57.230Z [INFO]: 4:07:57 AM Both the legacy 'AWS_DEFAULT_REGION' and preferred 'AWS_REGION' environment variables detected. Using 'AWS_REGION'
-2025-05-18T04:07:57.234Z [INFO]: 
-2025-05-18T04:07:57.434Z [INFO]: 
-2025-05-18T04:07:57.434Z [INFO]: 
-2025-05-18T04:07:57.435Z [WARNING]: ampx generate outputs
-                                    Generates Amplify backend outputs
-                                    Stack identifier
-                                    --stack  A stack name that contains an Amplify backend            [string]
-                                    Project identifier
-                                    --app-id  The Amplify App ID of the project                       [string]
-                                    --branch  A git branch of the Amplify project                     [string]
-                                    Options:
-                                    --debug            Print debug logs to the console
-                                    [boolean] [default: false]
-                                    --profile          An AWS profile name.                           [string]
-                                    --format           The format which the configuration should be exported i
-                                    nto.
-                                    [string] [choices: "mjs", "json", "json-mobile", "ts", "dart"]
-                                    --out-dir          A path to directory where config is written. If not pro
-                                    vided defaults to current process working directory.
-                                    [string]
-                                    --outputs-version  Version of the configuration. Version 0 represents clas
-                                    sic amplify-cli config file amplify-configuration and 1
-                                    represents newer config file amplify_outputs
-                                    [string] [choices: "0", "1", "1.1", "1.2", "1.3", "1.4"] [default: "1.4"]
-                                    -h, --help             Show help                                     [boolean]
-2025-05-18T04:07:57.435Z [INFO]: [StackDoesNotExistError] Stack does not exist.
-                                 ∟ Caused by: [Error] Stack with id amplify-d3ohapvt0eajka-main-branch-28445516db does not exist
-                                 Resolution: Ensure the CloudFormation stack ID or Amplify App ID and branch specified are correct and exists, then re-run this command.
-2025-05-18T04:07:57.492Z [INFO]: Skipping amplify generate outputs due to permission issues
-2025-05-18T04:07:57.492Z [INFO]: # Completed phase: build
-                                 ## Completed Frontend Build
-2025-05-18T04:07:57.530Z [INFO]: ## Build completed successfully
-2025-05-18T04:07:57.534Z [INFO]: # Starting caching...
-2025-05-18T04:07:57.542Z [INFO]: # Creating cache artifact...
-2025-05-18T04:08:54.121Z [INFO]: # Created cache artifact
-2025-05-18T04:08:54.219Z [INFO]: # Uploading cache artifact...
-2025-05-18T04:09:10.277Z [INFO]: # Uploaded cache artifact
-2025-05-18T04:09:10.477Z [INFO]: # Caching completed
-2025-05-18T04:09:10.482Z [INFO]: Found customHeaders section in amplify.yml, applying custom headers...
-2025-05-18T04:09:10.482Z [WARNING]: [DEPRECATION WARNING] using amplify.yml to modify custom headers is being deprecated.
-2025-05-18T04:09:10.482Z [WARNING]: Going forward, in order to configure your custom headers via deploy, please use customHttp.yml instead.
-2025-05-18T04:09:10.482Z [WARNING]: Learn more: https://docs.aws.amazon.com/amplify/latest/userguide/custom-headers.html
-2025-05-18T04:09:10.482Z [INFO]: # Found custom headers config file.
-2025-05-18T04:09:36.522Z [INFO]: # Starting environment caching...
-2025-05-18T04:09:36.666Z [INFO]: # Uploading environment cache artifact...
-2025-05-18T04:09:36.764Z [INFO]: # Uploaded environment cache artifact
-2025-05-18T04:09:36.764Z [INFO]: # Environment caching completed
-
