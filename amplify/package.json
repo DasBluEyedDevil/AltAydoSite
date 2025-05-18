@@ -1,8 +1,0 @@
-{
-  "name": "amplify-backend",
-  "type": "module",
-  "main": "backend.js",
-  "dependencies": {
-    "@aws-amplify/backend": "^1.16.1"
-  }
-}

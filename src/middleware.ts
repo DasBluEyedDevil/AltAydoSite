@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createClient, isAuthenticated } from './utils/amplify/middleware';
+import { getToken } from 'next-auth/jwt';
 
 // Protected routes that require authentication
 const protectedRoutes = [
@@ -18,15 +18,15 @@ export async function middleware(request: NextRequest) {
   );
 
   if (isProtectedRoute) {
-    // Create Amplify client with the request context
-    const { amplifyResponse } = createClient(request);
-
     try {
-      // Check if the user is authenticated
-      const isUserAuthenticated = await isAuthenticated(request);
+      // Get the session token using NextAuth
+      const token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
 
       // If not authenticated, redirect to login
-      if (!isUserAuthenticated) {
+      if (!token) {
         console.log("User not authenticated, redirecting to login");
         const url = new URL('/login', request.url);
         url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
 
       // User is authenticated, allow the request
       console.log("User authenticated, allowing access to protected route");
-      return amplifyResponse;
+      return NextResponse.next();
     } catch (error) {
       console.error("Error in authentication middleware:", error);
       // On error, redirect to login as a fallback

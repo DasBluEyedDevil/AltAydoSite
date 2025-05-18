@@ -1,10 +1,8 @@
 import { User } from '@/types/user';
 import fs from 'fs';
 import path from 'path';
-import { generateClient } from 'aws-amplify/data';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { Amplify } from 'aws-amplify';
 
 // Local storage for users
 const dataDir = path.join(process.cwd(), 'data');
@@ -12,9 +10,6 @@ const usersFilePath = path.join(dataDir, 'users.json');
 
 // Function to check if we're running in a browser environment
 const isBrowser = typeof window !== 'undefined';
-
-// Try to initialize Amplify client for environments
-let amplifyClient: any = null;
 
 // Helper function to read users from local storage (server-side only)
 export const getLocalUsers = (): User[] => {
@@ -63,37 +58,6 @@ export const saveLocalUser = (user: User): void => {
   fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf8');
 };
 
-// Configure Amplify and create client
-const initializeAmplify = () => {
-  if (amplifyClient) return amplifyClient;
-  
-  try {
-    // Configure Amplify if not already configured
-    if (isBrowser) {
-      // In browser, Amplify is configured by AmplifyProvider component
-      amplifyClient = generateClient();
-    } else {
-      // In server environment, configure Amplify directly
-      Amplify.configure({
-        API: {
-          GraphQL: {
-            endpoint: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || '',
-            apiKey: process.env.NEXT_PUBLIC_GRAPHQL_API_KEY || '',
-            region: process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1',
-            defaultAuthMode: 'apiKey',
-          },
-        },
-      });
-      amplifyClient = generateClient();
-    }
-    
-    return amplifyClient;
-  } catch (error) {
-    console.error('Error initializing Amplify client:', error);
-    return null;
-  }
-};
-
 // Function to create a user
 export const createUser = async (
   userData: {
@@ -124,106 +88,23 @@ export const createUser = async (
     updatedAt: new Date().toISOString()
   };
 
-  // Try to save to Amplify (primary storage)
-  const client = initializeAmplify();
-  let savedToAmplify = false;
-  
-  if (client) {
-    try {
-      await client.models.User.create({
-        ...newUser,
-        name: userData.aydoHandle, // Add name field needed by Amplify schema
-        handle: userData.aydoHandle, // Add handle field needed by Amplify schema
-      });
-      console.log('User created in Amplify');
-      savedToAmplify = true;
-    } catch (error) {
-      console.error('Error creating user in Amplify:', error);
-      // Fall through to local storage
-    }
-  }
-
-  // If Amplify failed or not available, save to local storage
-  if (!savedToAmplify) {
-    saveLocalUser(newUser);
-    console.log('User created in local storage');
-  }
+  // Save to local storage
+  saveLocalUser(newUser);
+  console.log('User created in local storage');
   
   return newUser;
 };
 
 // Function to get a user by handle
 export const getUserByHandle = async (aydoHandle: string): Promise<User | null> => {
-  // Try to get from Amplify (primary source)
-  const client = initializeAmplify();
-  
-  if (client) {
-    try {
-      const response = await client.models.User.list({
-        filter: { aydoHandle: { eq: aydoHandle } }
-      });
-      
-      if (response.data && response.data.length > 0) {
-        const amplifyUser = response.data[0];
-        // Convert to our User type
-        return {
-          id: amplifyUser.id,
-          aydoHandle: amplifyUser.aydoHandle,
-          email: amplifyUser.email,
-          passwordHash: amplifyUser.passwordHash,
-          clearanceLevel: amplifyUser.clearanceLevel,
-          role: amplifyUser.role,
-          discordName: amplifyUser.discordName || null,
-          rsiAccountName: amplifyUser.rsiAccountName || null,
-          createdAt: amplifyUser.createdAt,
-          updatedAt: amplifyUser.updatedAt
-        };
-      }
-    } catch (error) {
-      console.error('Error getting user from Amplify:', error);
-      // Fall through to local storage
-    }
-  }
-
-  // Try local storage as fallback
+  // Get from local storage
   const users = getLocalUsers();
   return users.find(u => u.aydoHandle.toLowerCase() === aydoHandle.toLowerCase()) || null;
 };
 
 // Function to get a user by email
 export const getUserByEmail = async (email: string): Promise<User | null> => {
-  // Try to get from Amplify (primary source)
-  const client = initializeAmplify();
-  
-  if (client) {
-    try {
-      const response = await client.models.User.list({
-        filter: { email: { eq: email } }
-      });
-      
-      if (response.data && response.data.length > 0) {
-        const amplifyUser = response.data[0];
-        // Convert to our User type
-        return {
-          id: amplifyUser.id,
-          aydoHandle: amplifyUser.aydoHandle,
-          email: amplifyUser.email,
-          passwordHash: amplifyUser.passwordHash,
-          clearanceLevel: amplifyUser.clearanceLevel,
-          role: amplifyUser.role,
-          discordName: amplifyUser.discordName || null,
-          rsiAccountName: amplifyUser.rsiAccountName || null,
-          createdAt: amplifyUser.createdAt,
-          updatedAt: amplifyUser.updatedAt
-        };
-      }
-    } catch (error) {
-      console.error('Error getting user from Amplify:', error);
-      // Fall through to local storage
-    }
-  }
-
-  // Try local storage as fallback
+  // Get from local storage
   const users = getLocalUsers();
   return users.find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
 };
@@ -233,60 +114,121 @@ export const updateUser = async (
   userId: string,
   updates: Partial<Omit<User, 'id'>>
 ): Promise<User | null> => {
-  // Try to update in Amplify (primary source)
-  const client = initializeAmplify();
-  
-  if (client) {
-    try {
-      // First get the current user
-      const response = await client.models.User.get({ id: userId });
-      
-      if (response) {
-        // Update the user
-        const updatedUser = await client.models.User.update({
-          id: userId,
-          ...updates,
-          updatedAt: new Date().toISOString()
-        });
-        
-        // Convert to our User type
-        return {
-          id: updatedUser.id,
-          aydoHandle: updatedUser.aydoHandle,
-          email: updatedUser.email,
-          passwordHash: updatedUser.passwordHash,
-          clearanceLevel: updatedUser.clearanceLevel,
-          role: updatedUser.role,
-          discordName: updatedUser.discordName || null,
-          rsiAccountName: updatedUser.rsiAccountName || null,
-          createdAt: updatedUser.createdAt,
-          updatedAt: updatedUser.updatedAt
-        };
-      }
-    } catch (error) {
-      console.error('Error updating user in Amplify:', error);
-      // Fall through to local storage
-    }
-  }
-
-  // Try local storage as fallback
+  // Get all users
   const users = getLocalUsers();
+  
+  // Find the user to update
   const userIndex = users.findIndex(u => u.id === userId);
   
   if (userIndex === -1) {
+    console.error(`User with ID ${userId} not found`);
     return null;
   }
   
   // Update the user
-  const updatedUser = {
-    ...users[userIndex],
+  const user = users[userIndex];
+  const updatedUser: User = {
+    ...user,
     ...updates,
+    id: userId, // ensure ID isn't changed
     updatedAt: new Date().toISOString()
   };
   
+  // Save the updated user
   users[userIndex] = updatedUser;
+  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf8');
   
-  // Save to local storage
+  return updatedUser;
+};
+
+// Function to delete a user
+export const deleteUser = async (userId: string): Promise<boolean> => {
+  // Get all users
+  const users = getLocalUsers();
+  
+  // Find the user to delete
+  const userIndex = users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) {
+    console.error(`User with ID ${userId} not found`);
+    return false;
+  }
+  
+  // Remove the user
+  users.splice(userIndex, 1);
+  
+  // Save the updated users list
+  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf8');
+  
+  return true;
+};
+
+// Function to get all users
+export const getAllUsers = async (): Promise<User[]> => {
+  return getLocalUsers();
+};
+
+// Admin functions
+
+// Promote a user (increase clearance level)
+export const promoteUser = async (userId: string): Promise<User | null> => {
+  const users = getLocalUsers();
+  const userIndex = users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) {
+    console.error(`User with ID ${userId} not found`);
+    return null;
+  }
+  
+  const user = users[userIndex];
+  
+  // Maximum clearance level is 5
+  if (user.clearanceLevel >= 5) {
+    console.log(`User ${user.aydoHandle} already at maximum clearance level`);
+    return user;
+  }
+  
+  // Increase clearance level
+  const updatedUser: User = {
+    ...user,
+    clearanceLevel: user.clearanceLevel + 1,
+    updatedAt: new Date().toISOString()
+  };
+  
+  // Save the updated user
+  users[userIndex] = updatedUser;
+  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf8');
+  
+  return updatedUser;
+};
+
+// Demote a user (decrease clearance level)
+export const demoteUser = async (userId: string): Promise<User | null> => {
+  const users = getLocalUsers();
+  const userIndex = users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) {
+    console.error(`User with ID ${userId} not found`);
+    return null;
+  }
+  
+  const user = users[userIndex];
+  
+  // Minimum clearance level is 1
+  if (user.clearanceLevel <= 1) {
+    console.log(`User ${user.aydoHandle} already at minimum clearance level`);
+    return user;
+  }
+  
+  // Decrease clearance level
+  const updatedUser: User = {
+    ...user,
+    clearanceLevel: user.clearanceLevel - 1,
+    updatedAt: new Date().toISOString()
+  };
+  
+  // Save the updated user
+  users[userIndex] = updatedUser;
   fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf8');
   
   return updatedUser;

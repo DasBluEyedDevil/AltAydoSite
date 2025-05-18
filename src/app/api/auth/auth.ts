@@ -4,71 +4,6 @@ import bcrypt from 'bcrypt';
 import fs from 'fs';
 import path from 'path';
 import { User } from '@/types/user';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
-import { Amplify } from 'aws-amplify';
-import { generateClient } from 'aws-amplify/data';
-
-// Set up Amplify client
-let amplifyAvailable = false;
-let amplifyClient: any = null;
-
-try {
-  // Get configuration values
-  const endpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
-  const apiKey = process.env.NEXT_PUBLIC_GRAPHQL_API_KEY;
-  const region = process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1';
-
-  if (!endpoint || !apiKey) {
-    console.warn("Auth: Missing GraphQL endpoint or API key. Amplify authentication will fall back to alternative methods.");
-    console.warn("Please set NEXT_PUBLIC_GRAPHQL_ENDPOINT and NEXT_PUBLIC_GRAPHQL_API_KEY in your environment.");
-    amplifyAvailable = false;
-  } else {
-    // Configure Amplify if running server-side
-    Amplify.configure({
-      // Configuration will be loaded from amplify_outputs.json or environment variables
-      API: {
-        GraphQL: {
-          endpoint: endpoint,
-          apiKey: apiKey,
-          region: region,
-          defaultAuthMode: 'apiKey',
-        },
-      },
-    });
-
-    // Generate client for server-side operations
-    amplifyClient = generateClient();
-    amplifyAvailable = true;
-    console.log('Amplify client configured successfully for auth');
-  }
-} catch (error) {
-  console.error('Error configuring Amplify client for auth:', error);
-  amplifyAvailable = false;
-}
-
-// Set up DynamoDB client (will be used if Amplify is not available)
-let dynamoDbAvailable = false;
-let docClient: any = null;
-
-try {
-  const client = new DynamoDBClient({
-    region: 'us-east-1',
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-    },
-  });
-
-  docClient = DynamoDBDocumentClient.from(client);
-  dynamoDbAvailable = true;
-} catch (error) {
-  console.error('Error setting up DynamoDB client:', error);
-  dynamoDbAvailable = false;
-}
-
-// DynamoDB table name for users
-const USERS_TABLE = 'AydoUsers';
 
 // Local storage for users
 const dataDir = path.join(process.cwd(), 'data');
@@ -145,73 +80,16 @@ export const authOptions: NextAuthOptions = {
 
           let user: User | null = null;
 
-          // First, try to find user in Amplify (new primary source)
-          if (amplifyAvailable && amplifyClient) {
-            try {
-              console.log(`Looking for user with handle in Amplify: ${credentials.aydoHandle}`);
-              const response = await amplifyClient.models.User.list({
-                filter: { aydoHandle: { eq: credentials.aydoHandle } }
-              });
+          // Try local storage
+          console.log(`Looking for user with handle in local storage: ${credentials.aydoHandle}`);
+          const localUsers = getLocalUsers();
+          const localUser = localUsers.find(u => 
+            u.aydoHandle.toLowerCase() === credentials.aydoHandle.toLowerCase()
+          );
 
-              if (response.data && response.data.length > 0) {
-                // Convert Amplify user to our User type
-                const amplifyUser = response.data[0];
-                user = {
-                  id: amplifyUser.id,
-                  aydoHandle: amplifyUser.aydoHandle,
-                  email: amplifyUser.email,
-                  passwordHash: amplifyUser.passwordHash,
-                  clearanceLevel: amplifyUser.clearanceLevel,
-                  role: amplifyUser.role,
-                  discordName: amplifyUser.discordName || null,
-                  rsiAccountName: amplifyUser.rsiAccountName || null
-                };
-                console.log(`User found in Amplify: ${user.aydoHandle}`);
-              }
-            } catch (amplifyError) {
-              console.error('Error querying Amplify for user:', amplifyError);
-              // Continue to next data source
-            }
-          }
-
-          // If not found in Amplify, try DynamoDB (secondary source)
-          if (!user && dynamoDbAvailable && docClient) {
-            try {
-              console.log(`Looking for user with handle in DynamoDB: ${credentials.aydoHandle}`);
-              // Query for user by aydoHandle
-              const params = {
-                TableName: USERS_TABLE,
-                IndexName: 'AydoHandleIndex', 
-                KeyConditionExpression: 'aydoHandle = :aydoHandle',
-                ExpressionAttributeValues: {
-                  ':aydoHandle': credentials.aydoHandle
-                }
-              };
-
-              const response = await docClient.send(new QueryCommand(params));
-
-              if (response.Items && response.Items.length > 0) {
-                user = response.Items[0] as User;
-                console.log(`User found in DynamoDB: ${user.aydoHandle}`);
-              }
-            } catch (dbError) {
-              console.error('Error querying DynamoDB for user:', dbError);
-              // Continue to next data source
-            }
-          }
-
-          // If still not found, try local storage (fallback)
-          if (!user) {
-            console.log(`Looking for user with handle in local storage: ${credentials.aydoHandle}`);
-            const localUsers = getLocalUsers();
-            const localUser = localUsers.find(u => 
-              u.aydoHandle.toLowerCase() === credentials.aydoHandle.toLowerCase()
-            );
-
-            if (localUser) {
-              user = localUser;
-              console.log(`User found in local storage: ${user.aydoHandle}`);
-            }
+          if (localUser) {
+            user = localUser;
+            console.log(`User found in local storage: ${user.aydoHandle}`);
           }
 
           if (!user) {
@@ -252,24 +130,20 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      // Initial sign in
-      if (account && user) {
-        return {
-          ...token,
-          id: user.id,
-          clearanceLevel: user.clearanceLevel,
-          role: user.role,
-          aydoHandle: user.aydoHandle,
-          discordName: user.discordName,
-          rsiAccountName: user.rsiAccountName
-        };
+      // Pass user details to the token when signing in
+      if (user) {
+        token.id = user.id;
+        token.clearanceLevel = user.clearanceLevel;
+        token.role = user.role;
+        token.aydoHandle = user.aydoHandle;
+        token.discordName = user.discordName;
+        token.rsiAccountName = user.rsiAccountName;
       }
-
-      // Return previous token if the access token has not expired
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      // Pass token data to the client
+      if (token && session.user) {
         session.user.id = token.id as string;
         session.user.clearanceLevel = token.clearanceLevel as number;
         session.user.role = token.role as string;
@@ -280,16 +154,15 @@ export const authOptions: NextAuthOptions = {
       return session;
     }
   },
-  pages: {
-    signIn: '/login',
-    error: '/login',
-  },
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  pages: {
+    signIn: '/login',
+    error: '/login?error=true',
+  },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development',
 };
 
 export default authOptions;

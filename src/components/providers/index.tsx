@@ -1,16 +1,17 @@
+// This file contains all the providers for the application
 'use client';
 
 import { ReactNode } from 'react';
-import AuthProvider from '../AuthProvider';
-import AmplifyProvider from './AmplifyProvider';
+import { SessionProvider } from 'next-auth/react';
 
-// This component wraps all providers needed for the application
-export default function Providers({ children }: { children: ReactNode }) {
+interface ProvidersProps {
+  children: ReactNode;
+}
+
+export default function Providers({ children }: ProvidersProps) {
   return (
-    <AmplifyProvider>
-      <AuthProvider>
-        {children}
-      </AuthProvider>
-    </AmplifyProvider>
+    <SessionProvider>
+      {children}
+    </SessionProvider>
   );
 } 
