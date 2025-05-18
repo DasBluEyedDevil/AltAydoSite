@@ -1,7 +1,7 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 
 const schema = a.schema({
-  // User model based on UserProfile interface
+  // User model based on UserProfile interface WORK GODDAMNIT
   User: a
     .model({
       id: a.id(), // Primary key
