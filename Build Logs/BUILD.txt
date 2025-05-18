@@ -1,8 +1,8 @@
-2025-05-18T17:03:09.103Z [INFO]: # Cloning repository: git@github.com:DasBluEyedDevil/AltAydoSite.git
-2025-05-18T17:03:13.611Z [INFO]: 
-2025-05-18T17:03:13.696Z [INFO]: Cloning into 'AltAydoSite'...
-2025-05-18T17:03:13.696Z [INFO]: # Switching to commit: 746cee69247cd52cff3994aca738f888bb2f52e3
-2025-05-18T17:03:14.151Z [INFO]: Note: switching to '746cee69247cd52cff3994aca738f888bb2f52e3'.
+2025-05-18T17:13:48.932Z [INFO]: # Cloning repository: git@github.com:DasBluEyedDevil/AltAydoSite.git
+2025-05-18T17:13:53.276Z [INFO]: 
+2025-05-18T17:13:53.365Z [INFO]: Cloning into 'AltAydoSite'...
+2025-05-18T17:13:53.365Z [INFO]: # Switching to commit: b11f24def8c301a1038e6c7fc92d99e35596ea9e
+2025-05-18T17:13:53.569Z [INFO]: Note: switching to 'b11f24def8c301a1038e6c7fc92d99e35596ea9e'.
                                  You are in 'detached HEAD' state. You can look around, make experimental
                                  changes and commit them, and you can discard any commits you make in this
                                  state without impacting any branches by switching back to a branch.
@@ -12,46 +12,47 @@
                                  Or undo this operation with:
                                  git switch -
                                  Turn off this advice by setting config variable advice.detachedHead to false
-                                 HEAD is now at 746cee6 Refactor resource schema relationships to simplify definitions by removing explicit reference fields for hasMany and belongsTo relationships in Amplify data model.
-2025-05-18T17:03:14.193Z [INFO]: Successfully cleaned up Git credentials
-2025-05-18T17:03:14.194Z [INFO]: # Checking for Git submodules at: /codebuild/output/src1676858899/src/AltAydoSite/.gitmodules
-2025-05-18T17:03:14.204Z [INFO]: # Retrieving environment cache...
-2025-05-18T17:03:14.293Z [INFO]: # Retrieved environment cache
-2025-05-18T17:03:14.293Z [INFO]: ---- Setting Up SSM Secrets ----
-2025-05-18T17:03:14.293Z [INFO]: SSM params {"Path":"/amplify/d3ohapvt0eajka/main/","WithDecryption":true}
-2025-05-18T17:03:14.346Z [WARNING]: !Failed to set up process.env.secrets
-2025-05-18T17:03:15.105Z [INFO]: # No package override configuration found.
-2025-05-18T17:03:15.110Z [INFO]: # Retrieving cache...
-2025-05-18T17:03:41.420Z [INFO]: # Extracting cache...
-2025-05-18T17:04:21.111Z [INFO]: # Extraction completed
-2025-05-18T17:04:21.374Z [INFO]: # Retrieved cache
-2025-05-18T17:04:24.683Z [INFO]: ## Starting Backend Build
+                                 HEAD is now at b11f24d Refactor relationships in resource schema to specify foreign key 'userId' for hasMany and belongsTo associations
+2025-05-18T17:13:53.611Z [INFO]: Successfully cleaned up Git credentials
+2025-05-18T17:13:53.611Z [INFO]: # Checking for Git submodules at: /codebuild/output/src851296152/src/AltAydoSite/.gitmodules
+2025-05-18T17:13:53.621Z [INFO]: # Retrieving environment cache...
+2025-05-18T17:13:53.698Z [INFO]: # Retrieved environment cache
+2025-05-18T17:13:53.698Z [INFO]: ---- Setting Up SSM Secrets ----
+2025-05-18T17:13:53.699Z [INFO]: SSM params {"Path":"/amplify/d3ohapvt0eajka/main/","WithDecryption":true}
+2025-05-18T17:13:53.747Z [WARNING]: !Failed to set up process.env.secrets
+2025-05-18T17:13:54.515Z [INFO]: # No package override configuration found.
+2025-05-18T17:13:54.519Z [INFO]: # Retrieving cache...
+2025-05-18T17:14:21.230Z [INFO]: # Extracting cache...
+2025-05-18T17:15:00.328Z [INFO]: # Extraction completed
+2025-05-18T17:15:00.614Z [INFO]: # Retrieved cache
+2025-05-18T17:15:04.624Z [INFO]: ## Starting Backend Build
                                  # Starting phase: preBuild
                                  # Executing command: npm ci
-2025-05-18T17:07:05.241Z [INFO]: added 2278 packages in 3m
-2025-05-18T17:07:05.274Z [INFO]: # Executing command: npm install -g @aws-amplify/cli
-2025-05-18T17:07:15.451Z [WARNING]: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
-2025-05-18T17:07:15.465Z [WARNING]: npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
-2025-05-18T17:07:15.468Z [WARNING]: npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
-2025-05-18T17:07:29.083Z [INFO]: changed 47 packages in 24s
-2025-05-18T17:07:29.088Z [INFO]: 12 packages are looking for funding
+2025-05-18T17:17:39.884Z [INFO]: added 2278 packages in 3m
+2025-05-18T17:17:39.920Z [INFO]: # Executing command: npm install -g @aws-amplify/cli
+2025-05-18T17:17:50.058Z [WARNING]: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2025-05-18T17:17:50.072Z [WARNING]: npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+2025-05-18T17:17:50.075Z [WARNING]: npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+2025-05-18T17:18:04.275Z [INFO]: changed 47 packages in 24s
+2025-05-18T17:18:04.279Z [INFO]: 12 packages are looking for funding
                                  run `npm fund` for details
-2025-05-18T17:07:29.097Z [INFO]: # Completed phase: preBuild
+2025-05-18T17:18:04.282Z [INFO]: # Completed phase: preBuild
                                  # Starting phase: build
-                                 # Executing command: echo "Building Amplify backend..."
+2025-05-18T17:18:04.282Z [INFO]: # Executing command: echo "Building Amplify backend..."
                                  Building Amplify backend...
                                  # Executing command: npx ampx pipeline-deploy --app-id "${AWS_APP_ID}" --branch "${AWS_BRANCH}" || echo "Skipping ampx pipeline-deploy due to issues"
-2025-05-18T17:07:32.842Z [INFO]: 5:07:32 PM Synthesizing backend...
-2025-05-18T17:07:32.848Z [INFO]: 
-2025-05-18T17:07:33.958Z [WARNING]: Bundling asset amplify-d3ohapvt0eajka-main-branch-28445516db/AmplifyBranchLinker/CustomResourceLambda/Code/Stage...
-2025-05-18T17:07:34.369Z [WARNING]: ...7fc29bfff7fdd243c8dc6e410c8a93791325a5d5d9befd-building/index.js  861.4kb
+2025-05-18T17:18:08.233Z [INFO]: 5:18:07 PM Synthesizing backend...
+2025-05-18T17:18:08.238Z [INFO]: 
+2025-05-18T17:18:09.350Z [WARNING]: Bundling asset amplify-d3ohapvt0eajka-main-branch-28445516db/AmplifyBranchLinker/CustomResourceLambda/Code/Stage...
+2025-05-18T17:18:09.754Z [WARNING]: ...35ec18e3ad3ed8250e11a654befe85acb2dbe833f9ed94-building/index.js  861.4kb
                                     ⚡ Done in 56ms
-2025-05-18T17:07:34.483Z [INFO]: 5:07:34 PM ✔ Backend synthesized in 1.84 seconds
-2025-05-18T17:07:34.483Z [INFO]: 5:07:34 PM Running type checks...
-2025-05-18T17:07:40.649Z [INFO]: 5:07:40 PM ✔ Type checks completed in 6.16 seconds
-2025-05-18T17:07:40.655Z [INFO]: 
-2025-05-18T17:07:40.825Z [INFO]: 
-2025-05-18T17:07:40.825Z [WARNING]: ampx pipeline-deploy
+2025-05-18T17:18:09.870Z [INFO]: 5:18:09 PM ✔ Backend synthesized in 1.97 seconds
+2025-05-18T17:18:09.871Z [INFO]: 5:18:09 PM Running type checks...
+2025-05-18T17:18:15.847Z [INFO]: 5:18:15 PM ✔ Type checks completed in 5.97 seconds
+2025-05-18T17:18:15.853Z [INFO]: 
+2025-05-18T17:18:16.019Z [INFO]: 
+2025-05-18T17:18:16.019Z [INFO]: 
+2025-05-18T17:18:16.019Z [WARNING]: ampx pipeline-deploy
                                     Command to deploy backends in a custom CI/CD pipeline. This command is not inten
                                     ded to be used locally.
                                     Options:
@@ -70,66 +71,20 @@
                                     --outputs-format   amplify_outputs file format
                                     [string] [choices: "mjs", "json", "json-mobile", "ts", "dart"]
                                     -h, --help             Show help                                     [boolean]
-2025-05-18T17:07:40.825Z [INFO]: [SyntaxError] TypeScript validation check failed.
-                                 Resolution: Fix the syntax and type errors in your backend definition.
-                                 Details: amplify/data/resource.ts:26:19 - error TS2554: Expected 2 arguments, but got 1.
-                                 26       messages: a.hasMany('Message'),
-                                 ~~~~~~~
-                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:138:70
-                                 138 export declare function hasMany<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.hasMany, true>, RM, "required", undefined>;
-                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                 An argument for 'references' was not provided.
-                                 amplify/data/resource.ts:27:24 - error TS2554: Expected 2 arguments, but got 1.
-                                 27       announcements: a.hasMany('Announcement'),
-                                 ~~~~~~~
-                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:138:70
-                                 138 export declare function hasMany<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.hasMany, true>, RM, "required", undefined>;
-                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                 An argument for 'references' was not provided.
-                                 amplify/data/resource.ts:28:17 - error TS2554: Expected 2 arguments, but got 1.
-                                 28       events: a.hasMany('Event'),
-                                 ~~~~~~~
-                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:138:70
-                                 138 export declare function hasMany<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.hasMany, true>, RM, "required", undefined>;
-                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                 An argument for 'references' was not provided.
-                                 amplify/data/resource.ts:41:15 - error TS2554: Expected 2 arguments, but got 1.
-                                 41       user: a.belongsTo('User'),
-                                 ~~~~~~~~~
-                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:186:72
-                                 186 export declare function belongsTo<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.belongsTo, false>, RM, "required" | "valueRequired", undefined>;
-                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                 An argument for 'references' was not provided.
-                                 amplify/data/resource.ts:55:15 - error TS2554: Expected 2 arguments, but got 1.
-                                 55       user: a.belongsTo('User'),
-                                 ~~~~~~~~~
-                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:186:72
-                                 186 export declare function belongsTo<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.belongsTo, false>, RM, "required" | "valueRequired", undefined>;
-                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                 An argument for 'references' was not provided.
-                                 amplify/data/resource.ts:69:15 - error TS2554: Expected 2 arguments, but got 1.
-                                 69       user: a.belongsTo('User'),
-                                 ~~~~~~~~~
-                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:186:72
-                                 186 export declare function belongsTo<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.belongsTo, false>, RM, "required" | "valueRequired", undefined>;
-                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                 An argument for 'references' was not provided.
-                                 amplify/data/resource.ts:84:15 - error TS2554: Expected 2 arguments, but got 1.
-                                 84       user: a.belongsTo('User'),
-                                 ~~~~~~~~~
-                                 node_modules/@aws-amplify/data-schema/dist/esm/ModelRelationshipField.d.ts:186:72
-                                 186 export declare function belongsTo<RM extends string>(relatedModel: RM, references: string | string[]): ModelRelationshipField<ModelRelationshipTypeArgFactory<RM, ModelRelationshipTypes.belongsTo, false>, RM, "required" | "valueRequired", undefined>;
-                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                 An argument for 'references' was not provided.
-2025-05-18T17:07:40.879Z [INFO]: Skipping ampx pipeline-deploy due to issues
-2025-05-18T17:07:40.879Z [INFO]: # Executing command: npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
-2025-05-18T17:07:41.005Z [INFO]: > aydocorp-website@0.1.0 build:amplify
+2025-05-18T17:18:16.019Z [INFO]: [BackendBuildError] Unable to deploy due to CDK Assembly Error
+                                 ∟ Caused by: [_AssemblyError] Assembly builder failed
+                                 ∟ Caused by: [InvalidSchemaError] Unable to find associated relationship definition in User for EmployeeOfMonth.user: User @belongsTo(references: ['userId'])
+                                 ∟ Caused by: [Error] Unable to find associated relationship definition in User for EmployeeOfMonth.user: User @belongsTo(references: ['userId'])
+                                 Resolution: Check your data schema definition for syntax and type errors.
+                                 Resolution: Check the Caused by error and fix any issues in your backend code
+2025-05-18T17:18:16.075Z [INFO]: Skipping ampx pipeline-deploy due to issues
+2025-05-18T17:18:16.075Z [INFO]: # Executing command: npm run build:amplify || echo "No build:amplify script found, using default Amplify handling"
+2025-05-18T17:18:16.197Z [INFO]: > aydocorp-website@0.1.0 build:amplify
                                  > npx ampx generate outputs --app-id "$AWS_APP_ID" --branch "$AWS_BRANCH" || node -e "const fs=require('fs'); fs.writeFileSync('./amplify/backend.out.json', JSON.stringify({}, null, 2)); console.log('Created fallback backend.out.json file');"
-2025-05-18T17:07:45.092Z [INFO]: 5:07:45 PM Both the legacy 'AWS_DEFAULT_REGION' and preferred 'AWS_REGION' environment variables detected. Using 'AWS_REGION'
-2025-05-18T17:07:45.096Z [INFO]: 
-2025-05-18T17:07:45.313Z [INFO]: 
-2025-05-18T17:07:45.313Z [INFO]: 
-2025-05-18T17:07:45.313Z [WARNING]: ampx generate outputs
+2025-05-18T17:18:19.518Z [INFO]: 5:18:19 PM Both the legacy 'AWS_DEFAULT_REGION' and preferred 'AWS_REGION' environment variables detected. Using 'AWS_REGION'
+2025-05-18T17:18:19.523Z [INFO]: 
+2025-05-18T17:18:19.722Z [INFO]: 
+2025-05-18T17:18:19.723Z [WARNING]: ampx generate outputs
                                     Generates Amplify backend outputs
                                     Stack identifier
                                     --stack  A stack name that contains an Amplify backend            [string]
@@ -151,12 +106,13 @@
                                     represents newer config file amplify_outputs
                                     [string] [choices: "0", "1", "1.1", "1.2", "1.3", "1.4"] [default: "1.4"]
                                     -h, --help             Show help                                     [boolean]
-2025-05-18T17:07:45.314Z [INFO]: [StackDoesNotExistError] Stack does not exist.
+2025-05-18T17:18:19.723Z [INFO]: [StackDoesNotExistError] Stack does not exist.
                                  ∟ Caused by: [Error] Stack with id amplify-d3ohapvt0eajka-main-branch-28445516db does not exist
                                  Resolution: Ensure the CloudFormation stack ID or Amplify App ID and branch specified are correct and exists, then re-run this command.
-2025-05-18T17:07:45.394Z [INFO]: Created fallback backend.out.json file
-2025-05-18T17:07:45.401Z [INFO]: # Executing command: npx ampx info || echo "Amplify not initialized, skipping status check"
-2025-05-18T17:08:06.713Z [INFO]: System:
+2025-05-18T17:18:19.723Z [INFO]: 
+2025-05-18T17:18:19.802Z [INFO]: Created fallback backend.out.json file
+2025-05-18T17:18:19.809Z [INFO]: # Executing command: npx ampx info || echo "Amplify not initialized, skipping status check"
+2025-05-18T17:18:40.926Z [INFO]: System:
                                  OS: Linux 4.14 Amazon Linux 2023
                                  CPU: (4) x64 Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz
                                  Memory: 5.92 GB / 7.49 GB
@@ -197,11 +153,11 @@
                                  AWS environment variables:
                                  AWS_AMPLIFY_WEB_DYNAMIC_RUNTIME = nodejs16.x
                                  AWS_EXECUTION_ENV = AWS_ECS_EC2
-                                 AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = /v2/credentials/849d8f60-5725-4cbb-9976-8932a1c69345
+                                 AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = /v2/credentials/8c5d99ce-d140-4d43-9a03-b96d482c72f1
                                  AWS_AMPLIFY_AL2023_DEFAULT_BUILD_IMAGE = true
                                  AWS_STEP_NAME = BUILD
                                  AWS_BRANCH = main
-                                 AWS_JOB_ID = 0000000030
+                                 AWS_JOB_ID = 0000000031
                                  AWS_DEFAULT_REGION = us-east-1
                                  AWS_GITHUB_SSH_PUBLIC_KEYS = github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
                                  github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
@@ -209,15 +165,24 @@
                                  AWS_REGION = us-east-1
                                  AWS_AMPLIFY_SKEW_PROTECTION_ENABLED = false
                                  AWS_APP_ID = d3ohapvt0eajka
-                                 AWS_PREVIOUS_COMMIT_ID = f9eb38d02d203c126d616c3c5fca83879f5604e0
+                                 AWS_PREVIOUS_COMMIT_ID = 746cee69247cd52cff3994aca738f888bb2f52e3
                                  AWS_FRAMEWORK = Next.js - SSR
                                  AWS_PLATFORM = WEB_COMPUTE
                                  AWS_AMPLIFY_BUILD_IMAGE_VERSION = 2023-11
                                  AWS_BRANCH_ARN = arn:aws:amplify:us-east-1:992382615681:apps/d3ohapvt0eajka/branches/main
                                  AWS_AMPLIFY_INTERNAL_IMAGE_OPTIMIZATION = true
                                  AWS_BUILDSPEC_CONTENT = dmVyc2lvbjogMQpiYWNrZW5kOgogIHBoYXNlczoKICAgICMgcHJlQnVpbGQsIGJ1aWxkLCBwb3N0QnVpbGQgcGhhc2VzIGZvciB0aGUgYmFja2VuZAogICAgIyBBbXBsaWZ5IGF1dG9tYXRpY2FsbHkgaGFuZGxlcyBkZXBsb3lpbmcgY2hhbmdlcyBpbiB0aGUgJ2FtcGxpZnknIGZvbGRlciAobGlrZSB5b3VyIHJlc291cmNlLnRzKQogICAgIyBkdXJpbmcgdGhlc2UgYmFja2VuZCBwaGFzZXMgaWYgaXQgZGV0ZWN0cyBhbnkuCiAgICAjIFlvdSB1c3VhbGx5IGRvbid0IG5lZWQgdG8gYWRkIGV4cGxpY2l0ICducHggYW1weCBkZXBsb3knIGNvbW1hbmRzIGhlcmUuCiAgICBwcmVCdWlsZDoKICAgICAgY29tbWFuZHM6CiAgICAgICAgLSBucG0gY2kKICAgICAgICAtIG5wbSBpbnN0YWxsIC1nIEBhd3MtYW1wbGlmeS9jbGkKICAgIGJ1aWxkOgogICAgICBjb21tYW5kczoKICAgICAgICAtIGVjaG8gIkJ1aWxkaW5nIEFtcGxpZnkgYmFja2VuZC4uLiIKICAgICAgICAtIG5wbSBydW4gYnVpbGQ6YW1wbGlmeSB8fCBlY2hvICJObyBidWlsZDphbXBsaWZ5IHNjcmlwdCBmb3VuZCwgdXNpbmcgZGVmYXVsdCBBbXBsaWZ5IGhhbmRsaW5nIgogICAgICAgIC0gbnB4IGFtcHggaW5mbyB8fCBlY2hvICJBbXBsaWZ5IG5vdCBpbml0aWFsaXplZCwgc2tpcHBpbmcgc3RhdHVzIGNoZWNrIgpmcm9udGVuZDoKICBwaGFzZXM6CiAgICBwcmVCdWlsZDoKICAgICAgY29tbWFuZHM6CiAgICAgICAgLSBlY2hvICJJbnN0YWxsaW5nIGZyb250ZW5kIGRlcGVuZGVuY2llcy4uLiIKICAgICAgICAtIG5wbSBjaQogICAgICAgIC0gbm9kZSAtZSAiY29uc3QgZnM9cmVxdWlyZSgnZnMnKTsgdHJ5IHsgaWYgKCFmcy5leGlzdHNTeW5jKCcuL2FtcGxpZnlfb3V0cHV0cy5qc29uJykpIHsgZnMud3JpdGVGaWxlU3luYygnLi9hbXBsaWZ5X291dHB1dHMuanNvbicsIEpTT04uc3RyaW5naWZ5KHt9LCBudWxsLCAyKSk7IGNvbnNvbGUubG9nKCdDcmVhdGVkIGVtcHR5IGFtcGxpZnlfb3V0cHV0cy5qc29uJyk7IH19IGNhdGNoKGUpIHsgY29uc29sZS5lcnJvcihlKTsgfSIKICAgIGJ1aWxkOgogICAgICBjb21tYW5kczoKICAgICAgICAtIGVjaG8gIlNldHRpbmcgdXAgZW52aXJvbm1lbnQgZm9yIE5leHRBdXRoIGFuZCBBbXBsaWZ5Li4uIgogICAgICAgIC0gfAogICAgICAgICAgbm9kZSAtZSAiCiAgICAgICAgICAgIGNvbnN0IGZzID0gcmVxdWlyZSgnZnMnKTsKICAgICAgICAgICAgdHJ5IHsKICAgICAgICAgICAgICBpZiAoIWZzLmV4aXN0c1N5bmMoJy5lbnYubG9jYWwnKSAmJiBwcm9jZXNzLmVudi5ORVhUQVVUSF9TRUNSRVQpIHsKICAgICAgICAgICAgICAgIGxldCBlbnZDb250ZW50ID0gJyc7CiAgICAgICAgICAgICAgICBlbnZDb250ZW50ICs9ICdORVhUQVVUSF9TRUNSRVQ9JyArIHByb2Nlc3MuZW52Lk5FWFRBVVRIX1NFQ1JFVCArICdcbic7CiAgICAgICAgICAgICAgICBlbnZDb250ZW50ICs9ICdORVhUQVVUSF9VUkw9JyArIChwcm9jZXNzLmVudi5ORVhUQVVUSF9VUkwgfHwgcHJvY2Vzcy5lbnYuREVQTE9ZX1VSTCB8fCAnJykgKyAnXG4nOwogICAgICAgICAgICAgICAgZW52Q29udGVudCArPSAnTkVYVF9QVUJMSUNfR1JBUEhRTF9FTkRQT0lOVD0nICsgKHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX0dSQVBIUUxfRU5EUE9JTlQgfHwgJycpICsgJ1xuJzsKICAgICAgICAgICAgICAgIGVudkNvbnRlbnQgKz0gJ05FWFRfUFVCTElDX0dSQVBIUUxfQVBJX0tFWT0nICsgKHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX0dSQVBIUUxfQVBJX0tFWSB8fCAnJykgKyAnXG4nOwogICAgICAgICAgICAgICAgZW52Q29udGVudCArPSAnTkVYVF9QVUJMSUNfQVdTX1JFR0lPTj0nICsgKHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX0FXU19SRUdJT04gfHwgJ3VzLWVhc3QtMScpICsgJ1xuJzsKICAgICAgICAgICAgICAgIGZzLndyaXRlRmlsZVN5bmMoJy5lbnYubG9jYWwnLCBlbnZDb250ZW50KTsKICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdDcmVhdGVkIC5lbnYubG9jYWwnKTsKICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgY29uc29sZS5sb2coJy5lbnYubG9jYWwgYWxyZWFkeSBleGlzdHMgb3IgTkVYVEFVVEhfU0VDUkVUIG5vdCBhdmFpbGFibGUnKTsKICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0gY2F0Y2goZSkgewogICAgICAgICAgICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIGNyZWF0aW5nIC5lbnYubG9jYWw6JywgZSk7CiAgICAgICAgICAgIH0KICAgICAgICAgICIKICAgICAgICAtIGVjaG8gIkJ1aWxkaW5nIE5leHQuanMgYXBwbGljYXRpb24uLi4iCiAgICAgICAgLSBucG0gcnVuIGJ1aWxkCiAgICAgICAgLSBlY2hvICJDcmVhdGluZyBhbXBsaWZ5X291dHB1dHMuanNvbiBpZiBuZWVkZWQuLi4iCiAgICAgICAgLSB8CiAgICAgICAgICBub2RlIC1lICIKICAgICAgICAgICAgY29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwogICAgICAgICAgICB0cnkgewogICAgICAgICAgICAgIGNvbnN0IGFtcGxpZnlEaXIgPSAnLi9hbXBsaWZ5JzsKICAgICAgICAgICAgICBpZiAoZnMuZXhpc3RzU3luYyhhbXBsaWZ5RGlyKSkgewogICAgICAgICAgICAgICAgaWYgKGZzLmV4aXN0c1N5bmMoJy4vYW1wbGlmeS9iYWNrZW5kLm91dC5qc29uJykpIHsKICAgICAgICAgICAgICAgICAgY29uc3QgYW1wbGlmeUV4cG9ydHMgPSByZXF1aXJlKCcuL2FtcGxpZnkvYmFja2VuZC5vdXQuanNvbicpOwogICAgICAgICAgICAgICAgICBmcy53cml0ZUZpbGVTeW5jKCcuL3B1YmxpYy9hbXBsaWZ5X291dHB1dHMuanNvbicsIEpTT04uc3RyaW5naWZ5KGFtcGxpZnlFeHBvcnRzLCBudWxsLCAyKSk7CiAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdDcmVhdGVkIGFtcGxpZnlfb3V0cHV0cy5qc29uIGZyb20gYmFja2VuZC5vdXQuanNvbicpOwogICAgICAgICAgICAgICAgfSBlbHNlIGlmIChmcy5leGlzdHNTeW5jKCcuL2FtcGxpZnkvb3V0cHV0Lmpzb24nKSkgewogICAgICAgICAgICAgICAgICBjb25zdCBhbXBsaWZ5RXhwb3J0cyA9IHJlcXVpcmUoJy4vYW1wbGlmeS9vdXRwdXQuanNvbicpOwogICAgICAgICAgICAgICAgICBmcy53cml0ZUZpbGVTeW5jKCcuL3B1YmxpYy9hbXBsaWZ5X291dHB1dHMuanNvbicsIEpTT04uc3RyaW5naWZ5KGFtcGxpZnlFeHBvcnRzLCBudWxsLCAyKSk7CiAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdDcmVhdGVkIGFtcGxpZnlfb3V0cHV0cy5qc29uIGZyb20gb3V0cHV0Lmpzb24nKTsKICAgICAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdhbXBsaWZ5IG91dHB1dCBmaWxlcyBkbyBub3QgZXhpc3QnKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgY29uc29sZS5sb2coJ2FtcGxpZnkgZGlyZWN0b3J5IGRvZXMgbm90IGV4aXN0Jyk7CiAgICAgICAgICAgICAgfQogICAgICAgICAgICB9IGNhdGNoKGUpIHsKICAgICAgICAgICAgICBjb25zb2xlLmxvZygnRXJyb3IgY2hlY2tpbmcgQW1wbGlmeSBleHBvcnRzOicsIGUubWVzc2FnZSk7CiAgICAgICAgICAgIH0KICAgICAgICAgICIKICAgICAgICAtIG5weCBhbXB4IGdlbmVyYXRlCiAgYXJ0aWZhY3RzOgogICAgYmFzZURpcmVjdG9yeTogLm5leHQKICAgIGZpbGVzOgogICAgICAtICcqKi8qJwogICAgICAtICcuLi9wdWJsaWMvKiovKicKICBjYWNoZToKICAgIHBhdGhzOgogICAgICAtIG5vZGVfbW9kdWxlcy8qKi8qCiAgICAgIC0gLm5leHQvY2FjaGUvKiovKgogIGN1c3RvbUhlYWRlcnM6CiAgICAtIHBhdHRlcm46ICcqKi8qJwogICAgICBoZWFkZXJzOgogICAgICAgIC0ga2V5OiAnU3RyaWN0LVRyYW5zcG9ydC1TZWN1cml0eScKICAgICAgICAgIHZhbHVlOiAnbWF4LWFnZT0zMTUzNjAwMDsgaW5jbHVkZVN1YkRvbWFpbnMnCiAgICAgICAgLSBrZXk6ICdYLUNvbnRlbnQtVHlwZS1PcHRpb25zJwogICAgICAgICAgdmFsdWU6ICdub3NuaWZmJwogICAgICAgIC0ga2V5OiAnWC1YU1MtUHJvdGVjdGlvbicKICAgICAgICAgIHZhbHVlOiAnMTsgbW9kZT1ibG9jaycKICBlbnZpcm9ubWVudDoKICAgIHZhcmlhYmxlczoKICAgICAgTk9ERV9FTlY6ICdwcm9kdWN0aW9uJw==
-                                 AWS_COMMIT_ID = 746cee69247cd52cff3994aca738f888bb2f52e3
+                                 AWS_COMMIT_ID = b11f24def8c301a1038e6c7fc92d99e35596ea9e
                                  AWS_CLONE_URL = git@github.com:DasBluEyedDevil/AltAydoSite.git
-                                 AWS_AMPLIFY_DEPLOYMENT_ID = deddc915-268e-4477-a431-cc79ca9ebaca
-                                 AWS_REQUEST_ID = 33fb6938-bcaa-4b4b-8652-35b0da5d65b9
+                                 AWS_AMPLIFY_DEPLOYMENT_ID = 60b90345-c965-48c3-b3fa-ea7cc1f75848
+                                 AWS_REQUEST_ID = a55e42b2-f27f-4bbb-bc02-2674c43cce05
                                  No CDK environment variables
+2025-05-18T17:18:40.930Z [INFO]: 
+2025-05-18T17:18:41.174Z [INFO]: # Completed phase: build
+                                 ## Completed Backend Build
+2025-05-18T17:18:41.178Z [INFO]: ## Starting Frontend Build
+                                 # Starting phase: preBuild
+2025-05-18T17:18:41.178Z [INFO]: # Executing command: echo "Installing frontend dependencies..."
+                                 Installing frontend dependencies...
+                                 # Executing command: npm ci
+2025-05-18T17:21:05.259Z [INFO]: added 2278 packages in 2m

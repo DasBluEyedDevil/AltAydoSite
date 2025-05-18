@@ -26,6 +26,7 @@ const schema = a.schema({
       messages: a.hasMany('Message', 'userId'),
       announcements: a.hasMany('Announcement', 'userId'),
       events: a.hasMany('Event', 'userId'),
+      employeeOfMonths: a.hasMany('EmployeeOfMonth', 'userId'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
