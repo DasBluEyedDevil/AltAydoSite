@@ -44,8 +44,11 @@ jobs:
       - name: Prepare for deployment
         run: |
           rm -rf node_modules
-          mkdir -p ./.next/standalone/public
-          cp -r ./public/* ./.next/standalone/public/
+          # Copy the standalone output to the root for deployment
+          cp -r ./.next/standalone/* ./
+          # Copy the static and public assets to the right locations
+          mkdir -p ./public
+          cp -r ./public/* ./.next/static ./
           zip -r release.zip .
 
       - name: Upload artifact for deployment job
@@ -77,4 +80,4 @@ jobs:
           app-name: 'AydoCorp'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E8F83D01518942F1B2B01381F804622F }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E8F83D01518942F1B2B01381F804622F }} 
