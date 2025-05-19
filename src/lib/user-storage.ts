@@ -2,16 +2,16 @@ import { User } from '@/types/user';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import * as cosmosDb from './azure-cosmos';
+import * as mongoDb from './mongodb-client';
 
 // File storage paths
 const dataDir = path.join(process.cwd(), 'data');
 const usersFilePath = path.join(dataDir, 'users.json');
 
 // Tracking if we had to fall back to local storage
-let usingFallbackStorage = false;
-let cosmosDbConnectionAttempted = false;
-let cosmosDbConnectionFailed = false;
+let usingFallbackStorage = false; // Set back to false to try MongoDB first
+let mongoDbConnectionAttempted = false;
+let mongoDbConnectionFailed = false; // Reset to false to try MongoDB connection
 
 // Helper functions for local file storage
 function ensureDataDir() {
@@ -86,23 +86,23 @@ function deleteLocalUser(id: string): void {
   console.log(`STORAGE: User deleted from local storage, remaining users: ${filteredUsers.length}`);
 }
 
-// Function to check if we should use Cosmos DB or local storage
-async function shouldUseCosmosDb(): Promise<boolean> {
-  if (cosmosDbConnectionAttempted) {
-    console.log(`STORAGE: Using ${cosmosDbConnectionFailed ? 'local storage (fallback)' : 'Cosmos DB'} based on previous attempt`);
-    return !cosmosDbConnectionFailed;
+// Function to check if we should use MongoDB or local storage
+async function shouldUseMongoDb(): Promise<boolean> {
+  if (mongoDbConnectionAttempted) {
+    console.log(`STORAGE: Using ${mongoDbConnectionFailed ? 'local storage (fallback)' : 'MongoDB'} based on previous attempt`);
+    return !mongoDbConnectionFailed;
   }
   
   try {
-    console.log('STORAGE: Testing Cosmos DB connection...');
-    cosmosDbConnectionAttempted = true;
-    // Try to get all users from Cosmos DB as a test
-    await cosmosDb.getAllUsers();
-    console.log('STORAGE: Successfully connected to Cosmos DB');
+    console.log('STORAGE: Testing MongoDB connection...');
+    mongoDbConnectionAttempted = true;
+    // Try to get all users from MongoDB as a test
+    await mongoDb.getAllUsers();
+    console.log('STORAGE: Successfully connected to MongoDB');
     return true;
   } catch (error) {
-    console.error('STORAGE: Failed to connect to Cosmos DB, falling back to local storage:', error);
-    cosmosDbConnectionFailed = true;
+    console.error('STORAGE: Failed to connect to MongoDB, falling back to local storage:', error);
+    mongoDbConnectionFailed = true;
     usingFallbackStorage = true;
     return false;
   }
@@ -112,11 +112,11 @@ async function shouldUseCosmosDb(): Promise<boolean> {
 export async function getUserById(id: string): Promise<User | null> {
   console.log(`STORAGE: Getting user by ID: ${id}`);
   
-  if (await shouldUseCosmosDb()) {
+  if (await shouldUseMongoDb()) {
     try {
-      return await cosmosDb.getUserById(id);
+      return await mongoDb.getUserById(id);
     } catch (error) {
-      console.error('STORAGE: Cosmos DB getUserById failed, falling back to local storage:', error);
+      console.error('STORAGE: MongoDB getUserById failed, falling back to local storage:', error);
       usingFallbackStorage = true;
     }
   }
@@ -132,11 +132,11 @@ export async function getUserById(id: string): Promise<User | null> {
 export async function getUserByEmail(email: string): Promise<User | null> {
   console.log(`STORAGE: Getting user by email: ${email}`);
   
-  if (await shouldUseCosmosDb()) {
+  if (await shouldUseMongoDb()) {
     try {
-      return await cosmosDb.getUserByEmail(email);
+      return await mongoDb.getUserByEmail(email);
     } catch (error) {
-      console.error('STORAGE: Cosmos DB getUserByEmail failed, falling back to local storage:', error);
+      console.error('STORAGE: MongoDB getUserByEmail failed, falling back to local storage:', error);
       usingFallbackStorage = true;
     }
   }
@@ -153,11 +153,11 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 export async function getUserByHandle(aydoHandle: string): Promise<User | null> {
   console.log(`STORAGE: Getting user by handle: ${aydoHandle}`);
   
-  if (await shouldUseCosmosDb()) {
+  if (await shouldUseMongoDb()) {
     try {
-      return await cosmosDb.getUserByHandle(aydoHandle);
+      return await mongoDb.getUserByHandle(aydoHandle);
     } catch (error) {
-      console.error('STORAGE: Cosmos DB getUserByHandle failed, falling back to local storage:', error);
+      console.error('STORAGE: MongoDB getUserByHandle failed, falling back to local storage:', error);
       usingFallbackStorage = true;
     }
   }
@@ -199,11 +199,11 @@ export async function createUser(user: User): Promise<User> {
     user.updatedAt = new Date().toISOString();
   }
   
-  if (await shouldUseCosmosDb()) {
+  if (await shouldUseMongoDb()) {
     try {
-      return await cosmosDb.createUser(user);
+      return await mongoDb.createUser(user);
     } catch (error) {
-      console.error('STORAGE: Cosmos DB createUser failed, falling back to local storage:', error);
+      console.error('STORAGE: MongoDB createUser failed, falling back to local storage:', error);
       usingFallbackStorage = true;
     }
   }
@@ -217,11 +217,11 @@ export async function createUser(user: User): Promise<User> {
 export async function updateUser(id: string, userData: Partial<User>): Promise<User | null> {
   console.log(`STORAGE: Updating user: ${id}`);
   
-  if (await shouldUseCosmosDb()) {
+  if (await shouldUseMongoDb()) {
     try {
-      return await cosmosDb.updateUser(id, userData);
+      return await mongoDb.updateUser(id, userData);
     } catch (error) {
-      console.error('STORAGE: Cosmos DB updateUser failed, falling back to local storage:', error);
+      console.error('STORAGE: MongoDB updateUser failed, falling back to local storage:', error);
       usingFallbackStorage = true;
     }
   }
@@ -249,12 +249,12 @@ export async function updateUser(id: string, userData: Partial<User>): Promise<U
 export async function deleteUser(id: string): Promise<void> {
   console.log(`STORAGE: Deleting user: ${id}`);
   
-  if (await shouldUseCosmosDb()) {
+  if (await shouldUseMongoDb()) {
     try {
-      await cosmosDb.deleteUser(id);
+      await mongoDb.deleteUser(id);
       return;
     } catch (error) {
-      console.error('STORAGE: Cosmos DB deleteUser failed, falling back to local storage:', error);
+      console.error('STORAGE: MongoDB deleteUser failed, falling back to local storage:', error);
       usingFallbackStorage = true;
     }
   }
@@ -267,11 +267,11 @@ export async function deleteUser(id: string): Promise<void> {
 export async function getAllUsers(): Promise<User[]> {
   console.log('STORAGE: Getting all users');
   
-  if (await shouldUseCosmosDb()) {
+  if (await shouldUseMongoDb()) {
     try {
-      return await cosmosDb.getAllUsers();
+      return await mongoDb.getAllUsers();
     } catch (error) {
-      console.error('STORAGE: Cosmos DB getAllUsers failed, falling back to local storage:', error);
+      console.error('STORAGE: MongoDB getAllUsers failed, falling back to local storage:', error);
       usingFallbackStorage = true;
     }
   }
@@ -288,7 +288,6 @@ export function isUsingFallbackStorage(): boolean {
 export function setFallbackStorageMode(useLocalStorage: boolean) {
   console.log(`STORAGE: Explicitly ${useLocalStorage ? 'enabling' : 'disabling'} fallback storage mode`);
   usingFallbackStorage = useLocalStorage;
-  cosmosDbConnectionFailed = useLocalStorage;
-  cosmosDbConnectionAttempted = true;
-  return usingFallbackStorage;
+  mongoDbConnectionAttempted = true;
+  mongoDbConnectionFailed = useLocalStorage;
 } 
