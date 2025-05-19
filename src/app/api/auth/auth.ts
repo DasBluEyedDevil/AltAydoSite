@@ -1,33 +1,9 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import AzureADProvider from 'next-auth/providers/azure-ad';
 import bcrypt from 'bcrypt';
-import fs from 'fs';
-import path from 'path';
 import { User } from '@/types/user';
-
-// Local storage for users
-const dataDir = path.join(process.cwd(), 'data');
-const usersFilePath = path.join(dataDir, 'users.json');
-
-// Helper function to read users from local storage
-const getLocalUsers = (): User[] => {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-
-  if (!fs.existsSync(usersFilePath)) {
-    fs.writeFileSync(usersFilePath, JSON.stringify([]), 'utf8');
-    return [];
-  }
-
-  try {
-    const data = fs.readFileSync(usersFilePath, 'utf8');
-    return JSON.parse(data) as User[];
-  } catch (error) {
-    console.error('Error reading users file:', error);
-    return [];
-  }
-};
+import { getUserByHandle, getUserByEmail } from '@/lib/azure-cosmos';
 
 // Admin user for fallback
 const adminUser: User = {
@@ -43,6 +19,31 @@ const adminUser: User = {
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // Microsoft Entra ID (Azure AD) Provider
+    AzureADProvider({
+      clientId: process.env.ENTRA_CLIENT_ID || '',
+      clientSecret: process.env.ENTRA_CLIENT_SECRET || '',
+      tenantId: process.env.ENTRA_TENANT_ID || '',
+      authorization: {
+        params: {
+          scope: 'openid profile email User.Read'
+        }
+      },
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          aydoHandle: profile.preferred_username?.split('@')[0] || profile.name,
+          clearanceLevel: 1, // Default clearance level for new users
+          role: 'user', // Default role for new users
+          image: null,
+          discordName: null,
+          rsiAccountName: null
+        };
+      }
+    }),
+    // Traditional Credentials Provider
     CredentialsProvider({
       name: 'AydoCorp Credentials',
       credentials: {
@@ -80,17 +81,9 @@ export const authOptions: NextAuthOptions = {
 
           let user: User | null = null;
 
-          // Try local storage
-          console.log(`Looking for user with handle in local storage: ${credentials.aydoHandle}`);
-          const localUsers = getLocalUsers();
-          const localUser = localUsers.find(u => 
-            u.aydoHandle.toLowerCase() === credentials.aydoHandle.toLowerCase()
-          );
-
-          if (localUser) {
-            user = localUser;
-            console.log(`User found in local storage: ${user.aydoHandle}`);
-          }
+          // Try to find user by handle in Azure Cosmos DB
+          console.log(`Looking for user with handle in Cosmos DB: ${credentials.aydoHandle}`);
+          user = await getUserByHandle(credentials.aydoHandle);
 
           if (!user) {
             console.log(`No user found with handle: ${credentials.aydoHandle}`);
@@ -129,6 +122,34 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // For Azure AD sign-ins, we need to check if the user exists in our database
+      if (account?.provider === 'azure-ad' && user.email) {
+        try {
+          // Check if user already exists in our database
+          const existingUser = await getUserByEmail(user.email);
+          
+          if (!existingUser) {
+            // This is a new user signing in with Azure AD
+            // They will get default clearance and role as specified in the profile function
+            console.log(`New Azure AD user: ${user.email}`);
+          } else {
+            // Update user data with existing clearance and role from our database
+            console.log(`Existing Azure AD user: ${user.email}`);
+            user.clearanceLevel = existingUser.clearanceLevel;
+            user.role = existingUser.role;
+            
+            // Copy other properties if they exist
+            if (existingUser.discordName) user.discordName = existingUser.discordName;
+            if (existingUser.rsiAccountName) user.rsiAccountName = existingUser.rsiAccountName;
+          }
+        } catch (error) {
+          console.error('Error during Azure AD sign-in:', error);
+          return false;
+        }
+      }
+      return true;
+    },
     async jwt({ token, user, account }) {
       // Pass user details to the token when signing in
       if (user) {

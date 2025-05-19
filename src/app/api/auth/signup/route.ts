@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import fs from 'fs';
-import path from 'path';
 import crypto from 'crypto';
 import { User } from '@/types/user';
+import { getUserByHandle, getUserByEmail, createUser } from '@/lib/azure-cosmos';
 
 // Define validation schema for signup data
 const signupSchema = z.object({
@@ -18,51 +17,6 @@ const signupSchema = z.object({
   message: "Passwords don't match",
   path: ["confirmPassword"],
 });
-
-// Local storage for users
-const dataDir = path.join(process.cwd(), 'data');
-const usersFilePath = path.join(dataDir, 'users.json');
-
-// Helper function to read users from local storage
-const getLocalUsers = (): User[] => {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-  
-  if (!fs.existsSync(usersFilePath)) {
-    fs.writeFileSync(usersFilePath, JSON.stringify([]), 'utf8');
-    return [];
-  }
-  
-  try {
-    const data = fs.readFileSync(usersFilePath, 'utf8');
-    return JSON.parse(data) as User[];
-  } catch (error) {
-    console.error('Error reading users file:', error);
-    return [];
-  }
-};
-
-// Helper function to save users to local storage
-const saveLocalUser = (user: User): void => {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-  
-  const users = getLocalUsers();
-  
-  // Check if user already exists with same id
-  const existingUserIndex = users.findIndex(u => u.id === user.id);
-  if (existingUserIndex >= 0) {
-    // Update existing user
-    users[existingUserIndex] = user;
-  } else {
-    // Add new user
-    users.push(user);
-  }
-  
-  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf8');
-};
 
 export async function POST(request: NextRequest) {
   try {
@@ -79,16 +33,20 @@ export async function POST(request: NextRequest) {
 
     const { aydoHandle, email, password, discordName, rsiAccountName } = result.data;
 
-    // Check if user already exists in local storage
-    const localUsers = getLocalUsers();
-    const existingLocalUser = localUsers.find(u => 
-      u.aydoHandle.toLowerCase() === aydoHandle.toLowerCase() || 
-      u.email.toLowerCase() === email.toLowerCase()
-    );
-
-    if (existingLocalUser) {
+    // Check if user already exists in Cosmos DB by handle
+    const existingUserByHandle = await getUserByHandle(aydoHandle);
+    if (existingUserByHandle) {
       return NextResponse.json(
-        { error: 'User with this handle or email already exists' },
+        { error: 'User with this handle already exists' },
+        { status: 409 }
+      );
+    }
+
+    // Check if user already exists in Cosmos DB by email
+    const existingUserByEmail = await getUserByEmail(email);
+    if (existingUserByEmail) {
+      return NextResponse.json(
+        { error: 'User with this email already exists' },
         { status: 409 }
       );
     }
@@ -113,8 +71,8 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date().toISOString()
     };
 
-    // Save the user to local storage
-    saveLocalUser(newUser);
+    // Save the user to Cosmos DB
+    await createUser(newUser);
 
     // Return success
     return NextResponse.json(

@@ -11,13 +11,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate-users": "tsx src/scripts/migrate-users.ts",
+    "test-cosmos": "tsx src/scripts/test-cosmos-connection.ts"
   },
   "dependencies": {
+    "@azure/cosmos": "^4.4.1",
+    "@azure/identity": "^4.10.0",
+    "@azure/msal-node": "^3.5.3",
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "@types/bcrypt": "^5.0.2",
     "axios": "^1.6.7",
+    "azure-ad-verify-token": "^3.0.3",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.5.0",
     "framer-motion": "^10.16.4",
