@@ -339,25 +339,23 @@ export default function About() {
     }>
       <>
         {/* Status Bar */}
-        <div className="bg-black/80 border-b border-[rgba(var(--mg-primary),0.3)] py-1.5 px-4 text-xs text-[rgba(var(--mg-primary),0.8)] flex justify-between sticky top-0 z-50">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="sticky top-0 z-40 bg-black/90 border-b border-[rgba(var(--mg-primary),0.2)] py-1.5 px-4 text-xs text-[rgba(var(--mg-primary),0.8)] flex justify-between backdrop-blur-sm"
+        >
           <div className="flex items-center gap-2">
-            <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-            <span className="mg-text font-quantify tracking-wider">MOBIGLAS SYSTEM</span>
+            <span className="inline-block h-2 w-2 rounded-full bg-[rgba(var(--mg-success),1)] animate-pulse"></span>
+            <span className="mg-text text-xs tracking-wider">SYSTEM ONLINE</span>
             <span className="text-[rgba(var(--mg-text),0.5)] mx-4">|</span>
-            <span className="mg-text">ACCESS LEVEL:</span> <span className="text-[rgba(var(--mg-primary),1)] ml-1 font-bold">CIVILIAN</span>
+            <span className="text-[rgba(var(--mg-text),0.7)]">USER ACCESS:</span> <span className="text-[rgba(var(--mg-primary),0.9)] ml-1 mg-subtitle">CIVILIAN</span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-[rgba(var(--mg-primary),0.7)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span className="text-[rgba(var(--mg-accent),0.9)]">QUANTUM LINK</span>
-            </div>
-            <span className="font-mono text-[rgba(var(--mg-primary),1)]">
-              {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-            </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[rgba(var(--mg-text),0.7)]">QUANTUM LINK:</span> <span className="text-[rgba(var(--mg-success),1)] ml-1">ACTIVE</span>
+            <span className="ml-4 font-mono text-[rgba(var(--mg-text),0.8)]">{time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false})}</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Hero Section */}
         <section className="relative pt-24 pb-16">
@@ -1524,8 +1522,8 @@ export default function About() {
                             
                             <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
                               <div className="flex justify-between mb-1">
-                                <span>Age</span>
-                                <span>28</span>
+                                <span>Handle</span>
+                                <span>Udon</span>
                               </div>
                               <div className="flex justify-between mb-1">
                                 <span>Origin</span>
@@ -1564,8 +1562,8 @@ export default function About() {
                             
                             <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
                               <div className="flex justify-between mb-1">
-                                <span>Age</span>
-                                <span>22</span>
+                                <span>Handle</span>
+                                <span>Noodles</span>
                               </div>
                               <div className="flex justify-between mb-1">
                                 <span>Origin</span>
@@ -1601,8 +1599,8 @@ export default function About() {
                             
                             <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
                               <div className="flex justify-between mb-1">
-                                <span>Age</span>
-                                <span>34</span>
+                                <span>Handle</span>
+                                <span>Kaibo_Z</span>
                               </div>
                               <div className="flex justify-between mb-1">
                                 <span>Origin</span>
@@ -1643,11 +1641,11 @@ export default function About() {
                               </div>
                               <div className="flex justify-between mb-1">
                                 <span>Origin</span>
-                                <span>Mining Platform "Salvation"</span>
+                                <span>Helios, Crusader</span>
                               </div>
                               <div className="flex justify-between">
                                 <span>Prior Service</span>
-                                <span>Medical Officer, Carrack "Rasalas"</span>
+                                <span>Medical Officer, "Rasalas"</span>
                               </div>
                             </div>
                           </div>

@@ -34,34 +34,17 @@ export default function Contact() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="sticky top-0 z-40 bg-black/90 border-b border-[rgba(var(--mg-primary),0.3)] py-1.5 px-4 text-xs text-[rgba(var(--mg-primary),0.8)] flex justify-between backdrop-blur-sm"
+        className="sticky top-0 z-40 bg-black/90 border-b border-[rgba(var(--mg-primary),0.2)] py-1.5 px-4 text-xs text-[rgba(var(--mg-primary),0.8)] flex justify-between backdrop-blur-sm"
       >
         <div className="flex items-center gap-2">
-          <motion.span 
-            className="inline-block h-2 w-2 rounded-full bg-[rgba(var(--mg-success),1)]"
-            animate={{ 
-              opacity: connectionStatus === 'ESTABLISHING' ? [0.4, 1, 0.4] : 1,
-              scale: connectionStatus === 'ESTABLISHING' ? [1, 1.1, 1] : 1
-            }}
-            transition={{ 
-              duration: 1.5, 
-              repeat: connectionStatus === 'ESTABLISHING' ? Infinity : 0 
-            }}
-          ></motion.span>
-          <span className="mg-text text-xs tracking-wider font-quantify">SYSTEM {connectionStatus}</span>
+          <span className="inline-block h-2 w-2 rounded-full bg-[rgba(var(--mg-success),1)] animate-pulse"></span>
+          <span className="mg-text text-xs tracking-wider">SYSTEM ONLINE</span>
           <span className="text-[rgba(var(--mg-text),0.5)] mx-4">|</span>
-          <span className="text-[rgba(var(--mg-text),0.7)]">USER ACCESS:</span> 
-          <motion.span 
-            className="text-[rgba(var(--mg-primary),0.9)] ml-1 mg-subtitle"
-            initial={{ opacity: 0.7 }}
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 4, repeat: Infinity }}
-          >CIVILIAN</motion.span>
+          <span className="text-[rgba(var(--mg-text),0.7)]">USER ACCESS:</span> <span className="text-[rgba(var(--mg-primary),0.9)] ml-1 mg-subtitle">CIVILIAN</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[rgba(var(--mg-text),0.7)]">QUANTUM LINK:</span> 
-          <span className="text-[rgba(var(--mg-success),1)] ml-1">{connectionStatus}</span>
-          <span className="ml-4 font-mono text-[rgba(var(--mg-text),0.8)] mg-flicker">{formatMobiTime(time)}</span>
+          <span className="text-[rgba(var(--mg-text),0.7)]">QUANTUM LINK:</span> <span className="text-[rgba(var(--mg-success),1)] ml-1">ACTIVE</span>
+          <span className="ml-4 font-mono text-[rgba(var(--mg-text),0.8)]">{time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false})}</span>
         </div>
       </motion.div>
 

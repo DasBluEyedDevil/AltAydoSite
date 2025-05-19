@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRandomId } from './UserProviderWrapper';
@@ -8,6 +8,36 @@ import { useRandomId } from './UserProviderWrapper';
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const { randomId } = useRandomId();
+  const [isVisible, setIsVisible] = useState(true);
+  
+  // Listen for footer visibility changes
+  useEffect(() => {
+    // Check initial state
+    const checkFooterVisibility = () => {
+      if (typeof window !== 'undefined') {
+        const shouldHide = localStorage.getItem('hideFooter') === 'true';
+        setIsVisible(!shouldHide);
+      }
+    };
+    
+    // Check on mount
+    checkFooterVisibility();
+    
+    // Listen for changes
+    const handleVisibilityChange = () => {
+      checkFooterVisibility();
+    };
+    
+    window.addEventListener('footerVisibilityChange', handleVisibilityChange);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('footerVisibilityChange', handleVisibilityChange);
+    };
+  }, []);
+  
+  // Don't render anything if the footer should be hidden
+  if (!isVisible) return null;
   
   return (
     <footer className="relative z-10 mt-12">

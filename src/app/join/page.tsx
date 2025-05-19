@@ -55,7 +55,7 @@ export default function Join() {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[rgba(var(--mg-text),0.7)]">QUANTUM LINK:</span> <span className="text-[rgba(var(--mg-success),1)] ml-1">ACTIVE</span>
-          <span className="ml-4 font-mono text-[rgba(var(--mg-text),0.8)]">{time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          <span className="ml-4 font-mono text-[rgba(var(--mg-text),0.8)]">{time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false})}</span>
         </div>
       </motion.div>
 
@@ -525,9 +525,7 @@ export default function Join() {
                   className="relative group"
                 >
                   <a
-                    href="https://discord.gg/aydocorp"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/join/recruitment-info"
                     className="mg-button inline-flex items-center px-8 py-3 text-base relative overflow-hidden group z-10"
                   >
                     {/* Button background animation */}

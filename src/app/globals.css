@@ -36,6 +36,9 @@
   --mg-text: 180, 240, 255;       /* Light blue text */
   --mg-glow: 0, 180, 255;         /* Holographic glow */
   --mg-hologram: 0, 120, 255;     /* Hologram color */
+  
+  /* Increased base font size */
+  font-size: 110%;
 }
 
 html, body {

@@ -7,6 +7,11 @@ export interface User {
   role: string;
   discordName: string | null;
   rsiAccountName: string | null;
+  bio?: string | null;
+  photo?: string | null;
+  payGrade?: string | null;
+  position?: string | null;
+  division?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -19,4 +24,9 @@ export interface UserResponse {
   role: string;
   discordName?: string | null;
   rsiAccountName?: string | null;
+  bio?: string | null;
+  photo?: string | null;
+  payGrade?: string | null;
+  position?: string | null;
+  division?: string | null;
 } 
