@@ -2,6 +2,12 @@
 const nextConfig = {
     output: 'standalone',
     poweredByHeader: false,
-  };
-  
-  module.exports = nextConfig;
+    experimental: {
+        outputFileTracingRoot: process.env.NODE_ENV === "production" ? undefined : __dirname,
+    },
+    outputFileTracingIncludes: {
+        '/**': ['./public/**/*']
+    }
+};
+
+module.exports = nextConfig;

@@ -44,6 +44,8 @@ jobs:
       - name: Prepare for deployment
         run: |
           rm -rf node_modules
+          mkdir -p ./.next/standalone/public
+          cp -r ./public/* ./.next/standalone/public/
           zip -r release.zip .
 
       - name: Upload artifact for deployment job
