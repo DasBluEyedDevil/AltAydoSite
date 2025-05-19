@@ -1,6 +1,5 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import AzureADProvider from 'next-auth/providers/azure-ad';
 import bcrypt from 'bcrypt';
 import { User } from '@/types/user';
 import * as userStorage from '@/lib/user-storage';
@@ -19,30 +18,6 @@ const adminUser: User = {
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    // Microsoft Entra ID (Azure AD) Provider
-    AzureADProvider({
-      clientId: process.env.ENTRA_CLIENT_ID || '',
-      clientSecret: process.env.ENTRA_CLIENT_SECRET || '',
-      tenantId: process.env.ENTRA_TENANT_ID || '',
-      authorization: {
-        params: {
-          scope: 'openid profile email User.Read'
-        }
-      },
-      profile(profile) {
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          aydoHandle: profile.preferred_username?.split('@')[0] || profile.name,
-          clearanceLevel: 1, // Default clearance level for new users
-          role: 'user', // Default role for new users
-          image: null,
-          discordName: null,
-          rsiAccountName: null
-        };
-      }
-    }),
     // Traditional Credentials Provider
     CredentialsProvider({
       name: 'AydoCorp Credentials',
@@ -144,51 +119,6 @@ export const authOptions: NextAuthOptions = {
         email: user.email 
       });
       
-      // For Azure AD sign-ins, we need to check if the user exists in our database
-      if (account?.provider === 'azure-ad' && user.email) {
-        try {
-          // Check if user already exists in our database
-          const existingUser = await userStorage.getUserByEmail(user.email);
-          
-          if (!existingUser) {
-            // This is a new user signing in with Azure AD
-            // Create a new user record with data from Azure AD
-            console.log(`AUTH: New Azure AD user: ${user.email}`);
-            
-            try {
-              await userStorage.createUser({
-                id: user.id,
-                aydoHandle: user.aydoHandle || user.name || user.email.split('@')[0],
-                email: user.email,
-                passwordHash: '', // No password for Azure AD users
-                clearanceLevel: 1,
-                role: 'user',
-                discordName: null,
-                rsiAccountName: null,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-              });
-              console.log(`AUTH: Created new user from Azure AD: ${user.email}`);
-              console.log(`AUTH: Using fallback storage: ${userStorage.isUsingFallbackStorage() ? 'Yes' : 'No'}`);
-            } catch (createError) {
-              console.error('AUTH: Error creating user from Azure AD:', createError);
-              // Still allow sign-in even if user creation fails
-            }
-          } else {
-            // Update user data with existing clearance and role from our database
-            console.log(`AUTH: Existing Azure AD user: ${user.email}`);
-            user.clearanceLevel = existingUser.clearanceLevel;
-            user.role = existingUser.role;
-            
-            // Copy other properties if they exist
-            if (existingUser.discordName) user.discordName = existingUser.discordName;
-            if (existingUser.rsiAccountName) user.rsiAccountName = existingUser.rsiAccountName;
-          }
-        } catch (error) {
-          console.error('AUTH: Error during Azure AD sign-in:', error);
-          return false;
-        }
-      }
       return true;
     },
     async jwt({ token, user, account }) {

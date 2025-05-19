@@ -11,7 +11,6 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [msLoginLoading, setMsLoginLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [authError, setAuthError] = useState<string | null>(null);
@@ -116,20 +115,6 @@ function LoginForm() {
       console.error('Authentication error:', error);
       setAuthError('An unexpected error occurred during authentication. Please try again later.');
       setIsLoading(false);
-    }
-  };
-  
-  const handleMicrosoftLogin = async () => {
-    try {
-      setMsLoginLoading(true);
-      setAuthError(null);
-      await signIn('azure-ad', { 
-        callbackUrl: searchParams?.get('callbackUrl') || '/' 
-      });
-    } catch (error) {
-      console.error('Microsoft login error:', error);
-      setAuthError('An error occurred during Microsoft login. Please try again.');
-      setMsLoginLoading(false);
     }
   };
 
@@ -238,32 +223,6 @@ function LoginForm() {
               )}
             </motion.button>
           </form>
-          
-          {/* Divider */}
-          <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-[rgba(var(--mg-primary),0.2)]"></div>
-            <span className="mx-2 text-xs text-[rgba(var(--mg-text),0.6)]">OR</span>
-            <div className="flex-grow border-t border-[rgba(var(--mg-primary),0.2)]"></div>
-          </div>
-          
-          {/* Microsoft Sign In Button */}
-          <motion.button
-            type="button"
-            onClick={handleMicrosoftLogin}
-            className={`w-full py-2 px-4 mb-4 flex items-center justify-center border border-[rgba(var(--mg-primary),0.2)] rounded-sm ${msLoginLoading ? 'opacity-80' : 'hover:bg-[rgba(var(--mg-panel-dark),0.3)]'}`}
-            disabled={msLoginLoading}
-            whileTap={{ scale: 0.98 }}
-          >
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
-              <path fill="#f3f3f3" d="M0 0h10.931v10.931H0z"/>
-              <path fill="#f35325" d="M11.954 0h10.931v10.931H11.954z"/>
-              <path fill="#81bc06" d="M0 11.954h10.931v10.931H0z"/>
-              <path fill="#05a6f0" d="M11.954 11.954h10.931v10.931H11.954z"/>
-            </svg>
-            <span className="text-sm font-quantify tracking-wider text-[rgba(var(--mg-text),0.8)]">
-              {msLoginLoading ? 'CONNECTING...' : 'SIGN IN WITH MICROSOFT'}
-            </span>
-          </motion.button>
 
           {/* Sign up link */}
           <div className="mt-6 text-center text-xs text-[rgba(var(--mg-text),0.6)]">
