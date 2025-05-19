@@ -51,22 +51,25 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
+        console.log('AUTH: Credentials authorize called with handle:', credentials?.aydoHandle);
+        
         if (!credentials?.aydoHandle || !credentials?.password) {
+          console.log('AUTH: Missing credentials');
           return null;
         }
 
         try {
           // Admin user special case - always allow admin login
           if (credentials.aydoHandle.toLowerCase() === 'admin') {
-            console.log('Admin login attempt');
+            console.log('AUTH: Admin login attempt');
             const isPasswordValid = await bcrypt.compare(credentials.password, adminUser.passwordHash);
 
             if (!isPasswordValid) {
-              console.log('Invalid admin password');
+              console.log('AUTH: Invalid admin password');
               return null;
             }
 
-            console.log('Admin authentication successful');
+            console.log('AUTH: Admin authentication successful');
             return {
               id: adminUser.id,
               name: adminUser.aydoHandle,
@@ -82,29 +85,39 @@ export const authOptions: NextAuthOptions = {
           let user: User | null = null;
 
           // Try to find user by handle
-          console.log(`Looking for user with handle: ${credentials.aydoHandle}`);
+          console.log(`AUTH: Looking for user with handle: ${credentials.aydoHandle}`);
           user = await userStorage.getUserByHandle(credentials.aydoHandle);
 
           if (!user) {
-            console.log(`No user found with handle: ${credentials.aydoHandle}`);
+            console.log(`AUTH: No user found with handle: ${credentials.aydoHandle}`);
             return null;
           }
+
+          console.log(`AUTH: User found:`, {
+            id: user.id,
+            aydoHandle: user.aydoHandle,
+            email: user.email,
+            hasPasswordHash: !!user.passwordHash,
+            passwordHashLength: user.passwordHash ? user.passwordHash.length : 0
+          });
 
           // Ensure the user has a passwordHash
           if (!user.passwordHash) {
-            console.error('User missing passwordHash:', user.aydoHandle);
+            console.error('AUTH: User missing passwordHash:', user.aydoHandle);
             return null;
           }
 
+          console.log('AUTH: Comparing password...');
           const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash);
+          console.log(`AUTH: Password valid: ${isPasswordValid}`);
 
           if (!isPasswordValid) {
-            console.log(`Invalid password for user: ${user.aydoHandle}`);
+            console.log(`AUTH: Invalid password for user: ${user.aydoHandle}`);
             return null;
           }
 
-          console.log(`Authentication successful for: ${user.aydoHandle}`);
-          console.log(`Using fallback storage: ${userStorage.isUsingFallbackStorage() ? 'Yes' : 'No'}`);
+          console.log(`AUTH: Authentication successful for: ${user.aydoHandle}`);
+          console.log(`AUTH: Using fallback storage: ${userStorage.isUsingFallbackStorage() ? 'Yes' : 'No'}`);
           
           return {
             id: user.id,
@@ -117,7 +130,7 @@ export const authOptions: NextAuthOptions = {
             rsiAccountName: user.rsiAccountName || null
           };
         } catch (error) {
-          console.error('Authentication error:', error);
+          console.error('AUTH: Authentication error:', error);
           throw new Error('Authentication error');
         }
       }
@@ -125,6 +138,12 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account }) {
+      console.log('AUTH: signIn callback called', { 
+        provider: account?.provider,
+        userId: user.id, 
+        email: user.email 
+      });
+      
       // For Azure AD sign-ins, we need to check if the user exists in our database
       if (account?.provider === 'azure-ad' && user.email) {
         try {
@@ -134,7 +153,7 @@ export const authOptions: NextAuthOptions = {
           if (!existingUser) {
             // This is a new user signing in with Azure AD
             // Create a new user record with data from Azure AD
-            console.log(`New Azure AD user: ${user.email}`);
+            console.log(`AUTH: New Azure AD user: ${user.email}`);
             
             try {
               await userStorage.createUser({
@@ -149,15 +168,15 @@ export const authOptions: NextAuthOptions = {
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
               });
-              console.log(`Created new user from Azure AD: ${user.email}`);
-              console.log(`Using fallback storage: ${userStorage.isUsingFallbackStorage() ? 'Yes' : 'No'}`);
+              console.log(`AUTH: Created new user from Azure AD: ${user.email}`);
+              console.log(`AUTH: Using fallback storage: ${userStorage.isUsingFallbackStorage() ? 'Yes' : 'No'}`);
             } catch (createError) {
-              console.error('Error creating user from Azure AD:', createError);
+              console.error('AUTH: Error creating user from Azure AD:', createError);
               // Still allow sign-in even if user creation fails
             }
           } else {
             // Update user data with existing clearance and role from our database
-            console.log(`Existing Azure AD user: ${user.email}`);
+            console.log(`AUTH: Existing Azure AD user: ${user.email}`);
             user.clearanceLevel = existingUser.clearanceLevel;
             user.role = existingUser.role;
             
@@ -166,7 +185,7 @@ export const authOptions: NextAuthOptions = {
             if (existingUser.rsiAccountName) user.rsiAccountName = existingUser.rsiAccountName;
           }
         } catch (error) {
-          console.error('Error during Azure AD sign-in:', error);
+          console.error('AUTH: Error during Azure AD sign-in:', error);
           return false;
         }
       }
@@ -175,6 +194,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account }) {
       // Pass user details to the token when signing in
       if (user) {
+        console.log('AUTH: jwt callback - adding user data to token');
         token.id = user.id;
         token.clearanceLevel = user.clearanceLevel;
         token.role = user.role;
@@ -187,6 +207,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // Pass token data to the client
       if (token && session.user) {
+        console.log('AUTH: session callback - adding token data to session');
         session.user.id = token.id as string;
         session.user.clearanceLevel = token.clearanceLevel as number;
         session.user.role = token.role as string;
@@ -197,6 +218,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     }
   },
+  debug: true, // Enable debug mode to see more NextAuth.js logs
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days

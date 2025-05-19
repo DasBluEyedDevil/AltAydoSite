@@ -22,5 +22,17 @@
     "rsiAccountName": null,
     "createdAt": "2025-05-19T01:44:03.520Z",
     "updatedAt": "2025-05-19T01:44:03.520Z"
+  },
+  {
+    "id": "65432112-1234-5678-abcd-12345678abcd",
+    "aydoHandle": "testlogin",
+    "email": "testlogin@example.com",
+    "passwordHash": "$2b$10$PvjfaJk6wf1kDKUs6uUkzeHRNND9ySnFuTyHQudjCdvPHlchvNVia",
+    "clearanceLevel": 1,
+    "role": "user",
+    "discordName": "testlogin#1234",
+    "rsiAccountName": "testlogin_rsi",
+    "createdAt": "2025-05-19T02:30:00.000Z",
+    "updatedAt": "2025-05-19T02:30:00.000Z"
   }
 ]
