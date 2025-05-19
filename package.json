@@ -13,7 +13,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate-users": "tsx src/scripts/migrate-users.ts",
-    "test-cosmos": "tsx src/scripts/test-cosmos-connection.ts"
+    "test-cosmos": "tsx src/scripts/test-cosmos-connection.ts",
+    "verify-cosmos": "tsx src/scripts/verify-cosmos.ts"
   },
   "dependencies": {
     "@azure/cosmos": "^4.4.1",

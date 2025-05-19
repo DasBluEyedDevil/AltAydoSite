@@ -10,5 +10,17 @@
     "rsiAccountName": "test",
     "createdAt": "2025-05-17T18:36:14.395Z",
     "updatedAt": "2025-05-17T18:36:14.395Z"
+  },
+  {
+    "id": "eb2419ef-11d6-44d8-ad7a-ca2e969d8e83",
+    "aydoHandle": "testuser1",
+    "email": "test1@example.com",
+    "passwordHash": "$2b$10$CpKa8HEOxeuV/vhmf2uErOpf4E2WkpT8iskok1UEAs6mSwVuDGwzu",
+    "clearanceLevel": 1,
+    "role": "user",
+    "discordName": null,
+    "rsiAccountName": null,
+    "createdAt": "2025-05-19T01:44:03.520Z",
+    "updatedAt": "2025-05-19T01:44:03.520Z"
   }
 ]

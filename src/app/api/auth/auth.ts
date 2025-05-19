@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import AzureADProvider from 'next-auth/providers/azure-ad';
 import bcrypt from 'bcrypt';
 import { User } from '@/types/user';
-import { getUserByHandle, getUserByEmail } from '@/lib/azure-cosmos';
+import * as userStorage from '@/lib/user-storage';
 
 // Admin user for fallback
 const adminUser: User = {
@@ -81,9 +81,9 @@ export const authOptions: NextAuthOptions = {
 
           let user: User | null = null;
 
-          // Try to find user by handle in Azure Cosmos DB
-          console.log(`Looking for user with handle in Cosmos DB: ${credentials.aydoHandle}`);
-          user = await getUserByHandle(credentials.aydoHandle);
+          // Try to find user by handle
+          console.log(`Looking for user with handle: ${credentials.aydoHandle}`);
+          user = await userStorage.getUserByHandle(credentials.aydoHandle);
 
           if (!user) {
             console.log(`No user found with handle: ${credentials.aydoHandle}`);
@@ -104,6 +104,8 @@ export const authOptions: NextAuthOptions = {
           }
 
           console.log(`Authentication successful for: ${user.aydoHandle}`);
+          console.log(`Using fallback storage: ${userStorage.isUsingFallbackStorage() ? 'Yes' : 'No'}`);
+          
           return {
             id: user.id,
             name: user.aydoHandle,
@@ -127,12 +129,32 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === 'azure-ad' && user.email) {
         try {
           // Check if user already exists in our database
-          const existingUser = await getUserByEmail(user.email);
+          const existingUser = await userStorage.getUserByEmail(user.email);
           
           if (!existingUser) {
             // This is a new user signing in with Azure AD
-            // They will get default clearance and role as specified in the profile function
+            // Create a new user record with data from Azure AD
             console.log(`New Azure AD user: ${user.email}`);
+            
+            try {
+              await userStorage.createUser({
+                id: user.id,
+                aydoHandle: user.aydoHandle || user.name || user.email.split('@')[0],
+                email: user.email,
+                passwordHash: '', // No password for Azure AD users
+                clearanceLevel: 1,
+                role: 'user',
+                discordName: null,
+                rsiAccountName: null,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+              });
+              console.log(`Created new user from Azure AD: ${user.email}`);
+              console.log(`Using fallback storage: ${userStorage.isUsingFallbackStorage() ? 'Yes' : 'No'}`);
+            } catch (createError) {
+              console.error('Error creating user from Azure AD:', createError);
+              // Still allow sign-in even if user creation fails
+            }
           } else {
             // Update user data with existing clearance and role from our database
             console.log(`Existing Azure AD user: ${user.email}`);

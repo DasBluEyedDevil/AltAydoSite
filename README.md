@@ -6,8 +6,21 @@ This project is a Next.js application that uses NextAuth.js for authentication a
 
 - **Frontend**: Next.js 15.3.2 with React 18
 - **Authentication**: NextAuth.js with Microsoft Entra ID (Azure AD)
-- **Database**: Azure Cosmos DB
+- **Database**: Azure Cosmos DB with local file storage fallback
 - **Hosting**: Deploy to your preferred platform (Vercel, Azure, custom server, etc.)
+
+## Hybrid Storage System
+
+This application uses a hybrid storage approach:
+
+1. **Primary**: Azure Cosmos DB for cloud-based persistent storage
+2. **Fallback**: Local JSON file storage if Azure Cosmos DB is unavailable
+
+The system automatically tries to connect to Azure Cosmos DB first. If the connection fails, it seamlessly falls back to local file storage without requiring any code changes or configuration updates.
+
+### Storage Status
+
+You can check the current storage status by accessing the `/api/storage-status` endpoint, which will tell you whether the system is using Azure Cosmos DB or the local file storage fallback.
 
 ## Setup Instructions
 
@@ -125,7 +138,8 @@ This project supports two authentication methods:
 
 ## Important Notes
 
-- Azure Cosmos DB is used for user data storage
+- Azure Cosmos DB is used as the primary user data storage
+- Local file storage is used as an automatic fallback if Cosmos DB is unavailable
 - Microsoft Entra ID (Azure AD) provides an alternative login method
 - Environment variables are crucial for the application to work correctly
 - For local development, set the correct values in your `.env.local` file
