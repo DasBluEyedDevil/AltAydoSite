@@ -193,11 +193,21 @@ export async function updateUser(id: string, user: Partial<User>): Promise<User 
       return null;
     }
     
+    // Log if ships data is included
+    if (user.ships) {
+      console.log('MongoDB: Updating ships data for user', id, user.ships.length);
+    }
+    
     const updatedUser = { 
       ...existingUser, 
       ...user, 
       updatedAt: new Date().toISOString() 
     };
+    
+    // Explicitly ensure ships are set if provided
+    if (user.ships) {
+      updatedUser.ships = user.ships;
+    }
     
     await userCollection!.replaceOne({ id }, updatedUser);
     

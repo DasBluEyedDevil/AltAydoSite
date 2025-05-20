@@ -5,6 +5,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import UserFleetBuilderWrapper from '../../components/UserFleetBuilderWrapper';
+import { UserShip } from '../../types/user';
 
 export default function UserProfilePage() {
   const { data: session, status } = useSession();
@@ -13,6 +15,7 @@ export default function UserProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [userShips, setUserShips] = useState<UserShip[]>([]);
   const [userData, setUserData] = useState({
     name: '',
     email: '',
@@ -51,11 +54,34 @@ export default function UserProfilePage() {
     }
   }, [session, status]);
   
+  // Refresh profile data periodically while editing to catch potential ship updates
+  useEffect(() => {
+    if (isEditing) {
+      const interval = setInterval(() => {
+        console.log('Refreshing profile data to check for ships updates');
+        fetchProfileData();
+      }, 5000); // Check every 5 seconds while in edit mode
+      
+      return () => clearInterval(interval);
+    }
+  }, [isEditing]);
+  
   const fetchProfileData = async () => {
     try {
-      const response = await fetch('/api/profile');
+      const response = await fetch('/api/profile', {
+        headers: {
+          'Cache-Control': 'no-cache' // Prevent caching issues
+        },
+        credentials: 'include' // Include session cookies
+      });
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch profile data');
+        // Special handling for 401 errors - just continue with default values
+        if (response.status === 401) {
+          console.log('User not authenticated, using default profile values');
+          return;
+        }
+        throw new Error(`Failed to fetch profile data: ${response.status} ${response.statusText}`);
       }
       
       const profileData = await response.json();
@@ -69,11 +95,27 @@ export default function UserProfilePage() {
         position: profileData.position || '',
         division: profileData.division || ''
       }));
+      
+      // Set ships from profile data if available
+      if (profileData.ships) {
+        console.log('Fetched ships from API:', profileData.ships);
+        setUserShips(profileData.ships);
+      }
     } catch (error) {
       console.error('Error fetching profile data:', error);
+      // Don't show errors for auth issues
+      if (!String(error).includes('401')) {
+        setErrorMessage('Could not load profile data. Using local data only.');
+      }
     }
   };
   
+  // Handler for ship changes from the fleet builder
+  const handleShipsChange = (ships: UserShip[]) => {
+    console.log('Profile received ship changes:', ships);
+    setUserShips(ships);
+  };
+
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -148,12 +190,16 @@ export default function UserProfilePage() {
     setErrorMessage(null);
     
     try {
+      console.log('Saving profile with ships:', userShips);
+      
       // Submit data to API
       const response = await fetch('/api/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache' // Prevent caching issues
         },
+        credentials: 'include', // Include session cookies
         body: JSON.stringify({
           discordName: userData.discordName,
           rsiAccountName: userData.rsiAccountName,
@@ -161,7 +207,8 @@ export default function UserProfilePage() {
           photo: userData.photo,
           payGrade: userData.payGrade,
           position: userData.position,
-          division: userData.division
+          division: userData.division,
+          ships: userShips // Include the ships data in the update
         }),
       });
       
@@ -182,6 +229,12 @@ export default function UserProfilePage() {
         position: updatedProfile.position || '',
         division: updatedProfile.division || ''
       }));
+      
+      // Update ships if provided in the response
+      if (updatedProfile.ships) {
+        console.log('Received updated ships from API:', updatedProfile.ships);
+        setUserShips(updatedProfile.ships);
+      }
       
       // Exit edit mode
       setIsEditing(false);
@@ -480,6 +533,12 @@ export default function UserProfilePage() {
               </div>
             </div>
           )}
+          
+          {/* Fleet Builder Section */}
+          <UserFleetBuilderWrapper 
+            isEditing={isEditing} 
+            onShipsChange={handleShipsChange}
+          />
         </motion.div>
       </div>
     </div>

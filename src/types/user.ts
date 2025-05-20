@@ -12,6 +12,7 @@ export interface User {
   payGrade?: string | null;
   position?: string | null;
   division?: string | null;
+  ships?: UserShip[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -29,4 +30,11 @@ export interface UserResponse {
   payGrade?: string | null;
   position?: string | null;
   division?: string | null;
+  ships?: UserShip[];
+}
+
+export interface UserShip {
+  manufacturer: string;
+  name: string;
+  image: string;
 } 

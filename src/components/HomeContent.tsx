@@ -9,9 +9,6 @@ interface HomeContentProps {
   userName?: string;
 }
 
-// To track if the animation has been shown in this session
-let hasShownLoginAnimation = false;
-
 // Set a global function to control footer visibility that can be accessed by other components
 function setFooterVisibility(visible: boolean) {
   if (typeof window !== 'undefined') {
@@ -22,6 +19,23 @@ function setFooterVisibility(visible: boolean) {
     }
     // Dispatch a custom event that the footer component can listen for
     window.dispatchEvent(new Event('footerVisibilityChange'));
+  }
+}
+
+// Function to check if login animation has been shown this session
+function hasShownLoginAnimation(): boolean {
+  if (typeof window !== 'undefined') {
+    // Clear this flag when a user logs in from the login page
+    // It will be reset to true after showing the animation
+    return localStorage.getItem('loginAnimationShown') === 'true';
+  }
+  return false;
+}
+
+// Function to mark login animation as shown
+function markLoginAnimationAsShown(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('loginAnimationShown', 'true');
   }
 }
 
@@ -38,6 +52,11 @@ function MobiGlasTerminal({ userName, onAnimationComplete }: { userName?: string
     'Decrypting biometric hash...',
     'Secure commlink active.'
   ];
+
+  // On component mount, ensure we're not marked as already shown
+  useEffect(() => {
+    console.log('MobiGlasTerminal mounted - animation starting');
+  }, []);
 
   // Typewriter effect for messages
   useEffect(() => {
@@ -72,6 +91,7 @@ function MobiGlasTerminal({ userName, onAnimationComplete }: { userName?: string
     if (step === 3) {
       setTimeout(() => {
         setVisible(false);
+        console.log('Animation complete - notifying parent');
         // Notify parent that animation is complete
         onAnimationComplete();
       }, 400);
@@ -209,31 +229,45 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
 
   // Featured ship images
   const shipImages = [
-    '/images/MISCFreelancer_Asteroids_122018-Min.png',
-    '/images/StarCitizen_ArenaCommander_092.png',
-    '/images/Star_Citizen_Ships_510048_2560x1440.jpg',
-    '/images/jan-urschel-banu-defender-i.jpg',
-    '/images/Carrack_Front_Top_Space.png',
-    '/images/ANVL_Hawk_City_122018-Min.png',
-    '/images/MSR8K.jpg',
-    '/images/Sabre_Firing_Concept.jpg'
+    '/images/sc.jpg',
+    '/images/sc_banner_crusader.jpg',
+    '/images/Star-Citizen-4K-Wallpaper-3.jpg',
+    '/images/jan-urschel-a.jpg',
+    '/images/spacebg.jpg',
+    '/images/sc_cargo.jpeg',
+    '/images/star_citizen_0.jpg',
+    '/images/Firing_Concept.jpg'
   ];
 
   useEffect(() => {
     setMounted(true);
     
-    // Check if we should show login animation
-    if (isLoggedIn && !hasShownLoginAnimation) {
-      setShowLoginAnimation(true);
-      setHideUI(true);
-      hasShownLoginAnimation = true;
-      
-      // Hide the footer during animation
-      setFooterVisibility(false);
-    } else {
-      // If we're not showing the animation, make sure footer is visible
-      setFooterVisibility(true);
-    }
+    // Check if we should show login animation - only if user is logged in
+    // and has navigated from the login page (hasn't seen animation)
+    const checkAndShowAnimation = () => {
+      // Logic for determining if we just came from login page
+      const justLoggedIn = typeof window !== 'undefined' && 
+        window.performance && 
+        window.performance.navigation && 
+        window.performance.navigation.type === 1 && 
+        isLoggedIn && 
+        !hasShownLoginAnimation();
+        
+      if (isLoggedIn && !hasShownLoginAnimation()) {
+        console.log('Showing login animation');
+        setShowLoginAnimation(true);
+        setHideUI(true);
+        // Don't mark as shown yet - will be marked after animation completes
+        
+        // Hide the footer during animation
+        setFooterVisibility(false);
+      } else {
+        // If we're not showing the animation, make sure footer is visible
+        setFooterVisibility(true);
+      }
+    };
+    
+    checkAndShowAnimation();
     
     // Update clock
     const timer = setInterval(() => {
@@ -261,6 +295,9 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
   const handleAnimationComplete = () => {
     setShowLoginAnimation(false);
     setHideUI(false);
+    
+    // Mark animation as shown only after it completes
+    markLoginAnimationAsShown();
     
     // Show the footer after animation completes
     setFooterVisibility(true);

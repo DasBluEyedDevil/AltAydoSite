@@ -1,0 +1,472 @@
+Star Citizen Ships by Manufacturer
+This list organizes the ships you provided under their respective manufacturers, based on information from the Star Citizen Wiki.
+
+Aegis Dynamics
+Avenger Stalker
+
+Avenger Titan
+
+Avenger Titan Renegade
+
+Avenger Warlock
+
+Eclipse
+
+Gladius
+
+Gladius Pirate
+
+Gladius Valiant
+
+Hammerhead
+
+Hammerhead Best In Show Edition
+
+Idris-K
+
+Idris-M
+
+Idris-P
+
+Javelin
+
+Nautilus
+
+Reclaimer
+
+Reclaimer Best In Show Edition
+
+Redeemer
+
+Retaliator
+
+Sabre
+
+Sabre Comet
+
+Sabre Firebird
+
+Sabre Peregrine
+
+Sabre Raven
+
+Vanguard Harbinger
+
+Vanguard Hoplite
+
+Vanguard Sentinel
+
+Vanguard Warden
+
+Vulcan
+
+Anvil Aerospace
+Arrow
+
+Ballista
+
+Ballista Dunestalker
+
+Ballista Snowblind
+
+C8R Pisces Rescue
+
+C8X Pisces Expedition
+
+Carrack
+
+Carrack Expedition
+
+Centurion
+
+Crucible
+
+F7C Hornet Mk I
+
+F7C Hornet Mk II
+
+F7C Hornet Wildfire Mk I
+
+F7C-M Hornet Heartseeker Mk II
+
+F7C-M Super Hornet Heartseeker Mk I
+
+F7C-M Super Hornet Mk I
+
+F7C M Super Hornet Mk II
+
+F7C-R Hornet Tracker Mk I
+
+F7C-R Hornet Tracker Mk II
+
+F7C-S Hornet Ghost Mk I
+
+F7C-S Hornet Ghost Mk II
+
+F8C Lightening
+
+Gladiator
+
+Hawk
+
+Hurricane
+
+Legionnaire
+
+Liberator
+
+Paladin
+
+Spartan
+
+Terrapin
+
+Terrapin Medic
+
+Valkyrie
+
+Valkyrie Liberator
+
+Aopoa
+Blade
+
+Khartu-al
+
+Nox
+
+Nox Kue
+
+San’tok.yāi
+
+Scythe
+
+Argo Astronautics
+CSV-SM
+
+MPUV Cargo
+
+MPUV Personnel
+
+MPUV Tractor
+
+MOLE
+
+MOLE Carbon
+
+MOLE Talus
+
+RAFT
+
+SRV
+
+Banu
+Defender
+
+Merchantman
+
+CNOU (Consolidated Outland)
+HoverQuad
+
+Nomad
+
+Pioneer
+
+Mustang Alpha
+
+Mustang Alpha Vindicator
+
+Mustang Beta
+
+Mustang Delta
+
+Mustang Gamma
+
+Mustang Omega
+
+Crusader Industries
+A1 Spirit
+
+A2 Hercules Starlifter
+
+Ares Star Fighter Inferno
+
+Ares Star Fighter Ion
+
+C1 Spirit
+
+C2 Hercules Starlifter
+
+E1 Spirit
+
+Genesis Starliner
+
+Intrepid
+
+M2 Hercules Starlifter
+
+Mercury Star Runner
+
+Drake Interplanetary
+Buccaneer
+
+Caterpillar
+
+Caterpillar Best In Show Edition
+
+Caterpillar Pirate Edition
+
+Corsair
+
+Cutlass Black
+
+Cutlass Black Best In Show Edition
+
+Cutlass Blue
+
+Cutlass Red
+
+Cutlass Steel
+
+Cutter
+
+Cutter Rambler
+
+Cutter Scout
+
+Dragonfly
+
+Dragonfly Yellowjacket
+
+Golem
+
+Herald
+
+Ironclad
+
+Ironclad Assault
+
+Kraken
+
+Kraken Privateer
+
+Mule
+
+Vulture
+
+Esperia
+Glaive
+
+Prowler
+
+Talon
+
+Talon Shrike
+
+Gatac Manufacture
+Railen
+
+Syulen
+
+Greycat Industrial
+MTC
+
+PTV
+
+ROC
+
+ROC-DS
+
+STV
+
+Ursa
+
+Ursa Fortuna
+
+Ursa Medivac
+
+Kruger Intergalatic
+P-52 Merlin
+
+P-72 Archimedes
+
+P-72 Archimedes Emerald
+
+MISC (Musashi Industrial and Starflight Concern)
+Endeavor
+
+Expanse
+
+Fortune
+
+Freelancer
+
+Freelancer DUR
+
+Freelancer MAX
+
+Freelancer MIS
+
+Hull A
+
+Hull B
+
+Hull C
+
+Hull D
+
+Hull E
+
+Odyssey
+
+Prospector
+
+Razor
+
+Razor EX
+
+Razor LX
+
+Reliant Kore
+
+Reliant Mako
+
+Reliant Sen
+
+Reliant Tana
+
+Starfarer
+
+Starfarer Gemini
+
+Starlancer MAX
+
+Starlancer TAC
+
+Mirai
+Fury
+
+Fury LX
+
+Fury MX
+
+G12
+
+G12a
+
+G12r
+
+Guardian
+
+Guardian MX
+
+Guardian QI
+
+Pulse
+
+Pulse LX
+
+X1
+
+X1 Force
+
+X1 Velocity
+
+Origin Jumpworks
+100i
+
+125a
+
+135c
+
+300i
+
+315p
+
+325a
+
+350r
+
+400i
+
+600i Executive Edition
+
+600i Explorer
+
+600i Touring
+
+85x
+
+890 Jump
+
+M50
+
+Roberts Space Industries (RSI)
+Apollo Medivac
+
+Apollo Triage
+
+Arrastra
+
+Aurora CL
+
+Aurora ES
+
+Aurora LN
+
+Aurora LX
+
+Aurora MR
+
+Constellation Andromeda
+
+Constellation Aquila
+
+Constellation Phoenix
+
+Constellation Phoenix Emerald
+
+Constellation Taurus
+
+Galaxy
+
+Lynx
+
+Mantis
+
+Orion
+
+Perseus
+
+Polaris
+
+Scorpius
+
+Scorpius Antares
+
+Zeus Mk II CL
+
+Zeus Mk II ES
+
+Zeus Mk II MR
+
+Tumbril Land Systems
+Cyclone
+
+Cyclone AA
+
+Cyclone MT
+
+Cyclone RC
+
+Cyclone RN
+
+Cyclone TR
+
+Nova
+
+Storm
+
+Storm AA
+
+Vanduul
+Scythe

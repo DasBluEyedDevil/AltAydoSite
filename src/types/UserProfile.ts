@@ -1,3 +1,5 @@
+import { UserShip } from './user';
+
 export interface UserProfile {
   name: string;
   handle: string;
@@ -8,6 +10,7 @@ export interface UserProfile {
   email: string;
   timezone: string;
   preferredGameplayLoops: string[];
+  ships: UserShip[];
 }
 
 // Predefined options for the dropdown fields

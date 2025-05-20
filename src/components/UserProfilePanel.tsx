@@ -7,8 +7,10 @@ import {
   subsidiaryOptions, 
   payGradeOptions, 
   timezoneOptions, 
-  gameplayLoopOptions 
+  gameplayLoopOptions,
+  UserShip
 } from '../types/UserProfile';
+import UserFleetBuilder from './UserFleetBuilder';
 
 export default function UserProfilePanel() {
   const { profile, isLoading, updateProfile } = useUserProfile();
@@ -53,6 +55,25 @@ export default function UserProfilePanel() {
         preferredGameplayLoops: [...currentLoops, option] 
       });
     }
+  };
+
+  // Handler for adding a ship to the fleet
+  const handleAddShip = (ship: UserShip) => {
+    const currentShips = [...(profile?.ships || [])];
+    updateProfile({
+      ships: [...currentShips, ship]
+    });
+  };
+
+  // Handler for removing a ship from the fleet
+  const handleRemoveShip = (index: number) => {
+    if (!profile?.ships) return;
+    
+    const currentShips = [...profile.ships];
+    currentShips.splice(index, 1);
+    updateProfile({
+      ships: currentShips
+    });
   };
   
   return (
@@ -135,7 +156,7 @@ export default function UserProfilePanel() {
                 onClick={() => setIsEditing(!isEditing)}
                 className="mg-button-small text-xs px-5 py-1.5"
               >
-                {isEditing ? 'SAVE PROFILE' : 'EDIT PROFILE'}
+                {isEditing ? 'SAVE CHANGES' : 'EDIT PROFILE'}
               </button>
             </div>
           </div>
@@ -279,6 +300,14 @@ export default function UserProfilePanel() {
             </div>
           )}
         </div>
+
+        {/* Fleet Builder / Ship Management Section */}
+        <UserFleetBuilder 
+          isEditing={isEditing}
+          userShips={profile.ships}
+          onAddShip={handleAddShip}
+          onRemoveShip={handleRemoveShip}
+        />
       </div>
     </motion.div>
   );

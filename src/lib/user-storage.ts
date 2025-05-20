@@ -55,6 +55,7 @@ function getLocalUsers(): User[] {
 
 function saveLocalUser(user: User): void {
   console.log(`STORAGE: Saving user to local storage: ${user.aydoHandle}`);
+  console.log(`STORAGE: User has ${user.ships?.length || 0} ships`);
   ensureDataDir();
   
   const users = getLocalUsers();
@@ -64,6 +65,17 @@ function saveLocalUser(user: User): void {
   if (existingUserIndex >= 0) {
     // Update existing user
     console.log(`STORAGE: Updating existing user: ${user.aydoHandle}`);
+    
+    // Check if this is a ships update
+    if (user.ships) {
+      const oldShipsCount = users[existingUserIndex].ships?.length || 0;
+      const newShipsCount = user.ships.length;
+      console.log(`STORAGE: Ships count changing from ${oldShipsCount} to ${newShipsCount}`);
+      
+      // Ensure ships are properly set
+      users[existingUserIndex].ships = user.ships;
+    }
+    
     users[existingUserIndex] = user;
   } else {
     // Add new user
@@ -216,6 +228,12 @@ export async function createUser(user: User): Promise<User> {
 
 export async function updateUser(id: string, userData: Partial<User>): Promise<User | null> {
   console.log(`STORAGE: Updating user: ${id}`);
+  console.log('STORAGE: Update data includes ships:', userData.ships !== undefined);
+  
+  if (userData.ships) {
+    console.log(`STORAGE: Ships data in update has ${userData.ships.length} ships`);
+    console.log('STORAGE: First few ships:', userData.ships.slice(0, 2));
+  }
   
   if (await shouldUseMongoDb()) {
     try {
@@ -236,13 +254,28 @@ export async function updateUser(id: string, userData: Partial<User>): Promise<U
     return null;
   }
   
+  // Log existing user ships
+  console.log(`STORAGE: Existing user has ${users[userIndex].ships?.length || 0} ships before update`);
+  
   const updatedUser = {
     ...users[userIndex],
     ...userData,
     updatedAt: new Date().toISOString()
   };
   
+  // Log ships data before saving
+  if (userData.ships) {
+    console.log('STORAGE: Updating ships for user:', userData.ships);
+    console.log(`STORAGE: Ships count in update data: ${userData.ships.length}`);
+    // Ensure ships are properly set
+    updatedUser.ships = userData.ships;
+  }
+  
+  // Log the updated user ships count
+  console.log(`STORAGE: Updated user ships count: ${updatedUser.ships?.length || 0}`);
+  
   saveLocalUser(updatedUser);
+  console.log('STORAGE: User updated, ships count:', (updatedUser.ships || []).length);
   return updatedUser;
 }
 

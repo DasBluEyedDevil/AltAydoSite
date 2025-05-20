@@ -21,7 +21,7 @@ const aboutTabs = [
     id: 'fleet',
     title: 'OUR FLEET',
     content: `AydoCorp maintains a diverse and modern fleet of vessels designed to meet any transportation need. From nimble personnel shuttles to massive cargo haulers, our ships are equipped with the latest technology and maintained to the highest standards. Each vessel undergoes rigorous safety inspections and is operated by experienced crews trained to handle any situation. Our specialized ships include deep space freighters, system hoppers, luxury personnel transports, heavy towing vessels, and rapid response ships.`,
-    image: '/images/Hull_E.jpg'
+    image: '/images/sc_cargo.jpeg'
   },
   {
     id: 'team',

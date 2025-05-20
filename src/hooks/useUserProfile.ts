@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { UserProfile } from '../types/UserProfile';
 import { useSession } from 'next-auth/react';
 
+// Added a version to the profile storage key to force refresh
+const PROFILE_VERSION = 'v1';
+
 const DEFAULT_PROFILE: Omit<UserProfile, 'handle' | 'email'> = {
   name: '',
   photo: '/assets/avatar-placeholder.png',
@@ -12,6 +15,7 @@ const DEFAULT_PROFILE: Omit<UserProfile, 'handle' | 'email'> = {
   position: '',
   timezone: 'UTC+00:00',
   preferredGameplayLoops: [],
+  ships: [],
 };
 
 export function useUserProfile() {
@@ -25,11 +29,30 @@ export function useUserProfile() {
       const handle = session.user.name || '';
       const email = session.user.email || '';
       
+      // Use versioned key for profile storage
+      const profileKey = `user_profile_${PROFILE_VERSION}_${email}`;
+      
       // Try to load profile from local storage
-      const savedProfile = localStorage.getItem(`user_profile_${email}`);
+      const savedProfile = localStorage.getItem(profileKey);
       
       if (savedProfile) {
-        setProfile(JSON.parse(savedProfile));
+        try {
+          const parsedProfile = JSON.parse(savedProfile);
+          // Ensure ships array exists even in old profiles
+          if (!parsedProfile.ships) {
+            parsedProfile.ships = [];
+          }
+          setProfile(parsedProfile);
+        } catch (e) {
+          console.error('Failed to parse profile data:', e);
+          setProfile({
+            ...DEFAULT_PROFILE,
+            name: session.user.name || '',
+            photo: session.user.image || DEFAULT_PROFILE.photo,
+            handle,
+            email,
+          });
+        }
       } else {
         // Create a new profile with defaults
         setProfile({
@@ -47,7 +70,9 @@ export function useUserProfile() {
   // Save to local storage whenever the profile changes
   useEffect(() => {
     if (profile && profile.email) {
-      localStorage.setItem(`user_profile_${profile.email}`, JSON.stringify(profile));
+      // Use versioned key for profile storage
+      const profileKey = `user_profile_${PROFILE_VERSION}_${profile.email}`;
+      localStorage.setItem(profileKey, JSON.stringify(profile));
     }
   }, [profile]);
 

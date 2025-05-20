@@ -100,6 +100,12 @@ function LoginForm() {
           // Force a session update and wait for it to complete
           await update();
 
+          // Clear the login animation shown flag so it will display after redirect
+          if (typeof window !== 'undefined') {
+            console.log("Clearing login animation flag to show animation on landing page");
+            localStorage.removeItem('loginAnimationShown');
+          }
+
           // Use router.push instead of replace to ensure proper navigation
           setIsLoading(false);
           console.log("Redirecting to landing page...");
