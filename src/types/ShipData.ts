@@ -10,7 +10,22 @@ export interface ShipManufacturer {
 
 // Create a function to format the image name from the ship name
 export const formatShipImageName = (shipName: string): string => {
-  return shipName.toLowerCase().replace(/\s+/g, '_').replace(/[\.']/g, '').replace(/\//g, '_') + '.png';
+  // Special case for San'tok.yāi
+  if (shipName === "San'tok.yāi") {
+    return "santokyai.png";
+  }
+  
+  return shipName.toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[\.']/g, '')
+    .replace(/\//g, '_')
+    .replace(/[āáàäâã]/g, 'a')
+    .replace(/[ēéèëê]/g, 'e')
+    .replace(/[īíìïî]/g, 'i')
+    .replace(/[ōóòöôõ]/g, 'o')
+    .replace(/[ūúùüû]/g, 'u')
+    .replace(/[ÿý]/g, 'y')
+    + '.png';
 };
 
 // Ship data organized by manufacturer
@@ -94,7 +109,7 @@ export const shipManufacturers: ShipManufacturer[] = [
       { name: "Khartu-al", image: formatShipImageName("Khartu-al") },
       { name: "Nox", image: formatShipImageName("Nox") },
       { name: "Nox Kue", image: formatShipImageName("Nox Kue") },
-      { name: "San'tok.yāi", image: formatShipImageName("Santokyai") },
+      { name: "San'tok.yāi", image: formatShipImageName("San'tok.yāi") },
       { name: "Scythe", image: formatShipImageName("Scythe") }
     ]
   },
