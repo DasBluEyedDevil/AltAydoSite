@@ -94,7 +94,7 @@ export const shipManufacturers: ShipManufacturer[] = [
       { name: "Khartu-al", image: formatShipImageName("Khartu-al") },
       { name: "Nox", image: formatShipImageName("Nox") },
       { name: "Nox Kue", image: formatShipImageName("Nox Kue") },
-      { name: "San'tok.yāi", image: formatShipImageName("San'tok.yāi") },
+      { name: "San'tok.yāi", image: formatShipImageName("Santokyai") },
       { name: "Scythe", image: formatShipImageName("Scythe") }
     ]
   },
