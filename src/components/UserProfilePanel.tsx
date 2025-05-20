@@ -7,9 +7,9 @@ import {
   subsidiaryOptions, 
   payGradeOptions, 
   timezoneOptions, 
-  gameplayLoopOptions,
-  UserShip
+  gameplayLoopOptions
 } from '../types/UserProfile';
+import { UserShip } from '../types/user';
 import UserFleetBuilder from './UserFleetBuilder';
 
 export default function UserProfilePanel() {
