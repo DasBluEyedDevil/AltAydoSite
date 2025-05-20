@@ -42,6 +42,11 @@ function LoginForm() {
       setSuccessMessage('Account created successfully. Please log in.');
     }
 
+    // Check if redirected from successful password reset
+    if (searchParams?.get('reset') === 'success') {
+      setSuccessMessage('Password reset successfully. Please log in with your new password.');
+    }
+
     // Check if there was an error parameter
     if (searchParams?.get('error')) {
       if (searchParams.get('error') === 'token_expired') {
@@ -202,6 +207,14 @@ function LoginForm() {
                   autoComplete="current-password"
                 />
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
+              </div>
+              <div className="flex justify-end mt-1">
+                <Link 
+                  href="/forgot-password" 
+                  className="text-xs text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)] hover:underline"
+                >
+                  Forgot Password?
+                </Link>
               </div>
             </div>
 

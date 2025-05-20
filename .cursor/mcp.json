@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "AltAydoSite Docs": {
+      "url": "https://gitmcp.io/DasBluEyedDevil/AltAydoSite"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    }
+  }
+} 

@@ -17,6 +17,7 @@
     "test-mongo": "tsx src/scripts/test-mongodb-connection.ts",
     "gen-mongo-connection": "tsx src/scripts/cosmos-connection-string.ts",
     "verify-cosmos": "tsx src/scripts/verify-cosmos.ts",
+    "verify-email": "tsx src/scripts/verify-email-config.ts",
     "gen-password": "tsx src/scripts/generate-password.ts"
   },
   "dependencies": {
@@ -26,6 +27,7 @@
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "@types/bcrypt": "^5.0.2",
+    "@types/nodemailer": "^6.4.17",
     "axios": "^1.6.7",
     "azure-ad-verify-token": "^3.0.3",
     "bcrypt": "^5.1.1",
@@ -35,6 +37,7 @@
     "mongodb": "^6.16.0",
     "next": "15.3.2",
     "next-auth": "^4.24.11",
+    "nodemailer": "^6.10.1",
     "openid-client": "^6.5.0",
     "react": "^18",
     "react-dom": "^18",

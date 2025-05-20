@@ -1,5 +1,6 @@
 import { MongoClient, Collection, ObjectId } from 'mongodb';
 import { User } from '@/types/user';
+import { PasswordResetToken } from '@/types/password-reset';
 
 // MongoDB Configuration for Azure Cosmos DB
 const mongoUri = process.env.MONGODB_URI;
@@ -7,10 +8,12 @@ const endpoint = process.env.COSMOS_ENDPOINT || '';
 const key = process.env.COSMOS_KEY || '';
 const databaseId = process.env.COSMOS_DATABASE_ID || '';
 const collectionId = process.env.COSMOS_CONTAINER_ID || 'users'; // Default to 'users' if not set
+const resetTokensCollectionId = 'resetTokens'; // Collection for password reset tokens
 
 // Client instance
 let client: MongoClient | null = null;
 let userCollection: Collection | null = null;
+let resetTokenCollection: Collection | null = null;
 
 // Initialize and connect to MongoDB
 export async function connect() {
@@ -72,6 +75,9 @@ export async function connect() {
         console.log(`Using collection: "${collectionId}"`);
         userCollection = db.collection(collectionId);
       }
+
+      // Initialize reset tokens collection
+      resetTokenCollection = db.collection(resetTokensCollectionId);
       
       console.log('MongoDB client initialized successfully');
       return true;
@@ -239,5 +245,74 @@ export async function close() {
     client = null;
     userCollection = null;
     console.log('MongoDB connection closed');
+  }
+}
+
+// Password Reset Token Functions
+
+// Create a reset token
+export async function createResetToken(token: PasswordResetToken): Promise<PasswordResetToken> {
+  try {
+    await ensureConnection();
+    
+    await resetTokenCollection!.insertOne(token);
+    console.log('Reset token created successfully:', token.id);
+    return token;
+  } catch (error: any) {
+    console.error('Error creating reset token:', error);
+    throw new Error(`Failed to create reset token: ${error.message || 'Unknown error'}`);
+  }
+}
+
+// Get a token by its token string
+export async function getResetTokenByToken(tokenString: string): Promise<PasswordResetToken | null> {
+  try {
+    await ensureConnection();
+    
+    const token = await resetTokenCollection!.findOne({ token: tokenString });
+    if (!token) return null;
+    
+    // Remove MongoDB's _id field
+    const { _id, ...tokenData } = token;
+    return tokenData as PasswordResetToken;
+  } catch (error) {
+    console.error('Error fetching reset token:', error);
+    return null;
+  }
+}
+
+// Mark a token as used
+export async function markResetTokenAsUsed(tokenId: string): Promise<boolean> {
+  try {
+    await ensureConnection();
+    
+    const result = await resetTokenCollection!.updateOne(
+      { id: tokenId },
+      { $set: { used: true } }
+    );
+    
+    return result.modifiedCount > 0;
+  } catch (error) {
+    console.error('Error marking reset token as used:', error);
+    return false;
+  }
+}
+
+// Clean up expired tokens
+export async function cleanupExpiredTokens(): Promise<void> {
+  try {
+    await ensureConnection();
+    
+    const now = new Date().toISOString();
+    const result = await resetTokenCollection!.deleteMany({
+      $or: [
+        { expiresAt: { $lt: now } },
+        { used: true }
+      ]
+    });
+    
+    console.log(`Cleaned up ${result.deletedCount} expired or used tokens`);
+  } catch (error) {
+    console.error('Error cleaning up expired tokens:', error);
   }
 } 
