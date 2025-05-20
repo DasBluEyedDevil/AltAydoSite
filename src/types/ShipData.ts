@@ -101,6 +101,8 @@ export const shipManufacturers: ShipManufacturer[] = [
   {
     name: "Argo Astronautics",
     ships: [
+      { name: "ATLS", image: formatShipImageName("ATLS") },
+      { name: "ATLS GEO", image: formatShipImageName("ATLS GEO") },
       { name: "CSV-SM", image: formatShipImageName("CSV-SM") },
       { name: "MPUV Cargo", image: formatShipImageName("MPUV Cargo") },
       { name: "MPUV Personnel", image: formatShipImageName("MPUV Personnel") },
@@ -257,10 +259,7 @@ export const shipManufacturers: ShipManufacturer[] = [
       { name: "Guardian MX", image: formatShipImageName("Guardian MX") },
       { name: "Guardian QI", image: formatShipImageName("Guardian QI") },
       { name: "Pulse", image: formatShipImageName("Pulse") },
-      { name: "Pulse LX", image: formatShipImageName("Pulse LX") },
-      { name: "X1", image: formatShipImageName("X1") },
-      { name: "X1 Force", image: formatShipImageName("X1 Force") },
-      { name: "X1 Velocity", image: formatShipImageName("X1 Velocity") }
+      { name: "Pulse LX", image: formatShipImageName("Pulse LX") }
     ]
   },
   {
@@ -279,7 +278,10 @@ export const shipManufacturers: ShipManufacturer[] = [
       { name: "600i Touring", image: formatShipImageName("600i Touring") },
       { name: "85x", image: formatShipImageName("85x") },
       { name: "890 Jump", image: formatShipImageName("890 Jump") },
-      { name: "M50", image: formatShipImageName("M50") }
+      { name: "M50", image: formatShipImageName("M50") },
+      { name: "X1", image: formatShipImageName("X1") },
+      { name: "X1 Force", image: formatShipImageName("X1 Force") },
+      { name: "X1 Velocity", image: formatShipImageName("X1 Velocity") }
     ]
   },
   {
