@@ -31,7 +31,7 @@ const updateOperationSchema = z.object({
 async function hasLeadershipRole(userId: string): Promise<boolean> {
   const user = await userStorage.getUserById(userId);
   if (!user) return false;
-  
+
   // Check for leadership roles
   const leadershipRoles = ['Director', 'Manager', 'Board Member'];
   return leadershipRoles.includes(user.role) || user.clearanceLevel >= 3;
@@ -42,7 +42,7 @@ async function canModifyOperation(userId: string, operation: Operation): Promise
   // Leaders can modify any operation
   const isLeadership = await hasLeadershipRole(userId);
   if (isLeadership) return true;
-  
+
   // Operation leaders can modify their own operations
   return operation.leaderId === userId;
 }
@@ -50,43 +50,43 @@ async function canModifyOperation(userId: string, operation: Operation): Promise
 // GET handler - Get a specific operation
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const userId = session.user.id;
-    const operationId = context.params.id;
-    
+    const operationId = params.id;
+
     // Get the operation
     const operation = await operationStorage.getOperationById(operationId);
-    
+
     if (!operation) {
       return NextResponse.json({ error: 'Operation not found' }, { status: 404 });
     }
-    
+
     // Check if the user has access to this operation
     const isLeadership = await hasLeadershipRole(userId);
     const isParticipant = operation.participants.some(p => p.userId === userId);
     const isLeader = operation.leaderId === userId;
-    
+
     if (!isLeadership && !isParticipant && !isLeader) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
-    
+
     // Get leader details for response
     const leader = await userStorage.getUserById(operation.leaderId);
-    
+
     // Return the operation with leader name
     return NextResponse.json({
       ...operation,
       leaderName: leader ? leader.aydoHandle : 'Unknown'
     });
-    
+
   } catch (error: any) {
     console.error('Error fetching operation:', error);
     return NextResponse.json(
@@ -99,31 +99,31 @@ export async function GET(
 // PUT handler - Update an operation
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const userId = session.user.id;
-    const operationId = context.params.id;
-    
+    const operationId = params.id;
+
     // Get the operation
     const operation = await operationStorage.getOperationById(operationId);
-    
+
     if (!operation) {
       return NextResponse.json({ error: 'Operation not found' }, { status: 404 });
     }
-    
+
     // Check if the user can modify this operation
     const canModify = await canModifyOperation(userId, operation);
     if (!canModify) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
-    
+
     // Parse and validate request body
     let body;
     try {
@@ -134,33 +134,33 @@ export async function PUT(
         { status: 400 }
       );
     }
-    
+
     const validationResult = updateOperationSchema.safeParse(body);
     if (!validationResult.success) {
       const errorMessage = validationResult.error.errors
         .map(e => `${e.path.join('.')}: ${e.message}`)
         .join(', ');
-      
+
       return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
-    
+
     // Update the operation
     const updates = validationResult.data;
     const updatedOperation = await operationStorage.updateOperation(operationId, updates);
-    
+
     if (!updatedOperation) {
       return NextResponse.json({ error: 'Failed to update operation' }, { status: 500 });
     }
-    
+
     // Get leader details for response
     const leader = await userStorage.getUserById(updatedOperation.leaderId);
-    
+
     // Return the updated operation with leader name
     return NextResponse.json({
       ...updatedOperation,
       leaderName: leader ? leader.aydoHandle : 'Unknown'
     });
-    
+
   } catch (error: any) {
     console.error('Error updating operation:', error);
     return NextResponse.json(
@@ -173,41 +173,41 @@ export async function PUT(
 // DELETE handler - Delete an operation
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const userId = session.user.id;
-    const operationId = context.params.id;
-    
+    const operationId = params.id;
+
     // Get the operation
     const operation = await operationStorage.getOperationById(operationId);
-    
+
     if (!operation) {
       return NextResponse.json({ error: 'Operation not found' }, { status: 404 });
     }
-    
+
     // Check if the user can modify this operation
     const canModify = await canModifyOperation(userId, operation);
     if (!canModify) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
-    
+
     // Delete the operation
     const success = await operationStorage.deleteOperation(operationId);
-    
+
     if (!success) {
       return NextResponse.json({ error: 'Failed to delete operation' }, { status: 500 });
     }
-    
+
     // Return success response
     return NextResponse.json({ success: true });
-    
+
   } catch (error: any) {
     console.error('Error deleting operation:', error);
     return NextResponse.json(
