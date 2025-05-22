@@ -44,7 +44,7 @@ export default function UserFleetBuilderWrapper({
     if (status === 'loading') {
       return; // Wait for session to be fully loaded
     }
-    
+
     if (session?.user?.email) {
       console.log('Session loaded, user authenticated:', session.user.email);
       fetchShipsFromAPI();
@@ -52,7 +52,7 @@ export default function UserFleetBuilderWrapper({
       console.log('No authenticated user session found');
       setIsLoading(false);
     }
-  }, [session, status]);
+  }, [session, status, fetchShipsFromAPI]);
 
   // Fetch ships data from the API
   const fetchShipsFromAPI = async () => {
@@ -65,11 +65,11 @@ export default function UserFleetBuilderWrapper({
         },
         credentials: 'include' // Include session cookies
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         console.error('API error response:', errorData);
-        
+
         // Handle 401 Unauthorized errors differently - just fall back to local storage
         if (response.status === 401) {
           console.log('User not authenticated, falling back to local storage');
@@ -77,18 +77,18 @@ export default function UserFleetBuilderWrapper({
           setIsLoading(false);
           return; // Early return to avoid throwing error
         }
-        
+
         throw new Error(`Failed to fetch profile: ${response.status} ${response.statusText}`);
       }
-      
+
       const profileData = await response.json();
-      
+
       console.log('Profile API response:', {
         hasShipsProperty: 'ships' in profileData,
         shipsIsArray: Array.isArray(profileData.ships),
         shipsLength: profileData.ships?.length || 0
       });
-      
+
       if (profileData.ships) {
         console.log('Successfully loaded ships from API:', profileData.ships);
         setShips(profileData.ships);
@@ -100,7 +100,7 @@ export default function UserFleetBuilderWrapper({
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       console.error('Error fetching ships from API:', error);
       setError(`Failed to load ships: ${errorMessage}`);
-      
+
       // Fallback to localStorage
       console.log('Falling back to localStorage for ships data');
       loadShipsFromLocalStorage();
@@ -108,7 +108,7 @@ export default function UserFleetBuilderWrapper({
       setIsLoading(false);
     }
   };
-  
+
   // Fallback: Load ships from localStorage
   const loadShipsFromLocalStorage = () => {
     try {
@@ -116,25 +116,25 @@ export default function UserFleetBuilderWrapper({
         console.log('Cannot load from localStorage - no window or user email');
         return;
       }
-      
+
       // Try both keys to support both v1 and v2 profiles
       const v1Key = `user_profile_v1_${session.user.email}`;
       const v2Key = `user_profile_v2_${session.user.email}`;
-      
+
       console.log('Trying to load ships from localStorage keys:', { v1Key, v2Key });
-      
+
       // Get data from localStorage using the safe wrapper
       const v1Data = safeLocalStorage.getItem(v1Key);
       const v2Data = safeLocalStorage.getItem(v2Key);
-      
+
       console.log('Found localStorage data:', {
         v1Found: !!v1Data,
         v2Found: !!v2Data
       });
-      
+
       // Parse the data
       let loadedShips: UserShip[] = [];
-      
+
       // Try v2 first, fall back to v1
       if (v2Data) {
         const profile = JSON.parse(v2Data);
@@ -153,7 +153,7 @@ export default function UserFleetBuilderWrapper({
         loadedShips = profile.ships || [];
         console.log('Loaded ships from v1 localStorage:', loadedShips);
       }
-      
+
       // Update state
       setShips(loadedShips);
     } catch (error) {
@@ -169,37 +169,37 @@ export default function UserFleetBuilderWrapper({
       console.warn('Cannot save ships - no authenticated user');
       return;
     }
-    
+
     console.log('Saving ships to server and localStorage:', shipsToSave);
     setError(null);
-    
+
     // Save to localStorage
     try {
       const v2Key = `user_profile_v2_${session.user.email}`;
       let profile = {};
-      
+
       const profileData = safeLocalStorage.getItem(v2Key);
       if (profileData) {
         profile = JSON.parse(profileData);
       }
-      
+
       // Update ships in the profile
       profile = {
         ...profile,
         ships: shipsToSave
       };
-      
+
       // Save back to localStorage using the safe wrapper
       safeLocalStorage.setItem(v2Key, JSON.stringify(profile));
       console.log('Saved ships to localStorage successfully');
     } catch (error) {
       console.error('Error saving ships to localStorage:', error);
     }
-    
+
     // Save to API
     try {
       console.log('Sending ships to API:', shipsToSave);
-      
+
       const response = await fetch('/api/profile', {
         method: 'PUT',
         headers: {
@@ -211,26 +211,26 @@ export default function UserFleetBuilderWrapper({
           ships: shipsToSave
         }),
       });
-      
+
       const responseData = await response.json().catch(() => ({}));
-      
+
       if (!response.ok) {
         const errorMsg = responseData?.error || response.statusText || 'Unknown error';
         console.error('Failed to save ships to server:', errorMsg, responseData);
         setError(`Failed to save ships: ${errorMsg}`);
       } else {
         console.log('Ships saved to server successfully', responseData);
-        
+
         // Verify the saved ships in the response
         if (responseData.ships) {
           console.log('Server returned updated ships:', responseData.ships.length);
-          
+
           // Check if all ships were saved correctly
           if (responseData.ships.length !== shipsToSave.length) {
             console.warn('Warning: Server returned different number of ships than we saved');
           }
         }
-        
+
         // Notify parent component of the ships change
         if (onShipsChange) {
           console.log('Notifying parent of ship changes:', shipsToSave);
@@ -286,14 +286,14 @@ export default function UserFleetBuilderWrapper({
   return (
     <div className="mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
       <h3 className="block text-xs text-[rgba(var(--mg-text),0.6)] font-bold mb-4">FLEET</h3>
-      
+
       <UserFleetBuilder 
         isEditing={isEditing}
         userShips={ships}
         onAddShip={handleAddShip}
         onRemoveShip={handleRemoveShip}
       />
-      
+
       {error && !error.includes("401") && !error.includes("Unauthorized") && (
         <div className="mt-4 p-2 bg-[rgba(var(--mg-error),0.1)] border border-[rgba(var(--mg-error),0.3)] text-[rgba(var(--mg-error),0.8)] text-xs rounded-sm">
           <div className="flex items-center">

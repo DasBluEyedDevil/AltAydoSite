@@ -37,7 +37,7 @@ const TimelineNode = ({
           marginTop: "6px"
         }}
       />
-      
+
       {/* Vertical line */}
       <div 
         className="absolute left-0 top-0 w-[1px] h-full"
@@ -47,7 +47,7 @@ const TimelineNode = ({
           height: "calc(100% + 12px)",
         }}
       />
-      
+
       {/* Content */}
       <div>
         <div className="text-[rgba(var(--mg-primary),1)] text-sm font-quantify mb-1">{year} - {title}</div>
@@ -73,7 +73,7 @@ const DirectiveCard = ({
   delay: number 
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -97,10 +97,10 @@ const DirectiveCard = ({
           }}
           transition={{ duration: 0.3 }}
         />
-        
+
         {/* Animated border */}
         <div className="absolute inset-px z-10 bg-transparent border border-[rgba(var(--mg-primary),0.3)] group-hover:border-[rgba(var(--mg-primary),0.6)] transition-colors duration-300"></div>
-        
+
         {/* Corner markers */}
         <div className="absolute top-0 left-0 w-5 h-5 z-10">
           <div className="absolute top-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
@@ -118,7 +118,7 @@ const DirectiveCard = ({
           <div className="absolute bottom-0 right-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
           <div className="absolute bottom-0 right-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
         </div>
-        
+
         {/* Scanning effect */}
         <motion.div 
           className="absolute inset-0 overflow-hidden"
@@ -142,7 +142,7 @@ const DirectiveCard = ({
             />
           </div>
         </motion.div>
-        
+
         {/* Inner content */}
         <div className="relative z-0 h-full p-6 bg-[rgba(var(--mg-background),0.5)]">
           <div className="flex items-start mb-4">
@@ -187,7 +187,7 @@ const DirectiveCard = ({
               </p>
             </div>
           </div>
-          
+
           <motion.div 
             className="mt-4 pt-3"
             style={{
@@ -246,18 +246,18 @@ export default function About() {
   const [connectionComplete, setConnectionComplete] = useState(false);
   const [connectionMessages, setConnectionMessages] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState('subsidiaries');
-  
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
-    
+
     const handleScroll = () => {
       setScrollPosition(window.scrollY);
     };
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     return () => {
       clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
@@ -267,7 +267,7 @@ export default function About() {
   // Initialize data feed connection
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (isDataFeedActive && !connectionComplete) {
       // Connection messages
       const techMessages = [
@@ -280,10 +280,10 @@ export default function About() {
         "Validating data chronology...",
         "Rendering historical visualization..."
       ];
-      
+
       // Add initial message
       setConnectionMessages([techMessages[0]]);
-      
+
       interval = setInterval(() => {
         setConnectionProgress((prev) => {
           // Add a new message at certain progress points
@@ -293,7 +293,7 @@ export default function About() {
               setConnectionMessages(current => [...current, techMessages[messageIndex]]);
             }
           }
-          
+
           if (prev >= 100) {
             clearInterval(interval);
             setConnectionComplete(true);
@@ -304,9 +304,9 @@ export default function About() {
         });
       }, 40);
     }
-    
+
     return () => clearInterval(interval);
-  }, [isDataFeedActive, connectionProgress]);
+  }, [isDataFeedActive, connectionProgress, connectionComplete]);
 
   const startDataFeed = () => {
     setIsDataFeedActive(true);
@@ -368,11 +368,11 @@ export default function About() {
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black"></div>
-            
+
             {/* Enhanced grid backgrounds and effects */}
             <div className="absolute inset-0 circuit-bg opacity-10"></div>
             <div className="absolute inset-0 mg-grid-bg opacity-10"></div>
-            
+
             {/* Holographic particle effects */}
             <div className="absolute inset-0 overflow-hidden">
               {Array.from({ length: 20 }).map((_, i) => (
@@ -396,7 +396,7 @@ export default function About() {
                 />
               ))}
             </div>
-            
+
             {/* Animated scan lines */}
             <div className="absolute inset-0 overflow-hidden">
               <motion.div 
@@ -487,14 +487,14 @@ export default function About() {
                 animate={{ scaleY: 1 }}
                 transition={{ duration: 0.5 }}
               />
-              
+
               {/* Holographic flicker effect */}
               <motion.div 
                 className="absolute inset-0 bg-[rgba(var(--mg-primary),0.1)]"
                 animate={{ opacity: [0.3, 0.1, 0.3, 0.2, 0.3] }}
                 transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
               />
-              
+
               {/* Decorative elements */}
               <div className="absolute top-0 left-0 w-full h-full">
                 <div className="mg-grid-bg"></div>
@@ -502,13 +502,13 @@ export default function About() {
                 <div className="holo-scan"></div>
                 <div className="line-noise opacity-5"></div>
               </div>
-              
+
               {/* Corner brackets */}
               <div className="absolute top-0 left-0 w-16 h-16 border-l-2 border-t-2 border-[rgba(var(--mg-primary),0.6)]"></div>
               <div className="absolute top-0 right-0 w-16 h-16 border-r-2 border-t-2 border-[rgba(var(--mg-primary),0.6)]"></div>
               <div className="absolute bottom-0 left-0 w-16 h-16 border-l-2 border-b-2 border-[rgba(var(--mg-primary),0.6)]"></div>
               <div className="absolute bottom-0 right-0 w-16 h-16 border-r-2 border-b-2 border-[rgba(var(--mg-primary),0.6)]"></div>
-              
+
               {/* Content */}
               <div className="relative z-10 p-8">
                 <motion.div
@@ -535,7 +535,7 @@ export default function About() {
                     DATABASE
                   </motion.span>
                 </motion.div>
-                
+
                 <motion.div 
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -546,7 +546,7 @@ export default function About() {
                     FROM PLANETARY COURIER TO INTERSTELLAR POWERHOUSE
                   </span>
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -556,7 +556,7 @@ export default function About() {
                   <p className="text-[rgba(var(--mg-text),0.8)] mb-6">
                     Discover the journey of Aydo Intergalactic Corporation, from its humble beginnings to becoming a leader in interstellar logistics and transportation services.
                   </p>
-                  
+
                   <div className="mg-signal-indicator mt-4 flex justify-center">
                     <motion.div 
                       className="inline-flex items-center px-3 py-1 border border-[rgba(var(--mg-primary),0.3)] bg-[rgba(var(--mg-primary),0.05)]"
@@ -576,7 +576,7 @@ export default function About() {
                       </motion.span>
                     </motion.div>
                   </div>
-                  
+
                   {/* Interactive scan button */}
                   <motion.button
                     className="mt-8 flex items-center justify-center mx-auto px-6 py-3 text-sm relative group"
@@ -607,7 +607,7 @@ export default function About() {
                   >
                     {/* Animated background */}
                     <div className="absolute inset-0 bg-gradient-to-r from-[rgba(0,215,255,0.1)] via-[rgba(0,215,255,0.2)] to-[rgba(0,215,255,0.1)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
+
                     {/* Pulse effect around button */}
                     <div className="absolute -inset-0.5 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="absolute inset-0 rounded-sm bg-transparent border border-[rgba(0,215,255,0.6)]" 
@@ -616,7 +616,7 @@ export default function About() {
                         }}
                       ></div>
                     </div>
-                    
+
                     <motion.div
                       className="mr-3 w-4 h-4 rounded-full flex items-center justify-center"
                       style={{
@@ -650,7 +650,7 @@ export default function About() {
             <div className="max-w-4xl mx-auto px-4">
               <div className="p-6 border border-[rgba(var(--mg-primary),0.3)] bg-black/70 relative rounded-lg overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-[rgba(var(--mg-primary),0.2)] to-[rgba(var(--mg-accent),0.2)]"></div>
-                
+
                 {/* Decorative grid lines */}
                 <div className="absolute inset-0 grid grid-cols-12 gap-4 opacity-20 pointer-events-none">
                   {Array(12).fill(0).map((_, i) => (
@@ -660,7 +660,7 @@ export default function About() {
                     <div key={`grid-row-${i}`} className="w-full h-px bg-[rgba(var(--mg-primary),0.3)] absolute" style={{ top: `${i * 20}%` }}></div>
                   ))}
                 </div>
-                
+
                 {/* Scanning animation overlay */}
                 <div className="absolute inset-0 overflow-hidden">
                   <div 
@@ -671,13 +671,13 @@ export default function About() {
                     }}
                   ></div>
                 </div>
-                
+
                 <div className="text-center relative z-10">
                   <h3 className="text-xl font-bold mb-4 text-[rgba(var(--mg-primary),1)] flex items-center justify-center gap-2">
                     <span className="inline-block h-3 w-3 rounded-full bg-[rgba(var(--mg-primary),1)] animate-pulse"></span>
                     Historical Data Connection
                   </h3>
-                  
+
                   <div className="space-y-4">
                     {/* Progress bar */}
                     <div className="w-full h-5 bg-black/50 rounded-full overflow-hidden p-0.5 border border-[rgba(var(--mg-primary),0.3)]">
@@ -703,12 +703,12 @@ export default function About() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="text-[rgba(var(--mg-primary),0.9)] font-mono flex items-center justify-center gap-2 text-sm">
                       <span className="inline-block h-2 w-2 bg-[rgba(var(--mg-primary),0.9)] rounded-full animate-pulse"></span>
                       ESTABLISHING CONNECTION: {connectionProgress.toFixed(0)}% COMPLETE
                     </div>
-                    
+
                     {/* Terminal-like message display */}
                     <div className="mt-4 p-3 bg-black/70 border border-[rgba(var(--mg-primary),0.3)] rounded text-left h-32 overflow-y-auto font-mono text-xs">
                       <div className="flex items-center text-[rgba(var(--mg-text),0.7)] mb-2">
@@ -781,7 +781,7 @@ export default function About() {
             <div className="absolute inset-0 mg-grid-bg opacity-5"></div>
             <div className="absolute inset-0 circuit-bg opacity-10"></div>
             <div className="absolute inset-0 holo-noise opacity-10"></div>
-            
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -807,7 +807,7 @@ export default function About() {
                       transition={{ duration: 0.8, delay: 0.2 }}
                     ></motion.div>
                   </motion.h2>
-                  
+
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -817,7 +817,7 @@ export default function About() {
                     Trace the evolution of AydoCorp from its humble origins to its current position as an interstellar logistics powerhouse.
                   </motion.p>
                 </div>
-                
+
                 {/* Interactive Timeline */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="relative">
@@ -830,7 +830,7 @@ export default function About() {
                         content="Christoff Revan establishes a small courier service in Aydo City on planet Green in the Ellis system, focusing on reliable local deliveries."
                         delay={0.1}
                       />
-                      
+
                       <TimelineNode 
                         year="2925"
                         title="EXPANSION"
@@ -838,7 +838,7 @@ export default function About() {
                         content="After years of consistent growth, operations expand to cover the entire planet Green, establishing regional hubs in major cities."
                         delay={0.2}
                       />
-                      
+
                       <TimelineNode 
                         year="2938"
                         title="MERGER"
@@ -846,7 +846,7 @@ export default function About() {
                         content="Strategic merger with Seahorse Fisheries of Neo Taurii leads to the formation of Aydo Amalgamated Industries, expanding operations beyond logistics into resource management."
                         delay={0.3}
                       />
-                      
+
                       <TimelineNode 
                         year="2940"
                         title="FOUNDING"
@@ -854,7 +854,7 @@ export default function About() {
                         content="The corporation had its humble beginnings as a small one-man delivery company founded by CEO Christoff Revan after his honorable discharge from the UEE Navy."
                         delay={0.4}
                       />
-                      
+
                       <TimelineNode 
                         year="2943"
                         title="First Expansion"
@@ -862,7 +862,7 @@ export default function About() {
                         content="After a merger with Seahorse Fisheries based out of Neo Taurii on Kampos, Aydo City Delivery was renamed to Aydo Amalgamated Industries, marking the first significant expansion."
                         delay={0.5}
                       />
-                      
+
                       <TimelineNode 
                         year="2945"
                         title="INTERSTELLAR LAUNCH"
@@ -870,7 +870,7 @@ export default function About() {
                         content="Acquisition of the first Hull-series freighter marks AydoCorp's entry into interstellar shipping, establishing routes to neighboring Stanton system."
                         delay={0.6}
                       />
-                      
+
                       <TimelineNode 
                         year="2945"
                         title="Corporate Formation"
@@ -878,7 +878,7 @@ export default function About() {
                         content="After acquiring multiple subsidiaries and expanding operations, the company transformed into the corporation now known as 'AydoCorp', serving many clients throughout human and alien space."
                         delay={0.7}
                       />
-                      
+
                       <TimelineNode 
                         year="2948"
                         title="INCORPORATION"
@@ -886,7 +886,7 @@ export default function About() {
                         content="Following rapid expansion and multiple acquisitions, the company officially becomes Aydo Intergalactic Corporation, establishing headquarters in a state-of-the-art facility in Aydo City."
                         delay={0.8}
                       />
-                      
+
                       <TimelineNode 
                         year="2948"
                         title="Security Partnership"
@@ -894,7 +894,7 @@ export default function About() {
                         content="Formed security partnership with Rogue Squadron to provide enhanced security for valuable shipments and escort services for high-profile transports."
                         delay={0.9}
                       />
-                      
+
                       <TimelineNode 
                         year="2951"
                         title="Present Day"
@@ -902,7 +902,7 @@ export default function About() {
                         content="Today, AydoCorp continues to expand its reach across systems, with operations in both human and alien space, focusing on transportation, logistics, and resource consolidation."
                         delay={1.0}
                       />
-                      
+
                       {/* Present day indicator */}
                       <motion.div
                         className="relative mb-0 pl-0"
@@ -937,7 +937,7 @@ export default function About() {
                       </motion.div>
                     </div>
                   </div>
-                  
+
                   <div>
                     <motion.div 
                       className="mg-container mb-4"
@@ -948,13 +948,13 @@ export default function About() {
                       <div className="p-4">
                         <h2 className="mg-subtitle text-lg mb-3">CORPORATE HISTORY</h2>
                         <p className="text-sm text-[rgba(var(--mg-text),0.8)] leading-relaxed mb-4">
-                          Over the years the company would grow and expand, what was once known as "Aydo City Delivery" eventually became "Aydo Amalgamated Industries" after a merger with Seahorse Fisheries, which was based out of Neo Taurii on Kampos.
+                          Over the years the company would grow and expand, what was once known as &quot;Aydo City Delivery&quot; eventually became &quot;Aydo Amalgamated Industries&quot; after a merger with Seahorse Fisheries, which was based out of Neo Taurii on Kampos.
                         </p>
-                        
+
                         <p className="text-sm text-[rgba(var(--mg-text),0.8)] leading-relaxed">
-                          After acquiring multiple subsidiaries and having greater expansions, the company would transform into the corporation we now know as "AydoCorp", serving many clients throughout human and even alien space.
+                          After acquiring multiple subsidiaries and having greater expansions, the company would transform into the corporation we now know as &quot;AydoCorp&quot;, serving many clients throughout human and even alien space.
                         </p>
-                        
+
                         <div className="flex items-center justify-between mt-4 text-[rgba(var(--mg-text),0.7)] text-xs">
                           <div className="flex items-center">
                             <motion.div 
@@ -971,7 +971,7 @@ export default function About() {
                         </div>
                       </div>
                     </motion.div>
-                    
+
                     <div className="grid grid-cols-1 gap-4">
                       <motion.div 
                         className="relative overflow-hidden rounded mg-container p-0.5"
@@ -1004,7 +1004,7 @@ export default function About() {
                           </div>
                         </div>
                       </motion.div>
-                      
+
                       <motion.div 
                         className="relative overflow-hidden rounded mg-container p-0.5"
                         initial={{ opacity: 0, y: 20 }}
@@ -1024,7 +1024,7 @@ export default function About() {
                             className="object-cover"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
-                          
+
                           {/* Animated scanning effect overlay */}
                           <motion.div 
                             className="absolute inset-0 overflow-hidden pointer-events-none"
@@ -1047,7 +1047,7 @@ export default function About() {
                               }}
                             />
                           </motion.div>
-                          
+
                           <div className="absolute bottom-0 left-0 w-full p-4">
                             <motion.h3 
                               className="text-base font-quantify tracking-wider text-[rgba(var(--mg-primary),0.9)]"
@@ -1057,7 +1057,7 @@ export default function About() {
                             >
                               CORPORATE FLEET
                             </motion.h3>
-                            
+
                             <div className="flex items-center justify-between mt-2 text-xs">
                               <div className="flex items-center">
                                 <span className="text-[rgba(var(--mg-primary),0.9)] mr-1">VESSELS:</span>
@@ -1075,7 +1075,7 @@ export default function About() {
                                   48
                                 </motion.span>
                               </div>
-                              
+
                               <div className="flex items-center">
                                 <span className="text-[rgba(var(--mg-primary),0.9)] mr-1">SYSTEMS:</span>
                                 <motion.span 
@@ -1111,7 +1111,7 @@ export default function About() {
             <div className="absolute inset-0 mg-grid-bg opacity-5"></div>
             <div className="absolute inset-0 circuit-bg opacity-10"></div>
             <div className="absolute inset-0 holo-noise opacity-10"></div>
-            
+
             {/* Floating particles */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               {Array.from({ length: 30 }).map((_, i) => (
@@ -1139,7 +1139,7 @@ export default function About() {
                 />
               ))}
             </div>
-            
+
             {/* Animated scan lines */}
             <div className="absolute inset-0 overflow-hidden">
               <motion.div 
@@ -1173,7 +1173,7 @@ export default function About() {
                 }}
               />
             </div>
-            
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -1210,7 +1210,7 @@ export default function About() {
                     At AydoCorp, our operational goals are guided by these key directives that shape our approach to interstellar logistics and corporate conduct.
                   </motion.p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {/* Card 1 */}
                   <DirectiveCard 
@@ -1224,7 +1224,7 @@ export default function About() {
                     ]}
                     delay={0.1}
                   />
-                  
+
                   {/* Card 2 */}
                   <DirectiveCard 
                     icon={<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />}
@@ -1237,7 +1237,7 @@ export default function About() {
                     ]}
                     delay={0.2}
                   />
-                  
+
                   {/* Card 3 */}
                   <DirectiveCard 
                     icon={<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />}
@@ -1255,13 +1255,13 @@ export default function About() {
             </div>
           </section>
         )}
-        
+
         {/* Call to Action Section */}
         {connectionComplete && (
           <section className="py-16 bg-black relative overflow-hidden">
             <div className="absolute inset-0 mg-grid-bg opacity-5"></div>
             <div className="absolute inset-0 holo-noise opacity-10"></div>
-            
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -1273,11 +1273,11 @@ export default function About() {
                 <div className="absolute top-0 right-0 w-16 h-16 border-r-2 border-t-2 border-[rgba(var(--mg-primary),0.6)]"></div>
                 <div className="absolute bottom-0 left-0 w-16 h-16 border-l-2 border-b-2 border-[rgba(var(--mg-primary),0.6)]"></div>
                 <div className="absolute bottom-0 right-0 w-16 h-16 border-r-2 border-b-2 border-[rgba(var(--mg-primary),0.6)]"></div>
-                
+
                 <div className="text-center relative z-10">
                   <h2 className="text-2xl md:text-3xl font-quantify tracking-wider text-[rgba(var(--mg-primary),1)] mb-4">JOIN THE AYDOCORP TEAM</h2>
                   <p className="text-[rgba(var(--mg-text),0.8)] mb-8 max-w-3xl mx-auto">
-                    Explore career opportunities with AydoCorp and become part of our interstellar logistics family. We're always looking for talented individuals who share our passion for excellence.
+                    Explore career opportunities with AydoCorp and become part of our interstellar logistics family. We&apos;re always looking for talented individuals who share our passion for excellence.
                   </p>
                   <Link href="/join">
                     <motion.button 
@@ -1289,7 +1289,7 @@ export default function About() {
                     </motion.button>
                   </Link>
                 </div>
-                
+
                 {/* Animated scan line */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent animate-scan-horizontal"></div>
@@ -1310,7 +1310,7 @@ export default function About() {
                 <div className="absolute inset-0 mg-grid-bg opacity-5"></div>
                 <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(var(--mg-primary),0.1)]"></div>
               </div>
-              
+
               {/* Content container */}
               <div className="relative z-10 bg-black/80 p-6">
                 {/* Tab navigation */}
@@ -1346,7 +1346,7 @@ export default function About() {
                     LEADERSHIP
                   </button>
                 </div>
-                
+
                 {/* Tab content */}
                 <div className="min-h-[400px]">
                   {/* Subsidiaries Tab */}
@@ -1360,7 +1360,7 @@ export default function About() {
                       <p className="text-[rgba(var(--mg-text),0.8)] mb-6 leading-relaxed">
                         The subsidiaries at AydoCorp are subsets of the organization designed to cater to specific gameplay loops and career paths. Our goal with subsidiaries is to always keep the feeling of a tight-knit community even as the organization grows. Being part of a subsidiary means you focus on the gameplay you enjoy most while having value within a smaller group of members, all while still having the support of AydoCorp at large.
                       </p>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* AydoExpress */}
                         <div className="mg-container p-0.5">
@@ -1378,11 +1378,11 @@ export default function About() {
                                 <div className="mg-subtitle text-xs">LOGISTICS & TRANSPORT DIVISION</div>
                               </div>
                             </div>
-                            
+
                             <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
-                              The bread and butter of the organization, AydoExpress deals with cargo hauling and personnel transport. Gameplay offered includes trading, deliveries, transport, and general hauling operations that are critical to the organization's function.
+                              The bread and butter of the organization, AydoExpress deals with cargo hauling and personnel transport. Gameplay offered includes trading, deliveries, transport, and general hauling operations that are critical to the organization&apos;s function.
                             </p>
-                            
+
                             <div className="relative mt-4 overflow-hidden rounded-md h-48">
                               <img 
                                 src="/images/Hull_E.jpg" 
@@ -1398,7 +1398,7 @@ export default function About() {
                             </div>
                           </div>
                         </div>
-                        
+
                         {/* Empyrion Industries */}
                         <div className="mg-container p-0.5">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
@@ -1415,11 +1415,11 @@ export default function About() {
                                 <div className="mg-subtitle text-xs">RESOURCE & INDUSTRIAL DIVISION</div>
                               </div>
                             </div>
-                            
+
                             <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
                               Keeping the coffers full, Empyrion Industries deals with industrial gameplay to sustain the organization with resources and profits. Gameplay offered includes mining and salvaging operations, as well as refueling and resource processing.
                             </p>
-                            
+
                             <div className="relative mt-4 overflow-hidden rounded-md h-48">
                               <img 
                                 src="/images/reclaimer.0.jpg" 
@@ -1438,7 +1438,7 @@ export default function About() {
                       </div>
                     </motion.div>
                   )}
-                  
+
                   {/* Operations Tab */}
                   {activeTab === 'operations' && (
                     <motion.div
@@ -1460,7 +1460,7 @@ export default function About() {
                         ]}
                         delay={0.1}
                       />
-                      
+
                       <DirectiveCard
                         icon={<path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />}
                         title="Resource Consolidation"
@@ -1474,7 +1474,7 @@ export default function About() {
                         ]}
                         delay={0.2}
                       />
-                      
+
                       <DirectiveCard
                         icon={<path d="M12 14l9-5-9-5-9 5 9 5z" />}
                         title="Personnel Transport"
@@ -1490,7 +1490,7 @@ export default function About() {
                       />
                     </motion.div>
                   )}
-                  
+
                   {/* Leadership Tab */}
                   {activeTab === 'leadership' && (
                     <motion.div
@@ -1510,16 +1510,16 @@ export default function About() {
                                 className="w-32 h-auto"
                               />
                             </div>
-                            
+
                             <div className="text-center mb-4">
                               <h3 className="mg-title text-xl">CHRISTOFF REVAN</h3>
                               <div className="mg-subtitle text-xs">CHIEF EXECUTIVE OFFICER</div>
                             </div>
-                            
+
                             <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
                               Hailing from Neo Taurii, Christoff served with distinction in the UEE Navy before founding what would become AydoCorp. A visionary leader who expanded a small delivery service into an intergalactic corporation.
                             </p>
-                            
+
                             <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
                               <div className="flex justify-between mb-1">
                                 <span>Handle</span>
@@ -1537,7 +1537,7 @@ export default function About() {
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Other three executives in a row below */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* CMO */}
@@ -1550,16 +1550,16 @@ export default function About() {
                                 className="w-32 h-auto"
                               />
                             </div>
-                            
+
                             <div className="text-center mb-4">
                               <h3 className="mg-title text-xl">ZANE MAKAY</h3>
                               <div className="mg-subtitle text-xs">CHIEF MARKETING OFFICER</div>
                             </div>
-                            
+
                             <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
                               A former UEE Army dropship pilot with experience flying the Hercules M2 and Anvil Valkyrie. Known for his friendly nature and insightful ideas that quickly elevated him to his executive position.
                             </p>
-                            
+
                             <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
                               <div className="flex justify-between mb-1">
                                 <span>Handle</span>
@@ -1576,7 +1576,7 @@ export default function About() {
                             </div>
                           </div>
                         </div>
-                        
+
                         {/* COO */}
                         <div className="mg-container p-0.5">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
@@ -1587,16 +1587,16 @@ export default function About() {
                                 className="w-32 h-auto"
                               />
                             </div>
-                            
+
                             <div className="text-center mb-4">
                               <h3 className="mg-title text-xl">KAIBO ZABER</h3>
                               <div className="mg-subtitle text-xs">CHIEF OPERATIONS OFFICER</div>
                             </div>
-                            
+
                             <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
                               A UEE Navy veteran and former privateer providing security and medical services. Known for his perseverance and experience leading groups of spacecraft in tense situations.
                             </p>
-                            
+
                             <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
                               <div className="flex justify-between mb-1">
                                 <span>Handle</span>
@@ -1613,7 +1613,7 @@ export default function About() {
                             </div>
                           </div>
                         </div>
-                        
+
                         {/* CSO */}
                         <div className="mg-container p-0.5">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
@@ -1624,16 +1624,16 @@ export default function About() {
                                 className="w-32 h-auto"
                               />
                             </div>
-                            
+
                             <div className="text-center mb-4">
                               <h3 className="mg-title text-xl">CHRISTUS SANCTUS</h3>
                               <div className="mg-subtitle text-xs">CHIEF SAFETY OFFICER</div>
                             </div>
-                            
+
                             <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-4">
-                              Former Chief Medical Officer aboard the exploration vessel "Rasalas," with extensive experience in emergency response. Known for exceptional medical skills and ability to remain calm under extreme pressure.
+                              Former Chief Medical Officer aboard the exploration vessel &quot;Rasalas,&quot; with extensive experience in emergency response. Known for exceptional medical skills and ability to remain calm under extreme pressure.
                             </p>
-                            
+
                             <div className="text-xs text-[rgba(var(--mg-text),0.6)] mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
                               <div className="flex justify-between mb-1">
                                 <span>Handle</span>
@@ -1645,7 +1645,7 @@ export default function About() {
                               </div>
                               <div className="flex justify-between">
                                 <span>Prior Service</span>
-                                <span>Medical Officer, "Rasalas"</span>
+                                <span>Medical Officer, &quot;Rasalas&quot;</span>
                               </div>
                             </div>
                           </div>

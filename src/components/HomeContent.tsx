@@ -74,7 +74,7 @@ function MobiGlasTerminal({ userName, onAnimationComplete }: { userName?: string
       }
     }, 10 + Math.random() * 15);
     return () => clearInterval(interval);
-  }, [messageIdx, step]);
+  }, [messageIdx, step, scanMessages]);
 
   // Animation sequence
   useEffect(() => {
@@ -96,7 +96,7 @@ function MobiGlasTerminal({ userName, onAnimationComplete }: { userName?: string
         onAnimationComplete();
       }, 400);
     }
-  }, [messageIdx, step, onAnimationComplete]);
+  }, [messageIdx, step, onAnimationComplete, scanMessages.length]);
 
   // Blinking cursor
   useEffect(() => {
@@ -218,10 +218,10 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
   });
   const [time, setTime] = useState(new Date());
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
+
   // Animation for system scan effect
   const [scanning, setScanning] = useState(false);
-  
+
   // Track if we should show the login animation
   const [showLoginAnimation, setShowLoginAnimation] = useState(false);
   // Track if UI should be hidden (during animation)
@@ -241,7 +241,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
 
   useEffect(() => {
     setMounted(true);
-    
+
     // Check if we should show login animation - only if user is logged in
     // and has navigated from the login page (hasn't seen animation)
     const checkAndShowAnimation = () => {
@@ -252,13 +252,13 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
         window.performance.navigation.type === 1 && 
         isLoggedIn && 
         !hasShownLoginAnimation();
-        
+
       if (isLoggedIn && !hasShownLoginAnimation()) {
         console.log('Showing login animation');
         setShowLoginAnimation(true);
         setHideUI(true);
         // Don't mark as shown yet - will be marked after animation completes
-        
+
         // Hide the footer during animation
         setFooterVisibility(false);
       } else {
@@ -266,39 +266,39 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
         setFooterVisibility(true);
       }
     };
-    
+
     checkAndShowAnimation();
-    
+
     // Update clock
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
-    
+
     // Auto-advance carousel
     const carouselTimer = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % shipImages.length);
     }, 5000);
-    
+
     // Automatic system scan timer (every 20 seconds)
     const scanTimer = setInterval(() => {
       initiateSystemScan();
     }, 20000);
-    
+
     return () => {
       clearInterval(timer);
       clearInterval(carouselTimer);
       clearInterval(scanTimer);
     };
-  }, [isLoggedIn, shipImages.length]);
+  }, [isLoggedIn, shipImages.length, initiateSystemScan]);
 
   // Function to handle animation complete
   const handleAnimationComplete = () => {
     setShowLoginAnimation(false);
     setHideUI(false);
-    
+
     // Mark animation as shown only after it completes
     markLoginAnimationAsShown();
-    
+
     // Show the footer after animation completes
     setFooterVisibility(true);
   };
@@ -323,46 +323,46 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
   // Simulate system scan
   const initiateSystemScan = () => {
     if (scanning) return;
-    
+
     setScanning(true);
-    
+
     // Simulate scan progress
     const origIntegrity = systemStatus.integrity;
     const origQuant = systemStatus.quantumLink;
     const origSec = systemStatus.security;
-    
+
     // Reset values temporarily
     setSystemStatus({
       integrity: 0,
       quantumLink: 0,
       security: 0
     });
-    
+
     // Animate them back up with delays - extended for longer animation
     setTimeout(() => {
       // Start integrity rise
       setSystemStatus(prev => ({ ...prev, integrity: origIntegrity/3 }));
-      
+
       setTimeout(() => {
         // Continue integrity rise
         setSystemStatus(prev => ({ ...prev, integrity: origIntegrity/2 }));
-        
+
         setTimeout(() => {
           // Complete integrity rise and start quantum
           setSystemStatus(prev => ({ ...prev, integrity: origIntegrity, quantumLink: origQuant/3 }));
-          
+
           setTimeout(() => {
             // Continue quantum rise
             setSystemStatus(prev => ({ ...prev, quantumLink: origQuant/2 }));
-            
+
             setTimeout(() => {
               // Complete quantum rise and start security
               setSystemStatus(prev => ({ ...prev, quantumLink: origQuant, security: origSec/3 }));
-              
+
               setTimeout(() => {
                 // Continue security rise
                 setSystemStatus(prev => ({ ...prev, security: origSec/2 }));
-                
+
                 setTimeout(() => {
                   // Complete security rise and finish animation
                   setSystemStatus({ integrity: origIntegrity, quantumLink: origQuant, security: origSec });
@@ -379,14 +379,14 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
   // Calculate parallax movement based on mouse position
   const calculateParallax = (depth: number = 1) => {
     if (!containerRef.current) return { x: 0, y: 0 };
-    
+
     const rect = containerRef.current.getBoundingClientRect();
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    
+
     const moveX = (mousePosition.x - centerX) / centerX * 10 * depth;
     const moveY = (mousePosition.y - centerY) / centerY * 6 * depth;
-    
+
     return { x: moveX, y: moveY };
   };
 
@@ -401,7 +401,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
           onAnimationComplete={handleAnimationComplete} 
         />
       )}
-      
+
       {/* Main UI - hidden during login animation */}
       {!hideUI && (
         <div 
@@ -427,7 +427,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                   {/* Circuit pattern overlay */}
                   <div className="absolute inset-0 opacity-10 circuit-bg"></div>
                 </div>
-                
+
                 {/* Enhanced corner brackets with glowing effect */}
                 <div className="absolute top-0 left-0 w-12 h-12">
                   <div className="absolute top-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
@@ -437,7 +437,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                   <div className="absolute top-6 left-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
                   <div className="absolute top-0 left-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
                 </div>
-                
+
                 <div className="absolute top-0 right-0 w-12 h-12">
                   <div className="absolute top-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                   <div className="absolute top-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
@@ -446,7 +446,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                   <div className="absolute top-6 right-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
                   <div className="absolute top-0 right-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
                 </div>
-                
+
                 <div className="absolute bottom-0 left-0 w-12 h-12">
                   <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                   <div className="absolute bottom-0 left-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
@@ -455,7 +455,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                   <div className="absolute bottom-6 left-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
                   <div className="absolute bottom-0 left-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
                 </div>
-                
+
                 <div className="absolute bottom-0 right-0 w-12 h-12">
                   <div className="absolute bottom-0 right-0 w-full h-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                   <div className="absolute bottom-0 right-0 h-full w-0.5 bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
@@ -464,29 +464,29 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                   <div className="absolute bottom-6 right-0 w-6 h-0.5 bg-[rgba(var(--mg-primary),0.4)]"></div>
                   <div className="absolute bottom-0 right-6 w-0.5 h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
                 </div>
-                
+
                 {/* Diagonal accent elements */}
                 <div className="absolute top-0 left-[25%] w-[2px] h-6 bg-[rgba(var(--mg-primary),0.4)] skew-x-[45deg]"></div>
                 <div className="absolute top-0 right-[25%] w-[2px] h-6 bg-[rgba(var(--mg-primary),0.4)] skew-x-[-45deg]"></div>
                 <div className="absolute bottom-0 left-[25%] w-[2px] h-6 bg-[rgba(var(--mg-primary),0.4)] skew-x-[-45deg]"></div>
                 <div className="absolute bottom-0 right-[25%] w-[2px] h-6 bg-[rgba(var(--mg-primary),0.4)] skew-x-[45deg]"></div>
-                
+
                 {/* Left and right edge accents */}
                 <div className="absolute left-0 top-1/3 w-3 h-[2px] bg-[rgba(var(--mg-primary),0.6)]"></div>
                 <div className="absolute left-0 top-2/3 w-3 h-[2px] bg-[rgba(var(--mg-primary),0.6)]"></div>
                 <div className="absolute right-0 top-1/3 w-3 h-[2px] bg-[rgba(var(--mg-primary),0.6)]"></div>
                 <div className="absolute right-0 top-2/3 w-3 h-[2px] bg-[rgba(var(--mg-primary),0.6)]"></div>
-                
+
                 {/* Animated scanning lines */}
                 <div className="absolute left-0 top-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.4)] animate-scanline"></div>
                 <div className="absolute left-0 top-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.4)] animate-scanline-vertical"></div>
-                
+
                 {/* Random tech elements */}
                 <div className="absolute top-1/4 left-0 w-1 h-1 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
                 <div className="absolute top-3/4 left-0 w-1 h-1 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                 <div className="absolute top-1/4 right-0 w-1 h-1 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
                 <div className="absolute top-3/4 right-0 w-1 h-1 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-                
+
                 {/* Content */}
                 <div className="relative z-10 p-4">
                   {/* Always render the main landing page content below */}
@@ -528,7 +528,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                             {/* Circuit pattern background */}
                             <div className="absolute inset-0 opacity-5 circuit-bg bg-[length:50px_50px]"></div>
                           </div>
-                          
+
                           {/* Symmetrical Corner Elements for Left Panel */}
                           {/* Top Left */}
                           <div className="absolute top-0 left-0 w-5 h-5">
@@ -536,38 +536,38 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                             <div className="absolute top-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
                           </div>
-                          
+
                           {/* Top Right */}
                           <div className="absolute top-0 right-0 w-5 h-5">
                             <div className="absolute top-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute top-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                           </div>
-                          
+
                           {/* Bottom Left */}
                           <div className="absolute bottom-0 left-0 w-5 h-5">
                             <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute bottom-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
                           </div>
-                          
+
                           {/* Bottom Right */}
                           <div className="absolute bottom-0 right-0 w-5 h-5">
                             <div className="absolute bottom-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute bottom-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
                           </div>
-                          
+
                           <div className="mg-header text-xs text-center">
                             <div className="mg-subtitle">SYSTEM STATUS</div>
                           </div>
-                          
+
                           <div className="p-3 space-y-4">
                             <div className="mg-button text-xs w-full flex items-center justify-center">
                               <div className={`w-2 h-2 ${scanning ? 'bg-[rgba(var(--mg-warning),1)] animate-pulse' : 'bg-[rgba(var(--mg-primary),0.8)]'} rounded-full mr-2`}></div>
                               {scanning ? 'RECALIBRATING...' : 'SIGNAL SECURE'}
                             </div>
-                            
+
                             <div className="space-y-2">
                               <div className="flex justify-between text-xs">
                                 <span className="text-[rgba(var(--mg-text),0.7)]">INTEGRITY</span>
@@ -586,7 +586,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                   transition={{ duration: 0.5 }}
                                 ></motion.div>
                               </motion.div>
-                              
+
                               <div className="flex justify-between text-xs mt-3">
                                 <span className="text-[rgba(var(--mg-text),0.7)]">QUANTUM LINK</span>
                                 <span className="text-[rgba(var(--mg-success),1)]">{systemStatus.quantumLink}%</span>
@@ -604,7 +604,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                   transition={{ duration: 0.5, delay: 0.1 }}
                                 ></motion.div>
                               </motion.div>
-                              
+
                               <div className="flex justify-between text-xs mt-3">
                                 <span className="text-[rgba(var(--mg-text),0.7)]">SECURITY</span>
                                 <span className="text-[rgba(var(--mg-warning),1)]">
@@ -624,7 +624,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                   transition={{ duration: 0.5, delay: 0.2 }}
                                 ></motion.div>
                               </motion.div>
-                              
+
                               <div className="text-[rgba(var(--mg-text),0.4)] text-[10px] mt-4 mg-flicker">
                                 SYS ID: {Math.random().toString(36).substring(2, 10).toUpperCase()}
                               </div>
@@ -632,7 +632,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                           </div>
                         </div>
                       </motion.div>
-                      
+
                       {/* Central terminal */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -650,7 +650,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                             {/* Digital circuit pattern */}
                             <div className="absolute inset-0 opacity-10 circuit-bg"></div>
                           </div>
-                          
+
                           {/* Symmetrical Corner Elements */}
                           {/* Top Left */}
                           <div className="absolute top-0 left-0 w-8 h-8">
@@ -658,37 +658,37 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                             <div className="absolute top-0 left-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                             <div className="absolute top-2 left-2 w-2 h-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
                           </div>
-                          
+
                           {/* Top Right */}
                           <div className="absolute top-0 right-0 w-8 h-8">
                             <div className="absolute top-0 right-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                             <div className="absolute top-0 right-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                             <div className="absolute top-2 right-2 w-2 h-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                           </div>
-                          
+
                           {/* Bottom Left */}
                           <div className="absolute bottom-0 left-0 w-8 h-8">
                             <div className="absolute bottom-0 left-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                             <div className="absolute bottom-0 left-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                             <div className="absolute bottom-2 left-2 w-2 h-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
                           </div>
-                          
+
                           {/* Bottom Right */}
                           <div className="absolute bottom-0 right-0 w-8 h-8">
                             <div className="absolute bottom-0 right-0 w-5 h-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                             <div className="absolute bottom-0 right-0 h-5 w-[2px] bg-[rgba(var(--mg-primary),0.8)] shadow-[0_0_8px_rgba(var(--mg-primary),0.7)]"></div>
                             <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
                           </div>
-                          
+
                           {/* Diagonal accent lines */}
                           <div className="absolute top-0 left-[30%] w-[20%] h-[2px] bg-[rgba(var(--mg-primary),0.4)] origin-left rotate-[20deg]"></div>
                           <div className="absolute top-0 right-[30%] w-[20%] h-[2px] bg-[rgba(var(--mg-primary),0.4)] origin-right rotate-[-20deg]"></div>
                           <div className="absolute bottom-0 left-[30%] w-[20%] h-[2px] bg-[rgba(var(--mg-primary),0.4)] origin-left rotate-[-20deg]"></div>
                           <div className="absolute bottom-0 right-[30%] w-[20%] h-[2px] bg-[rgba(var(--mg-primary),0.4)] origin-right rotate-[20deg]"></div>
-                          
+
                           {/* Animated scanning line */}
                           <div className="absolute left-0 top-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent animate-scan"></div>
-                          
+
                           <div className="p-6 flex flex-col items-center justify-center">
                             <motion.div 
                               className="w-24 h-24 md:w-32 md:h-32 relative mb-6"
@@ -714,7 +714,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                 </div>
                               </div>
                             </motion.div>
-                            
+
                             <motion.div 
                               className="w-full relative mb-6 overflow-hidden rounded-lg"
                               style={{ height: '220px' }}
@@ -744,7 +744,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                   </div>
                                 </motion.div>
                               </AnimatePresence>
-                              
+
                               {/* Carousel controls */}
                               <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-2">
                                 {shipImages.map((_, index) => (
@@ -766,7 +766,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                 <div className="absolute inset-0 holo-scan opacity-20"></div>
                               </div>
                             </motion.div>
-                            
+
                             {isLoggedIn ? (
                               <></>
                             ) : (
@@ -801,7 +801,7 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                           </div>
                         </div>
                       </motion.div>
-                      
+
                       {/* Right system menu */}
                       <motion.div
                         initial={{ opacity: 0, x: 20 }}
@@ -817,38 +817,38 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                             <div className="absolute top-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse"></div>
                           </div>
-                          
+
                           {/* Top Right */}
                           <div className="absolute top-0 right-0 w-5 h-5">
                             <div className="absolute top-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute top-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                           </div>
-                          
+
                           {/* Bottom Left */}
                           <div className="absolute bottom-0 left-0 w-5 h-5">
                             <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute bottom-0 left-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1s' }}></div>
                           </div>
-                          
+
                           {/* Bottom Right */}
                           <div className="absolute bottom-0 right-0 w-5 h-5">
                             <div className="absolute bottom-0 right-0 w-full h-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute bottom-0 right-0 h-full w-[1.5px] bg-[rgba(var(--mg-primary),0.8)]"></div>
                             <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full border border-[rgba(var(--mg-primary),0.8)] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
                           </div>
-                          
+
                           {/* Additional edge markers */}
                           <div className="absolute top-1/3 right-0 w-2 h-2 border-r border-t border-[rgba(var(--mg-primary),0.6)]"></div>
                           <div className="absolute top-2/3 right-0 w-2 h-2 border-r border-b border-[rgba(var(--mg-primary),0.6)]"></div>
                           <div className="absolute top-1/3 left-0 w-2 h-2 border-l border-t border-[rgba(var(--mg-primary),0.6)]"></div>
                           <div className="absolute top-2/3 left-0 w-2 h-2 border-l border-b border-[rgba(var(--mg-primary),0.6)]"></div>
-                          
+
                           <div className="mg-header text-xs text-center">
                             <div className="mg-subtitle">NAVIGATION</div>
                           </div>
-                          
+
                           <div className="p-3">
                             <ul className="space-y-2">
                               {[
