@@ -50,7 +50,7 @@ async function canModifyOperation(userId: string, operation: Operation): Promise
 // GET handler - Get a specific operation
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -60,7 +60,7 @@ export async function GET(
     }
     
     const userId = session.user.id;
-    const operationId = params.id;
+    const operationId = context.params.id;
     
     // Get the operation
     const operation = await operationStorage.getOperationById(operationId);
@@ -99,7 +99,7 @@ export async function GET(
 // PUT handler - Update an operation
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -109,7 +109,7 @@ export async function PUT(
     }
     
     const userId = session.user.id;
-    const operationId = params.id;
+    const operationId = context.params.id;
     
     // Get the operation
     const operation = await operationStorage.getOperationById(operationId);
@@ -173,7 +173,7 @@ export async function PUT(
 // DELETE handler - Delete an operation
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -183,7 +183,7 @@ export async function DELETE(
     }
     
     const userId = session.user.id;
-    const operationId = params.id;
+    const operationId = context.params.id;
     
     // Get the operation
     const operation = await operationStorage.getOperationById(operationId);
