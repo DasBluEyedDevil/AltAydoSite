@@ -57,7 +57,8 @@ export default function DashboardPage() {
   // Show loading state while checking authentication
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
+      // Removed spacebg.jpg from here to allow global background and decorations to show
+      <div className="min-h-screen flex items-center justify-center"> 
         <div className="mg-loading-spinner">
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 relative">
@@ -74,9 +75,11 @@ export default function DashboardPage() {
   // If not authenticated after checks, show auth required message
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
+      // Removed spacebg.jpg from here
+      <div className="min-h-screen flex items-center justify-center">
         <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-8 rounded-sm text-center max-w-md">
-          <div className="text-[rgba(var(--mg-error),0.8)] mb-4">
+          {/* For error/warning icons, consider using a theme color like --mg-danger or --mg-warning if appropriate */}
+          <div className="text-[rgba(var(--mg-danger),0.9)] mb-4"> {/* Changed to mg-danger */}
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
@@ -103,8 +106,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
-      <div className="container mx-auto px-4 py-8 pt-16">
+    // Removed spacebg.jpg from here, adjusted padding pt-28 instead of pt-16
+    <div className="min-h-screen"> 
+      <div className="container mx-auto px-4 py-8 pt-28"> 
         {/* Header */}
         <motion.div 
           className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between"
@@ -113,7 +117,8 @@ export default function DashboardPage() {
           transition={{ duration: 0.5 }}
         >
           <div>
-            <h1 className="mg-title text-3xl mb-1 text-[rgba(var(--mg-primary),0.9)]">EMPLOYEE PORTAL</h1>
+            {/* Ensured h1 uses mg-title fully, removed specific text color */}
+            <h1 className="mg-title text-3xl mb-1">EMPLOYEE PORTAL</h1> 
             <div className="mg-subtitle text-sm tracking-wider">WELCOME BACK, {getUserDisplayName().toUpperCase()}</div>
           </div>
 
@@ -123,12 +128,13 @@ export default function DashboardPage() {
                 src="/images/Aydo_Corp_logo_employees.png" 
                 alt="AydoCorp Employee Logo" 
                 fill 
-                className="object-contain"
+                className="object-contain filter drop-shadow-[0_0_3px_rgba(var(--mg-primary),0.3)]" // Added subtle glow
               />
             </div>
             <div>
-              <div className="text-xs text-[rgba(var(--mg-text),0.6)]">CLEARANCE LEVEL</div>
-              <div className="text-sm font-quantify tracking-wider text-[rgba(var(--mg-primary),0.9)]">
+              {/* Themed Clearance Level display */}
+              <div className="mg-text text-xs opacity-70">CLEARANCE LEVEL</div> 
+              <div className="mg-subtitle text-sm"> {/* Changed from font-quantify to mg-subtitle */}
                 {session?.user?.clearanceLevel || 1}
               </div>
             </div>
@@ -204,10 +210,10 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.7 }}
-              className="mt-8 text-center text-xs text-[rgba(var(--mg-text),0.5)]"
+              className="mt-8 text-center" // Removed specific text color, rely on mg-text
             >
-              <p>AYDO INTERGALACTIC CORPORATION</p>
-              <p className="mt-1">EMPLOYEE ACCESS ONLY • CONFIDENTIAL</p>
+              <p className="mg-text text-xs opacity-60">AYDO INTERGALACTIC CORPORATION</p>
+              <p className="mg-text text-xs opacity-50 mt-1">EMPLOYEE ACCESS ONLY • CONFIDENTIAL</p>
             </motion.div>
           </div>
         </div>

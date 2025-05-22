@@ -141,16 +141,16 @@ const EventsCalendar = () => {
   };
 
   // Get color for event type
-  const getEventColor = (type: EventType) => {
+  const getEventColorClass = (type: EventType) => {
     switch (type) {
       case EventType.General:
-        return 'bg-blue-500';
+        return 'bg-[rgba(var(--mg-secondary),0.7)] hover:bg-[rgba(var(--mg-secondary),0.9)]'; // Blueish
       case EventType.AydoExpress:
-        return 'bg-yellow-500';
+        return 'bg-[rgba(var(--mg-warning),0.7)] hover:bg-[rgba(var(--mg-warning),0.9)]'; // Yellowish
       case EventType.EmpyrionIndustries:
-        return 'bg-orange-500';
+        return 'bg-[rgba(var(--mg-danger),0.6)] hover:bg-[rgba(var(--mg-danger),0.8)]'; // Orangey/Reddish
       default:
-        return 'bg-gray-500';
+        return 'bg-[rgba(var(--mg-text),0.3)] hover:bg-[rgba(var(--mg-text),0.5)]';
     }
   };
 
@@ -161,7 +161,7 @@ const EventsCalendar = () => {
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
       calendarDays.push(
-        <div key={`empty-${i}`} className="h-10 border-t border-[rgba(var(--mg-primary),0.1)]"></div>
+        <div key={`empty-${i}`} className="h-12 md:h-16 border-t border-r border-[rgba(var(--mg-primary),0.05)]"></div>
       );
     }
     
@@ -173,20 +173,21 @@ const EventsCalendar = () => {
       calendarDays.push(
         <div 
           key={day}
-          className={`h-24 md:h-28 border-t border-[rgba(var(--mg-primary),0.1)] p-1 ${
-            isToday ? 'bg-[rgba(var(--mg-primary),0.1)]' : ''
-          } relative`}
+          className={`h-20 md:h-24 border-t border-r border-[rgba(var(--mg-primary),0.05)] p-1.5 transition-colors duration-150 hover:bg-[rgba(var(--mg-primary),0.03)] ${
+            isToday ? 'bg-[rgba(var(--mg-primary),0.05)]' : ''
+          } relative group`}
         >
-          <div className={`text-xs ${isToday ? 'mg-title' : 'text-[rgba(var(--mg-text),0.7)]'}`}>
+          <div className={`text-xs text-right ${isToday ? 'mg-title text-[rgba(var(--mg-accent),0.9)]' : 'mg-text opacity-50 group-hover:opacity-80'}`}>
             {day}
           </div>
           
-          <div className="mt-1 space-y-1 overflow-y-auto max-h-[80%]">
+          <div className="mt-0.5 space-y-0.5 overflow-y-auto max-h-[70%] pr-1 custom-scrollbar-thin">
             {dayEvents.map(event => (
               <div 
                 key={event.id}
-                className={`text-xs px-1 py-0.5 rounded cursor-pointer ${getEventColor(event.type)} text-white truncate`}
+                className={`text-[10px] px-1 py-0.5 rounded-sm cursor-pointer ${getEventColorClass(event.type)} text-white truncate shadow-sm`}
                 onClick={() => openEventDetails(event)}
+                title={event.title}
               >
                 {event.title}
               </div>
@@ -200,133 +201,122 @@ const EventsCalendar = () => {
   };
 
   return (
-    <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-4 rounded-sm relative overflow-hidden">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="mg-title text-lg font-quantify">UPCOMING EVENTS</h2>
+    <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-4 rounded-sm relative overflow-hidden h-full flex flex-col">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="mg-title text-base font-quantify uppercase">Events Calendar</h2> {/* Adjusted title */}
         
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2">
             <button 
-              className="mg-btn-icon p-1" 
+              className="mg-button p-1.5 w-7 h-7 flex items-center justify-center"  // Adjusted to mg-button
               onClick={goToPreviousMonth}
+              aria-label="Previous Month"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 19l-7-7 7-7" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             
-            <span className="mg-subtitle text-sm tracking-wider">
+            <span className="mg-subtitle text-sm tracking-wider w-32 text-center"> {/* Added width for stability */}
               {monthNames[viewMonth]} {viewYear}
             </span>
             
             <button 
-              className="mg-btn-icon p-1" 
+              className="mg-button p-1.5 w-7 h-7 flex items-center justify-center" // Adjusted to mg-button
               onClick={goToNextMonth}
+              aria-label="Next Month"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5l7 7-7 7" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
               </svg>
             </button>
-          </div>
         </div>
       </div>
       
       {/* Calendar legend */}
-      <div className="flex flex-wrap gap-4 mb-2">
-        <div className="flex items-center space-x-1">
-          <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
-          <span className="text-xs text-[rgba(var(--mg-text),0.7)]">General Events</span>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 mb-2">
+        <div className="flex items-center space-x-1.5">
+          <div className={`w-2.5 h-2.5 rounded-sm ${getEventColorClass(EventType.General).split(' ')[0]}`}></div>
+          <span className="mg-text text-[10px] opacity-70">General</span>
         </div>
-        <div className="flex items-center space-x-1">
-          <div className="w-3 h-3 rounded-sm bg-yellow-500"></div>
-          <span className="text-xs text-[rgba(var(--mg-text),0.7)]">AydoExpress</span>
+        <div className="flex items-center space-x-1.5">
+          <div className={`w-2.5 h-2.5 rounded-sm ${getEventColorClass(EventType.AydoExpress).split(' ')[0]}`}></div>
+          <span className="mg-text text-[10px] opacity-70">AydoExpress</span>
         </div>
-        <div className="flex items-center space-x-1">
-          <div className="w-3 h-3 rounded-sm bg-orange-500"></div>
-          <span className="text-xs text-[rgba(var(--mg-text),0.7)]">Empyrion Industries</span>
+        <div className="flex items-center space-x-1.5">
+          <div className={`w-2.5 h-2.5 rounded-sm ${getEventColorClass(EventType.EmpyrionIndustries).split(' ')[0]}`}></div>
+          <span className="mg-text text-[10px] opacity-70">Empyrion</span>
         </div>
       </div>
       
       {/* Calendar grid header */}
-      <div className="grid grid-cols-7 bg-[rgba(var(--mg-panel-dark),0.6)]">
+      <div className="grid grid-cols-7 bg-[rgba(var(--mg-panel-dark),0.5)] border-t border-l border-[rgba(var(--mg-primary),0.05)]">
         {dayNames.map(day => (
-          <div key={day} className="text-center py-1 text-xs mg-subtitle">
-            {day}
+          <div key={day} className="text-center py-1.5 text-[10px] mg-subtitle opacity-80 border-r border-[rgba(var(--mg-primary),0.05)]">
+            {day.toUpperCase()}
           </div>
         ))}
       </div>
       
       {/* Calendar grid */}
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 border-l border-b border-[rgba(var(--mg-primary),0.05)] flex-grow">
         {renderCalendarDays()}
       </div>
 
       {/* Event Details Modal */}
       {showEventModal && selectedEvent && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-[rgba(var(--mg-dark),0.7)] backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div 
-            className="w-full max-w-md mg-panel bg-[rgba(var(--mg-panel-dark),0.95)] p-4 rounded-sm m-4"
-            initial={{ opacity: 0, scale: 0.9 }}
+            className="w-full max-w-md mg-panel bg-[rgba(var(--mg-panel-dark),0.9)] p-5 rounded-sm border border-[rgba(var(--mg-primary),0.2)] shadow-xl" // Enhanced modal panel
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25, ease: "circOut" }}
           >
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="mg-title text-lg font-quantify">{selectedEvent.title}</h3>
-                <div className="flex items-center mt-1">
-                  <div className={`w-3 h-3 rounded-sm mr-2 ${getEventColor(selectedEvent.type)}`}></div>
-                  <p className="text-xs mg-subtitle">
-                    {selectedEvent.type === EventType.General 
-                      ? 'General Event' 
-                      : selectedEvent.type === EventType.AydoExpress 
-                        ? 'AydoExpress' 
-                        : 'Empyrion Industries'}
-                  </p>
-                </div>
+            <div className="flex justify-between items-center mb-3 pb-2 border-b border-[rgba(var(--mg-primary),0.1)]">
+              <div className="flex items-center">
+                 <div className={`w-3 h-3 rounded-sm mr-2.5 ${getEventColorClass(selectedEvent.type).split(' ')[0]}`}></div>
+                <h3 className="mg-title text-base font-quantify">{selectedEvent.title}</h3>
               </div>
               <button 
-                className="mg-btn-icon"
+                className="mg-button p-1 w-7 h-7 flex items-center justify-center" // Styled close button
                 onClick={closeEventDetails}
+                aria-label="Close event details"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M6 18L18 6M6 6l12 12" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3 text-sm">
               <div className="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[rgba(var(--mg-primary),0.9)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mg-text opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <p className="text-sm">
+                <p className="mg-text opacity-90">
                   {selectedEvent.date.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
                   })}
                 </p>
               </div>
               
               <div className="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[rgba(var(--mg-primary),0.9)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mg-text opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-sm">{selectedEvent.time}</p>
+                <p className="mg-text opacity-90">{selectedEvent.time}</p>
               </div>
               
               <div className="pt-2 border-t border-[rgba(var(--mg-primary),0.1)]">
-                <p className="text-sm text-[rgba(var(--mg-text),0.9)]">{selectedEvent.description}</p>
+                <p className="mg-text opacity-90 leading-relaxed">{selectedEvent.description}</p>
               </div>
             </div>
             
-            <div className="mt-4 flex justify-end">
+            <div className="mt-5 flex justify-end">
               <button 
-                className="mg-btn mg-btn-primary text-xs py-1.5 px-3"
+                className="mg-button text-xs py-1.5 px-4" // Standard mg-button
                 onClick={closeEventDetails}
               >
-                Close
+                CLOSE
               </button>
             </div>
           </motion.div>

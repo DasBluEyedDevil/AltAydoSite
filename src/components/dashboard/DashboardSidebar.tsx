@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import CornerHighlight from './CornerHighlight'; // Import CornerHighlight
 
 interface NavItem {
   name: string;
@@ -156,8 +157,8 @@ const DashboardSidebar = () => {
 
   return (
     <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] rounded-sm h-full overflow-hidden flex flex-col">
-      <div className="p-4 border-b border-[rgba(var(--mg-primary),0.15)] flex items-center">
-        <div className="h-6 w-6 relative mr-2">
+      <div className="p-3 border-b border-[rgba(var(--mg-primary),0.15)] flex items-center"> {/* Adjusted padding */}
+        <div className="h-5 w-5 relative mr-2"> {/* Adjusted size slightly */}
           <Image 
             src="/images/Aydo_Corp_logo_employees.png" 
             alt="AydoCorp Logo" 
@@ -165,43 +166,45 @@ const DashboardSidebar = () => {
             className="object-contain"
           />
         </div>
-        <h2 className="mg-subtitle text-sm tracking-wider">EMPLOYEE PORTAL</h2>
+        <h2 className="mg-subtitle text-xs tracking-wider uppercase">Employee Portal</h2> {/* Adjusted text */}
       </div>
       
-      <div className="p-2 flex-grow overflow-y-auto custom-scrollbar">
-        <ul className="space-y-1">
+      <div className="p-1.5 flex-grow overflow-y-auto custom-scrollbar"> {/* Adjusted padding */}
+        <ul className="space-y-0.5"> {/* Adjusted spacing */}
           {navItems.map((item) => (
             <li key={item.name}>
               {item.children ? (
-                <div className="space-y-1">
+                <div className="space-y-1"> {/* Consider reducing space-y-1 to space-y-0.5 if items are too spaced out */}
                   <button
                     onClick={() => toggleExpand(item.name)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-sm text-left text-sm ${
-                      isActive(item.href)
-                        ? 'bg-[rgba(var(--mg-primary),0.15)] text-[rgba(var(--mg-primary),0.9)]'
-                        : 'hover:bg-[rgba(var(--mg-panel-dark),0.5)]'
+                    className={`mg-nav-item holo-element group w-full flex items-center justify-between text-left text-sm relative ${
+                      isActive(item.href) ? 'active' : '' // Apply active class
                     }`}
                   >
-                    <div className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={item.icon} />
+                    {/* Content wrapper to ensure it's above pseudo-elements and CornerHighlight */}
+                    <div className="relative z-10 flex items-center justify-between w-full">
+                      <div className="flex items-center"> {/* Left side content: icon, name, badge */}
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
+                        </svg>
+                        <span>{item.name}</span>
+                        {item.badge && (
+                          <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className={`h-4 w-4 transition-transform ${isExpanded(item.name) ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
                       </svg>
-                      <span>{item.name}</span>
-                      {item.badge && (
-                        <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
-                          {item.badge}
-                        </span>
-                      )}
                     </div>
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className={`h-4 w-4 transition-transform ${isExpanded(item.name) ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <CornerHighlight isActive={isActive(item.href)} />
                   </button>
                   
                   {isExpanded(item.name) && (
@@ -209,20 +212,19 @@ const DashboardSidebar = () => {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       transition={{ duration: 0.2 }}
-                      className="ml-6 space-y-1"
+                      className="ml-4 pl-2 border-l border-[rgba(var(--mg-primary),0.1)] space-y-0.5 mt-0.5" // Adjusted for sub-list
                     >
                       {item.children.map((child) => (
                         <li key={child.name}>
-                          <Link href={child.href}>
-                            <div
-                              className={`flex items-center px-3 py-2 rounded-sm text-sm ${
-                                isActive(child.href)
-                                  ? 'bg-[rgba(var(--mg-primary),0.15)] text-[rgba(var(--mg-primary),0.9)]'
-                                  : 'hover:bg-[rgba(var(--mg-panel-dark),0.5)]'
-                              }`}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={child.icon} />
+                          <Link 
+                            href={child.href}
+                            className={`mg-nav-item holo-element group flex items-center text-sm relative ${
+                              isActive(child.href) ? 'active' : ''
+                            }`}
+                          >
+                            <div className="relative z-10 flex items-center"> {/* Content wrapper for child */}
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-2 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={child.icon} />
                               </svg>
                               <span>{child.name}</span>
                               {child.badge && (
@@ -231,6 +233,7 @@ const DashboardSidebar = () => {
                                 </span>
                               )}
                             </div>
+                            <CornerHighlight isActive={isActive(child.href)} />
                           </Link>
                         </li>
                       ))}
@@ -238,16 +241,16 @@ const DashboardSidebar = () => {
                   )}
                 </div>
               ) : (
-                <Link href={item.href}>
-                  <div
-                    className={`flex items-center px-3 py-2 rounded-sm text-sm ${
-                      isActive(item.href)
-                        ? 'bg-[rgba(var(--mg-primary),0.15)] text-[rgba(var(--mg-primary),0.9)]'
-                        : 'hover:bg-[rgba(var(--mg-panel-dark),0.5)]'
-                    }`}
-                  >
+                // Refactored non-expandable item Link
+                <Link 
+                  href={item.href}
+                  className={`mg-nav-item holo-element group flex items-center text-sm relative ${
+                    isActive(item.href) ? 'active' : ''
+                  }`}
+                >
+                  <div className="relative z-10 flex items-center"> {/* Content wrapper */}
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={item.icon} />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} /> {/* Adjusted strokeWidth */}
                     </svg>
                     <span>{item.name}</span>
                     {item.badge && (
@@ -256,6 +259,7 @@ const DashboardSidebar = () => {
                       </span>
                     )}
                   </div>
+                  <CornerHighlight isActive={isActive(item.href)} />
                 </Link>
               )}
             </li>

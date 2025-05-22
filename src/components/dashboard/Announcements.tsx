@@ -87,16 +87,16 @@ const Announcements = () => {
     }
   };
 
-  const getCategoryColor = (category?: string) => {
+  const getCategoryColorClass = (category?: string) => {
     switch (category) {
       case 'express':
-        return 'border-yellow-500';
+        return 'border-[rgba(var(--mg-warning),0.7)]'; // Use warning for express
       case 'empyrion':
-        return 'border-orange-500';
+        return 'border-[rgba(var(--mg-danger),0.6)]'; // Use danger/accent for empyrion (orange-like)
       case 'corporate':
-        return 'border-blue-400';
+        return 'border-[rgba(var(--mg-secondary),0.7)]'; // Use secondary for corporate
       default:
-        return 'border-[rgba(var(--mg-primary),0.8)]';
+        return 'border-[rgba(var(--mg-primary),0.7)]'; // Default to primary
     }
   };
 
@@ -135,7 +135,7 @@ const Announcements = () => {
         {announcementsData.map((announcement) => (
           <motion.div 
             key={announcement.id}
-            className={`border-l-2 ${getCategoryColor(announcement.category)} pl-3 cursor-pointer bg-[rgba(var(--mg-panel-dark),0.2)] rounded-r-sm hover:bg-[rgba(var(--mg-panel-dark),0.4)]`}
+            className={`border-l-2 ${getCategoryColorClass(announcement.category)} pl-3 cursor-pointer bg-[rgba(var(--mg-panel-dark),0.3)] hover:bg-[rgba(var(--mg-panel-dark),0.5)] transition-colors duration-200 rounded-r-sm`}
             onClick={() => toggleAnnouncement(announcement.id)}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -152,18 +152,18 @@ const Announcements = () => {
                   />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold flex items-center">
+                  <h3 className="mg-subtitle text-sm flex items-center">
                     {announcement.important && (
-                      <span className="inline-block w-2 h-2 bg-[rgba(var(--mg-primary),0.8)] rounded-full mr-1"></span>
+                      <span className="inline-block w-2 h-2 bg-[rgba(var(--mg-accent),0.8)] rounded-full mr-2 shadow-[0_0_4px_rgba(var(--mg-accent),0.7)]"></span>
                     )}
                     {announcement.title}
                   </h3>
-                  <p className="text-xs text-[rgba(var(--mg-text),0.6)]">{announcement.date}</p>
+                  <p className="mg-text text-xs opacity-60 mt-0.5">{announcement.date}</p>
                 </div>
               </div>
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className={`h-4 w-4 transform transition-transform ${expandedAnnouncement === announcement.id ? 'rotate-180' : ''}`} 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-4 w-4 transform transition-transform text-[rgba(var(--mg-text),0.7)] ${expandedAnnouncement === announcement.id ? 'rotate-180' : ''}`}
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor"
@@ -173,8 +173,8 @@ const Announcements = () => {
             </div>
             
             {expandedAnnouncement === announcement.id && (
-              <motion.div 
-                className="mt-1 text-sm text-[rgba(var(--mg-text),0.8)] p-2 pt-0"
+              <motion.div
+                className="mt-1 mg-text text-sm opacity-90 p-2 pt-0"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 transition={{ duration: 0.2 }}
@@ -199,39 +199,39 @@ const Announcements = () => {
           </div>
           <h3 className="mg-subtitle text-sm tracking-wider">EMPLOYEE OF THE MONTH</h3>
         </div>
-        <div className="flex flex-col md:flex-row items-start md:items-center space-y-3 md:space-y-0 md:space-x-4 bg-[rgba(var(--mg-panel-dark),0.2)] p-3 rounded-sm">
-          <div className="relative w-16 h-16 rounded-sm overflow-hidden flex-shrink-0 border border-[rgba(var(--mg-primary),0.3)]">
+        <div className="flex flex-col md:flex-row items-start md:items-center space-y-3 md:space-y-0 md:space-x-4 bg-[rgba(var(--mg-panel-dark),0.3)] p-3 rounded-sm">
+          <div className="relative w-16 h-16 rounded-sm overflow-hidden flex-shrink-0 border border-[rgba(var(--mg-primary),0.3)] shadow-md">
             <Image 
               src={employeeOfMonth.image}
               alt={employeeOfMonth.name}
               fill
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[rgba(var(--mg-panel-dark),0.7)] to-transparent"></div>
           </div>
           
-          <div>
-            <div className="flex items-center">
-              <h4 className="text-sm font-semibold text-[rgba(var(--mg-primary),0.9)]">{employeeOfMonth.name}</h4>
-              <span className="ml-2 text-xs text-[rgba(var(--mg-text),0.7)]">({employeeOfMonth.username})</span>
+          <div className="flex-grow">
+            <div className="flex items-baseline">
+              <h4 className="mg-title text-base">{employeeOfMonth.name}</h4>
+              <span className="mg-text text-xs opacity-70 ml-2">({employeeOfMonth.username})</span>
             </div>
             <div className="flex items-center mt-1">
-              <p className="text-xs text-[rgba(var(--mg-text),0.8)]">{employeeOfMonth.position}</p>
+              <p className="mg-text text-xs opacity-90">{employeeOfMonth.position}</p>
               {employeeOfMonth.subsidiary && (
-                <div className="flex items-center ml-2">
-                  <div className="h-3 w-3 relative mr-1">
+                <div className="flex items-center ml-3">
+                  <div className="h-3.5 w-3.5 relative mr-1.5">
                     <Image 
-                      src={employeeOfMonth.subsidiary === 'AydoExpress' ? '/images/Aydo_Express.png' : '/images/Empyrion_Industries.png'} 
+                      src={employeeOfMonth.subsidiary === 'AydoExpress' ? getCategoryIcon('express') : getCategoryIcon('empyrion')} 
                       alt={employeeOfMonth.subsidiary} 
                       fill 
                       className="object-contain"
                     />
                   </div>
-                  <span className="text-xs text-[rgba(var(--mg-primary),0.7)]">{employeeOfMonth.subsidiary}</span>
+                  <span className="mg-text text-xs opacity-70">{employeeOfMonth.subsidiary}</span>
                 </div>
               )}
             </div>
-            <p className="text-xs mt-2 leading-relaxed">{employeeOfMonth.achievement}</p>
+            <p className="mg-text text-xs mt-2 leading-relaxed opacity-80">{employeeOfMonth.achievement}</p>
           </div>
         </div>
       </div>
