@@ -5,6 +5,9 @@ const nextConfig = {
     outputFileTracingIncludes: {
         '/**': ['./public/**/*', './public/images/**/*']
     },
+    // This ensures public directory is properly copied to the
+    // standalone output directory (.next/standalone/public)
+    outputFileTracingRoot: process.cwd(),
     typescript: {
         // !! WARN !!
         // Dangerously allow production builds to successfully complete even if
@@ -14,9 +17,7 @@ const nextConfig = {
     images: {
         unoptimized: true,
         dangerouslyAllowSVG: true,
-        domains: [],
-        formats: ['image/avif', 'image/webp'],
-        contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+        remotePatterns: [],
     }
 };
 

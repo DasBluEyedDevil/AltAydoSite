@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "dev": "next dev -p 3000",
-    "build": "next build",
+    "build": "next build && node scripts/copy-public-to-standalone.js",
     "start": "next start",
     "lint": "next lint",
     "migrate-users": "tsx src/scripts/migrate-users.ts",
@@ -52,6 +52,7 @@
     "esbuild": "^0.25.4",
     "eslint": "^8.57.0",
     "eslint-config-next": "15.3.2",
+    "fs-extra": "^11.3.0",
     "postcss": "^8",
     "postcss-preset-env": "^10.1.6",
     "tsx": "^4.19.4",
