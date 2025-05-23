@@ -13,25 +13,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # Stays 'read' for checkout, LFS pull generally works with this.
-                     # If LFS pull fails with auth, you might need 'write' temporarily for `git lfs install`
-                     # to write to .git config, or ensure your runner has credentials configured for LFS.
-                     # However, `lfs: true` on checkout should handle auth if PAT has correct scopes.
+      contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: true # <--- IMPORTANT: Tells checkout to handle LFS files
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
           cache: 'npm'
-
-      - name: Pull Git LFS files
-        run: git lfs pull # <--- IMPORTANT: Pulls the actual LFS files
 
       - name: Create next.config.js if it doesn't exist
         run: |
@@ -48,48 +39,17 @@ jobs:
       - name: npm clean install and build
         run: |
           npm ci
-          npm run build # Next.js build might process images, so LFS files must be present
+          npm run build
 
       - name: Prepare for deployment
         run: |
-          # By this point, if images were in ./public, they are the actual files.
-          # The build process (npm run build) might have also optimized them into .next/static or other build output.
-          # Ensure your copy commands below correctly include these processed images.
-
-          # Remove node_modules if they are not needed in the standalone output
-          # (Next.js standalone output should bundle necessary node_modules)
-          # rm -rf node_modules # This might be redundant if .next/standalone handles it
-
-          # Create a staging directory for release to avoid zipping unwanted files from root
-          mkdir -p ./release_staging
-
-          # Copy the standalone output to the staging directory
-          cp -r ./.next/standalone/* ./release_staging/
-          
-          # Copy public assets if they are not already handled by the standalone output
-          # The standalone output for Next.js should ideally include necessary public and static assets.
-          # If your images are in ./public and are directly served or copied by the build into standalone:
-          if [ -d "./public" ]; then
-            # Ensure the target structure in standalone matches how Next.js expects them
-            # Often, 'public' contents are served from the root in production, or copied into a specific build dir.
-            # If standalone output already includes a 'public' or 'static' folder from build, this explicit copy might be adjusted or removed.
-            cp -r ./public ./release_staging/public # Or adjust target path as needed
-          fi
-
-          # Copy static assets from the build output if not already in standalone
-          # Next.js standalone output should include .next/static content where necessary.
-          # If additional static assets are outside the standalone bundle, copy them.
-          # Example: if .next/static is not fully in .next/standalone/
-          if [ -d "./.next/static" ]; then
-            mkdir -p ./release_staging/.next/static
-            cp -r ./.next/static/* ./release_staging/.next/static/
-          fi
-          
-          # Zip the content of the staging directory
-          cd ./release_staging
-          zip -r ../release.zip .
-          cd ..
-
+          rm -rf node_modules
+          # Copy the standalone output to the root for deployment
+          cp -r ./.next/standalone/* ./
+          # Copy the static and public assets to the right locations
+          mkdir -p ./public
+          cp -r ./public/* ./.next/static ./
+          zip -r release.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -119,5 +79,5 @@ jobs:
         with:
           app-name: 'AydoCorp'
           slot-name: 'Production'
-          package: . # Deploys the content of the unzipped release.zip
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E8F83D01518942F1B2B01381F804622F }}
+          package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E8F83D01518942F1B2B01381F804622F }} 
