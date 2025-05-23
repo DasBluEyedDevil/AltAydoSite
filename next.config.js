@@ -3,7 +3,7 @@ const nextConfig = {
     output: 'standalone',
     poweredByHeader: false,
     outputFileTracingIncludes: {
-        '/**': ['./public/**/*']
+        '/**': ['./public/**/*', './public/images/**/*']
     },
     typescript: {
         // !! WARN !!
@@ -12,7 +12,7 @@ const nextConfig = {
         ignoreBuildErrors: true,
     },
     images: {
-        unoptimized: false,
+        unoptimized: true,
         dangerouslyAllowSVG: true,
         domains: [],
         formats: ['image/avif', 'image/webp'],
