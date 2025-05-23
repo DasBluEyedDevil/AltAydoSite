@@ -245,7 +245,7 @@ function LoginForm() {
 
           {/* Sign up link */}
           <div className="mt-6 text-center text-xs text-[rgba(var(--mg-text),0.6)]">
-            <span>Don't have an account? </span>
+            <span>Don&apos;t have an account? </span>
             <Link href="/signup" className="text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)] hover:underline">
               Register here
             </Link>

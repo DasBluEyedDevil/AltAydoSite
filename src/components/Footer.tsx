@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRandomId } from './UserProviderWrapper';
+import Image from 'next/image';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -201,9 +202,11 @@ export default function Footer() {
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
                 <div className="relative w-24 h-auto overflow-hidden mg-container bg-transparent p-1 border-[rgba(var(--mg-primary),0.15)]">
-                  <img 
+                  <Image 
                     src="/images/MadeByTheCommunity_Black.png" 
                     alt="Made By The Community" 
+                    width={96}
+                    height={48}
                     className="w-full h-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
                   />
                   <div className="absolute inset-0 pointer-events-none">

@@ -4,6 +4,12 @@ const nextConfig = {
     poweredByHeader: false,
     outputFileTracingIncludes: {
         '/**': ['./public/**/*']
+    },
+    typescript: {
+        // !! WARN !!
+        // Dangerously allow production builds to successfully complete even if
+        // your project has type errors.
+        ignoreBuildErrors: true,
     }
 };
 

@@ -66,9 +66,11 @@ export default async function AdminDashboard() {
           <div className="relative mb-5">
             {/* Centered Logo - Positioned absolutely to break from parent height constraints */}
             <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 mt-1.5">
-              <img 
+              <Image 
                 src="/images/Aydo_Corp_3x3k_RSI.png" 
                 alt="AydoCorp" 
+                width={192}
+                height={192}
                 className="h-48 object-contain"
                 style={{ filter: 'drop-shadow(0 0 14px rgba(0, 180, 230, 0.8))' }} 
               />

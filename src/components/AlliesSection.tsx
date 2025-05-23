@@ -14,7 +14,7 @@ const AlliesSection = () => {
       <div className="p-4 bg-[rgba(var(--mg-background),0.8)]">
         <h3 className="mg-subtitle text-lg mb-3">STRATEGIC ALLIANCES</h3>
         <p className="text-sm text-[rgba(var(--mg-text),0.8)] leading-relaxed mb-4">
-          AydoCorp maintains several crucial partnerships that strengthen its position in the interstellar logistics market. Our security alliance with Crusader Security provides essential protection for high-value shipments, while our trade agreements with Xi'an and Banu merchants have opened new routes previously unavailable to human corporations.
+          AydoCorp maintains several crucial partnerships that strengthen its position in the interstellar logistics market. Our security alliance with Crusader Security provides essential protection for high-value shipments, while our trade agreements with Xi&apos;an and Banu merchants have opened new routes previously unavailable to human corporations.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

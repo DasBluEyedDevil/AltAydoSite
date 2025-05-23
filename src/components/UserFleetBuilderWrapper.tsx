@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import UserFleetBuilder from './UserFleetBuilder';
 import { UserShip } from '../types/user';
@@ -39,76 +39,6 @@ export default function UserFleetBuilderWrapper({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load ships from API on component mount
-  useEffect(() => {
-    if (status === 'loading') {
-      return; // Wait for session to be fully loaded
-    }
-    
-    if (session?.user?.email) {
-      console.log('Session loaded, user authenticated:', session.user.email);
-      fetchShipsFromAPI();
-    } else {
-      console.log('No authenticated user session found');
-      setIsLoading(false);
-    }
-  }, [session, status]);
-
-  // Fetch ships data from the API
-  const fetchShipsFromAPI = async () => {
-    setError(null);
-    try {
-      console.log('Fetching ships from API...');
-      const response = await fetch('/api/profile', {
-        headers: {
-          'Cache-Control': 'no-cache' // Prevent caching issues
-        },
-        credentials: 'include' // Include session cookies
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('API error response:', errorData);
-        
-        // Handle 401 Unauthorized errors differently - just fall back to local storage
-        if (response.status === 401) {
-          console.log('User not authenticated, falling back to local storage');
-          loadShipsFromLocalStorage();
-          setIsLoading(false);
-          return; // Early return to avoid throwing error
-        }
-        
-        throw new Error(`Failed to fetch profile: ${response.status} ${response.statusText}`);
-      }
-      
-      const profileData = await response.json();
-      
-      console.log('Profile API response:', {
-        hasShipsProperty: 'ships' in profileData,
-        shipsIsArray: Array.isArray(profileData.ships),
-        shipsLength: profileData.ships?.length || 0
-      });
-      
-      if (profileData.ships) {
-        console.log('Successfully loaded ships from API:', profileData.ships);
-        setShips(profileData.ships);
-      } else {
-        console.log('No ships data in API response, using empty array');
-        setShips([]);
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('Error fetching ships from API:', error);
-      setError(`Failed to load ships: ${errorMessage}`);
-      
-      // Fallback to localStorage
-      console.log('Falling back to localStorage for ships data');
-      loadShipsFromLocalStorage();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
   // Fallback: Load ships from localStorage
   const loadShipsFromLocalStorage = () => {
     try {
@@ -162,6 +92,76 @@ export default function UserFleetBuilderWrapper({
       setShips([]);
     }
   };
+
+  // Fetch ships data from the API
+  const fetchShipsFromAPI = useCallback(async () => {
+    setError(null);
+    try {
+      console.log('Fetching ships from API...');
+      const response = await fetch('/api/profile', {
+        headers: {
+          'Cache-Control': 'no-cache' // Prevent caching issues
+        },
+        credentials: 'include' // Include session cookies
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('API error response:', errorData);
+        
+        // Handle 401 Unauthorized errors differently - just fall back to local storage
+        if (response.status === 401) {
+          console.log('User not authenticated, falling back to local storage');
+          loadShipsFromLocalStorage();
+          setIsLoading(false);
+          return; // Early return to avoid throwing error
+        }
+        
+        throw new Error(`Failed to fetch profile: ${response.status} ${response.statusText}`);
+      }
+      
+      const profileData = await response.json();
+      
+      console.log('Profile API response:', {
+        hasShipsProperty: 'ships' in profileData,
+        shipsIsArray: Array.isArray(profileData.ships),
+        shipsLength: profileData.ships?.length || 0
+      });
+      
+      if (profileData.ships) {
+        console.log('Successfully loaded ships from API:', profileData.ships);
+        setShips(profileData.ships);
+      } else {
+        console.log('No ships data in API response, using empty array');
+        setShips([]);
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error fetching ships from API:', error);
+      setError(`Failed to load ships: ${errorMessage}`);
+      
+      // Fallback to localStorage
+      console.log('Falling back to localStorage for ships data');
+      loadShipsFromLocalStorage();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [loadShipsFromLocalStorage, session]);
+  
+  // Load ships from API on component mount
+  useEffect(() => {
+    if (status === 'loading') {
+      return; // Wait for session to be fully loaded
+    }
+    
+    if (session?.user?.email) {
+      console.log('Session loaded, user authenticated:', session.user.email);
+      fetchShipsFromAPI();
+    } else {
+      console.log('No authenticated user session found');
+      setIsLoading(false);
+    }
+  }, [session, status, fetchShipsFromAPI]);
 
   // Save ships to both localStorage and server
   const saveShipsToServer = async (shipsToSave: UserShip[]) => {

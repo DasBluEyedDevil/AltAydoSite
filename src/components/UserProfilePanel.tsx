@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { 
@@ -11,6 +11,7 @@ import {
 } from '../types/UserProfile';
 import { UserShip } from '../types/user';
 import UserFleetBuilder from './UserFleetBuilder';
+import Image from 'next/image';
 
 export default function UserProfilePanel() {
   const { profile, isLoading, updateProfile } = useUserProfile();
@@ -101,9 +102,11 @@ export default function UserProfilePanel() {
         <div className="flex flex-col md:flex-row md:items-start gap-6">
           <div className="relative">
             <div className="w-28 h-28 rounded-sm overflow-hidden border border-[rgba(var(--mg-primary),0.3)] relative">
-              <img 
+              <Image 
                 src={profile.photo || '/assets/avatar-placeholder.png'} 
                 alt="Profile" 
+                width={112}
+                height={112}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.2)]"></div>

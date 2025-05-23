@@ -330,9 +330,11 @@ export default function UserProfilePage() {
                 <div className="w-40 h-40 rounded-sm overflow-hidden border border-[rgba(var(--mg-primary),0.3)] mb-2">
                   <div className="w-full h-full relative">
                     {userData.photo ? (
-                      <img 
+                      <Image 
                         src={userData.photo} 
                         alt="Profile" 
+                        width={160}
+                        height={160}
                         className="w-full h-full object-cover"
                       />
                     ) : (

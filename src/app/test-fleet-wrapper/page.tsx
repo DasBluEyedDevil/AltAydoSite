@@ -22,7 +22,7 @@ export default function TestFleetWrapperPage() {
         
         <div className="text-sm mb-6 text-[rgba(var(--mg-text),0.7)]">
           <p>This page tests the UserFleetBuilderWrapper component, which manages its own state and localStorage interactions.</p>
-          <p className="mt-2">Ships added here will be saved to your profile's localStorage and will appear in your user profile.</p>
+          <p className="mt-2">Ships added here will be saved to your profile&apos;s localStorage and will appear in your user profile.</p>
         </div>
 
         <div className="mb-4">

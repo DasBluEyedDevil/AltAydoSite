@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface HomeContentProps {
   isLoggedIn: boolean;
@@ -74,7 +75,7 @@ function MobiGlasTerminal({ userName, onAnimationComplete }: { userName?: string
       }
     }, 10 + Math.random() * 15);
     return () => clearInterval(interval);
-  }, [messageIdx, step]);
+  }, [messageIdx, step, scanMessages]);
 
   // Animation sequence
   useEffect(() => {
@@ -239,87 +240,6 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
     '/images/Firing_Concept.jpg'
   ];
 
-  useEffect(() => {
-    setMounted(true);
-    
-    // Check if we should show login animation - only if user is logged in
-    // and has navigated from the login page (hasn't seen animation)
-    const checkAndShowAnimation = () => {
-      // Logic for determining if we just came from login page
-      const justLoggedIn = typeof window !== 'undefined' && 
-        window.performance && 
-        window.performance.navigation && 
-        window.performance.navigation.type === 1 && 
-        isLoggedIn && 
-        !hasShownLoginAnimation();
-        
-      if (isLoggedIn && !hasShownLoginAnimation()) {
-        console.log('Showing login animation');
-        setShowLoginAnimation(true);
-        setHideUI(true);
-        // Don't mark as shown yet - will be marked after animation completes
-        
-        // Hide the footer during animation
-        setFooterVisibility(false);
-      } else {
-        // If we're not showing the animation, make sure footer is visible
-        setFooterVisibility(true);
-      }
-    };
-    
-    checkAndShowAnimation();
-    
-    // Update clock
-    const timer = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-    
-    // Auto-advance carousel
-    const carouselTimer = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % shipImages.length);
-    }, 5000);
-    
-    // Automatic system scan timer (every 20 seconds)
-    const scanTimer = setInterval(() => {
-      initiateSystemScan();
-    }, 20000);
-    
-    return () => {
-      clearInterval(timer);
-      clearInterval(carouselTimer);
-      clearInterval(scanTimer);
-    };
-  }, [isLoggedIn, shipImages.length]);
-
-  // Function to handle animation complete
-  const handleAnimationComplete = () => {
-    setShowLoginAnimation(false);
-    setHideUI(false);
-    
-    // Mark animation as shown only after it completes
-    markLoginAnimationAsShown();
-    
-    // Show the footer after animation completes
-    setFooterVisibility(true);
-  };
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        });
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
   // Simulate system scan
   const initiateSystemScan = () => {
     if (scanning) return;
@@ -375,6 +295,87 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
       }, 800);
     }, 800);
   };
+
+  useEffect(() => {
+    setMounted(true);
+    
+    // Check if we should show login animation - only if user is logged in
+    // and has navigated from the login page (hasn't seen animation)
+    const checkAndShowAnimation = () => {
+      // Logic for determining if we just came from login page
+      const justLoggedIn = typeof window !== 'undefined' && 
+        window.performance && 
+        window.performance.navigation && 
+        window.performance.navigation.type === 1 && 
+        isLoggedIn && 
+        !hasShownLoginAnimation();
+        
+      if (isLoggedIn && !hasShownLoginAnimation()) {
+        console.log('Showing login animation');
+        setShowLoginAnimation(true);
+        setHideUI(true);
+        // Don't mark as shown yet - will be marked after animation completes
+        
+        // Hide the footer during animation
+        setFooterVisibility(false);
+      } else {
+        // If we're not showing the animation, make sure footer is visible
+        setFooterVisibility(true);
+      }
+    };
+    
+    checkAndShowAnimation();
+    
+    // Update clock
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    
+    // Auto-advance carousel
+    const carouselTimer = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % shipImages.length);
+    }, 5000);
+    
+    // Automatic system scan timer (every 20 seconds)
+    const scanTimer = setInterval(() => {
+      initiateSystemScan();
+    }, 20000);
+    
+    return () => {
+      clearInterval(timer);
+      clearInterval(carouselTimer);
+      clearInterval(scanTimer);
+    };
+  }, [isLoggedIn, shipImages.length, initiateSystemScan]);
+
+  // Function to handle animation complete
+  const handleAnimationComplete = () => {
+    setShowLoginAnimation(false);
+    setHideUI(false);
+    
+    // Mark animation as shown only after it completes
+    markLoginAnimationAsShown();
+    
+    // Show the footer after animation completes
+    setFooterVisibility(true);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        });
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   // Calculate parallax movement based on mouse position
   const calculateParallax = (depth: number = 1) => {
@@ -705,9 +706,11 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                 <div className="radar-sweep"></div>
                                 <div className="absolute inset-0 flex items-center justify-center flex-col">
                                   <div className="h-38 w-38 md:h-46 md:w-46 relative">
-                                    <img 
+                                    <Image 
                                       src="/images/Aydo_Corp_3x3k_RSI.png" 
                                       alt="AydoCorp Logo" 
+                                      width={184}
+                                      height={184}
                                       className="object-contain w-full h-full"
                                     />
                                   </div>
@@ -730,9 +733,11 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                   className="absolute inset-0 flex items-center justify-center"
                                 >
                                   <div className="relative w-full h-full">
-                                    <img 
+                                    <Image 
                                       src={shipImages[currentImageIndex]} 
                                       alt="AydoCorp Fleet" 
+                                      width={800}
+                                      height={220}
                                       className="object-cover w-full h-full"
                                     />
                                     <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"></div>

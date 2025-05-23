@@ -131,7 +131,7 @@ export default function RecruitmentInfo() {
                       <span className="text-[rgba(var(--mg-primary),0.9)] font-bold">After two weeks, request an interview</span> - This allows you to get to know us and for us to learn more about you.
                     </li>
                     <li className="text-sm">
-                      <span className="text-[rgba(var(--mg-primary),0.9)] font-bold">Complete the interview process</span> - If successful, you'll be welcomed as a full member of AydoCorp.
+                      <span className="text-[rgba(var(--mg-primary),0.9)] font-bold">Complete the interview process</span> - If successful, you&apos;ll be welcomed as a full member of AydoCorp.
                     </li>
                   </ol>
                 </div>

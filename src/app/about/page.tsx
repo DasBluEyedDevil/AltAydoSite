@@ -867,7 +867,7 @@ export default function About() {
                         year="2945"
                         title="INTERSTELLAR LAUNCH"
                         subtitle="First System Jump"
-                        content="Acquisition of the first Hull-series freighter marks AydoCorp's entry into interstellar shipping, establishing routes to neighboring Stanton system."
+                        content="Acquisition of the first Hull-series freighter marks AydoCorp&apos;s entry into interstellar shipping, establishing routes to neighboring Stanton system."
                         delay={0.6}
                       />
 
@@ -875,7 +875,7 @@ export default function About() {
                         year="2945"
                         title="Corporate Formation"
                         subtitle="Aydo Intergalactic Corporation"
-                        content="After acquiring multiple subsidiaries and expanding operations, the company transformed into the corporation now known as 'AydoCorp', serving many clients throughout human and alien space."
+                        content="After acquiring multiple subsidiaries and expanding operations, the company transformed into the corporation now known as &apos;AydoCorp&apos;, serving many clients throughout human and alien space."
                         delay={0.7}
                       />
 
@@ -980,11 +980,15 @@ export default function About() {
                         transition={{ duration: 0.5, delay: 0.7 }}
                       >
                         <div className="h-48 relative">
-                          <img 
-                            src="/images/AydoOffice1.png" 
-                            alt="AydoCorp Headquarters" 
-                            className="w-full h-full object-cover"
-                          />
+                          <div className="relative w-full h-full">
+                            <Image 
+                              src="/images/AydoOffice1.png" 
+                              alt="AydoCorp Headquarters" 
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                            />
+                          </div>
                           <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                           <motion.div 
                             className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"
@@ -1017,12 +1021,15 @@ export default function About() {
                           whileHover={{ scale: 1.03 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <Image
-                            src="/images/Hull_E.jpg"
-                            alt="AydoCorp Fleet"
-                            fill
-                            className="object-cover"
-                          />
+                          <div className="relative w-full h-full">
+                            <Image 
+                              src="/images/Hull_E.jpg" 
+                              alt="AydoCorp Fleet" 
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 100vw, 33vw"
+                            />
+                          </div>
                           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
 
                           {/* Animated scanning effect overlay */}
@@ -1366,11 +1373,13 @@ export default function About() {
                         <div className="mg-container p-0.5">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="flex items-center mb-4">
-                              <div className="mr-4">
-                                <img 
+                              <div className="relative w-16 h-16">
+                                <Image 
                                   src="/images/Aydo_Express.png" 
                                   alt="AydoExpress Logo" 
-                                  className="w-16 h-16 object-contain"
+                                  width={64}
+                                  height={64}
+                                  className="object-contain"
                                 />
                               </div>
                               <div>
@@ -1384,11 +1393,15 @@ export default function About() {
                             </p>
 
                             <div className="relative mt-4 overflow-hidden rounded-md h-48">
-                              <img 
-                                src="/images/Hull_E.jpg" 
-                                alt="AydoExpress Fleet" 
-                                className="w-full h-full object-cover"
-                              />
+                              <div className="relative w-full h-full">
+                                <Image 
+                                  src="/images/Hull_E.jpg" 
+                                  alt="AydoExpress Fleet" 
+                                  fill
+                                  className="object-cover"
+                                  sizes="(max-width: 768px) 100vw, 33vw"
+                                />
+                              </div>
                               <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                               <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50">
                                 <p className="text-[rgba(var(--mg-primary),1)] text-xs text-center">
@@ -1403,11 +1416,13 @@ export default function About() {
                         <div className="mg-container p-0.5">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="flex items-center mb-4">
-                              <div className="mr-4">
-                                <img 
+                              <div className="relative w-16 h-16">
+                                <Image 
                                   src="/images/Empyrion_Industries.png" 
                                   alt="Empyrion Industries Logo" 
-                                  className="w-16 h-16 object-contain"
+                                  width={64}
+                                  height={64}
+                                  className="object-contain"
                                 />
                               </div>
                               <div>
@@ -1421,11 +1436,15 @@ export default function About() {
                             </p>
 
                             <div className="relative mt-4 overflow-hidden rounded-md h-48">
-                              <img 
-                                src="/images/reclaimer.0.jpg" 
-                                alt="Empyrion Industries Operations" 
-                                className="w-full h-full object-cover"
-                              />
+                              <div className="relative w-full h-full">
+                                <Image 
+                                  src="/images/reclaimer.0.jpg" 
+                                  alt="Empyrion Industries Operations" 
+                                  fill
+                                  className="object-cover"
+                                  sizes="(max-width: 768px) 100vw, 33vw"
+                                />
+                              </div>
                               <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                               <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50">
                                 <p className="text-[rgba(var(--mg-primary),1)] text-xs text-center">
@@ -1503,11 +1522,13 @@ export default function About() {
                       <div className="flex justify-center mb-6">
                         <div className="mg-container p-0.5 w-full max-w-md">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
-                            <div className="flex items-center justify-center mb-4">
-                              <img
+                            <div className="relative w-32 h-auto aspect-[3/1]">
+                              <Image
                                 src="/images/Board_member_tag.png"
                                 alt="Board Member"
-                                className="w-32 h-auto"
+                                width={128}
+                                height={42}
+                                className="w-full h-auto"
                               />
                             </div>
 
@@ -1543,11 +1564,13 @@ export default function About() {
                         {/* CMO */}
                         <div className="mg-container p-0.5">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
-                            <div className="flex items-center justify-center mb-4">
-                              <img
+                            <div className="relative w-32 h-auto aspect-[3/1]">
+                              <Image
                                 src="/images/Board_member_tag.png"
                                 alt="Board Member"
-                                className="w-32 h-auto"
+                                width={128}
+                                height={42}
+                                className="w-full h-auto"
                               />
                             </div>
 
@@ -1580,11 +1603,13 @@ export default function About() {
                         {/* COO */}
                         <div className="mg-container p-0.5">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
-                            <div className="flex items-center justify-center mb-4">
-                              <img
+                            <div className="relative w-32 h-auto aspect-[3/1]">
+                              <Image
                                 src="/images/Board_member_tag.png"
                                 alt="Board Member"
-                                className="w-32 h-auto"
+                                width={128}
+                                height={42}
+                                className="w-full h-auto"
                               />
                             </div>
 
@@ -1617,11 +1642,13 @@ export default function About() {
                         {/* CSO */}
                         <div className="mg-container p-0.5">
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
-                            <div className="flex items-center justify-center mb-4">
-                              <img
+                            <div className="relative w-32 h-auto aspect-[3/1]">
+                              <Image
                                 src="/images/Board_member_tag.png"
                                 alt="Board Member"
-                                className="w-32 h-auto"
+                                width={128}
+                                height={42}
+                                className="w-full h-auto"
                               />
                             </div>
 

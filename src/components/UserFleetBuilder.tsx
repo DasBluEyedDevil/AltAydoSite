@@ -178,9 +178,11 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
                       <div className="flex flex-col md:flex-row items-center">
                         {/* Ship image */}
                         <div className="w-full md:w-48 h-48 mb-4 md:mb-0 md:mr-6 flex-shrink-0">
-                          <img 
+                          <Image 
                             src={useDefaultImage ? '/assets/ship-placeholder.png' : imagePath}
                             alt={ship.name}
+                            width={192}
+                            height={192}
                             className="w-full h-full object-contain"
                             onError={() => handleImageError(shipId)}
                           />

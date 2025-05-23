@@ -15,7 +15,7 @@ export default function Error({
       <div className="text-center max-w-xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-6 text-[rgba(var(--mg-primary),1)]">Something Went Wrong</h1>
         <p className="text-lg mb-8">
-          We're experiencing technical difficulties. Our engineers have been notified.
+          We&apos;re experiencing technical difficulties. Our engineers have been notified.
         </p>
         <div className="mb-8 p-6 border border-[rgba(var(--mg-primary),0.3)] rounded-lg bg-black/30">
           <p className="text-sm opacity-80 mb-4">

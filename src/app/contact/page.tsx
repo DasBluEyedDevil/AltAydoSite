@@ -793,7 +793,7 @@ export default function Contact() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
               <div className="text-lg font-bold mg-title mb-2">AYDOCORP LOGISTICS</div>
-              <p className="text-[rgba(var(--mg-text),0.6)] text-sm">Moving the 'verse forward, one shipment at a time</p>
+              <p className="text-[rgba(var(--mg-text),0.6)] text-sm">Moving the &apos;verse forward, one shipment at a time</p>
             </div>
             
             <div className="flex flex-col items-center md:items-end">

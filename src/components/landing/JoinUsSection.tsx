@@ -227,7 +227,7 @@ export default function JoinUsSection() {
               
               <div className="mt-8 p-4 border border-dashed border-[rgba(var(--mg-primary),0.3)] text-center">
                 <p className="text-sm text-[rgba(var(--mg-text),0.8)] mb-2">
-                  Don't see a position that matches your skills?
+                  Don&apos;t see a position that matches your skills?
                 </p>
                 <motion.button 
                   whileHover={{ scale: 1.03 }}

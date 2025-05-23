@@ -116,7 +116,7 @@ export default function ForgotPasswordPage() {
                 <div className="absolute top-0 left-0 w-[6px] h-[6px] border-l border-t border-[rgba(var(--mg-primary),0.4)]"></div>
               </div>
               <p className="text-xs text-[rgba(var(--mg-text),0.6)] mt-2">
-                Enter the email address associated with your account, and we'll send you instructions to reset your password.
+                Enter the email address associated with your account, and we&apos;ll send you instructions to reset your password.
               </p>
             </div>
 

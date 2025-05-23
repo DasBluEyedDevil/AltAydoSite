@@ -29,6 +29,7 @@ const benefits = [
 
 export default function Join() {
   const [time, setTime] = useState(new Date());
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -168,7 +169,7 @@ export default function Join() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {benefits.map((benefit, index) => {
-              const [isHovered, setIsHovered] = useState(false);
+              const isHovered = hoveredIndex === index;
               
               return (
                 <motion.div
@@ -178,8 +179,8 @@ export default function Join() {
                   transition={{ duration: 0.5, delay: index * 0.15 }}
                   viewport={{ once: true }}
                   className="mg-container p-0.5 group cursor-pointer"
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <div className="relative h-full bg-[rgba(var(--mg-background),0.5)] backdrop-blur-sm overflow-hidden">
                     {/* Holo projection effect on hover */}
@@ -349,7 +350,7 @@ export default function Join() {
                 <div className="space-y-4">
                   <p className="text-[rgba(var(--mg-text),0.8)] mb-4 relative">
                     <span className="text-[rgba(var(--mg-primary),1)] mr-2 font-mono">{'>'}</span>
-                    At AydoCorp, we're committed to pushing the boundaries of what's possible in interstellar logistics. Our vision extends beyond traditional transportation to creating comprehensive logistics networks that connect the furthest reaches of known space.
+                    At AydoCorp, we&apos;re committed to pushing the boundaries of what&apos;s possible in interstellar logistics. Our vision extends beyond traditional transportation to creating comprehensive logistics networks that connect the furthest reaches of known space.
                   </p>
                   
                   <motion.div 
@@ -362,7 +363,7 @@ export default function Join() {
                   
                   <p className="text-[rgba(var(--mg-text),0.8)] relative">
                     <span className="text-[rgba(var(--mg-primary),1)] mr-2 font-mono">{'>'}</span>
-                    Whether you're an experienced logistics professional or new to the field, we provide the training, resources, and support needed to help you succeed in your career with us.
+                    Whether you&apos;re an experienced logistics professional or new to the field, we provide the training, resources, and support needed to help you succeed in your career with us.
                   </p>
                   
                   {/* Interactive elements */}
