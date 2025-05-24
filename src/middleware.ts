@@ -56,7 +56,8 @@ export const config = {
     // Match all paths except for:
     // - API routes (/api/*)
     // - Static files (_next/static/*)
-    // - Static files in the public directory (favicon.ico, etc)
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    // - Image optimization (_next/image/*)
+    // - Static files in the public directory (favicon.ico, images, assets, etc)
+    '/((?!api|_next/static|_next/image|favicon.ico|images|assets|fonts|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.svg|.*\\.webp|.*\\.ico|.*\\.woff|.*\\.woff2|.*\\.ttf|.*\\.otf).*)',
   ],
 }; 
