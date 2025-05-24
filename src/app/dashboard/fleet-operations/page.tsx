@@ -32,7 +32,7 @@ export default function FleetOperationsPage() {
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="mb-6">
-        <h1 className="mg-title text-2xl md:text-3xl">Operations</h1>
+        <h1 className="mg-title text-2xl md:text-3xl">Operations Management</h1>
         <p className="mg-text text-sm opacity-80">
           Plan, manage, and track fleet operations for AydoCorp
         </p>
