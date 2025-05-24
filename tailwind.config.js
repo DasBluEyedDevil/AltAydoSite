@@ -35,6 +35,10 @@ module.exports = {
         'scanline-vertical': 'scanline-vertical 3s linear infinite',
         'scan': 'scan 4s linear infinite',
         'pulse-delay': 'pulse 2s infinite',
+        'status-blink': 'status-blink 2s ease-in-out infinite',
+        'mg-flicker': 'mg-flicker 6s linear infinite',
+        'pan-right': 'pan-right 30s linear infinite',
+        'pan-left': 'pan-left 30s linear infinite',
       },
       keyframes: {
         twinkle: {
@@ -94,11 +98,29 @@ module.exports = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' }
         },
+        'status-blink': {
+          '0%, 100%': { opacity: 1, boxShadow: '0 0 0 rgba(var(--mg-primary), 0)' },
+          '50%': { opacity: 0.5, boxShadow: '0 0 3px rgba(var(--mg-primary), 0.8)' }
+        },
+        'mg-flicker': {
+          '0%, 100%': { opacity: 1 },
+          '96%, 98%': { opacity: 1 },
+          '97%, 99%': { opacity: 0.8 }
+        },
+        'pan-right': {
+          '0%': { backgroundPosition: '0% 0%' },
+          '100%': { backgroundPosition: '100% 0%' }
+        },
+        'pan-left': {
+          '0%': { backgroundPosition: '100% 0%' },
+          '100%': { backgroundPosition: '0% 0%' }
+        },
       },
       backgroundImage: {
         'space-gradient': 'radial-gradient(circle at center, #0a1a2e 0%, #050a15 100%)',
         'holo-grid': 'linear-gradient(rgba(var(--mg-grid), 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--mg-grid), 0.1) 1px, transparent 1px)',
         'hexagon-pattern': 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MiIgaGVpZ2h0PSI5MCI+PHBhdGggZD0iTTI2IDNMMSAyOXYzMmwyNSAyNiAyNS0yNlYyOUwyNiAzeiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDA3ZGZmIiBzdHJva2Utd2lkdGg9Ii41IiBvcGFjaXR5PSIuMSIvPjwvc3ZnPg==")',
+        'circuit-pattern': 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZD0iTTEwLDEwIEw5MCwxMCBMOTAsOTAgTDEwLDkwIFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLCAxNzAsIDI1NSwgMC4xKSIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48cGF0aCBkPSJNMzAsMzAgTDcwLDMwIEw3MCw3MCBMMzAsNzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxsaW5lIHgxPSIxMCIgeTE9IjMwIiB4Mj0iMzAiIHkyPSIzMCIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxsaW5lIHgxPSI3MCIgeTE9IjMwIiB4Mj0iOTAiIHkyPSIzMCIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxsaW5lIHgxPSIzMCIgeTE9IjcwIiB4Mj0iMTAiIHkyPSI3MCIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxsaW5lIHgxPSI5MCIgeTE9IjcwIiB4Mj0iNzAiIHkyPSI3MCIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvc3ZnPg==")',
       },
       boxShadow: {
         'mg': '0 0 20px 0 rgba(var(--mg-primary), 0.15), inset 0 0 15px 0 rgba(var(--mg-primary), 0.05)',
