@@ -41,3 +41,7 @@ amplify_outputs*
 amplifyconfiguration*
 node_modules/
 amplify/node_modules/
+
+#mcps
+settings.json
+mcp.json
