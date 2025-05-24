@@ -43,5 +43,5 @@ node_modules/
 amplify/node_modules/
 
 #mcps
-settings.json
-mcp.json
+.vscode/settings.json
+.cursor/mcp.json
