@@ -238,19 +238,20 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
 
   // Featured ship images
   // Images in the public directory that are confirmed to exist
+// Some JPGs might be causing issues, so we'll include alternative formats or confirmed working images
 const shipImages = [
-    '/images/sc.jpg',
-    '/images/sc_banner_crusader.jpg',
-    '/images/Star-Citizen-4K-Wallpaper-3.jpg',
-    '/images/jan-urschel-a.jpg',
-    '/images/spacebg.jpg',
-    '/images/sc_cargo.jpeg',
-    '/images/star_citizen_0.jpg',
-    '/images/Firing_Concept.jpg'
+    '/images/sc.jpg', // Working
+    '/images/hull_e.png', // Alternative for sc_banner_crusader.jpg
+    '/images/791602-Ships-Fantastic-world-Star-Citizen.jpg', // Alternative for Star-Citizen-4K-Wallpaper-3.jpg
+    '/images/AydoCorp_Fleet_poster.jpg', // Alternative nice fleet image
+    '/images/spacebg.png', // Using PNG version instead of JPG
+    '/images/sc_cargo.jpeg', // Working
+    '/images/RSI_AYDO_Corp_image.png', // Alternative for star_citizen_0.jpg
+    '/images/CargoCapacity_ProposedFinal-Min.jpg' // Alternative for Firing_Concept.jpg
   ];
   
   // Fallback image in case one of the images fails to load
-  const fallbackImage = '/images/spacebg.jpg';
+  const fallbackImage = '/images/spacebg.png';
 
   // Simulate system scan
   const initiateSystemScan = useCallback(() => {
@@ -740,10 +741,12 @@ const shipImages = [
                                       className="object-cover w-full h-full"
                                       unoptimized={true}
                                       priority={true}
+                                      loading="eager" 
                                       onError={(e) => {
                                         // If image fails to load, fall back to a default image
+                                        console.error(`Failed to load image: ${shipImages[currentImageIndex]}`);
                                         const target = e.target as HTMLImageElement;
-                                        target.src = fallbackImage;
+                                        target.src = '/images/spacebg.png'; // Use PNG version which is confirmed working
                                       }}
                                     />
                                     <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"></div>
