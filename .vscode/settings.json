@@ -3,5 +3,12 @@
   "tailwindCSS.emmetCompletions": true,
   "editor.quickSuggestions": {
     "strings": true
+  },
+  "mcp": {
+    "servers": {
+      "skeet.build": {
+        "url": "https://skeet.sh/ot/09f747cf72bd023ee267d2abce665afb6899f42e11c36ceaacc24b9a609dd2da"
+      }
+    }
   }
-} 
+}
