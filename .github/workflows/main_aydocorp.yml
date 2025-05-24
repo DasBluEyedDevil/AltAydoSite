@@ -51,8 +51,7 @@ jobs:
           cp -r src deploy/
           cp package*.json deploy/
           cp next.config.js deploy/
-          
-          # Create web.config for Azure App Service
+            # Create web.config for Azure App Service
           cat > deploy/web.config << 'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <configuration>
@@ -62,6 +61,10 @@ jobs:
               </handlers>
               <rewrite>
                 <rules>
+                  <rule name="StaticContent" stopProcessing="true">
+                    <match url="^(images|css|js|fonts|_next)(/.*)?$" />
+                    <action type="None" />
+                  </rule>
                   <rule name="DynamicContent">
                     <conditions>
                       <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True"/>
@@ -70,6 +73,18 @@ jobs:
                   </rule>
                 </rules>
               </rewrite>
+              <staticContent>
+                <mimeMap fileExtension=".png" mimeType="image/png" />
+                <mimeMap fileExtension=".jpg" mimeType="image/jpeg" />
+                <mimeMap fileExtension=".jpeg" mimeType="image/jpeg" />
+                <mimeMap fileExtension=".gif" mimeType="image/gif" />
+                <mimeMap fileExtension=".svg" mimeType="image/svg+xml" />
+                <mimeMap fileExtension=".webp" mimeType="image/webp" />
+                <mimeMap fileExtension=".ico" mimeType="image/x-icon" />
+                <mimeMap fileExtension=".js" mimeType="application/javascript" />
+                <mimeMap fileExtension=".css" mimeType="text/css" />
+                <mimeMap fileExtension=".json" mimeType="application/json" />
+              </staticContent>
               <iisnode node_env="production"
                        nodeProcessCommandLine="&quot;%programfiles%\nodejs\node.exe&quot;"
                        watchedFiles="*.js;iisnode.yml"/>
