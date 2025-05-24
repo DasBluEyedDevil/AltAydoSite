@@ -237,7 +237,8 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
   const [hideUI, setHideUI] = useState(false);
 
   // Featured ship images
-  const shipImages = [
+  // Images in the public directory that are confirmed to exist
+const shipImages = [
     '/images/sc.jpg',
     '/images/sc_banner_crusader.jpg',
     '/images/Star-Citizen-4K-Wallpaper-3.jpg',
@@ -247,6 +248,9 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
     '/images/star_citizen_0.jpg',
     '/images/Firing_Concept.jpg'
   ];
+  
+  // Fallback image in case one of the images fails to load
+  const fallbackImage = '/images/spacebg.jpg';
 
   // Simulate system scan
   const initiateSystemScan = useCallback(() => {
@@ -734,6 +738,13 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
                                       width={800}
                                       height={220}
                                       className="object-cover w-full h-full"
+                                      unoptimized={true}
+                                      priority={true}
+                                      onError={(e) => {
+                                        // If image fails to load, fall back to a default image
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = fallbackImage;
+                                      }}
                                     />
                                     <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"></div>
                                     <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50">

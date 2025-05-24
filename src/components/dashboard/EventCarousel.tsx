@@ -101,6 +101,12 @@ const EventCarousel = () => {
                 fill
                 className="object-cover rounded-sm"
                 priority={index === 0}
+                unoptimized={true}
+                onError={(e) => {
+                  // If image fails to load, fall back to a default image
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/images/spacebg.jpg';
+                }}
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                 <div className="text-white">

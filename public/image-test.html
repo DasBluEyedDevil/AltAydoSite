@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AydoCorp Image Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0e1218;
+            color: #e6e6e6;
+        }
+        h1, h2 {
+            color: #00d7ff;
+        }
+        .image-container {
+            margin-bottom: 30px;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .image-item {
+            border: 1px solid #2a3a4a;
+            padding: 10px;
+            border-radius: 4px;
+            background: #121920;
+        }
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .image-wrapper:hover img {
+            transform: scale(1.05);
+        }
+        .image-path {
+            font-size: 12px;
+            word-break: break-all;
+            color: #aaaaaa;
+            margin-top: 5px;
+        }
+        .status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .status-loading {
+            background: #3a444f;
+            color: #ffffff;
+        }
+        .status-loaded {
+            background: #164a2d;
+            color: #a3e9b4;
+        }
+        .status-error {
+            background: #641e1e;
+            color: #ffaaaa;
+        }
+        .header {
+            background: #162330;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00d7ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AydoCorp Image Test</h1>
+        <p>This page tests all the images used in the carousels to ensure they load correctly.</p>
+    </div>
+
+    <div class="image-container">
+        <h2>HomeContent.tsx - Ship Images</h2>
+        <div class="image-grid" id="home-images">
+            <!-- Images will be added by JavaScript -->
+        </div>
+    </div>
+
+    <div class="image-container">
+        <h2>EventCarousel.tsx - Event Images</h2>
+        <div class="image-grid" id="event-images">
+            <!-- Images will be added by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // HomeContent.tsx shipImages array
+        const shipImages = [
+            '/images/sc.jpg',
+            '/images/sc_banner_crusader.jpg',
+            '/images/Star-Citizen-4K-Wallpaper-3.jpg',
+            '/images/jan-urschel-a.jpg',
+            '/images/spacebg.jpg',
+            '/images/sc_cargo.jpeg',
+            '/images/star_citizen_0.jpg',
+            '/images/Firing_Concept.jpg'
+        ];
+
+        // EventCarousel.tsx images array
+        const eventImages = [
+            '/images/RSI_AYDO_Corp_image.png',
+            '/images/hull_e.png',
+            '/images/Hovering_mining_on_cliffside_1.jpg',
+            '/images/salvage_Near_world_lookings_at_wreckage.jpg',
+            '/images/logisticsoffice.jpg',
+            '/images/Star_Citizen_Ships_510048_2560x1440.jpg',
+            '/images/Asteroids_122018-Min.png',
+            '/images/CargoCapacity_ProposedFinal-Min.jpg'
+        ];
+
+        // Function to create image elements and test loading
+        function createImageElements(images, containerId) {
+            const container = document.getElementById(containerId);
+
+            images.forEach((imagePath, index) => {
+                // Create elements
+                const imageItem = document.createElement('div');
+                imageItem.className = 'image-item';
+
+                const imageWrapper = document.createElement('div');
+                imageWrapper.className = 'image-wrapper';
+
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = `Image ${index + 1}`;
+                img.dataset.index = index;
+
+                const statusEl = document.createElement('div');
+                statusEl.className = 'status status-loading';
+                statusEl.textContent = 'Loading...';
+
+                const pathEl = document.createElement('div');
+                pathEl.className = 'image-path';
+                pathEl.textContent = imagePath;
+
+                // Handle events
+                img.onload = function() {
+                    statusEl.className = 'status status-loaded';
+                    statusEl.textContent = 'Loaded Successfully';
+                };
+
+                img.onerror = function() {
+                    statusEl.className = 'status status-error';
+                    statusEl.textContent = 'Error Loading Image';
+                    img.src = '/images/spacebg.jpg'; // Fallback image
+                };
+
+                // Append elements
+                imageWrapper.appendChild(img);
+                imageItem.appendChild(imageWrapper);
+                imageItem.appendChild(statusEl);
+                imageItem.appendChild(pathEl);
+                container.appendChild(imageItem);
+            });
+        }
+
+        // Initialize the page
+        window.addEventListener('DOMContentLoaded', () => {
+            createImageElements(shipImages, 'home-images');
+            createImageElements(eventImages, 'event-images');
+        });
+    </script>
+</body>
+</html>
