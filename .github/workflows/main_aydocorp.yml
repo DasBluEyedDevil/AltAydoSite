@@ -37,11 +37,13 @@ jobs:
             
             module.exports = nextConfig;" > next.config.js
           fi
-
+          
       - name: npm clean install and build
         run: |
           npm ci
-          npm run build      - name: Prepare for deployment
+          npm run build
+          
+      - name: Prepare for deployment
         run: |
           # Create a deployment package with built Next.js app
           # Include necessary files for Azure App Service
@@ -51,7 +53,8 @@ jobs:
           cp -r src deploy/
           cp package*.json deploy/
           cp next.config.js deploy/
-            # Create web.config for Azure App Service
+          
+          # Create web.config for Azure App Service
           cat > deploy/web.config << 'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <configuration>
@@ -114,7 +117,8 @@ jobs:
             });
           });
           EOF
-            cd deploy
+          
+          cd deploy
           zip -r ../release.zip .
 
       - name: Upload artifact for deployment job
