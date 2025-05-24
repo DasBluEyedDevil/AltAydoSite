@@ -22,34 +22,27 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-          cache: 'npm'
-
-      - name: Create next.config.js if it doesn't exist
+          cache: 'npm'      - name: Create next.config.js if it doesn't exist
         run: |
           if [ ! -f next.config.js ]; then
             echo "/** @type {import('next').NextConfig} */
             const nextConfig = {
-              output: 'standalone',
               poweredByHeader: false,
+              images: {
+                unoptimized: true
+              }
             };
             
             module.exports = nextConfig;" > next.config.js
-          fi
-
-      - name: npm clean install and build
+          fi- name: npm clean install and build
         run: |
           npm ci
           npm run build
 
       - name: Prepare for deployment
         run: |
-          rm -rf node_modules
-          # Copy the standalone output to the root for deployment
-          cp -r ./.next/standalone/* ./
-          # Copy the static and public assets to the right locations
-          mkdir -p ./public
-          cp -r ./public/* ./.next/static ./
-          zip -r release.zip .
+          # For standard Next.js build, we deploy everything
+          zip -r release.zip . -x "node_modules/*" ".git/*" ".next/cache/*"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
