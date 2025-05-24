@@ -23,14 +23,12 @@ const nextConfig = {
         remotePatterns: [],
     },
     // Ensure all static assets are properly included
-    experimental: {
-        outputFileTracingExcludes: {
-            '*': [
-                'node_modules/@swc/core-linux-x64-gnu',
-                'node_modules/@swc/core-linux-x64-musl',
-                'node_modules/@esbuild/linux-x64',
-            ],
-        },
+    outputFileTracingExcludes: {
+        '*': [
+            'node_modules/@swc/core-linux-x64-gnu',
+            'node_modules/@swc/core-linux-x64-musl',
+            'node_modules/@esbuild/linux-x64',
+        ],
     },
 };
 
