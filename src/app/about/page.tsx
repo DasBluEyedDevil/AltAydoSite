@@ -1023,7 +1023,7 @@ export default function About() {
                         >
                           <div className="relative w-full h-full">
                             <Image 
-                              src="/images/Hull_E.jpg" 
+                              src="/images/hull_e.png" 
                               alt="AydoCorp Fleet" 
                               fill
                               className="object-cover"
@@ -1395,7 +1395,7 @@ export default function About() {
                             <div className="relative mt-4 overflow-hidden rounded-md h-48">
                               <div className="relative w-full h-full">
                                 <Image 
-                                  src="/images/Hull_E.jpg" 
+                                  src="/images/hull_e.png" 
                                   alt="AydoExpress Fleet" 
                                   fill
                                   className="object-cover"
@@ -1438,7 +1438,7 @@ export default function About() {
                             <div className="relative mt-4 overflow-hidden rounded-md h-48">
                               <div className="relative w-full h-full">
                                 <Image 
-                                  src="/images/reclaimer.0.jpg" 
+                                  src="/images/reclaimer.png" 
                                   alt="Empyrion Industries Operations" 
                                   fill
                                   className="object-cover"

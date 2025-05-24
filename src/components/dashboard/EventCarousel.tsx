@@ -11,17 +11,17 @@ const images = [
     caption: 'AydoCorp Fleet Formation - Annual Corporate Showcase'
   },
   {
-    src: '/images/Hull_E.jpg',
+    src: '/images/hull_e.png',
     alt: 'AydoExpress Logistics',
     caption: 'Hull-E Cargo Transport - Backbone of AydoExpress Operations'
   },
   {
-    src: '/images/Prospector_-_Hovering_mining_on_cliffside_1.jpg',
+    src: '/images/Hovering_mining_on_cliffside_1.jpg',
     alt: 'Empyrion Industries Mining',
     caption: 'Empyrion Industries Prospector Mining Operations on Microtech'
   },
   {
-    src: '/images/Reclaimer_-_Near_world_lookings_at_wreckage.jpg',
+    src: '/images/salvage_Near_world_lookings_at_wreckage.jpg',
     alt: 'Salvage Operations',
     caption: 'Reclaimer Salvage Operation - Resource Recovery Division'
   },
@@ -36,12 +36,12 @@ const images = [
     caption: 'AydoCorp Fleet Showcase - Annual Corporate Event'
   },
   {
-    src: '/images/MISCFreelancer_Asteroids_122018-Min.png',
+    src: '/images/Asteroids_122018-Min.png',
     alt: 'Freelancer Operations',
     caption: 'MISC Freelancer on Assignment - Asteroid Field Navigation'
   },
   {
-    src: '/images/1_Taurus_CargoCapacity_ProposedFinal-Min.jpg',
+    src: '/images/CargoCapacity_ProposedFinal-Min.jpg',
     alt: 'Constellation Taurus',
     caption: 'Constellation Taurus - Medium Cargo Transport Operations'
   }

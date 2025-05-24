@@ -178,7 +178,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t-2 border-r border-b-2 border-l',
       category: 'corporate',
       path: '/dashboard/fleet',
-      image: '/images/Hull_E.jpg'
+      image: '/images/hull_e.png'
     },
     {
       id: 'personnel',

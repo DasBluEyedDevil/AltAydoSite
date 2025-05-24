@@ -11,7 +11,7 @@ const services = [
     title: 'Cargo Transport & Management',
     description: 'End-to-end cargo transportation services across all major systems, featuring real-time tracking and advanced security protocols.',
     detailedDescription: 'Our fleet of Hull-series vessels and specialized cargo haulers ensure your goods reach their destination safely and efficiently. With quantum-encrypted tracking and AI-driven logistics optimization, we deliver unmatched reliability in even the most challenging sectors.',
-    image: '/images/Caterpillar-1-1024x576.jpg',
+    image: '/images/bigcattt1024x576.jpg',
     icon: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z',
     stats: [
       { label: 'Delivery Success Rate', value: '99.7%' },
@@ -24,7 +24,7 @@ const services = [
     title: 'Executive & Personnel Transit',
     description: 'Premium transportation services with the highest standards of comfort and security for corporate personnel.',
     detailedDescription: 'Our executive fleet offers discreet, secure, and luxurious transport for VIPs and corporate teams. From 890 Jump luxury cruisers to Phoenix executive transports, we provide a seamless experience with dedicated crew and comprehensive security protocols.',
-    image: '/images/Gemini2338.jpg',
+    image: '/images/starfarer_gemini.png',
     icon: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z',
     stats: [
       { label: 'Client Satisfaction', value: '98.3%' },
@@ -37,7 +37,7 @@ const services = [
     title: 'Supply Chain Solutions',
     description: 'Comprehensive resource acquisition and logistics management tailored to your operational requirements.',
     detailedDescription: 'From raw materials to finished products, our supply chain services integrate seamlessly with your operations. We employ advanced predictive analytics and strategic resource planning to optimize cost, reduce delays, and ensure continuous supply even in volatile markets.',
-    image: '/images/MISCFreelancer_Asteroids_122018-Min.png',
+    image: '/images/Asteroids_122018-Min.png',
     icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
     stats: [
       { label: 'Resource Types', value: '250+' },
@@ -63,7 +63,7 @@ const services = [
     title: 'Strategic Operations',
     description: 'Collaborative ventures and partnerships for complex logistics operations requiring multi-party coordination.',
     detailedDescription: 'For operations requiring exceptional coordination, our strategic services division provides comprehensive planning and execution. We specialize in high-value cargo movement, sensitive material transport, and multi-organizational logistics efforts across corporate and government sectors.',
-    image: '/images/Carrack_Front_Top_Space.png',
+    image: '/images/carrack_expedition.png',
     icon: 'M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2',
     stats: [
       { label: 'Classified Ops', value: '150+' },
