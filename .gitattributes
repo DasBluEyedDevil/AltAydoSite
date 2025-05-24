@@ -1,1 +1,12 @@
 
+# Ensure Git handles images correctly without Git LFS
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.svg text
+
+# Ensure line endings are normalized
+* text=auto eol=lf
