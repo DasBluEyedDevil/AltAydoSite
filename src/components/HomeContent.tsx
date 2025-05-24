@@ -244,10 +244,10 @@ const shipImages = [
     '/images/hull_e.png', // Alternative for sc_banner_crusader.jpg
     '/images/791602-Ships-Fantastic-world-Star-Citizen.jpg', // Alternative for Star-Citizen-4K-Wallpaper-3.jpg
     '/images/AydoCorp_Fleet_poster.jpg', // Alternative nice fleet image
-    '/images/spacebg.png', // Using PNG version instead of JPG
     '/images/sc_cargo.jpeg', // Working
-    '/images/RSI_AYDO_Corp_image.png', // Alternative for star_citizen_0.jpg
-    '/images/CargoCapacity_ProposedFinal-Min.jpg' // Alternative for Firing_Concept.jpg
+    '/images/CargoCapacity_ProposedFinal-Min.jpg',
+    '/images/Hovering_mining_on_cliffside_1.jpg', // replacement for RSI_AYDO_Corp_image.png
+    '/images/Star_Citizen_Ships_510048_2560x1440.jpg' // replacement for spacebg.jpg
   ];
   
   // Fallback image in case one of the images fails to load
