@@ -41,12 +41,66 @@ jobs:
       - name: npm clean install and build
         run: |
           npm ci
-          npm run build
-
-      - name: Prepare for deployment
+          npm run build      - name: Prepare for deployment
         run: |
-          # For standard Next.js build, we deploy everything
-          zip -r release.zip . -x "node_modules/*" ".git/*" ".next/cache/*"
+          # Create a deployment package with built Next.js app
+          # Include necessary files for Azure App Service
+          mkdir deploy
+          cp -r .next deploy/
+          cp -r public deploy/
+          cp -r src deploy/
+          cp package*.json deploy/
+          cp next.config.js deploy/
+          
+          # Create web.config for Azure App Service
+          cat > deploy/web.config << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <configuration>
+            <system.webServer>
+              <handlers>
+                <add name="iisnode" path="server.js" verb="*" modules="iisnode"/>
+              </handlers>
+              <rewrite>
+                <rules>
+                  <rule name="DynamicContent">
+                    <conditions>
+                      <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True"/>
+                    </conditions>
+                    <action type="Rewrite" url="server.js"/>
+                  </rule>
+                </rules>
+              </rewrite>
+              <iisnode node_env="production"
+                       nodeProcessCommandLine="&quot;%programfiles%\nodejs\node.exe&quot;"
+                       watchedFiles="*.js;iisnode.yml"/>
+            </system.webServer>
+          </configuration>
+          EOF
+          
+          # Create server.js for Azure App Service
+          cat > deploy/server.js << 'EOF'
+          const { createServer } = require('http');
+          const { parse } = require('url');
+          const next = require('next');
+          
+          const dev = false;
+          const app = next({ dev });
+          const handle = app.getRequestHandler();
+          
+          const PORT = process.env.PORT || 3000;
+          
+          app.prepare().then(() => {
+            createServer((req, res) => {
+              const parsedUrl = parse(req.url, true);
+              handle(req, res, parsedUrl);
+            }).listen(PORT, (err) => {
+              if (err) throw err;
+              console.log(`> Ready on http://localhost:${PORT}`);
+            });
+          });
+          EOF
+            cd deploy
+          zip -r ../release.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
