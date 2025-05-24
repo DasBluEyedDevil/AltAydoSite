@@ -25,12 +25,18 @@ const resourceSchema = z.object({
 
 // Helper to check if user has leadership role
 async function hasLeadershipRole(userId: string): Promise<boolean> {
+  // Remove role restrictions
+  return true;
+
+  // Commented out original implementation for future reference
+  /*
   const user = await userStorage.getUserById(userId);
   if (!user) return false;
   
   // Check for leadership roles or clearance level
   const leadershipRoles = ['Director', 'Manager', 'Board Member'];
   return leadershipRoles.includes(user.role) || user.clearanceLevel >= 3;
+  */
 }
 
 // GET /api/fleet-ops/resources - Get all resources or filter by type, status, owner

@@ -21,8 +21,7 @@ const FleetOpsDashboard: React.FC<FleetOpsDashboardProps> = ({ session }) => {
   const [editingOperation, setEditingOperation] = useState<OperationResponse | null>(null);
 
   // Check if user has leadership role
-  const isLeadership = session?.user?.role && ['Director', 'Manager', 'Board Member'].includes(session.user.role) || 
-                      (session?.user?.clearanceLevel && session.user.clearanceLevel >= 3);
+  const isLeadership = true; // Remove role restrictions - all users are treated as leadership
 
   // Fetch operations data
   useEffect(() => {

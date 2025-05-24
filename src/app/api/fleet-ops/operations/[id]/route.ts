@@ -30,22 +30,34 @@ const updateOperationSchema = z.object({
 
 // Helper to check if user has leadership role
 async function hasLeadershipRole(userId: string): Promise<boolean> {
+  // Remove role restrictions
+  return true;
+
+  // Commented out original implementation for future reference
+  /*
   const user = await userStorage.getUserById(userId);
   if (!user) return false;
 
   // Check for leadership roles
   const leadershipRoles = ['Director', 'Manager', 'Board Member'];
   return leadershipRoles.includes(user.role) || user.clearanceLevel >= 3;
+  */
 }
 
 // Helper to check if user can modify an operation
 async function canModifyOperation(userId: string, operation: Operation): Promise<boolean> {
+  // Remove role restrictions - anyone can modify any operation
+  return true;
+
+  // Commented out original implementation for future reference
+  /*
   // Leaders can modify any operation
   const isLeadership = await hasLeadershipRole(userId);
   if (isLeadership) return true;
 
   // Operation leaders can modify their own operations
   return operation.leaderId === userId;
+  */
 }
 
 // GET handler - Get a specific operation

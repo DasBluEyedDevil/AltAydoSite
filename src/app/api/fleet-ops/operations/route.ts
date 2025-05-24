@@ -27,7 +27,7 @@ const createOperationSchema = z.object({
   commsChannel: z.string().optional().default('')
 });
 
-// Helper to check if user has leadership role
+// Helper to check if user has leadership role (keeping for future use)
 async function hasLeadershipRole(userId: string): Promise<boolean> {
   const user = await userStorage.getUserById(userId);
   if (!user) return false;
@@ -47,7 +47,8 @@ export async function GET(request: NextRequest) {
     }
     
     const userId = session.user.id;
-    const isLeadership = await hasLeadershipRole(userId);
+    // Everyone can see all operations for now
+    const isLeadership = true; // Remove role restriction 
     
     // Parse query parameters
     const { searchParams } = new URL(request.url);
@@ -97,15 +98,6 @@ export async function POST(request: NextRequest) {
     }
     
     const userId = session.user.id;
-    const isLeadership = await hasLeadershipRole(userId);
-    
-    // Check if user has permission to create operations
-    if (!isLeadership) {
-      return NextResponse.json(
-        { error: 'Only leadership can create operations' },
-        { status: 403 }
-      );
-    }
     
     // Parse and validate request body
     let body;
