@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { connectToDatabase } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
 
     const { userId, shipId, shipName, shipType, missionId } = await request.json();
 
-    if (!userId || !missionId) {
+    if (!userId || !shipId || !missionId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -23,16 +24,16 @@ export async function POST(request: Request) {
     // Update the mission participant's ship assignment
     const result = await db.collection('missions').updateOne(
       { 
-        _id: missionId,
+        _id: new ObjectId(missionId),
         'participants.userId': userId 
       },
-      {
-        $set: {
+      { 
+        $set: { 
           'participants.$.shipId': shipId,
           'participants.$.shipName': shipName,
           'participants.$.shipType': shipType,
-          updatedAt: new Date()
-        }
+          'participants.$.assignedAt': new Date()
+        } 
       }
     );
 
@@ -40,9 +41,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Mission or participant not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Ship assigned successfully',
+      data: {
+        userId,
+        shipId,
+        shipName,
+        shipType,
+        assignedAt: new Date()
+      }
+    });
+
   } catch (error) {
-    console.error('Error assigning ship:', error);
-    return NextResponse.json({ error: 'Failed to assign ship' }, { status: 500 });
+    console.error('Error in assign-ship route:', error);
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 } 

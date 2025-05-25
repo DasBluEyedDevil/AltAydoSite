@@ -33,13 +33,13 @@ const COMMON_ROLES = [
 ];
 
 interface MissionPersonnelFormProps {
-  formData: Partial<MissionResponse>;
-  updateFormData: (key: keyof MissionResponse, value: any) => void;
+  formData: MissionResponse;
+  updateFormData: (field: string, value: any) => void;
 }
 
-const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({ 
-  formData, 
-  updateFormData 
+const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
+  formData,
+  updateFormData
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,6 +47,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
   const [selectedRoles, setSelectedRoles] = useState<{[key: string]: string[]}>({});
   const [customRole, setCustomRole] = useState('');
   const [participants, setParticipants] = useState<MissionParticipant[]>(formData.participants || []);
+  const [availableShips, setAvailableShips] = useState<UserShip[]>([]);
   
   // Fetch real users from API
   useEffect(() => {
@@ -121,6 +122,24 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
     setSelectedRoles(updatedRoles);
   };
   
+  // Fetch available ships
+  useEffect(() => {
+    const fetchShips = async () => {
+      try {
+        const response = await fetch('/api/fleet-ops/resources/allocations');
+        if (!response.ok) {
+          throw new Error('Failed to fetch available ships');
+        }
+        const data = await response.json();
+        setAvailableShips(data.ships || []);
+      } catch (error) {
+        console.error('Error fetching ships:', error);
+      }
+    };
+
+    fetchShips();
+  }, []);
+  
   // Update participant ship
   const updateParticipantShip = async (userId: string, shipId: string, shipName: string, shipType: string) => {
     try {
@@ -140,8 +159,11 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to assign ship');
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to assign ship');
       }
+
+      const result = await response.json();
 
       // Update local state after successful server update
       const updatedParticipants = participants.map(p => {
@@ -155,12 +177,14 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
         }
         return p;
       });
-      
+
       setParticipants(updatedParticipants);
       updateFormData('participants', updatedParticipants);
+
     } catch (error) {
       console.error('Error assigning ship:', error);
-      // You might want to add error handling UI here
+      // You might want to show this error to the user in the UI
+      throw error;
     }
   };
   
@@ -261,6 +285,69 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       setParticipants(formData.participants);
     }
   }, []);
+  
+  // Ship selection menu
+  const ShipSelectionMenu = ({ userId, onSelect, onClose }: { 
+    userId: string; 
+    onSelect: (shipId: string, shipName: string, shipType: string) => void;
+    onClose: () => void;
+  }) => {
+    return (
+      <div className="absolute z-50 mt-1 w-56 rounded-md bg-[rgba(var(--mg-panel-dark),0.95)] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="ship-selection-button">
+          {availableShips.map((ship) => (
+            <button
+              key={ship.shipId}
+              className="text-[rgba(var(--mg-primary),0.9)] block w-full px-4 py-2 text-left text-sm hover:bg-[rgba(var(--mg-primary),0.1)]"
+              role="menuitem"
+              onClick={() => {
+                onSelect(ship.shipId, ship.name, ship.type);
+                onClose();
+              }}
+            >
+              {ship.name} ({ship.type})
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Participant row with ship assignment
+  const ParticipantRow = ({ participant }: { participant: MissionParticipant }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    return (
+      <div className="flex items-center justify-between py-2 border-b border-[rgba(var(--mg-primary),0.1)]">
+        <div>
+          <p className="text-sm font-medium text-[rgba(var(--mg-primary),0.9)]">{participant.userName}</p>
+          <p className="text-xs text-[rgba(var(--mg-primary),0.6)]">{participant.roles.join(', ')}</p>
+        </div>
+        <div className="relative">
+          <button
+            type="button"
+            className="inline-flex items-center px-3 py-1 border border-[rgba(var(--mg-primary),0.2)] rounded-sm bg-[rgba(var(--mg-panel-dark),0.6)] text-sm text-[rgba(var(--mg-primary),0.9)] hover:bg-[rgba(var(--mg-primary),0.1)]"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {participant.shipName || 'Assign Ship'}
+            <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {isMenuOpen && (
+            <ShipSelectionMenu
+              userId={participant.userId}
+              onSelect={(shipId, shipName, shipType) => {
+                updateParticipantShip(participant.userId, shipId, shipName, shipType);
+              }}
+              onClose={() => setIsMenuOpen(false)}
+            />
+          )}
+        </div>
+      </div>
+    );
+  };
   
   return (
     <motion.div 
