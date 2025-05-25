@@ -2,13 +2,11 @@ import { MongoClient, Collection, ObjectId } from 'mongodb';
 import { User } from '@/types/user';
 import { PasswordResetToken } from '@/types/password-reset';
 
-// MongoDB Configuration for Azure Cosmos DB
+// MongoDB Configuration
 const mongoUri = process.env.MONGODB_URI;
-const endpoint = process.env.COSMOS_ENDPOINT || '';
-const key = process.env.COSMOS_KEY || '';
-const databaseId = process.env.COSMOS_DATABASE_ID || '';
-const collectionId = process.env.COSMOS_CONTAINER_ID || 'users'; // Default to 'users' if not set
-const resetTokensCollectionId = 'resetTokens'; // Collection for password reset tokens
+const databaseId = process.env.COSMOS_DATABASE_ID || 'aydocorp-database';
+const collectionId = process.env.COSMOS_CONTAINER_ID || 'users';
+const resetTokensCollectionId = 'resetTokens';
 
 // Client instance
 let client: MongoClient | null = null;
@@ -20,64 +18,76 @@ export async function connect() {
   try {
     if (!client) {
       console.log('Initializing MongoDB client...');
-      console.log(`Collection ID from env: "${collectionId}"`);
+      console.log(`Database ID: "${databaseId}"`);
+      console.log(`Collection ID: "${collectionId}"`);
       
-      // Use the provided MongoDB URI if available
-      let connectionString = process.env.MONGODB_URI;
-      
-      // Log whether we have a connection string (without revealing the full value)
-      if (connectionString) {
-        console.log(`Using MONGODB_URI (starts with: ${connectionString.substring(0, 20)}...)`);
-      } else {
-        console.log('No MONGODB_URI found, building from components...');
+      if (!mongoUri) {
+        throw new Error('MONGODB_URI environment variable is required');
       }
+
+      // Log connection attempt (safely)
+      const sanitizedUri = mongoUri.replace(/\/\/[^@]+@/, '//[credentials]@');
+      console.log(`Connecting to MongoDB with URI starting with: ${sanitizedUri.substring(0, 50)}...`);
       
-      // If no MongoDB URI is provided, try to construct one from individual components
-      if (!connectionString) {
-        if (!endpoint || !key || !databaseId) {
-          throw new Error('Missing MongoDB connection parameters. Please provide either MONGODB_URI or (COSMOS_ENDPOINT, COSMOS_KEY, and COSMOS_DATABASE_ID)');
-        }
-        
-        const username = endpoint.includes('mongo.cosmos.azure.com') ? endpoint.split('.')[0] : 'aydocorp-server';
-        const password = encodeURIComponent(key);
-        const host = endpoint.replace('https://', '');
-        
-        // Log connection parameters for debugging (hide sensitive data)
-        console.log('Building connection string with:');
-        console.log(`- Host: ${host}`);
-        console.log(`- Database: ${databaseId}`);
-        console.log(`- Username: ${username}`);
-        console.log('- Password: [HIDDEN]');
-        
-        connectionString = `mongodb://${username}:${password}@${host}:10255/${databaseId}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000`;
-        console.log(`Generated connection string (starts with: ${connectionString.substring(0, 20)}...)`);
-      }
-      
-      // Create MongoDB client
-      if (!connectionString) {
-        throw new Error('Failed to create MongoDB connection string');
-      }
-      
-      console.log('Creating MongoDB client...');
-      client = new MongoClient(connectionString);
+      // Create MongoDB client with vCore-specific options
+      client = new MongoClient(mongoUri, {
+        connectTimeoutMS: 30000, // 30 seconds
+        socketTimeoutMS: 30000,
+        serverSelectionTimeoutMS: 30000,
+        maxPoolSize: 100,
+        minPoolSize: 0,
+        maxIdleTimeMS: 120000,
+        waitQueueTimeoutMS: 30000,
+      });
       
       console.log('Connecting to MongoDB...');
       await client.connect();
       console.log('Connected to MongoDB successfully!');
       
+      // Get database reference
       const db = client.db(databaseId);
       
-      // Make sure collection ID is not empty
-      if (!collectionId) {
-        console.error('Collection ID is empty. Defaulting to "users"');
-        userCollection = db.collection('users');
-      } else {
-        console.log(`Using collection: "${collectionId}"`);
-        userCollection = db.collection(collectionId);
+      // List collections for verification
+      try {
+        const collections = await db.listCollections().toArray();
+        console.log('Available collections:', collections.map(col => col.name).join(', '));
+      } catch (error) {
+        console.warn('Unable to list collections (this is normal for fresh databases):', error);
       }
-
-      // Initialize reset tokens collection
+      
+      // Initialize collections
+      userCollection = db.collection(collectionId);
       resetTokenCollection = db.collection(resetTokensCollectionId);
+      
+      // Verify collection access with retries
+      let retries = 3;
+      while (retries > 0) {
+        try {
+          // Simple query to verify access
+          await userCollection.findOne({}, { projection: { _id: 1 } });
+          console.log('Successfully verified users collection access');
+          break;
+        } catch (error) {
+          console.error(`Collection access attempt failed (${retries} retries left):`, error);
+          if (retries === 1) {
+            // Last retry, attempt to create collection
+            try {
+              await db.createCollection(collectionId);
+              userCollection = db.collection(collectionId);
+              console.log('Created new users collection');
+              break;
+            } catch (createError) {
+              if ((createError as any).code === 48) { // Collection already exists
+                console.log('Collection already exists, proceeding...');
+                break;
+              }
+              throw createError;
+            }
+          }
+          retries--;
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second between retries
+        }
+      }
       
       console.log('MongoDB client initialized successfully');
       return true;
@@ -85,19 +95,56 @@ export async function connect() {
     return true;
   } catch (error) {
     console.error('Failed to initialize MongoDB client:', error);
+    // Reset client and collections on error
+    if (client) {
+      try {
+        await client.close();
+      } catch (closeError) {
+        console.error('Error closing client:', closeError);
+      }
+    }
+    client = null;
+    userCollection = null;
+    resetTokenCollection = null;
     return false;
   }
 }
 
-// Helper function to ensure connection is ready
-export async function ensureConnection() {
-  if (!client || !userCollection) {
-    const connected = await connect();
-    if (!connected) {
-      throw new Error('MongoDB client not initialized properly');
+// Helper function to ensure connection is ready with retries
+export async function ensureConnection(retries = 3): Promise<boolean> {
+  while (retries > 0) {
+    try {
+      if (!client || !userCollection) {
+        const connected = await connect();
+        if (!connected) {
+          throw new Error('MongoDB client not initialized properly');
+        }
+      }
+      // Verify connection is still alive
+      await client!.db().command({ ping: 1 });
+      return true;
+    } catch (error) {
+      console.error(`Connection check failed (${retries} retries left):`, error);
+      // Reset client on error
+      if (client) {
+        try {
+          await client.close();
+        } catch (closeError) {
+          console.error('Error closing client:', closeError);
+        }
+      }
+      client = null;
+      userCollection = null;
+      resetTokenCollection = null;
+      
+      if (retries === 1) {
+        throw new Error('Failed to ensure MongoDB connection after retries');
+      }
+      retries--;
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second between retries
     }
   }
-  return true;
+  return false;
 }
 
 // Get a user by ID
