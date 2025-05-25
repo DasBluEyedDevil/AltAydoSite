@@ -132,7 +132,7 @@ export default function Navigation() {
                     href="/dashboard"
                     className="mg-button py-1 px-3 text-xs flex items-center justify-center group"
                   >
-                    <span className="relative z-10 tracking-wider font-quantify">COMMAND CENTER</span>
+                    <span className="relative z-10 tracking-wider font-quantify">EMPLOYEE PORTAL</span>
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="radar-sweep"></div>
                     </div>
@@ -257,7 +257,7 @@ export default function Navigation() {
                       className="mg-button block w-full text-center py-1 text-xs font-quantify tracking-wider"
                       onClick={() => setIsOpen(false)}
                     >
-                      COMMAND CENTER
+                      EMPLOYEE PORTAL
                     </Link>
                   </div>
                 ) : (
