@@ -7,12 +7,14 @@ if (!process.env.MONGODB_URI) {
 }
 
 const uri = process.env.MONGODB_URI;
-console.log('Attempting to connect to MongoDB...');
+console.log('MongoDB configuration detected');
 
 const options = {
   maxPoolSize: 10,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
+  connectTimeoutMS: 10000,
+  retryWrites: false,
 };
 
 let client: MongoClient;
@@ -26,43 +28,46 @@ if (process.env.NODE_ENV === 'development') {
   };
 
   if (!globalWithMongo._mongoClientPromise) {
-    console.log('Creating new MongoDB client in development mode...');
+    console.log('Initializing MongoDB client (development)...');
     client = new MongoClient(uri, options);
     globalWithMongo._mongoClientPromise = client.connect()
       .then((client) => {
-        console.log('MongoDB connected successfully in development mode');
+        console.log('✓ MongoDB connected successfully (development)');
         return client;
       })
       .catch((error) => {
-        console.error('MongoDB connection error in development mode:', error);
+        console.error('× MongoDB connection error (development):', error);
         throw error;
       });
   }
   clientPromise = globalWithMongo._mongoClientPromise;
 } else {
   // In production mode, it's best to not use a global variable.
-  console.log('Creating new MongoDB client in production mode...');
+  console.log('Initializing MongoDB client (production)...');
   client = new MongoClient(uri, options);
   clientPromise = client.connect()
     .then((client) => {
-      console.log('MongoDB connected successfully in production mode');
+      console.log('✓ MongoDB connected successfully (production)');
       return client;
     })
     .catch((error) => {
-      console.error('MongoDB connection error in production mode:', error);
+      console.error('× MongoDB connection error (production):', error);
       throw error;
     });
 }
 
 export async function connectToDatabase() {
   try {
-    console.log('Attempting to get database connection...');
     const client = await clientPromise;
     const db = client.db();
-    console.log('Database connection successful');
+    
+    // Test the connection
+    await db.command({ ping: 1 });
+    console.log('✓ Database connection verified');
+    
     return { client, db };
   } catch (error) {
-    console.error('Error connecting to database:', error);
-    throw error;
+    console.error('× Database connection error:', error);
+    throw new Error('Failed to connect to database. Please check your connection string and network connection.');
   }
 } 
