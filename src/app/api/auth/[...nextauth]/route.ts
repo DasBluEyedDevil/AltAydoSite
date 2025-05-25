@@ -41,38 +41,51 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: "Username", type: "text" },
+        aydoHandle: { label: "AydoCorp Handle", type: "text" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) {
-          throw new Error('Missing credentials');
+        try {
+          console.log('Starting authorization for handle:', credentials?.aydoHandle);
+          
+          if (!credentials?.aydoHandle || !credentials?.password) {
+            console.error('Authorization failed: Missing credentials');
+            throw new Error('Missing credentials');
+          }
+
+          const { db } = await connectToDatabase();
+          console.log('Database connection established');
+          
+          const user = await db.collection('users').findOne({ 
+            aydoHandle: credentials.aydoHandle 
+          });
+
+          if (!user) {
+            console.error('Authorization failed: No user found for handle:', credentials.aydoHandle);
+            throw new Error('No user found');
+          }
+
+          console.log('User found, verifying password');
+          const isValid = await compare(credentials.password, user.password);
+
+          if (!isValid) {
+            console.error('Authorization failed: Invalid password for handle:', credentials.aydoHandle);
+            throw new Error('Invalid password');
+          }
+
+          console.log('Authorization successful for handle:', credentials.aydoHandle);
+          return {
+            id: user._id.toString(),
+            name: user.username || user.aydoHandle,
+            email: user.email,
+            clearanceLevel: user.clearanceLevel || 'default',
+            role: user.role || 'member',
+            aydoHandle: user.aydoHandle
+          };
+        } catch (error) {
+          console.error('Authorization error:', error);
+          throw error;
         }
-
-        const { db } = await connectToDatabase();
-        
-        const user = await db.collection('users').findOne({ 
-          username: credentials.username 
-        });
-
-        if (!user) {
-          throw new Error('No user found');
-        }
-
-        const isValid = await compare(credentials.password, user.password);
-
-        if (!isValid) {
-          throw new Error('Invalid password');
-        }
-
-        return {
-          id: user._id.toString(),
-          name: user.username,
-          email: user.email,
-          clearanceLevel: user.clearanceLevel || 'default',
-          role: user.role || 'member',
-          aydoHandle: user.aydoHandle || user.username
-        };
       }
     })
   ],
