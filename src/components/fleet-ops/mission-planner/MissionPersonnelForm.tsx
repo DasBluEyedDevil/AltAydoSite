@@ -122,21 +122,46 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
   };
   
   // Update participant ship
-  const updateParticipantShip = (userId: string, shipId: string, shipName: string, shipType: string) => {
-    const updatedParticipants = participants.map(p => {
-      if (p.userId === userId) {
-        return {
-          ...p,
+  const updateParticipantShip = async (userId: string, shipId: string, shipName: string, shipType: string) => {
+    try {
+      // Send ship assignment to the server
+      const response = await fetch('/api/fleet-ops/operations/assign-ship', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
           shipId,
           shipName,
-          shipType
-        };
+          shipType,
+          missionId: formData.id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to assign ship');
       }
-      return p;
-    });
-    
-    setParticipants(updatedParticipants);
-    updateFormData('participants', updatedParticipants);
+
+      // Update local state after successful server update
+      const updatedParticipants = participants.map(p => {
+        if (p.userId === userId) {
+          return {
+            ...p,
+            shipId,
+            shipName,
+            shipType
+          };
+        }
+        return p;
+      });
+      
+      setParticipants(updatedParticipants);
+      updateFormData('participants', updatedParticipants);
+    } catch (error) {
+      console.error('Error assigning ship:', error);
+      // You might want to add error handling UI here
+    }
   };
   
   // Add role to participant

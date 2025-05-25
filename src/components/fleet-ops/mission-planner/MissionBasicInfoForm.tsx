@@ -21,36 +21,46 @@ const MissionBasicInfoForm: React.FC<MissionBasicInfoFormProps> = ({
   };
   
   // Handle image upload
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     
-    // In a real implementation, this would upload the file to a server
-    // For now, we'll just create a mock URL
     const newImages = [...tempImages];
     
-    Array.from(files).forEach(file => {
+    for (const file of Array.from(files)) {
       try {
-        // Validate file (size, type, etc.)
+        // Validate file
         if (file.size > 5000000) { // 5MB limit
           setUploadError('File size exceeds 5MB limit');
-          return;
+          continue;
         }
         
         if (!file.type.startsWith('image/')) {
           setUploadError('Only image files are allowed');
-          return;
+          continue;
         }
         
-        // Create a local URL for the image (in a real app, this would be an uploaded URL)
-        const imageUrl = URL.createObjectURL(file);
+        // Create FormData and upload
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        const response = await fetch('/api/fleet-ops/operations/upload-image', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to upload image');
+        }
+        
+        const { imageUrl } = await response.json();
         newImages.push(imageUrl);
         setUploadError(null);
       } catch (error) {
-        console.error('Error processing image:', error);
-        setUploadError('Error processing image');
+        console.error('Error uploading image:', error);
+        setUploadError('Error uploading image');
       }
-    });
+    }
     
     setTempImages(newImages);
     updateFormData('images', newImages);
