@@ -406,7 +406,7 @@ export default function Join() {
                     {/* The image container */}
                     <div className="absolute inset-0 overflow-hidden">
                       <Image
-                        src="/images/RSI_AYDO_Corp_image.png"
+                        src="/images/sc_banner_crusader.png"
                         alt="AydoCorp Operations"
                         fill
                         className="object-cover scale-[1.02] hologram-projection"
