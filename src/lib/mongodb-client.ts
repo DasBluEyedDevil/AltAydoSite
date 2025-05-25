@@ -47,6 +47,10 @@ export async function connect() {
       // Get database reference
       const db = client.db(databaseId);
       
+      // Initialize collections first
+      userCollection = db.collection(collectionId);
+      resetTokenCollection = db.collection(resetTokensCollectionId);
+      
       // List collections for verification
       try {
         const collections = await db.listCollections().toArray();
@@ -54,10 +58,6 @@ export async function connect() {
       } catch (error) {
         console.warn('Unable to list collections (this is normal for fresh databases):', error);
       }
-      
-      // Initialize collections
-      userCollection = db.collection(collectionId);
-      resetTokenCollection = db.collection(resetTokensCollectionId);
       
       // Verify collection access with retries
       let retries = 3;
@@ -87,6 +87,11 @@ export async function connect() {
           retries--;
           await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second between retries
         }
+      }
+      
+      // Final verification that collections are initialized
+      if (!userCollection || !resetTokenCollection) {
+        throw new Error('Failed to initialize MongoDB collections');
       }
       
       console.log('MongoDB client initialized successfully');

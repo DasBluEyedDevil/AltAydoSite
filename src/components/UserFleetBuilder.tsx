@@ -23,6 +23,7 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
   const [manufacturers] = useState<string[]>(getManufacturersList());
   const [availableShips, setAvailableShips] = useState<{ name: string; image: string }[]>([]);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
   // Update available ships when manufacturer changes
   useEffect(() => {
@@ -38,12 +39,6 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
     if (selectedManufacturer && selectedShip) {
       const ship = availableShips.find(s => s.name === selectedShip);
       if (ship) {
-        console.log('Adding ship to fleet:', {
-          manufacturer: selectedManufacturer,
-          name: ship.name,
-          image: ship.image
-        });
-        
         onAddShip({
           manufacturer: selectedManufacturer,
           name: ship.name,
@@ -57,8 +52,12 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
 
   // Handle image load error
   const handleImageError = (shipId: string) => {
-    console.log(`Error loading image for ship: ${shipId}`);
     setImageErrors(prev => ({ ...prev, [shipId]: true }));
+  };
+
+  // Handle image load success
+  const handleImageLoad = (shipId: string) => {
+    setLoadedImages(prev => ({ ...prev, [shipId]: true }));
   };
 
   // Group ships by manufacturer for display
@@ -160,6 +159,7 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
                   const shipId = `${ship.manufacturer}-${ship.name}`;
                   const imagePath = `/images/${ship.image}`;
                   const useDefaultImage = imageErrors[shipId] || !ship.image;
+                  const isLoaded = loadedImages[shipId];
                   
                   return (
                     <div key={`${shipId}-${index}`} className="relative border border-[rgba(var(--mg-primary),0.1)] bg-[rgba(var(--mg-panel-dark),0.6)] p-4 rounded-sm">
@@ -176,15 +176,22 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
                       )}
                       
                       <div className="flex flex-col md:flex-row items-center">
-                        {/* Ship image */}
-                        <div className="w-full md:w-48 h-48 mb-4 md:mb-0 md:mr-6 flex-shrink-0">
+                        {/* Ship image with loading state */}
+                        <div className="w-full md:w-48 h-48 mb-4 md:mb-0 md:mr-6 flex-shrink-0 relative">
+                          {!isLoaded && !useDefaultImage && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-[rgba(var(--mg-panel-dark),0.4)]">
+                              <div className="w-8 h-8 border-2 border-[rgba(var(--mg-primary),0.2)] border-t-[rgba(var(--mg-primary),0.8)] rounded-full animate-spin"></div>
+                            </div>
+                          )}
                           <Image 
                             src={useDefaultImage ? '/assets/ship-placeholder.png' : imagePath}
                             alt={ship.name}
                             width={192}
                             height={192}
-                            className="w-full h-full object-contain"
+                            className={`w-full h-full object-contain transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                             onError={() => handleImageError(shipId)}
+                            onLoad={() => handleImageLoad(shipId)}
+                            priority={index < 2} // Prioritize loading first two images
                           />
                         </div>
                         
