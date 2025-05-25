@@ -284,7 +284,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       setSelectedRoles(initialRoles);
       setParticipants(formData.participants);
     }
-  }, []);
+  }, [formData.participants]);
   
   // Ship selection menu
   const ShipSelectionMenu = ({ userId, onSelect, onClose }: { 

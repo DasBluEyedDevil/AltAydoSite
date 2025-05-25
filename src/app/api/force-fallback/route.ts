@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import * as userStorage from '@/lib/user-storage';
+import { connectToDatabase } from '@/lib/mongodb';
 
-// Function to manually check all users and force fallback
+// Function to manually check MongoDB connection and force fallback
 async function forceLocalStorage() {
   try {
-    // This will trigger fallback to local storage if Cosmos DB connection fails
+    // This will trigger fallback to local storage if MongoDB connection fails
     await userStorage.getAllUsers();
     
     // If we're already using fallback storage, no need to proceed
@@ -13,13 +14,12 @@ async function forceLocalStorage() {
       return true;
     }
     
-    // Attempt a bogus Cosmos DB operation to force fallback
+    // Attempt a MongoDB operation to force fallback
     try {
-      // @ts-ignore - Access private property to force fallback
-      // eslint-disable-next-line
-      const cosmosDb = require('@/lib/azure-cosmos');
-      console.log('FORCE-FALLBACK: Attempting to trigger fallback by failing a Cosmos operation');
-      await cosmosDb.getUserById('non-existent-id-to-force-error');
+      const { db } = await connectToDatabase();
+      console.log('FORCE-FALLBACK: Attempting to trigger fallback by checking MongoDB connection');
+      await db.command({ ping: 1 });
+      return false; // If we get here, MongoDB is working
     } catch (error) {
       console.log('FORCE-FALLBACK: Successfully forced fallback to local storage');
       // @ts-ignore - Using private variable
@@ -27,8 +27,6 @@ async function forceLocalStorage() {
       global._usingFallbackStorage = true;
       return true;
     }
-    
-    return userStorage.isUsingFallbackStorage();
   } catch (error) {
     console.error('FORCE-FALLBACK: Error forcing fallback:', error);
     return false;

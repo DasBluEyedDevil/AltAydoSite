@@ -40,7 +40,7 @@ export default function UserFleetBuilderWrapper({
   const [error, setError] = useState<string | null>(null);
 
   // Fallback: Load ships from localStorage
-  const loadShipsFromLocalStorage = () => {
+  const loadShipsFromLocalStorage = useCallback(() => {
     try {
       if (typeof window === 'undefined' || !session?.user?.email) {
         console.log('Cannot load from localStorage - no window or user email');
@@ -91,7 +91,7 @@ export default function UserFleetBuilderWrapper({
       // Initialize with empty array on error
       setShips([]);
     }
-  };
+  }, [session?.user?.email]); // Only depends on the user's email
 
   // Fetch ships data from the API
   const fetchShipsFromAPI = useCallback(async () => {
@@ -146,7 +146,7 @@ export default function UserFleetBuilderWrapper({
     } finally {
       setIsLoading(false);
     }
-  }, [loadShipsFromLocalStorage, session]);
+  }, [loadShipsFromLocalStorage]);
   
   // Load ships from API on component mount
   useEffect(() => {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { MissionResponse, MissionStatus, MissionType } from '@/types/Mission';
 
 interface ImageUpload {
@@ -266,10 +267,12 @@ const MissionBasicInfoForm: React.FC<MissionBasicInfoFormProps> = ({
               {tempImages.map((imageUrl, index) => (
                 <div key={index} className="relative group">
                   <div className="w-full aspect-video bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm overflow-hidden">
-                    <img 
+                    <Image 
                       src={imageUrl} 
                       alt={`Mission image ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
                   <button
