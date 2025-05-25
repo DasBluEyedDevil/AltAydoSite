@@ -115,16 +115,26 @@ export async function ensureConnection(retries = 3): Promise<boolean> {
   while (retries > 0) {
     try {
       if (!client || !userCollection) {
+        console.log('ensureConnection: Client or userCollection is null, attempting to connect...');
         const connected = await connect();
         if (!connected) {
-          throw new Error('MongoDB client not initialized properly');
+          console.error('ensureConnection: connect() returned false.');
+          throw new Error('MongoDB client not initialized properly after connect() returned false');
         }
+        // Explicitly check if userCollection was initialized by connect()
+        if (!userCollection) {
+          console.error('ensureConnection: userCollection is still null after successful connect().');
+          throw new Error('MongoDB userCollection not initialized even after connect() reported success');
+        }
+        console.log('ensureConnection: Connection successful and userCollection appears initialized.');
       }
       // Verify connection is still alive
+      console.log('ensureConnection: Pinging MongoDB...');
       await client!.db().command({ ping: 1 });
+      console.log('ensureConnection: Ping successful.');
       return true;
     } catch (error) {
-      console.error(`Connection check failed (${retries} retries left):`, error);
+      console.error(`ensureConnection: Connection check failed (${retries} retries left):`, error);
       // Reset client on error
       if (client) {
         try {
