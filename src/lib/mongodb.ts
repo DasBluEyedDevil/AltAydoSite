@@ -1,19 +1,25 @@
 import { MongoClient } from 'mongodb';
 
-console.log('MongoDB URI exists:', !!process.env.MONGODB_URI);
+// Check for either MongoDB URI or CosmosDB connection string
+const mongoUri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
+console.log('MongoDB URI exists:', !!mongoUri);
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Please add your Mongo URI to .env.local');
+if (!mongoUri) {
+  throw new Error('Please add your MongoDB URI or CosmosDB connection string to .env.local');
 }
 
-const uri = process.env.MONGODB_URI;
+const uri = mongoUri;
 console.log('MongoDB configuration detected');
 
+// Options optimized for vCore MongoDB
 const options = {
-  maxPoolSize: 10,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  connectTimeoutMS: 10000,
+  maxPoolSize: 100,
+  minPoolSize: 0,
+  maxIdleTimeMS: 120000,
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 30000,
+  serverSelectionTimeoutMS: 30000,
+  waitQueueTimeoutMS: 30000,
   retryWrites: false,
 };
 
@@ -60,11 +66,11 @@ export async function connectToDatabase() {
   try {
     const client = await clientPromise;
     const db = client.db();
-    
+
     // Test the connection
     await db.command({ ping: 1 });
     console.log('✓ Database connection verified');
-    
+
     return { client, db };
   } catch (error) {
     console.error('× Database connection error:', error);
