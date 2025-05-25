@@ -3,10 +3,18 @@ import { User } from '@/types/user';
 import { PasswordResetToken } from '@/types/password-reset';
 
 // MongoDB Configuration
-const mongoUri = process.env.MONGODB_URI;
+const mongoUri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
 const databaseId = process.env.COSMOS_DATABASE_ID || 'aydocorp-database';
 const collectionId = process.env.COSMOS_CONTAINER_ID || 'users';
 const resetTokensCollectionId = 'resetTokens';
+
+// Log connection details (safely)
+if (mongoUri) {
+  const sanitizedUri = mongoUri.replace(/\/\/[^@]+@/, '//[credentials]@');
+  console.log(`MongoDB URI found, starting with: ${sanitizedUri.substring(0, 40)}...`);
+} else {
+  console.warn('No MongoDB URI found in environment variables');
+}
 
 // Client instance
 let client: MongoClient | null = null;

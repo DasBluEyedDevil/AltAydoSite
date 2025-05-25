@@ -23,6 +23,30 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
+
+      - name: Create .env.local
+        run: |
+          cat > .env.local << 'EOF'
+          # MongoDB connection string (vCore)
+          MONGODB_URI=${{ secrets.MONGODB_URI }}
+
+          # Email Configuration
+          EMAIL_HOST=${{ secrets.EMAIL_HOST }}
+          EMAIL_PORT=${{ secrets.EMAIL_PORT }}
+          EMAIL_SECURE=${{ secrets.EMAIL_SECURE }}
+          EMAIL_USER=${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
+
+          # Microsoft Entra ID Configuration
+          ENTRA_TENANT_ID=${{ secrets.ENTRA_TENANT_ID }}
+          ENTRA_CLIENT_ID=${{ secrets.ENTRA_CLIENT_ID }}
+          ENTRA_CLIENT_SECRET=${{ secrets.ENTRA_CLIENT_SECRET }}
+
+          # NextAuth Configuration
+          NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+          EOF
+
       - name: Create next.config.js if it doesn't exist
         run: |
           if [ ! -f next.config.js ]; then
@@ -58,6 +82,7 @@ jobs:
           cp -r src deploy/
           cp package*.json deploy/
           cp next.config.js deploy/
+          cp .env.local deploy/
           
           # Create web.config for Azure App Service
           cat > deploy/web.config << 'EOF'

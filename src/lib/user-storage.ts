@@ -106,8 +106,19 @@ async function shouldUseMongoDb(): Promise<boolean> {
   }
   
   try {
+    // Check if either MongoDB connection string is available
+    const mongoUri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
+    
+    if (!mongoUri) {
+      console.warn('STORAGE: No MongoDB URI found in environment variables');
+      mongoDbConnectionFailed = true;
+      usingFallbackStorage = true;
+      return false;
+    }
+    
     console.log('STORAGE: Testing MongoDB connection...');
     mongoDbConnectionAttempted = true;
+    
     // Try to get all users from MongoDB as a test
     await mongoDb.getAllUsers();
     console.log('STORAGE: Successfully connected to MongoDB');

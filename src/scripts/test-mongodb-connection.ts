@@ -4,45 +4,45 @@ import * as path from 'path';
 import * as mongoDb from '../lib/mongodb-client';
 
 // Make sure we load environment variables
+import * as path from 'path';
+import * as fs from 'fs';
+
 function loadEnvFile() {
   try {
-    const envLocalPath = path.join(process.cwd(), '.env.local');
-    const envFilePath = path.join(process.cwd(), 'env.local');
+    const envFiles = [
+      path.join(process.cwd(), '.env.local'),
+      path.join(process.cwd(), 'env.local'),
+      path.join(process.cwd(), '.env')
+    ];
     
-    // Check if .env.local exists
-    if (fs.existsSync(envLocalPath)) {
-      console.log('Loading variables from .env.local');
-      const envContent = fs.readFileSync(envLocalPath, 'utf8');
-      const envVars = envContent.split('\n').filter(line => line.trim() && !line.startsWith('#'));
-      
-      for (const envVar of envVars) {
-        const [key, ...valueParts] = envVar.split('=');
-        if (key && valueParts.length > 0) {
-          const value = valueParts.join('=').trim();
-          process.env[key.trim()] = value;
+    let loaded = false;
+    
+    for (const envPath of envFiles) {
+      if (fs.existsSync(envPath)) {
+        console.log(`Loading variables from ${path.basename(envPath)}`);
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        const envVars = envContent.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+        
+        for (const envVar of envVars) {
+          const [key, ...valueParts] = envVar.split('=');
+          if (key && valueParts.length > 0) {
+            const value = valueParts.join('=').trim();
+            process.env[key.trim()] = value;
+          }
         }
+        loaded = true;
       }
-      return true;
     }
     
-    // Check if env.local exists as fallback
-    if (fs.existsSync(envFilePath)) {
-      console.log('Loading variables from env.local');
-      const envContent = fs.readFileSync(envFilePath, 'utf8');
-      const envVars = envContent.split('\n').filter(line => line.trim() && !line.startsWith('#'));
-      
-      for (const envVar of envVars) {
-        const [key, ...valueParts] = envVar.split('=');
-        if (key && valueParts.length > 0) {
-          const value = valueParts.join('=').trim();
-          process.env[key.trim()] = value;
-        }
-      }
-      return true;
+    if (!loaded) {
+      console.log('No env files found');
     }
+
+    // Check for both potential MongoDB connection variables
+    console.log(`- MONGODB_URI: ${process.env.MONGODB_URI ? '✓ Set' : '✗ Not set'}`);
+    console.log(`- COSMOSDB_CONNECTION_STRING: ${process.env.COSMOSDB_CONNECTION_STRING ? '✓ Set' : '✗ Not set'}`);
     
-    console.log('No env files found');
-    return false;
+    return loaded;
   } catch (error) {
     console.error('Error loading env file:', error);
     return false;
