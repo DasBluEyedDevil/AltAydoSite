@@ -1,12 +1,14 @@
 import { MongoClient, Collection, ObjectId } from 'mongodb';
 import { User } from '@/types/user';
 import { PasswordResetToken } from '@/types/password-reset';
+import { Transaction } from '@/types/finance';
 
 // MongoDB Configuration
 const mongoUri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
 const databaseId = process.env.COSMOS_DATABASE_ID || 'aydocorp-database';
 const collectionId = process.env.COSMOS_CONTAINER_ID || 'users';
 const resetTokensCollectionId = 'resetTokens';
+const transactionsCollectionId = 'transactions';
 
 // Log connection details (safely)
 if (mongoUri) {
@@ -20,106 +22,60 @@ if (mongoUri) {
 let client: MongoClient | null = null;
 let userCollection: Collection | null = null;
 let resetTokenCollection: Collection | null = null;
+let transactionCollection: Collection | null = null;
 
-// Initialize and connect to MongoDB
-export async function connect() {
+// Initialize MongoDB connection
+export async function connectToDatabase() {
   try {
-    if (!client) {
-      console.log('Initializing MongoDB client...');
-      console.log(`Database ID: "${databaseId}"`);
-      console.log(`Collection ID: "${collectionId}"`);
-      
-      if (!mongoUri) {
-        throw new Error('MONGODB_URI environment variable is required');
-      }
-
-      // Log connection attempt (safely)
-      const sanitizedUri = mongoUri.replace(/\/\/[^@]+@/, '//[credentials]@');
-      console.log(`Connecting to MongoDB with URI starting with: ${sanitizedUri.substring(0, 50)}...`);
-      
-      // Create MongoDB client with vCore-specific options
-      client = new MongoClient(mongoUri, {
-        connectTimeoutMS: 30000, // 30 seconds
-        socketTimeoutMS: 30000,
-        serverSelectionTimeoutMS: 30000,
-        maxPoolSize: 100,
-        minPoolSize: 0,
-        maxIdleTimeMS: 120000,
-        waitQueueTimeoutMS: 30000,
-      });
-      
-      console.log('Connecting to MongoDB...');
-      await client.connect();
-      console.log('Connected to MongoDB successfully!');
-      
-      // Get database reference
-      const db = client.db(databaseId);
-      
-      // Initialize collections first
-      userCollection = db.collection(collectionId);
-      resetTokenCollection = db.collection(resetTokensCollectionId);
-      
-      // List collections for verification
-      try {
-        const collections = await db.listCollections().toArray();
-        console.log('Available collections:', collections.map(col => col.name).join(', '));
-      } catch (error) {
-        console.warn('Unable to list collections (this is normal for fresh databases):', error);
-      }
-      
-      // Verify collection access with retries
-      let retries = 3;
-      while (retries > 0) {
-        try {
-          // Simple query to verify access
-          await userCollection.findOne({}, { projection: { _id: 1 } });
-          console.log('Successfully verified users collection access');
-          break;
-        } catch (error) {
-          console.error(`Collection access attempt failed (${retries} retries left):`, error);
-          if (retries === 1) {
-            // Last retry, attempt to create collection
-            try {
-              await db.createCollection(collectionId);
-              userCollection = db.collection(collectionId);
-              console.log('Created new users collection');
-              break;
-            } catch (createError) {
-              if ((createError as any).code === 48) { // Collection already exists
-                console.log('Collection already exists, proceeding...');
-                break;
-              }
-              throw createError;
-            }
-          }
-          retries--;
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second between retries
-        }
-      }
-      
-      // Final verification that collections are initialized
-      if (!userCollection || !resetTokenCollection) {
-        throw new Error('Failed to initialize MongoDB collections');
-      }
-      
-      console.log('MongoDB client initialized successfully');
-      return true;
-    }
-    return true;
-  } catch (error) {
-    console.error('Failed to initialize MongoDB client:', error);
-    // Reset client and collections on error
     if (client) {
       try {
-        await client.close();
-      } catch (closeError) {
-        console.error('Error closing client:', closeError);
+        await client.db().admin().serverInfo();
+        return {
+          client,
+          userCollection: userCollection as Collection,
+          resetTokenCollection: resetTokenCollection as Collection,
+          transactionCollection: transactionCollection as Collection,
+        };
+      } catch (e) {
+        // Connection is not valid, continue to create new connection
+        console.log('Existing connection is not valid, creating new connection');
       }
     }
+
+    if (!mongoUri) {
+      throw new Error('MongoDB URI is not defined');
+    }
+
+    client = new MongoClient(mongoUri);
+    await client.connect();
+    console.log('Connected to MongoDB');
+
+    const db = client.db(databaseId);
+    userCollection = db.collection(collectionId);
+    resetTokenCollection = db.collection(resetTokensCollectionId);
+    transactionCollection = db.collection(transactionsCollectionId);
+
+    return {
+      client,
+      userCollection: userCollection as Collection,
+      resetTokenCollection: resetTokenCollection as Collection,
+      transactionCollection: transactionCollection as Collection,
+    };
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+    throw error;
+  }
+}
+
+// Helper function to close the database connection
+export async function closeDatabaseConnection() {
+  if (client) {
+    await client.close();
     client = null;
     userCollection = null;
     resetTokenCollection = null;
-    return false;
+    transactionCollection = null;
+    console.log('Disconnected from MongoDB');
   }
 }
 
@@ -128,10 +84,7 @@ export async function ensureConnection(retries = 3): Promise<boolean> {
   while (retries > 0) {
     try {
       if (!client || !userCollection) {
-        const connected = await connect();
-        if (!connected) {
-          throw new Error('MongoDB client not initialized properly');
-        }
+        await connectToDatabase();
       }
       // Verify connection is still alive
       await client!.db().command({ ping: 1 });
@@ -149,6 +102,7 @@ export async function ensureConnection(retries = 3): Promise<boolean> {
       client = null;
       userCollection = null;
       resetTokenCollection = null;
+      transactionCollection = null;
       
       if (retries === 1) {
         throw new Error('Failed to ensure MongoDB connection after retries');
@@ -159,6 +113,9 @@ export async function ensureConnection(retries = 3): Promise<boolean> {
   }
   return false;
 }
+
+// Export collections for use in other files
+export { userCollection, resetTokenCollection, transactionCollection };
 
 // Get a user by ID
 export async function getUserById(id: string): Promise<User | null> {
