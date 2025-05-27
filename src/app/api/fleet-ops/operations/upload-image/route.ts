@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/auth';
 import { connectToDatabase } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const image = formData.get('image') as File;
     const missionId = formData.get('missionId') as string;
-    
+
     if (!image || !missionId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }

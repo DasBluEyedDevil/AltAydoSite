@@ -48,21 +48,21 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
   const [customRole, setCustomRole] = useState('');
   const [participants, setParticipants] = useState<MissionParticipant[]>(formData.participants || []);
   const [availableShips, setAvailableShips] = useState<UserShip[]>([]);
-  
+
   // Fetch real users from API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch users from the API
         const response = await fetch('/api/users');
         if (!response.ok) {
           throw new Error(`Error fetching users: ${response.status}`);
         }
-        
+
         const apiUsers: ApiUser[] = await response.json();
-        
+
         // Transform API users to the format expected by the component
         const transformedUsers: User[] = apiUsers.map(apiUser => ({
           userId: apiUser.id,
@@ -73,7 +73,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
             type: ship.type
           })) : []
         }));
-        
+
         setUsers(transformedUsers);
         setLoading(false);
       } catch (error) {
@@ -81,47 +81,47 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
         setLoading(false);
       }
     };
-    
+
     fetchUsers();
   }, []);
-  
+
   // Filter users based on search term
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   // Check if a user is already a participant
   const isParticipant = (userId: string) => {
     return participants.some(p => p.userId === userId);
   };
-  
+
   // Add participant
   const addParticipant = (user: User) => {
     if (isParticipant(user.userId)) return;
-    
+
     const newParticipant: MissionParticipant = {
       userId: user.userId,
       userName: user.name,
       roles: []
     };
-    
+
     const updatedParticipants = [...participants, newParticipant];
     setParticipants(updatedParticipants);
     updateFormData('participants', updatedParticipants);
   };
-  
+
   // Remove participant
   const removeParticipant = (userId: string) => {
     const updatedParticipants = participants.filter(p => p.userId !== userId);
     setParticipants(updatedParticipants);
     updateFormData('participants', updatedParticipants);
-    
+
     // Also remove any roles assigned to this user
     const updatedRoles = { ...selectedRoles };
     delete updatedRoles[userId];
     setSelectedRoles(updatedRoles);
   };
-  
+
   // Fetch available ships
   useEffect(() => {
     const fetchShips = async () => {
@@ -139,33 +139,11 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
 
     fetchShips();
   }, []);
-  
+
   // Update participant ship
   const updateParticipantShip = async (userId: string, shipId: string, shipName: string, shipType: string) => {
     try {
-      // Send ship assignment to the server
-      const response = await fetch('/api/fleet-ops/operations/assign-ship', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          shipId,
-          shipName,
-          shipType,
-          missionId: formData.id
-        })
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to assign ship');
-      }
-
-      const result = await response.json();
-
-      // Update local state after successful server update
+      // Update local state first for immediate feedback
       const updatedParticipants = participants.map(p => {
         if (p.userId === userId) {
           return {
@@ -181,17 +159,39 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       setParticipants(updatedParticipants);
       updateFormData('participants', updatedParticipants);
 
+      // Only make API call if we have a valid mission ID and ship ID
+      if (formData.id && shipId) {
+        // Send ship assignment to the server
+        const response = await fetch('/api/fleet-ops/operations/assign-ship', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            shipId,
+            shipName,
+            shipType,
+            missionId: formData.id
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Server error assigning ship:', error);
+          // Don't throw error to prevent UI disruption
+        }
+      }
     } catch (error) {
       console.error('Error assigning ship:', error);
-      // You might want to show this error to the user in the UI
-      throw error;
+      // Don't throw error to prevent UI disruption
     }
   };
-  
+
   // Add role to participant
   const addRoleToParticipant = (userId: string, role: string) => {
     if (!role) return;
-    
+
     // Update local roles state
     const userRoles = selectedRoles[userId] || [];
     if (!userRoles.includes(role)) {
@@ -200,7 +200,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
         [userId]: [...userRoles, role] 
       };
       setSelectedRoles(updatedRoles);
-      
+
       // Update participants
       const updatedParticipants = participants.map(p => {
         if (p.userId === userId) {
@@ -211,15 +211,15 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
         }
         return p;
       });
-      
+
       setParticipants(updatedParticipants);
       updateFormData('participants', updatedParticipants);
     }
-    
+
     // Clear custom role input
     setCustomRole('');
   };
-  
+
   // Remove role from participant
   const removeRoleFromParticipant = (userId: string, roleToRemove: string) => {
     // Update local roles state
@@ -230,7 +230,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       [userId]: updatedUserRoles 
     };
     setSelectedRoles(updatedRoles);
-    
+
     // Update participants
     const updatedParticipants = participants.map(p => {
       if (p.userId === userId) {
@@ -241,16 +241,16 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       }
       return p;
     });
-    
+
     setParticipants(updatedParticipants);
     updateFormData('participants', updatedParticipants);
   };
-  
+
   // Get user by ID
   const getUserById = (userId: string): User | undefined => {
     return users.find(user => user.userId === userId);
   };
-  
+
   // Animation variants
   const contentVariants = {
     hidden: { opacity: 0 },
@@ -261,7 +261,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       }
     }
   };
-  
+
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { 
@@ -269,23 +269,23 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       y: 0
     }
   };
-  
+
   // Initialize selectedRoles from formData on first load
   useEffect(() => {
     if (formData.participants && formData.participants.length > 0) {
       const initialRoles: {[key: string]: string[]} = {};
-      
+
       formData.participants.forEach(participant => {
         if (participant.roles && participant.roles.length > 0) {
           initialRoles[participant.userId] = participant.roles;
         }
       });
-      
+
       setSelectedRoles(initialRoles);
       setParticipants(formData.participants);
     }
   }, [formData.participants]);
-  
+
   // Ship selection menu
   const ShipSelectionMenu = ({ userId, onSelect, onClose }: { 
     userId: string; 
@@ -330,9 +330,6 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {participant.shipName || 'Assign Ship'}
-            <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
           </button>
 
           {isMenuOpen && (
@@ -348,7 +345,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
       </div>
     );
   };
-  
+
   return (
     <motion.div 
       className="space-y-6"
@@ -361,7 +358,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
         <h3 className="mg-subtitle text-base font-quantify border-b border-[rgba(var(--mg-primary),0.3)] pb-2">
           Mission Personnel
         </h3>
-        
+
         {/* User Search */}
         <div>
           <label className="block text-sm text-[rgba(var(--mg-primary),0.8)] mb-1">
@@ -382,7 +379,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
             </div>
           </div>
         </div>
-        
+
         {/* User List */}
         <div className="border border-[rgba(var(--mg-primary),0.25)] rounded-sm bg-[rgba(var(--mg-panel-dark),0.4)] max-h-[150px] overflow-y-auto">
           {loading ? (
@@ -401,7 +398,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
                       </div>
                       <span className="mg-text">{user.name}</span>
                     </div>
-                    
+
                     {!isParticipant(user.userId) ? (
                       <button
                         type="button"
@@ -424,13 +421,13 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
           )}
         </div>
       </motion.div>
-      
+
       {/* Selected Personnel Section */}
       <motion.div variants={itemVariants} className="space-y-4">
         <h3 className="mg-subtitle text-base font-quantify border-b border-[rgba(var(--mg-primary),0.3)] pb-2">
           Mission Roster
         </h3>
-        
+
         {participants.length === 0 ? (
           <div className="border border-[rgba(var(--mg-primary),0.25)] rounded-sm bg-[rgba(var(--mg-panel-dark),0.4)] p-4 text-center">
             <p className="text-sm mg-text-secondary">No personnel assigned to this mission yet.</p>
@@ -440,7 +437,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
             {participants.map(participant => {
               const user = getUserById(participant.userId);
               const userShips = user ? user.ships : [];
-              
+
               return (
                 <div 
                   key={participant.userId} 
@@ -459,7 +456,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
                       </svg>
                     </button>
                   </div>
-                  
+
                   {/* Ship Selection */}
                   <div className="mb-3">
                     <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">
@@ -491,13 +488,13 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
                       ))}
                     </select>
                   </div>
-                  
+
                   {/* Roles Assignment */}
                   <div>
                     <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">
                       Mission Roles
                     </label>
-                    
+
                     {/* Role Tags */}
                     <div className="flex flex-wrap gap-2 mb-2">
                       {participant.roles && participant.roles.map(role => (
@@ -519,7 +516,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
                         </div>
                       ))}
                     </div>
-                    
+
                     {/* Role Selection */}
                     <div className="flex space-x-2">
                       {/* Common Roles Dropdown */}
@@ -544,7 +541,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
                           </option>
                         ))}
                       </select>
-                      
+
                       {/* Custom Role Input */}
                       <div className="flex flex-1">
                         <input 
@@ -573,7 +570,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
             })}
           </div>
         )}
-        
+
         {/* Mission Leader Selection */}
         {participants.length > 0 && (
           <div>

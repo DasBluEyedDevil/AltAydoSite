@@ -22,7 +22,7 @@
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 0, 0, 0;
   --background-end-rgb: 0, 0, 0;
-  
+
   /* Updated Mobiglass colors based on new reference images */
   --mg-primary: 0, 215, 255;      /* Brighter cyan blue */
   --mg-secondary: 0, 140, 210;    /* Deeper blue */
@@ -37,7 +37,7 @@
   --mg-glow: 0, 180, 255;         /* Holographic glow */
   --mg-hologram: 0, 120, 255;     /* Hologram color */
   --mg-panel-dark: 0, 12, 24;     /* Panel darker background */
-  
+
   /* Increased base font size */
   font-size: 110%;
 }
@@ -60,6 +60,11 @@ select {
 }
 
 /* Chrome/Safari/Edge - Style the dropdown options */
+select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 select option {
   background-color: rgba(var(--mg-panel-dark), 0.95);
   color: rgba(var(--mg-text), 0.9);

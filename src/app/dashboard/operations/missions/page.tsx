@@ -9,68 +9,7 @@ import MissionFilters from '@/components/fleet-ops/mission-planner/MissionFilter
 import MissionForm from '@/components/fleet-ops/mission-planner/MissionForm';
 import { MissionResponse, MissionStatus, MissionType } from '@/types/Mission';
 
-// Placeholder mission data
-const mockMissions: MissionResponse[] = [
-  {
-    id: '1',
-    name: 'Operation Stardust',
-    type: 'Cargo Haul',
-    scheduledDateTime: new Date(Date.now() + 86400000 * 2).toISOString(), // 2 days from now
-    status: 'Planning',
-    briefSummary: 'Transport critical supplies to Terra Prime.',
-    details: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras convallis magna nec tortor cursus, a ultrices ex gravida.',
-    location: 'Terra Prime - Port Tressler',
-    leaderId: 'user1',
-    leaderName: 'Cmdr. Alex Riker',
-    images: [],
-    participants: [
-      { userId: 'user1', userName: 'Cmdr. Alex Riker', shipId: 'ship1', shipName: 'RSI Constellation Phoenix', shipType: 'Multi-crew', roles: ['Commander'] },
-      { userId: 'user2', userName: 'Lt. Sarah Chen', shipId: 'ship2', shipName: 'Drake Cutlass Red', shipType: 'Medical', roles: ['Medical Officer'] }
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '2',
-    name: 'Operation Firestorm',
-    type: 'Combat Patrol',
-    scheduledDateTime: new Date(Date.now() + 86400000 * 5).toISOString(), // 5 days from now
-    status: 'Briefing',
-    briefSummary: 'Patrol the Stanton-Pyro jump point for hostile activity.',
-    details: 'Increased pirate activity has been reported near the jump point. A show of force is required to deter further incursions.',
-    location: 'Stanton System - Pyro Jump Point',
-    leaderId: 'user3',
-    leaderName: 'Maj. John Reeves',
-    images: [],
-    participants: [
-      { userId: 'user3', userName: 'Maj. John Reeves', shipId: 'ship3', shipName: 'Anvil F8 Lightning', shipType: 'Heavy Fighter', roles: ['Squad Leader'] },
-      { userId: 'user4', userName: 'Cpt. Emily Wong', shipId: 'ship4', shipName: 'Aegis Vanguard Warden', shipType: 'Heavy Fighter', roles: ['Wingman'] },
-      { userId: 'user5', userName: 'Lt. David Parks', shipId: 'ship5', shipName: 'Origin 325a', shipType: 'Light Fighter', roles: ['Scout'] }
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '3',
-    name: 'Project Reclamation',
-    type: 'Salvage Operation',
-    scheduledDateTime: new Date(Date.now() - 86400000 * 3).toISOString(), // 3 days ago
-    status: 'In Progress',
-    briefSummary: 'Salvage operations at the wreckage of a Bengal carrier.',
-    details: 'An ancient Bengal carrier has been discovered in a remote asteroid field. The operation involves salvaging valuable components and data cores.',
-    location: 'Aaron Halo - Sector 12',
-    leaderId: 'user6',
-    leaderName: 'Eng. Olivia Martinez',
-    images: [],
-    participants: [
-      { userId: 'user6', userName: 'Eng. Olivia Martinez', shipId: 'ship6', shipName: 'MISC Starfarer', shipType: 'Refueling', roles: ['Operations Lead'] },
-      { userId: 'user7', userName: 'Tech. James Wilson', shipId: 'ship7', shipName: 'Drake Vulture', shipType: 'Salvage', roles: ['Salvage Specialist'] },
-      { userId: 'user8', userName: 'Sec. Michael Chen', shipId: 'ship8', shipName: 'Aegis Avenger Stalker', shipType: 'Light Fighter', roles: ['Security'] }
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
+// Mission data will be fetched from the API
 
 export default function MissionPlannerPage() {
   const { data: session, status } = useSession();
@@ -83,37 +22,38 @@ export default function MissionPlannerPage() {
   const [selectedMission, setSelectedMission] = useState<MissionResponse | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMission, setEditingMission] = useState<MissionResponse | null>(null);
-  
+
   // All users can create missions without role restrictions
   const canCreateMissions = true;
-  
-  // Fetch missions (mock for now)
+
+  // Fetch missions from API
   useEffect(() => {
     const fetchMissions = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        // In a real implementation, this would be an API call
-        // const response = await fetch('/api/missions');
-        // const data = await response.json();
-        
-        // Using mock data for now
-        setTimeout(() => {
-          setMissions(mockMissions);
-          setLoading(false);
-        }, 1000); // Simulate loading
-        
+
+        // Fetch missions from the API
+        const response = await fetch('/api/fleet-ops/missions');
+
+        if (!response.ok) {
+          throw new Error(`Error fetching missions: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setMissions(data);
+        setLoading(false);
+
       } catch (err: any) {
         setError('Failed to fetch missions');
         setLoading(false);
         console.error('Error fetching missions:', err);
       }
     };
-    
+
     fetchMissions();
   }, []);
-  
+
   // Filter and sort missions
   const filteredMissions = missions
     .filter(mission => {
@@ -126,54 +66,112 @@ export default function MissionPlannerPage() {
       const dateB = new Date(b.scheduledDateTime).getTime();
       return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
     });
-  
+
   // Handle mission click
   const handleMissionClick = (mission: MissionResponse) => {
     setSelectedMission(mission);
     setEditingMission(mission);
     setIsFormOpen(true);
   };
-  
+
   // Handle create new mission
   const handleCreateMission = () => {
     setEditingMission(null);
     setIsFormOpen(true);
   };
-  
+
   // Handle save mission
-  const handleSaveMission = (mission: MissionResponse) => {
-    // Check if we're editing an existing mission
-    if (missions.some(m => m.id === mission.id)) {
-      // Update existing mission
-      setMissions(prevMissions => 
-        prevMissions.map(m => m.id === mission.id ? mission : m)
-      );
-    } else {
-      // Add new mission
-      setMissions(prevMissions => [...prevMissions, mission]);
+  const handleSaveMission = async (mission: MissionResponse) => {
+    try {
+      setLoading(true);
+
+      // Check if we're editing an existing mission
+      if (missions.some(m => m.id === mission.id)) {
+        // Update existing mission via API
+        const response = await fetch('/api/fleet-ops/missions', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(mission)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error updating mission: ${response.status}`);
+        }
+
+        const updatedMission = await response.json();
+
+        // Update local state
+        setMissions(prevMissions => 
+          prevMissions.map(m => m.id === mission.id ? updatedMission : m)
+        );
+      } else {
+        // Create new mission via API
+        const response = await fetch('/api/fleet-ops/missions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(mission)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error creating mission: ${response.status}`);
+        }
+
+        const newMission = await response.json();
+
+        // Add to local state
+        setMissions(prevMissions => [...prevMissions, newMission]);
+      }
+
+      // Close form
+      setIsFormOpen(false);
+      setEditingMission(null);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error saving mission:', error);
+      setError('Failed to save mission');
+      setLoading(false);
     }
-    
-    // Close form
-    setIsFormOpen(false);
-    setEditingMission(null);
   };
-  
+
   // Handle cancel mission form
   const handleCancelMissionForm = () => {
     setIsFormOpen(false);
     setEditingMission(null);
   };
-  
+
   // Handle delete mission
-  const handleDeleteMission = (missionId: string) => {
+  const handleDeleteMission = async (missionId: string) => {
     // No role check for deletion - all users can delete
     if (confirm('Are you sure you want to delete this mission? This action cannot be undone.')) {
-      setMissions(prevMissions => prevMissions.filter(m => m.id !== missionId));
-      setIsFormOpen(false);
-      setEditingMission(null);
+      try {
+        setLoading(true);
+
+        // Delete mission via API
+        const response = await fetch(`/api/fleet-ops/missions?id=${missionId}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error deleting mission: ${response.status}`);
+        }
+
+        // Update local state
+        setMissions(prevMissions => prevMissions.filter(m => m.id !== missionId));
+        setIsFormOpen(false);
+        setEditingMission(null);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error deleting mission:', error);
+        setError('Failed to delete mission');
+        setLoading(false);
+      }
     }
   };
-  
+
   // Page animations
   const pageVariants = {
     hidden: { opacity: 0 },
@@ -186,7 +184,7 @@ export default function MissionPlannerPage() {
       }
     }
   };
-  
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
@@ -195,7 +193,7 @@ export default function MissionPlannerPage() {
       transition: { duration: 0.4 }
     }
   };
-  
+
   // Auth/loading states
   if (status === 'loading') {
     return (
@@ -207,7 +205,7 @@ export default function MissionPlannerPage() {
       </div>
     );
   }
-  
+
   if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -217,7 +215,7 @@ export default function MissionPlannerPage() {
       </div>
     );
   }
-  
+
   return (
     <motion.div 
       className="min-h-screen p-4 md:p-8"
@@ -232,7 +230,7 @@ export default function MissionPlannerPage() {
           Plan, schedule and manage AydoCorp fleet operations
         </p>
       </motion.div>
-      
+
       {/* Main Content Panel */}
       <motion.div variants={itemVariants}>
         <MobiGlasPanel 
@@ -262,7 +260,7 @@ export default function MissionPlannerPage() {
                 setSortOrder={setSortOrder}
               />
             </div>
-            
+
             {/* Mission List */}
             <div className="flex-grow">
               <MissionList 
@@ -275,7 +273,7 @@ export default function MissionPlannerPage() {
           </div>
         </MobiGlasPanel>
       </motion.div>
-      
+
       {/* Mission Form Modal */}
       <AnimatePresence>
         {isFormOpen && (
@@ -287,7 +285,7 @@ export default function MissionPlannerPage() {
           />
         )}
       </AnimatePresence>
-      
+
       {/* Floating Create Button (Mobile) */}
       <motion.button
         className="fixed bottom-8 right-8 z-30 w-14 h-14 rounded-full bg-[rgba(var(--mg-primary),0.9)] shadow-lg flex items-center justify-center group"
