@@ -3,28 +3,31 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import MobiGlasPanel from '@/components/dashboard/MobiGlasPanel';
-import MissionList from '@/components/fleet-ops/mission-planner/MissionList';
-import MissionFilters from '@/components/fleet-ops/mission-planner/MissionFilters';
-import MissionForm from '@/components/fleet-ops/mission-planner/MissionForm';
 import { MissionResponse, MissionStatus, MissionType } from '@/types/Mission';
 
-// Mission data will be fetched from the API
+// New Mission Planner Components
+import MissionDashboard from '@/components/fleet-ops/mission-planner/MissionDashboard';
+import MissionDetail from '@/components/fleet-ops/mission-planner/MissionDetail';
+import MissionForm from '@/components/fleet-ops/mission-planner/MissionForm';
+import LoadingOverlay from '@/components/LoadingOverlay';
+import ErrorNotification from '@/components/ErrorNotification';
 
 export default function MissionPlannerPage() {
   const { data: session, status } = useSession();
   const [missions, setMissions] = useState<MissionResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<MissionStatus | 'all'>('all');
-  const [typeFilter, setTypeFilter] = useState<MissionType | 'all'>('all');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedMission, setSelectedMission] = useState<MissionResponse | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMission, setEditingMission] = useState<MissionResponse | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'detail' | 'form'>('list');
 
-  // All users can create missions without role restrictions
-  const canCreateMissions = true;
+  // Simulate system initialization effect
+  useEffect(() => {
+    const timer = setTimeout(() => setIsInitialized(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Fetch missions from API
   useEffect(() => {
@@ -32,30 +35,21 @@ export default function MissionPlannerPage() {
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching missions from API...');
 
-        // Fetch missions from the API
         const response = await fetch('/api/fleet-ops/missions');
 
         if (!response.ok) {
-          console.error(`Error response from API: ${response.status} ${response.statusText}`);
-
-          // Try to get more details from the response
           try {
             const errorData = await response.json();
-            console.error('API error details:', errorData);
             throw new Error(`Error fetching missions: ${errorData.error || response.status}`);
           } catch (jsonError) {
-            console.error('Could not parse error response:', jsonError);
             throw new Error(`Error fetching missions: ${response.status}`);
           }
         }
 
         const data = await response.json();
-        console.log(`Fetched ${data.length} missions from API`);
         setMissions(data);
         setLoading(false);
-
       } catch (err: any) {
         const errorMessage = err.message || 'Failed to fetch missions';
         setError(errorMessage);
@@ -67,40 +61,30 @@ export default function MissionPlannerPage() {
     fetchMissions();
   }, []);
 
-  // Filter and sort missions
-  const filteredMissions = missions
-    .filter(mission => {
-      if (statusFilter !== 'all' && mission.status !== statusFilter) return false;
-      if (typeFilter !== 'all' && mission.type !== typeFilter) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      const dateA = new Date(a.scheduledDateTime).getTime();
-      const dateB = new Date(b.scheduledDateTime).getTime();
-      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-    });
-
   // Handle mission click
   const handleMissionClick = (mission: MissionResponse) => {
-    // Clear any previous errors when clicking a mission
     setError(null);
     setSelectedMission(mission);
-    setEditingMission(mission);
-    setIsFormOpen(true);
+    setViewMode('detail');
   };
 
   // Handle create new mission
   const handleCreateMission = () => {
-    // Clear any previous errors when opening the form
     setError(null);
     setEditingMission(null);
-    setIsFormOpen(true);
+    setViewMode('form');
+  };
+
+  // Handle edit mission
+  const handleEditMission = (mission: MissionResponse) => {
+    setError(null);
+    setEditingMission(mission);
+    setViewMode('form');
   };
 
   // Handle save mission
   const handleSaveMission = async (mission: MissionResponse) => {
     try {
-      // Clear any previous errors before attempting to save
       setError(null);
       setLoading(true);
 
@@ -116,7 +100,8 @@ export default function MissionPlannerPage() {
         });
 
         if (!response.ok) {
-          throw new Error(`Error updating mission: ${response.status}`);
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Error updating mission: ${response.status}`);
         }
 
         const updatedMission = await response.json();
@@ -125,6 +110,8 @@ export default function MissionPlannerPage() {
         setMissions(prevMissions => 
           prevMissions.map(m => m.id === mission.id ? updatedMission : m)
         );
+        
+        setSelectedMission(updatedMission);
       } else {
         // Create new mission via API
         const response = await fetch('/api/fleet-ops/missions', {
@@ -136,105 +123,46 @@ export default function MissionPlannerPage() {
         });
 
         if (!response.ok) {
-          throw new Error(`Error creating mission: ${response.status}`);
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Error creating mission: ${response.status}`);
         }
 
         const newMission = await response.json();
 
         // Add to local state
         setMissions(prevMissions => [...prevMissions, newMission]);
+        setSelectedMission(newMission);
       }
 
-      // Close form
-      setIsFormOpen(false);
+      // Return to detail view
+      setViewMode('detail');
       setEditingMission(null);
       setLoading(false);
     } catch (error: any) {
       console.error('Error saving mission:', error);
-      console.error('Error message:', error.message);
-
+      
       let errorMessage = 'Failed to save mission';
-      let errorDetails = '';
-      let isServerError = false;
-
-      // Try to get more details from the response if available
-      if (error.response) {
-        isServerError = true;
-        try {
-          const errorData = await error.response.json();
-          console.error('Server error details:', errorData);
-
-          // Check for specific error types from the server
-          if (errorData.details) {
-            console.error('Detailed error information:', errorData.details);
-            errorDetails = JSON.stringify(errorData.details, null, 2);
-
-            // Handle specific error types
-            if (errorData.details.connectionIssue) {
-              errorMessage = 'Database connection error. Please try again later.';
-            } else if (errorData.details.connectionStringIssue) {
-              errorMessage = 'Database configuration error. Please contact support.';
-            } else if (errorData.details.permissionIssue) {
-              errorMessage = 'Permission error. The application lacks necessary database permissions.';
-            } else if (errorData.details.mongoErrorInfo) {
-              errorMessage = `Database error: ${errorData.details.mongoErrorInfo.message || 'Unknown MongoDB error'}`;
-            } else {
-              // Use the error message from the server if available
-              errorMessage = errorData.error || `Error: ${errorData.details.message || 'Unknown error'}`;
-            }
-          } else {
-            // Fallback to the error message from the server
-            errorMessage = errorData.error || error.message;
-          }
-        } catch (jsonError) {
-          console.error('Could not parse error response:', jsonError);
-          errorMessage = `${errorMessage}: ${error.message}`;
-        }
-      } else if (error instanceof TypeError && error.message.includes('fetch')) {
-        // Handle network errors
-        errorMessage = 'Network error. Please check your connection and try again.';
-      } else if (error.message.includes('Error creating mission: 500')) {
-        // Handle specific 500 error for mission creation
-        errorMessage = 'Server error while creating mission. This might be due to a database connection issue or insufficient permissions.';
-        errorDetails = 'Please check the server logs for more details. If the issue persists, contact your administrator.';
-      } else {
-        // Use the error message directly
-        errorMessage = `${errorMessage}: ${error.message}`;
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      // If the error contains "Database connection", show a more helpful message
+      if (errorMessage.includes('Database connection')) {
+        errorMessage = 'Failed to connect to the database. Please check your connection and try again.';
       }
 
-      // Set the error message for display
       setError(errorMessage);
-      console.error('Final error message displayed to user:', errorMessage);
-
-      // Log additional diagnostic information
-      console.error('Error type:', error.constructor.name);
-      console.error('Is server error:', isServerError);
-      if (errorDetails) {
-        console.error('Error details:', errorDetails);
-      }
-
       setLoading(false);
     }
   };
 
-  // Handle cancel mission form
-  const handleCancelMissionForm = () => {
-    // Clear any errors when closing the form
-    setError(null);
-    setIsFormOpen(false);
-    setEditingMission(null);
-  };
-
   // Handle delete mission
   const handleDeleteMission = async (missionId: string) => {
-    // No role check for deletion - all users can delete
     if (confirm('Are you sure you want to delete this mission? This action cannot be undone.')) {
       try {
-        // Clear any previous errors before attempting to delete
         setError(null);
         setLoading(true);
 
-        // Delete mission via API
         const response = await fetch(`/api/fleet-ops/missions?id=${missionId}`, {
           method: 'DELETE'
         });
@@ -243,145 +171,114 @@ export default function MissionPlannerPage() {
           throw new Error(`Error deleting mission: ${response.status}`);
         }
 
-        // Update local state
         setMissions(prevMissions => prevMissions.filter(m => m.id !== missionId));
-        setIsFormOpen(false);
-        setEditingMission(null);
+        setViewMode('list');
+        setSelectedMission(null);
         setLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error deleting mission:', error);
-        setError('Failed to delete mission');
+        
+        let errorMessage = 'Failed to delete mission';
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+
+        setError(errorMessage);
         setLoading(false);
       }
     }
   };
 
-  // Page animations
-  const pageVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        duration: 0.6,
-        when: "beforeChildren",
-        staggerChildren: 0.2
+  // Handle back navigation
+  const handleBack = () => {
+    if (viewMode === 'detail') {
+      setViewMode('list');
+      setSelectedMission(null);
+    } else if (viewMode === 'form') {
+      if (editingMission) {
+        setViewMode('detail');
+      } else {
+        setViewMode('list');
       }
+      setEditingMission(null);
     }
   };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.4 }
-    }
-  };
-
-  // Auth/loading states
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="mg-text text-center">
-          <div className="mg-loader"></div>
-          <p className="mt-4">Loading Mission Planner...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="mg-text text-center">
-          <p>Access denied. Please log in to view this page.</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <motion.div 
-      className="min-h-screen p-4 md:p-8"
-      variants={pageVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Page Header */}
-      <motion.div className="mb-6" variants={itemVariants}>
-        <h1 className="mg-title text-2xl md:text-3xl font-quantify tracking-wider">MISSION COMMAND</h1>
-        <p className="mg-text text-sm opacity-80">
-          Plan, schedule and manage AydoCorp fleet operations
-        </p>
-      </motion.div>
-
-      {/* Main Content Panel */}
-      <motion.div variants={itemVariants}>
-        <MobiGlasPanel 
-          title="MISSION PLANNER" 
-          accentColor="primary"
-          rightContent={
-            <button 
-              className="mg-button py-1.5 px-4 text-sm font-quantify tracking-wider relative group overflow-hidden"
-              onClick={handleCreateMission}
-            >
-              <span className="relative z-10">CREATE MISSION</span>
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="radar-sweep"></div>
-              </div>
-            </button>
-          }
-        >
-          <div className="h-full flex flex-col">
-            {/* Filters & Controls */}
-            <div className="mb-4">
-              <MissionFilters 
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-                typeFilter={typeFilter}
-                setTypeFilter={setTypeFilter}
-                sortOrder={sortOrder}
-                setSortOrder={setSortOrder}
-              />
-            </div>
-
-            {/* Mission List */}
-            <div className="flex-grow">
-              <MissionList 
-                missions={filteredMissions}
-                loading={loading}
-                error={error}
-                onMissionClick={handleMissionClick}
-              />
-            </div>
-          </div>
-        </MobiGlasPanel>
-      </motion.div>
-
-      {/* Mission Form Modal */}
+    <div className="relative min-h-screen">
+      {/* Initialization Overlay */}
       <AnimatePresence>
-        {isFormOpen && (
-          <MissionForm 
-            mission={editingMission || undefined}
-            onSave={handleSaveMission}
-            onCancel={handleCancelMissionForm}
-            onDelete={handleDeleteMission}
-          />
+        {!isInitialized && (
+          <LoadingOverlay text="Initializing Mission Planner" />
         )}
       </AnimatePresence>
 
-      {/* Floating Create Button (Mobile) */}
-      <motion.button
-        className="fixed bottom-8 right-8 z-30 w-14 h-14 rounded-full bg-[rgba(var(--mg-primary),0.9)] shadow-lg flex items-center justify-center group"
-        onClick={handleCreateMission}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-        </svg>
-        <span className="absolute right-full mr-3 bg-[rgba(var(--mg-panel-dark),0.9)] border border-[rgba(var(--mg-primary),0.3)] text-[rgba(var(--mg-primary),0.9)] px-3 py-1 rounded text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Create New Mission</span>
-      </motion.button>
-    </motion.div>
+      {/* Error Notification */}
+      <AnimatePresence>
+        {error && (
+          <ErrorNotification
+            message={error}
+            onClose={() => setError(null)}
+          />
+        )}
+      </AnimatePresence>
+      
+      {/* Main Content */}
+      <AnimatePresence mode="wait">
+        {viewMode === 'list' && (
+          <motion.div
+            key="mission-dashboard"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="container mx-auto p-4"
+          >
+            <MissionDashboard
+              missions={missions}
+              loading={loading}
+              onMissionClick={handleMissionClick}
+              onCreateMission={handleCreateMission}
+            />
+          </motion.div>
+        )}
+        
+        {viewMode === 'detail' && selectedMission && (
+          <motion.div
+            key="mission-detail"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.3 }}
+            className="container mx-auto p-4"
+          >
+            <MissionDetail
+              mission={selectedMission}
+              onBack={handleBack}
+              onEdit={() => handleEditMission(selectedMission)}
+              onDelete={() => handleDeleteMission(selectedMission.id)}
+            />
+          </motion.div>
+        )}
+        
+        {viewMode === 'form' && (
+          <motion.div
+            key="mission-form"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.3 }}
+            className="container mx-auto p-4"
+          >
+            <MissionForm
+              mission={editingMission}
+              onSave={handleSaveMission}
+              onCancel={handleBack}
+              onDelete={editingMission ? () => handleDeleteMission(editingMission.id) : undefined}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 } 

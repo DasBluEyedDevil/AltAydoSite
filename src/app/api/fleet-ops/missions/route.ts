@@ -17,7 +17,12 @@ const validateMissionData = (data: any) => {
     return { valid: false, error: 'Name must be at least 3 characters' };
   }
 
-  if (!data.type || !Object.values(MissionType).includes(data.type as MissionType)) {
+  // Get all valid mission types
+  const validMissionTypes = ['Cargo Haul', 'Salvage Operation', 'Bounty Hunting', 
+    'Exploration', 'Reconnaissance', 'Medical Support', 'Combat Patrol', 
+    'Escort Duty', 'Mining Expedition'];
+  
+  if (!data.type || !validMissionTypes.includes(data.type)) {
     return { valid: false, error: 'Invalid mission type' };
   }
 
@@ -25,7 +30,11 @@ const validateMissionData = (data: any) => {
     return { valid: false, error: 'Scheduled date and time is required' };
   }
 
-  if (!data.status || !Object.values(MissionStatus).includes(data.status as MissionStatus)) {
+  // Get all valid mission statuses
+  const validMissionStatuses = ['Planning', 'Briefing', 'In Progress', 
+    'Debriefing', 'Completed', 'Archived', 'Cancelled'];
+  
+  if (!data.status || !validMissionStatuses.includes(data.status)) {
     return { valid: false, error: 'Invalid mission status' };
   }
 
@@ -83,79 +92,56 @@ export async function GET(request: NextRequest) {
 // POST handler - Create a new mission
 export async function POST(request: NextRequest) {
   try {
+    // Check authorization
     const session = await getServerSession(authOptions);
-
-    if (!session || !session.user) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const userId = session.user.id;
-
     // Parse request body
-    let body;
-    try {
-      body = await request.json();
-    } catch (parseError) {
+    const missionData = await request.json();
+
+    // Basic validation
+    if (!missionData || !missionData.name || !missionData.type || !missionData.scheduledDateTime) {
       return NextResponse.json(
-        { error: 'Invalid JSON in request body' },
+        { error: 'Missing required fields: name, type, and scheduledDateTime are required' },
         { status: 400 }
       );
     }
 
-    // Validate mission data
-    const validation = validateMissionData(body);
-    if (!validation.valid) {
-      return NextResponse.json({ error: validation.error }, { status: 400 });
+    // If no ID is provided or ID starts with 'mission-', generate a new mission
+    const hasValidId = missionData.id && !missionData.id.startsWith('mission-');
+
+    try {
+      // Create mission using the mission-storage module
+      const mission = await missionStorage.createMission(missionData);
+      console.log('Mission created successfully:', mission.id);
+      return NextResponse.json(mission, { status: 201 });
+    } catch (storageError: any) {
+      console.error('Error in mission storage layer:', storageError);
+      
+      return NextResponse.json(
+        { 
+          error: `Database error: ${storageError.message || 'Unknown error'}`,
+          details: {
+            message: 'Error occurred while saving mission data to the database'
+          }
+        },
+        { status: 500 }
+      );
     }
-
-    // Prepare mission data
-    const missionData = {
-      name: body.name,
-      type: body.type,
-      scheduledDateTime: body.scheduledDateTime,
-      status: body.status,
-      briefSummary: body.briefSummary || '',
-      details: body.details || '',
-      location: body.location || '',
-      leaderId: body.leaderId || userId,
-      leaderName: body.leaderName || '',
-      images: body.images || [],
-      participants: body.participants || []
-    };
-
-    console.log('Creating mission:', missionData.name);
-
-    // Create mission using the mission-storage module
-    const mission = await missionStorage.createMission(missionData);
-
-    console.log('Mission created successfully:', mission.id);
-
-    return NextResponse.json(mission, { status: 201 });
-
   } catch (error: any) {
     console.error('Error creating mission:', error);
-
+    
     // Prepare a user-friendly error message
     let errorMessage = 'Failed to create mission';
-    let errorDetails = null;
-
     if (error.message) {
       errorMessage = `${errorMessage}: ${error.message}`;
     }
-
-    // Check if we're using fallback storage
-    if (missionStorage.isUsingFallbackStorage()) {
-      console.log('Using fallback storage due to MongoDB connection issues');
-      errorDetails = {
-        usingFallback: true,
-        message: 'Using local storage due to database connection issues'
-      };
-    }
-
+    
     return NextResponse.json(
       { 
-        error: errorMessage,
-        details: errorDetails
+        error: errorMessage
       },
       { status: 500 }
     );
@@ -165,85 +151,61 @@ export async function POST(request: NextRequest) {
 // PUT handler - Update an existing mission
 export async function PUT(request: NextRequest) {
   try {
+    // Check authorization
     const session = await getServerSession(authOptions);
-
-    if (!session || !session.user) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Parse request body
-    let body;
-    try {
-      body = await request.json();
-    } catch (parseError) {
+    const missionData = await request.json();
+
+    // Basic validation
+    if (!missionData || !missionData.id) {
       return NextResponse.json(
-        { error: 'Invalid JSON in request body' },
+        { error: 'Missing required field: id' },
         { status: 400 }
       );
     }
 
-    if (!body.id) {
-      return NextResponse.json({ error: 'Mission ID is required' }, { status: 400 });
+    try {
+      // Update mission using the mission-storage module
+      const mission = await missionStorage.updateMission(missionData.id, missionData);
+
+      if (!mission) {
+        return NextResponse.json(
+          { error: `Mission not found with ID: ${missionData.id}` },
+          { status: 404 }
+        );
+      }
+
+      console.log('Mission updated successfully:', mission.id);
+      return NextResponse.json(mission, { status: 200 });
+    } catch (storageError: any) {
+      console.error('Error in mission storage layer:', storageError);
+      
+      return NextResponse.json(
+        { 
+          error: `Database error: ${storageError.message || 'Unknown error'}`,
+          details: {
+            message: 'Error occurred while updating mission data in the database'
+          }
+        },
+        { status: 500 }
+      );
     }
-
-    // Validate mission data
-    const validation = validateMissionData(body);
-    if (!validation.valid) {
-      return NextResponse.json({ error: validation.error }, { status: 400 });
-    }
-
-    // Prepare mission data for update
-    const missionData = {
-      name: body.name,
-      type: body.type,
-      scheduledDateTime: body.scheduledDateTime,
-      status: body.status,
-      briefSummary: body.briefSummary || '',
-      details: body.details || '',
-      location: body.location || '',
-      leaderId: body.leaderId,
-      leaderName: body.leaderName || '',
-      images: body.images || [],
-      participants: body.participants || []
-    };
-
-    console.log('Updating mission:', body.id);
-
-    // Update mission using the mission-storage module
-    const updatedMission = await missionStorage.updateMission(body.id, missionData);
-
-    if (!updatedMission) {
-      return NextResponse.json({ error: 'Mission not found' }, { status: 404 });
-    }
-
-    console.log('Mission updated successfully:', updatedMission.id);
-
-    return NextResponse.json(updatedMission);
-
   } catch (error: any) {
     console.error('Error updating mission:', error);
-
+    
     // Prepare a user-friendly error message
     let errorMessage = 'Failed to update mission';
-    let errorDetails = null;
-
     if (error.message) {
       errorMessage = `${errorMessage}: ${error.message}`;
     }
-
-    // Check if we're using fallback storage
-    if (missionStorage.isUsingFallbackStorage()) {
-      console.log('Using fallback storage due to MongoDB connection issues');
-      errorDetails = {
-        usingFallback: true,
-        message: 'Using local storage due to database connection issues'
-      };
-    }
-
+    
     return NextResponse.json(
       { 
-        error: errorMessage,
-        details: errorDetails
+        error: errorMessage
       },
       { status: 500 }
     );

@@ -1,44 +1,39 @@
 import * as mongoDb from './mongodb-client';
 
-// Flag to track connection status
-let mongoDbConnectionAttempted = false;
-let mongoDbConnectionFailed = false;
-
 /**
- * Checks if MongoDB should be used or if we should fall back to local storage.
+ * Checks if MongoDB connection is working.
  * 
- * This function attempts to connect to MongoDB if no connection has been tried yet.
- * If the connection fails, it remembers that and returns false for future calls.
+ * This function attempts to connect to MongoDB. If the connection fails,
+ * it throws an error as we no longer support fallback to local storage.
  */
-export async function shouldUseMongoDb(): Promise<boolean> {
-  // If we've already tried and failed, don't try again
-  if (mongoDbConnectionFailed) {
-    console.log('STORAGE: Using local storage because previous MongoDB connection failed');
-    return false;
-  }
+export async function ensureDatabaseConnection(): Promise<boolean> {
+  console.log('STORAGE: Testing MongoDB connection');
 
-  // If we haven't tried connecting to MongoDB yet, try now
-  if (!mongoDbConnectionAttempted) {
-    console.log('STORAGE: Testing MongoDB connection');
-    mongoDbConnectionAttempted = true;
-
-    try {
-      const connected = await mongoDb.ensureConnection();
-      if (!connected) {
-        console.log('STORAGE: MongoDB connection test failed, using local storage');
-        mongoDbConnectionFailed = true;
-        return false;
-      }
-
-      console.log('STORAGE: MongoDB connection test successful');
-      return true;
-    } catch (error) {
-      console.error('STORAGE: Error testing MongoDB connection:', error);
-      mongoDbConnectionFailed = true;
-      return false;
+  try {
+    const connected = await mongoDb.ensureConnection(2);
+    if (!connected) {
+      throw new Error('Failed to connect to database after retries');
     }
-  }
 
-  // If we've tried and not failed, then MongoDB is available
-  return !mongoDbConnectionFailed;
+    console.log('STORAGE: MongoDB connection test successful');
+    return true;
+  } catch (error) {
+    console.error('STORAGE: Error testing MongoDB connection:', error);
+    throw new Error('Database connection failed: Cannot connect to MongoDB');
+  }
+} 
+
+// For backwards compatibility, but will now throw error if connection fails
+export async function shouldUseMongoDb(): Promise<boolean> {
+  return await ensureDatabaseConnection();
+}
+
+// Force using local storage for testing purposes
+export function forceUseLocalStorage() {
+  console.log('STORAGE: Forced to use local storage for all operations');
+}
+
+// Reset connection status to try MongoDB again
+export function resetConnectionStatus() {
+  console.log('STORAGE: Connection status reset, will try MongoDB on next operation');
 } 

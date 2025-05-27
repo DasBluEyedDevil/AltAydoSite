@@ -1,7 +1,11 @@
 {
   "mcpServers": {
     "AltAydoSite Docs": {
-      "url": "https://gitmcp.io/DasBluEyedDevil/AltAydoSite"
+      "command": "npx",
+      "args": [
+        "mcp-remote"
+      ],
+      "url": "https://gitmcp.io/DasBluEyedDevil/AltAydoSite"      
     },
     "sequential-thinking": {
       "command": "npx",

@@ -12,6 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "kill-port": "node kill-port.js",
     "migrate-users": "tsx src/scripts/migrate-users.ts",
     "test-cosmos": "tsx src/scripts/test-cosmos-connection.ts",
     "test-mongo": "tsx src/scripts/test-mongodb-connection.ts",
