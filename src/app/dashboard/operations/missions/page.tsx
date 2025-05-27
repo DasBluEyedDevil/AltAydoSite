@@ -32,20 +32,33 @@ export default function MissionPlannerPage() {
       try {
         setLoading(true);
         setError(null);
+        console.log('Fetching missions from API...');
 
         // Fetch missions from the API
         const response = await fetch('/api/fleet-ops/missions');
 
         if (!response.ok) {
-          throw new Error(`Error fetching missions: ${response.status}`);
+          console.error(`Error response from API: ${response.status} ${response.statusText}`);
+
+          // Try to get more details from the response
+          try {
+            const errorData = await response.json();
+            console.error('API error details:', errorData);
+            throw new Error(`Error fetching missions: ${errorData.error || response.status}`);
+          } catch (jsonError) {
+            console.error('Could not parse error response:', jsonError);
+            throw new Error(`Error fetching missions: ${response.status}`);
+          }
         }
 
         const data = await response.json();
+        console.log(`Fetched ${data.length} missions from API`);
         setMissions(data);
         setLoading(false);
 
       } catch (err: any) {
-        setError('Failed to fetch missions');
+        const errorMessage = err.message || 'Failed to fetch missions';
+        setError(errorMessage);
         setLoading(false);
         console.error('Error fetching missions:', err);
       }
@@ -69,6 +82,8 @@ export default function MissionPlannerPage() {
 
   // Handle mission click
   const handleMissionClick = (mission: MissionResponse) => {
+    // Clear any previous errors when clicking a mission
+    setError(null);
     setSelectedMission(mission);
     setEditingMission(mission);
     setIsFormOpen(true);
@@ -76,6 +91,8 @@ export default function MissionPlannerPage() {
 
   // Handle create new mission
   const handleCreateMission = () => {
+    // Clear any previous errors when opening the form
+    setError(null);
     setEditingMission(null);
     setIsFormOpen(true);
   };
@@ -83,6 +100,8 @@ export default function MissionPlannerPage() {
   // Handle save mission
   const handleSaveMission = async (mission: MissionResponse) => {
     try {
+      // Clear any previous errors before attempting to save
+      setError(null);
       setLoading(true);
 
       // Check if we're editing an existing mission
@@ -130,15 +149,78 @@ export default function MissionPlannerPage() {
       setIsFormOpen(false);
       setEditingMission(null);
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving mission:', error);
-      setError('Failed to save mission');
+      console.error('Error message:', error.message);
+
+      let errorMessage = 'Failed to save mission';
+      let errorDetails = '';
+      let isServerError = false;
+
+      // Try to get more details from the response if available
+      if (error.response) {
+        isServerError = true;
+        try {
+          const errorData = await error.response.json();
+          console.error('Server error details:', errorData);
+
+          // Check for specific error types from the server
+          if (errorData.details) {
+            console.error('Detailed error information:', errorData.details);
+            errorDetails = JSON.stringify(errorData.details, null, 2);
+
+            // Handle specific error types
+            if (errorData.details.connectionIssue) {
+              errorMessage = 'Database connection error. Please try again later.';
+            } else if (errorData.details.connectionStringIssue) {
+              errorMessage = 'Database configuration error. Please contact support.';
+            } else if (errorData.details.permissionIssue) {
+              errorMessage = 'Permission error. The application lacks necessary database permissions.';
+            } else if (errorData.details.mongoErrorInfo) {
+              errorMessage = `Database error: ${errorData.details.mongoErrorInfo.message || 'Unknown MongoDB error'}`;
+            } else {
+              // Use the error message from the server if available
+              errorMessage = errorData.error || `Error: ${errorData.details.message || 'Unknown error'}`;
+            }
+          } else {
+            // Fallback to the error message from the server
+            errorMessage = errorData.error || error.message;
+          }
+        } catch (jsonError) {
+          console.error('Could not parse error response:', jsonError);
+          errorMessage = `${errorMessage}: ${error.message}`;
+        }
+      } else if (error instanceof TypeError && error.message.includes('fetch')) {
+        // Handle network errors
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (error.message.includes('Error creating mission: 500')) {
+        // Handle specific 500 error for mission creation
+        errorMessage = 'Server error while creating mission. This might be due to a database connection issue or insufficient permissions.';
+        errorDetails = 'Please check the server logs for more details. If the issue persists, contact your administrator.';
+      } else {
+        // Use the error message directly
+        errorMessage = `${errorMessage}: ${error.message}`;
+      }
+
+      // Set the error message for display
+      setError(errorMessage);
+      console.error('Final error message displayed to user:', errorMessage);
+
+      // Log additional diagnostic information
+      console.error('Error type:', error.constructor.name);
+      console.error('Is server error:', isServerError);
+      if (errorDetails) {
+        console.error('Error details:', errorDetails);
+      }
+
       setLoading(false);
     }
   };
 
   // Handle cancel mission form
   const handleCancelMissionForm = () => {
+    // Clear any errors when closing the form
+    setError(null);
     setIsFormOpen(false);
     setEditingMission(null);
   };
@@ -148,6 +230,8 @@ export default function MissionPlannerPage() {
     // No role check for deletion - all users can delete
     if (confirm('Are you sure you want to delete this mission? This action cannot be undone.')) {
       try {
+        // Clear any previous errors before attempting to delete
+        setError(null);
         setLoading(true);
 
         // Delete mission via API

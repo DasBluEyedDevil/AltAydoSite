@@ -35,9 +35,12 @@ const MissionForm: React.FC<MissionFormProps> = ({ mission, onSave, onCancel, on
     }
   }, [mission]);
 
-  // Preserve form data when switching tabs
+  // Handle tab change with proper state preservation
   const handleTabChange = (tab: 'basic' | 'personnel') => {
-    // Save current state before switching tabs
+    // Log the tab change for debugging
+    console.log(`Switching to tab: ${tab}`);
+    
+    // Simply set the active section - no need to manipulate formData as React will preserve it
     setActiveSection(tab);
   };
 
@@ -96,6 +99,19 @@ const MissionForm: React.FC<MissionFormProps> = ({ mission, onSave, onCancel, on
       opacity: 0,
       y: 50,
       transition: { duration: 0.3 }
+    }
+  };
+
+  // Form content animation variants
+  const contentVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { duration: 0.3 }
+    },
+    exit: { 
+      opacity: 0,
+      transition: { duration: 0.2 }
     }
   };
 
@@ -161,15 +177,31 @@ const MissionForm: React.FC<MissionFormProps> = ({ mission, onSave, onCancel, on
       <form onSubmit={handleSubmit} className="max-h-[calc(90vh-200px)] overflow-y-auto">
         <div className="p-6">
           {activeSection === 'basic' ? (
-            <MissionBasicInfoForm 
-              formData={formData}
-              updateFormData={updateFormData}
-            />
+            <motion.div
+              key="basic-info"
+              variants={contentVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <MissionBasicInfoForm 
+                formData={formData as MissionResponse}
+                updateFormData={(field: string, value: any) => updateFormData(field as keyof MissionResponse, value)}
+              />
+            </motion.div>
           ) : (
-            <MissionPersonnelForm 
-              formData={formData}
-              updateFormData={updateFormData}
-            />
+            <motion.div
+              key="personnel-info"
+              variants={contentVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <MissionPersonnelForm 
+                formData={formData as MissionResponse}
+                updateFormData={(field: string, value: any) => updateFormData(field as keyof MissionResponse, value)}
+              />
+            </motion.div>
           )}
         </div>
 

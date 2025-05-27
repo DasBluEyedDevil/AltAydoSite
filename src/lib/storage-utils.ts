@@ -16,20 +16,20 @@ export async function shouldUseMongoDb(): Promise<boolean> {
     console.log('STORAGE: Using local storage because previous MongoDB connection failed');
     return false;
   }
-  
+
   // If we haven't tried connecting to MongoDB yet, try now
   if (!mongoDbConnectionAttempted) {
     console.log('STORAGE: Testing MongoDB connection');
     mongoDbConnectionAttempted = true;
-    
+
     try {
-      const connected = await mongoDb.connect();
+      const connected = await mongoDb.ensureConnection();
       if (!connected) {
         console.log('STORAGE: MongoDB connection test failed, using local storage');
         mongoDbConnectionFailed = true;
         return false;
       }
-      
+
       console.log('STORAGE: MongoDB connection test successful');
       return true;
     } catch (error) {
@@ -38,7 +38,7 @@ export async function shouldUseMongoDb(): Promise<boolean> {
       return false;
     }
   }
-  
+
   // If we've tried and not failed, then MongoDB is available
   return !mongoDbConnectionFailed;
 } 

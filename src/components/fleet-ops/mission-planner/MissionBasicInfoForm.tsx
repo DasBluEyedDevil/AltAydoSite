@@ -32,14 +32,23 @@ const MissionBasicInfoForm: React.FC<MissionBasicInfoFormProps> = ({
     const files = e.target.files;
     if (!files || files.length === 0) return;
     
+    setUploadError(null); // Clear previous errors
     const newImages = [...tempImages];
     
     for (const file of Array.from(files)) {
       try {
+        console.log(`Uploading image: ${file.name} (${file.size} bytes)`);
+        
+        // Validate file size before upload
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+          setUploadError('Image size exceeds the 5MB limit');
+          continue;
+        }
+        
         // Create FormData and upload
         const uploadData = new FormData();
         uploadData.append('image', file);
-        uploadData.append('missionId', formData.id || 'temp');
+        uploadData.append('missionId', formData.id || 'temp-' + Date.now());
         
         const response = await fetch('/api/fleet-ops/operations/upload-image', {
           method: 'POST',
@@ -47,20 +56,31 @@ const MissionBasicInfoForm: React.FC<MissionBasicInfoFormProps> = ({
         });
 
         if (!response.ok) {
-          const error = await response.json();
-          setUploadError(error.message || 'Failed to upload image');
+          // Try to get more detailed error information
+          let errorMessage = 'Failed to upload image';
+          try {
+            const error = await response.json();
+            errorMessage = error.message || error.error || `Upload failed (${response.status})`;
+          } catch (jsonError) {
+            errorMessage = `Upload failed (${response.status})`;
+          }
+          
+          console.error('Image upload error:', errorMessage);
+          setUploadError(errorMessage);
           continue;
         }
 
         const result = await response.json();
+        console.log('Upload success:', result);
         
         // Add the new image URL to the temporary images array
         const imageUrl = `/api/fleet-ops/operations/images/${result.data.imageId}`;
         newImages.push(imageUrl);
+        console.log('Added image URL to form data:', imageUrl);
 
       } catch (error) {
         console.error('Error uploading image:', error);
-        setUploadError('Failed to upload image');
+        setUploadError(error instanceof Error ? error.message : 'Failed to upload image');
       }
     }
     
@@ -249,20 +269,34 @@ const MissionBasicInfoForm: React.FC<MissionBasicInfoFormProps> = ({
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={handleImageUpload}
                 className="hidden"
-                id="mission-images"
+                id="mission-image-input"
+                onChange={handleImageUpload}
               />
               <label
-                htmlFor="mission-images"
-                className="cursor-pointer bg-[rgba(var(--mg-primary),0.1)] hover:bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] px-4 py-2 rounded-sm transition-colors"
+                htmlFor="mission-image-input"
+                className="mg-button-outline py-2 px-4 text-sm inline-flex items-center cursor-pointer"
               >
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 Upload Images
               </label>
+              <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                Max 5MB per image
+              </span>
             </div>
+            
+            {/* Error message */}
             {uploadError && (
-              <p className="text-sm text-[rgba(var(--mg-error),0.9)]">{uploadError}</p>
+              <div className="mt-2 text-[rgba(var(--mg-error),1)] text-sm flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {uploadError}
+              </div>
             )}
+            
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
               {tempImages.map((imageUrl, index) => (
                 <div key={index} className="relative group">

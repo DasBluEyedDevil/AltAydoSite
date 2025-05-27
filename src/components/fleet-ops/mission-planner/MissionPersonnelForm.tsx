@@ -64,15 +64,25 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
         const apiUsers: ApiUser[] = await response.json();
 
         // Transform API users to the format expected by the component
-        const transformedUsers: User[] = apiUsers.map(apiUser => ({
-          userId: apiUser.id,
-          name: apiUser.aydoHandle, // Use aydoHandle as the name
-          ships: apiUser.ships ? apiUser.ships.map(ship => ({
-            shipId: ship.id,
-            name: ship.name,
-            type: ship.type
-          })) : []
-        }));
+        const transformedUsers: User[] = apiUsers.map(apiUser => {
+          console.log(`Processing API user: ${apiUser.aydoHandle}, ships:`, apiUser.ships);
+
+          const user = {
+            userId: apiUser.id,
+            name: apiUser.aydoHandle, // Use aydoHandle as the name
+            ships: apiUser.ships ? apiUser.ships.map(ship => {
+              console.log(`Processing ship for ${apiUser.aydoHandle}: ID=${ship.id}, name=${ship.name}, type=${ship.type}`);
+              return {
+                shipId: ship.id,
+                name: ship.name,
+                type: ship.type
+              };
+            }) : []
+          };
+
+          console.log(`Transformed user: ${user.name}, ships:`, user.ships);
+          return user;
+        });
 
         setUsers(transformedUsers);
         setLoading(false);
@@ -122,45 +132,79 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
     setSelectedRoles(updatedRoles);
   };
 
-  // Fetch available ships
+  // We don't need to initialize availableShips as we're only using user's ships
   useEffect(() => {
-    const fetchShips = async () => {
-      try {
-        const response = await fetch('/api/fleet-ops/resources/allocations');
-        if (!response.ok) {
-          throw new Error('Failed to fetch available ships');
-        }
-        const data = await response.json();
-        setAvailableShips(data.ships || []);
-      } catch (error) {
-        console.error('Error fetching ships:', error);
-      }
-    };
-
-    fetchShips();
+    // Set availableShips to an empty array since we're only using user's ships
+    setAvailableShips([]);
+    console.log('Initialized available ships with empty array');
   }, []);
 
   // Update participant ship
   const updateParticipantShip = async (userId: string, shipId: string, shipName: string, shipType: string) => {
     try {
+      console.log(`Updating ship for user ${userId}: ${shipId} - ${shipName} (${shipType})`);
+      console.log(`Ship ID type: ${typeof shipId}, value: "${shipId}"`);
+
+      // Ensure shipId is a string
+      const safeShipId = String(shipId || '');
+      console.log(`Safe ship ID: "${safeShipId}"`);
+
+      // If the shipId looks like a model name (e.g., "400i"), try to find the actual ship
+      if (safeShipId && !shipName && !shipType) {
+        console.log(`ShipId "${safeShipId}" might be a model name, looking for matching ship`);
+        const user = getUserById(userId);
+        if (user) {
+          // Try to find a ship with a matching name or ID
+          const matchingShip = user.ships.find(ship => 
+            ship.shipId === safeShipId || 
+            ship.name.toLowerCase().includes(safeShipId.toLowerCase())
+          );
+
+          if (matchingShip) {
+            console.log(`Found matching ship: ${matchingShip.name} (${matchingShip.type}), ID: ${matchingShip.shipId}`);
+            // Use the matching ship's details
+            shipName = matchingShip.name;
+            shipType = matchingShip.type;
+          } else {
+            console.warn(`No matching ship found for "${safeShipId}" in user's ships`);
+          }
+        }
+      }
+
       // Update local state first for immediate feedback
       const updatedParticipants = participants.map(p => {
         if (p.userId === userId) {
-          return {
+          const updatedParticipant = {
             ...p,
-            shipId,
-            shipName,
-            shipType
+            shipId: safeShipId,
+            shipName: shipName || '',
+            shipType: shipType || ''
           };
+          console.log(`Updated participant object:`, updatedParticipant);
+          return updatedParticipant;
         }
         return p;
       });
 
+      // Update state and parent component
+      console.log('Updating participants with new ship assignment:', updatedParticipants);
       setParticipants(updatedParticipants);
+
+      // Find the updated participant to verify the ship assignment
+      const updatedParticipant = updatedParticipants.find(p => p.userId === userId);
+      console.log('Updated participant ship info:', {
+        userId,
+        shipId: updatedParticipant?.shipId || 'none',
+        shipName: updatedParticipant?.shipName || 'none',
+        shipType: updatedParticipant?.shipType || 'none'
+      });
+
       updateFormData('participants', updatedParticipants);
 
-      // Only make API call if we have a valid mission ID and ship ID
-      if (formData.id && shipId) {
+      // Only make API call if we have a valid mission ID and shipId is not empty
+      // AND we're not in the process of creating a new mission (formData.id should be a real ID, not a temporary one)
+      if (formData.id && safeShipId && !formData.id.startsWith('mission-')) {
+        console.log(`Making API call to assign ship for existing mission: ${formData.id}`);
         // Send ship assignment to the server
         const response = await fetch('/api/fleet-ops/operations/assign-ship', {
           method: 'POST',
@@ -169,7 +213,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
           },
           body: JSON.stringify({
             userId,
-            shipId,
+            shipId: safeShipId,
             shipName,
             shipType,
             missionId: formData.id
@@ -181,6 +225,8 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
           console.error('Server error assigning ship:', error);
           // Don't throw error to prevent UI disruption
         }
+      } else {
+        console.log(`Skipping API call for ship assignment - mission is being created or no ship selected`);
       }
     } catch (error) {
       console.error('Error assigning ship:', error);
@@ -275,10 +321,18 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
     if (formData.participants && formData.participants.length > 0) {
       const initialRoles: {[key: string]: string[]} = {};
 
+      console.log('Initializing participants from formData:', formData.participants);
+
       formData.participants.forEach(participant => {
         if (participant.roles && participant.roles.length > 0) {
           initialRoles[participant.userId] = participant.roles;
         }
+        // Log each participant's ship info
+        console.log(`Participant ${participant.userName} ship info:`, {
+          shipId: participant.shipId || 'none',
+          shipName: participant.shipName || 'none',
+          shipType: participant.shipType || 'none'
+        });
       });
 
       setSelectedRoles(initialRoles);
@@ -292,22 +346,51 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
     onSelect: (shipId: string, shipName: string, shipType: string) => void;
     onClose: () => void;
   }) => {
+    // Get user's ships
+    const user = getUserById(userId);
+    const userShips = user ? user.ships : [];
+
     return (
-      <div className="absolute z-50 mt-1 w-56 rounded-md bg-[rgba(var(--mg-panel-dark),0.95)] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+      <div className="absolute z-50 mt-1 w-64 rounded-md bg-[rgba(var(--mg-panel-dark),0.95)] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
         <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="ship-selection-button">
-          {availableShips.map((ship) => (
-            <button
-              key={ship.shipId}
-              className="text-[rgba(var(--mg-primary),0.9)] block w-full px-4 py-2 text-left text-sm hover:bg-[rgba(var(--mg-primary),0.1)]"
-              role="menuitem"
-              onClick={() => {
-                onSelect(ship.shipId, ship.name, ship.type);
-                onClose();
-              }}
-            >
-              {ship.name} ({ship.type})
-            </button>
-          ))}
+          {/* No ship option */}
+          <button
+            key="no-ship"
+            className="text-[rgba(var(--mg-primary),0.9)] block w-full px-4 py-2 text-left text-sm hover:bg-[rgba(var(--mg-primary),0.1)] border-b border-[rgba(var(--mg-primary),0.2)]"
+            role="menuitem"
+            onClick={() => {
+              onSelect('', '', '');
+              onClose();
+            }}
+          >
+            No Designated Ship
+          </button>
+
+          {/* User's ships section */}
+          {userShips.length > 0 && (
+            <>
+              <div className="px-4 py-1 text-xs text-[rgba(var(--mg-primary),0.6)] bg-[rgba(var(--mg-primary),0.05)]">
+                User's Ships
+              </div>
+              {userShips.map((ship) => (
+                <button
+                  key={`user-ship-${ship.shipId}`}
+                  className="text-[rgba(var(--mg-primary),0.9)] block w-full px-4 py-2 text-left text-sm hover:bg-[rgba(var(--mg-primary),0.1)]"
+                  role="menuitem"
+                  onClick={() => {
+                    console.log(`User ship selected from menu: ${ship.name} (${ship.type}) with ID: ${ship.shipId}`);
+                    // Ensure shipId is not undefined or empty
+                    const shipId = ship.shipId || '';
+                    console.log(`Using shipId: "${shipId}" for selection`);
+                    onSelect(shipId, ship.name, ship.type);
+                    onClose();
+                  }}
+                >
+                  {ship.name} ({ship.type})
+                </button>
+              ))}
+            </>
+          )}
         </div>
       </div>
     );
@@ -326,17 +409,20 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
         <div className="relative">
           <button
             type="button"
-            className="inline-flex items-center px-3 py-1 border border-[rgba(var(--mg-primary),0.2)] rounded-sm bg-[rgba(var(--mg-panel-dark),0.6)] text-sm text-[rgba(var(--mg-primary),0.9)] hover:bg-[rgba(var(--mg-primary),0.1)]"
+            className={`inline-flex items-center px-3 py-1 border ${participant.shipName ? 'border-[rgba(var(--mg-success),0.3)]' : 'border-[rgba(var(--mg-primary),0.2)]'} rounded-sm bg-[rgba(var(--mg-panel-dark),0.6)] text-sm ${participant.shipName ? 'text-[rgba(var(--mg-success),0.9)]' : 'text-[rgba(var(--mg-primary),0.9)]'} hover:bg-[rgba(var(--mg-primary),0.1)]`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {participant.shipName || 'Assign Ship'}
+            {participant.shipName ? `${participant.shipName} (${participant.shipType})` : 'Assign Ship'}
           </button>
 
           {isMenuOpen && (
             <ShipSelectionMenu
               userId={participant.userId}
               onSelect={(shipId, shipName, shipType) => {
+                console.log(`Selected ship from menu: ${shipId} - ${shipName} (${shipType})`);
                 updateParticipantShip(participant.userId, shipId, shipName, shipType);
+                // Force close the menu after selection
+                setIsMenuOpen(false);
               }}
               onClose={() => setIsMenuOpen(false)}
             />
@@ -463,29 +549,64 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
                       Assigned Ship
                     </label>
                     <select 
-                      className="mg-input text-sm w-full py-1.5 px-3 bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
+                      className={`mg-input text-sm w-full py-1.5 px-3 bg-[rgba(var(--mg-panel-dark),0.6)] border ${participant.shipId ? 'border-[rgba(var(--mg-success),0.3)]' : 'border-[rgba(var(--mg-primary),0.25)]'} rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none ${participant.shipId ? 'text-[rgba(var(--mg-success),0.9)]' : ''}`}
                       value={participant.shipId || ''}
+                      key={`ship-select-${participant.userId}-${participant.shipId || 'none'}`}
                       onChange={(e) => {
-                        const selectedShip = userShips.find(ship => ship.shipId === e.target.value);
-                        if (selectedShip) {
-                          updateParticipantShip(
-                            participant.userId, 
-                            selectedShip.shipId, 
-                            selectedShip.name, 
-                            selectedShip.type
-                          );
-                        } else if (e.target.value === '') {
+                        console.log(`Ship selection changed to: ${e.target.value}`);
+                        const selectedValue = e.target.value;
+                        console.log(`Selected value type: ${typeof selectedValue}, value: "${selectedValue}"`);
+
+                        if (selectedValue === '') {
                           // Handle "No Ship" selection
+                          console.log('No ship selected');
                           updateParticipantShip(participant.userId, '', '', '');
+                        } else {
+                          // Find the selected ship in user's ships
+                          console.log(`Looking for ship with ID "${selectedValue}" in user's ships:`, userShips);
+                          const selectedShip = userShips.find(ship => {
+                            console.log(`Comparing ship ID: "${ship.shipId}" (${typeof ship.shipId}) with selected value: "${selectedValue}" (${typeof selectedValue})`);
+                            return ship.shipId === selectedValue || 
+                                  (ship.name && ship.name.toLowerCase().includes(selectedValue.toLowerCase()));
+                          });
+
+                          console.log('Selected ship:', selectedShip);
+                          console.log('User ships:', userShips);
+
+                          if (selectedShip) {
+                            console.log(`Ship found, updating participant with ship: ${selectedShip.name} (${selectedShip.type}), ID: ${selectedShip.shipId}`);
+                            updateParticipantShip(
+                              participant.userId, 
+                              selectedShip.shipId, 
+                              selectedShip.name, 
+                              selectedShip.type
+                            );
+                          } else {
+                            // If no exact match found, try using the selected value directly
+                            // This handles cases where the value might be a model name like "400i"
+                            console.log(`No exact match found, trying to use value directly: ${selectedValue}`);
+                            updateParticipantShip(participant.userId, selectedValue, '', '');
+                          }
                         }
                       }}
                     >
                       <option key="no-ship" value="">No Designated Ship</option>
-                      {userShips.map(ship => (
-                        <option key={`ship-${ship.shipId}`} value={ship.shipId}>
-                          {ship.name} ({ship.type})
-                        </option>
-                      ))}
+                      {/* Show user's ships */}
+                      {userShips.length > 0 ? (
+                        userShips.map((ship, index) => {
+                          console.log(`Rendering user ship option: ${ship.name} (${ship.type}) with ID: ${ship.shipId}`);
+                          return (
+                            <option 
+                              key={`user-ship-${ship.shipId || `user-${participant.userId}-ship-${index}`}`} 
+                              value={ship.shipId}
+                            >
+                              {ship.name} ({ship.type})
+                            </option>
+                          );
+                        })
+                      ) : (
+                        <option disabled>No ships available for this user</option>
+                      )}
                     </select>
                   </div>
 
