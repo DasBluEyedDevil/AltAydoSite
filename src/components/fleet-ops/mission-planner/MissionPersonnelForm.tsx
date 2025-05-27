@@ -370,7 +370,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
           {userShips.length > 0 && (
             <>
               <div className="px-4 py-1 text-xs text-[rgba(var(--mg-primary),0.6)] bg-[rgba(var(--mg-primary),0.05)]">
-                User's Ships
+                User&apos;s Ships
               </div>
               {userShips.map((ship) => (
                 <button

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MissionResponse } from '@/types/Mission';
+import Image from 'next/image';
 
 interface MissionDetailProps {
   mission: MissionResponse;
@@ -176,10 +177,11 @@ const MissionDetail: React.FC<MissionDetailProps> = ({
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {mission.images.map((imageUrl, index) => (
                       <div key={index} className="aspect-video relative group overflow-hidden border border-[rgba(var(--mg-primary),0.2)] rounded-sm">
-                        <img
+                        <Image
                           src={imageUrl}
                           alt={`Mission image ${index + 1}`}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.7)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end">
                           <span className="p-2 text-xs text-white">Image {index + 1}</span>

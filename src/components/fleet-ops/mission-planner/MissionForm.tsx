@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MissionResponse, MissionType, MissionStatus, MissionParticipant } from '@/types/Mission';
+import Image from 'next/image';
 
 // Updated ship interface to match requirements
 interface UserShip {
@@ -325,6 +326,21 @@ const MissionForm: React.FC<MissionFormProps> = ({
     if (!shipId && !isRemovingAssignment) {
       console.error('Invalid assignment: shipId is empty but not explicitly removing assignment');
       return;
+    }
+    
+    // If we're adding an assignment, verify the ship exists in selectedShips
+    if (!isRemovingAssignment && shipId) {
+      const shipExists = selectedShips.some(s => s.shipId === shipId);
+      if (!shipExists) {
+        console.error(`Cannot assign crew: Ship with ID ${shipId} not found in selected ships`);
+        setStatusMessage({
+          type: 'error',
+          text: `Error: Ship not found. Please try again.`,
+          shipId: null
+        });
+        setTimeout(() => setStatusMessage(null), 3000);
+        return;
+      }
     }
     
     console.log('Current crewAssignments:', JSON.stringify(crewAssignments.map(a => ({
@@ -766,10 +782,11 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             {formData.images.map((imageUrl, index) => (
               <div key={index} className="relative group aspect-video border border-[rgba(var(--mg-primary),0.2)] rounded-sm overflow-hidden">
-                <img 
+                <Image 
                   src={imageUrl} 
-                  alt={`Mission image ${index + 1}`} 
-                  className="w-full h-full object-cover"
+                  alt={`Mission image ${index + 1}`}
+                  fill
+                  className="object-cover"
                 />
                 
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -1105,10 +1122,55 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
       return;
     }
     
-    console.log(`Assigning ${userName} to ${shipName} (${shipId}) as ${role}`);
+    console.log('=== CREW ASSIGNMENT DEBUG ===');
+    console.log(`Assigning user: ${userName} (${userId})`);
+    console.log(`To ship: ${shipName} (${shipId}) of type: ${shipType}`);
+    console.log(`With role: ${role}`);
+    console.log('Current assignments before:', crewAssignments.length);
+    console.log('Current unassigned crew:', unassignedCrew.map(u => u.name));
     
-    // Make the assignment
-    assignCrewToShip(userId, userName, shipId, shipName, shipType, role);
+    // Create the new assignment directly without using assignCrewToShip
+    // This ensures a direct state update for the assignment
+    const existingAssignment = crewAssignments.find(a => a.userId === userId);
+    
+    // Create a copy of current assignments, removing this user if they already exist
+    const updatedAssignments = crewAssignments.filter(a => a.userId !== userId);
+    
+    // Add the new assignment
+    const newAssignment = {
+      userId,
+      userName,
+      shipId,
+      shipName,
+      shipType,
+      role
+    };
+    
+    // Push the new assignment to the array
+    updatedAssignments.push(newAssignment);
+    
+    // Set the updated assignments
+    setCrewAssignments(updatedAssignments);
+    
+    // Show success message
+    setStatusMessage({
+      type: 'success',
+      text: existingAssignment 
+        ? `${userName} reassigned to ${shipName} as ${role}` 
+        : `${userName} assigned to ${shipName} as ${role}`,
+      shipId: shipId
+    });
+    
+    // Log the state after assignment for debugging
+    setTimeout(() => {
+      console.log('=== AFTER ASSIGNMENT ===');
+      console.log('Assignments after:', updatedAssignments.length);
+      console.log('New assignments:', JSON.stringify(updatedAssignments));
+      console.log('========================');
+    }, 0);
+    
+    // Clear the status message after a delay
+    setTimeout(() => setStatusMessage(null), 3000);
   };
 
   // Handle save assignments
@@ -1408,7 +1470,7 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
                               showRoleSelector,
                               customRole,
                               unassignedCrew: unassignedCrew.map(u => ({ id: u.userId, name: u.name })),
-                              ship: { id: ship.shipId, name: ship.name }
+                              shipId: showRoleSelector?.shipId
                             });
                             
                             // First ensure we have all required data
@@ -1428,19 +1490,27 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
                               return;
                             }
                             
-                            // Explicitly verify the ship ID
-                            if (!ship.shipId) {
+                            // Find the ship using the stored shipId in showRoleSelector
+                            const targetShipId = showRoleSelector.shipId;
+                            if (!targetShipId) {
                               console.error('Ship ID is empty or invalid');
                               return;
                             }
                             
-                            // Assign to the current ship (guaranteed to be valid since we're in its context)
+                            // Find the ship details using the shipId
+                            const targetShip = selectedShips.find(s => s.shipId === targetShipId);
+                            if (!targetShip) {
+                              console.error(`Ship with ID ${targetShipId} not found in selected ships`);
+                              return;
+                            }
+                            
+                            // Assign to the target ship using the found ship details
                             handleAssignRole(
                               user.userId, 
                               user.name, 
-                              ship.shipId, 
-                              ship.name, 
-                              ship.type, 
+                              targetShip.shipId, 
+                              targetShip.name, 
+                              targetShip.type, 
                               customRole
                             );
                             
@@ -1458,7 +1528,7 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
                               // Update the role selector with the next user
                               setShowRoleSelector({
                                 userId: nextUser.userId,
-                                shipId: ship.shipId
+                                shipId: targetShipId // Keep the same ship
                               });
                               setCustomRole(''); // Reset the role for the next user
                             } else {
