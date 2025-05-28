@@ -242,7 +242,10 @@ const MissionDetail: React.FC<MissionDetailProps> = ({
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                             <span className="text-xs text-[rgba(var(--mg-primary),0.7)]">
-                              {participant.shipName} ({participant.shipType})
+                              {participant.shipName} 
+                              {participant.shipType !== participant.shipName && (
+                                <span>({participant.shipType})</span>
+                              )}
                             </span>
                           </div>
                         )}

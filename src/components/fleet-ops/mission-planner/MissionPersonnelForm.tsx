@@ -386,7 +386,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
                     onClose();
                   }}
                 >
-                  {ship.name} ({ship.type})
+                  {ship.name} {ship.type !== ship.name ? `(${ship.type})` : ''}
                 </button>
               ))}
             </>
@@ -412,7 +412,11 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
             className={`inline-flex items-center px-3 py-1 border ${participant.shipName ? 'border-[rgba(var(--mg-success),0.3)]' : 'border-[rgba(var(--mg-primary),0.2)]'} rounded-sm bg-[rgba(var(--mg-panel-dark),0.6)] text-sm ${participant.shipName ? 'text-[rgba(var(--mg-success),0.9)]' : 'text-[rgba(var(--mg-primary),0.9)]'} hover:bg-[rgba(var(--mg-primary),0.1)]`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {participant.shipName ? `${participant.shipName} (${participant.shipType})` : 'Assign Ship'}
+            {participant.shipName 
+              ? (participant.shipType !== participant.shipName 
+                  ? `${participant.shipName} (${participant.shipType})` 
+                  : participant.shipName)
+              : 'Assign Ship'}
           </button>
 
           {isMenuOpen && (
@@ -600,7 +604,7 @@ const MissionPersonnelForm: React.FC<MissionPersonnelFormProps> = ({
                               key={`user-ship-${ship.shipId || `user-${participant.userId}-ship-${index}`}`} 
                               value={ship.shipId}
                             >
-                              {ship.name} ({ship.type})
+                              {ship.name} {ship.type !== ship.name ? `(${ship.type})` : ''}
                             </option>
                           );
                         })

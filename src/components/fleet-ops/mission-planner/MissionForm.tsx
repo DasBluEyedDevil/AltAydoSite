@@ -1548,7 +1548,9 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
                       <div className="flex justify-between items-center">
                         <div>
                           <span className="text-sm font-semibold">{ship.name}</span>
-                          <span className="text-xs text-[rgba(var(--mg-primary),0.6)] ml-2">({ship.type})</span>
+                          {ship.type !== ship.name && (
+                            <span className="text-xs text-[rgba(var(--mg-primary),0.6)] ml-2">({ship.type})</span>
+                          )}
                         </div>
                         <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
                           Owned by {ship.ownerName}
