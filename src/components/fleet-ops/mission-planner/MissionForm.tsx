@@ -2,14 +2,32 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MissionResponse, MissionType, MissionStatus, MissionParticipant } from '@/types/Mission';
 import Image from 'next/image';
+import { getShipByName, getShipsByType, getShipImagePath, getDirectImagePath, ShipDetails } from '@/types/ShipData';
 
-// Updated ship interface to match requirements
+// Updated ship interface to match requirements and Star Citizen ship data
 interface UserShip {
   shipId: string;
   name: string;
   type: string;
+  manufacturer: string;
+  image: string;
+  crewRequirement: number;
   ownerId: string; // Added to track ship ownership
   ownerName: string; // Added to display ship owner
+  isGroundSupport?: boolean;
+  missionRole?: string;
+  equipment?: string;
+  size?: string; // Small, Medium, Large
+  length?: number; // Length in meters
+  beam?: number; // Width in meters 
+  height?: number; // Height in meters
+  mass?: number; // Mass in kg
+  cargoCapacity?: number; // Cargo capacity in SCU
+  speedSCM?: number; // Standard Combat Maneuvering speed
+  speedBoost?: number; // Boost speed
+  status?: string; // Flight Ready, In Production, etc.
+  showDetails?: boolean; // Added to track whether details are expanded
+  role?: string;
 }
 
 // User interface
@@ -26,7 +44,11 @@ interface CrewAssignment {
   shipId: string;
   shipName: string;
   shipType: string;
+  manufacturer: string;
+  image: string;
+  crewRequirement: number;
   role: string;
+  isGroundSupport: boolean;
 }
 
 // Status message interface
@@ -135,7 +157,11 @@ const MissionForm: React.FC<MissionFormProps> = ({
             shipId: p.shipId || '',
             shipName: p.shipName || '',
             shipType: p.shipType || '',
-            role: p.roles[0] || ''
+            manufacturer: p.manufacturer || '',
+            image: p.image || '',
+            crewRequirement: p.crewRequirement || 0,
+            role: p.roles[0] || '',
+            isGroundSupport: p.isGroundSupport || false
           }));
         
         setCrewAssignments(assignments);
@@ -147,6 +173,9 @@ const MissionForm: React.FC<MissionFormProps> = ({
             shipId: p.shipId || '',
             name: p.shipName || '',
             type: p.shipType || '',
+            manufacturer: p.manufacturer || '',
+            image: p.image || '',
+            crewRequirement: p.crewRequirement || 0,
             ownerId: p.userId,
             ownerName: p.userName
           }));
@@ -194,13 +223,75 @@ const MissionForm: React.FC<MissionFormProps> = ({
         const transformedUsers: User[] = apiUsers.map((apiUser: any) => ({
           userId: apiUser.id,
           name: apiUser.aydoHandle,
-          ships: apiUser.ships ? apiUser.ships.map((ship: any) => ({
-            shipId: ship.id,
-            name: ship.name,
-            type: ship.type,
-            ownerId: apiUser.id,
-            ownerName: apiUser.aydoHandle
-          })) : []
+          ships: apiUser.ships ? apiUser.ships.map((ship: any) => {
+            console.log(`Processing ship from API: ${JSON.stringify(ship)}`);
+            
+            // Get the ship name and type - ensure type is not undefined
+            const shipName = ship.name || 'Unnamed Ship';
+            // For ships, the type should be the same as the name unless specifically provided
+            const shipType = ship.type || shipName; 
+            
+            // Look up in the ship database by name first
+            const shipDetailsFromDB = getShipByName(shipName);
+            console.log(`Looking up ship by name "${shipName}": ${shipDetailsFromDB ? 'Found' : 'Not found'}`);
+            
+            // If not found by name, try by type
+            let shipDetails = shipDetailsFromDB;
+            if (!shipDetails && shipType !== shipName) {
+              shipDetails = getShipByName(shipType);
+              console.log(`Looking up ship by type "${shipType}": ${shipDetails ? 'Found' : 'Not found'}`);
+            }
+            
+            // Format image path directly
+            const imagePath = getDirectImagePath(shipName);
+            console.log(`Using image path: ${imagePath}`);
+            
+            // If we have ship details, use them. Otherwise create a default ship with available data
+            if (shipDetails) {
+              console.log(`Enriching ${shipName} with data from database`);
+              return {
+                shipId: ship.id || `ship-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                name: shipName,
+                type: shipType,
+                manufacturer: ship.manufacturer || shipDetails.manufacturer,
+                image: ship.image || imagePath,
+                crewRequirement: ship.crewRequirement || shipDetails.crewRequirement,
+                ownerId: apiUser.id,
+                ownerName: apiUser.aydoHandle,
+                size: shipDetails.size,
+                role: shipDetails.role?.join(", "),
+                cargoCapacity: shipDetails.cargoCapacity,
+                length: shipDetails.length,
+                beam: shipDetails.beam,
+                height: shipDetails.height,
+                speedSCM: shipDetails.speedSCM,
+                speedBoost: shipDetails.speedBoost,
+                status: shipDetails.status
+              };
+            } else {
+              // For ships not in the database, create a reasonable default
+              console.log(`No ship details found in database for ${shipName}, using defaults`);
+              return {
+                shipId: ship.id || `ship-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                name: shipName,
+                type: shipType,
+                manufacturer: ship.manufacturer || "Unknown Manufacturer",
+                image: ship.image || imagePath,
+                crewRequirement: ship.crewRequirement || 1,
+                ownerId: apiUser.id,
+                ownerName: apiUser.aydoHandle,
+                // Default values for ships not in database
+                size: ship.size || "Medium",
+                role: ship.role || "Multipurpose",
+                cargoCapacity: ship.cargoCapacity || 0,
+                length: ship.length || 0,
+                beam: ship.beam || 0,
+                height: ship.height || 0,
+                speedSCM: ship.speedSCM || 0,
+                status: "Flight Ready"
+              };
+            }
+          }) : []
         }));
         
         setUsers(transformedUsers);
@@ -255,6 +346,10 @@ const MissionForm: React.FC<MissionFormProps> = ({
         shipId: assignment?.shipId,
         shipName: assignment?.shipName,
         shipType: assignment?.shipType,
+        manufacturer: assignment?.manufacturer,
+        image: assignment?.image,
+        crewRequirement: assignment?.crewRequirement,
+        isGroundSupport: assignment?.isGroundSupport || false,
         roles: assignment ? [assignment.role] : []
       };
     });
@@ -297,14 +392,78 @@ const MissionForm: React.FC<MissionFormProps> = ({
 
   // Add ship to selected ships
   const addShip = (ship: UserShip) => {
-    if (!selectedShips.some(s => s.shipId === ship.shipId)) {
-      setSelectedShips([...selectedShips, ship]);
+    // Make sure the ship has a valid ID
+    const shipWithId = {
+      ...ship,
+      shipId: ship.shipId || `ship-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    };
+    
+    console.log(`Adding ship: ${shipWithId.name} (${shipWithId.type})`);
+    
+    // Look up in the ship database by name first
+    let shipDetails = getShipByName(shipWithId.name);
+    console.log(`Looking up ship by name "${shipWithId.name}": ${shipDetails ? 'Found' : 'Not found'}`);
+    
+    // If not found by name, try by type
+    if (!shipDetails && shipWithId.type) {
+      shipDetails = getShipByName(shipWithId.type);
+      console.log(`Looking up ship by type "${shipWithId.type}": ${shipDetails ? 'Found' : 'Not found'}`);
+    }
+    
+    // Format the image path directly
+    const imagePath = getDirectImagePath(shipWithId.name);
+    console.log(`Using image path: ${imagePath}`);
+    
+    // Create enriched ship object
+    let enrichedShip: UserShip;
+    
+    // If ship details found, enrich with database data
+    if (shipDetails) {
+      console.log(`Enriching ${shipWithId.name} with data from database`);
+      enrichedShip = {
+        ...shipWithId,
+        manufacturer: shipWithId.manufacturer || shipDetails.manufacturer,
+        type: shipWithId.type || shipDetails.type,
+        size: shipWithId.size || shipDetails.size,
+        role: shipWithId.role || shipDetails.role?.join(", ") || "",
+        crewRequirement: shipWithId.crewRequirement || shipDetails.crewRequirement,
+        cargoCapacity: shipWithId.cargoCapacity || shipDetails.cargoCapacity,
+        length: shipWithId.length || shipDetails.length,
+        beam: shipWithId.beam || shipDetails.beam,
+        height: shipWithId.height || shipDetails.height,
+        speedSCM: shipWithId.speedSCM || shipDetails.speedSCM,
+        speedBoost: shipWithId.speedBoost || shipDetails.speedBoost,
+        status: shipWithId.status || shipDetails.status,
+        image: shipWithId.image || imagePath
+      };
+    } else {
+      // For ships not in the database, create a reasonable default
+      console.log(`No ship details found in database for ${shipWithId.name}, using defaults`);
+      enrichedShip = {
+        ...shipWithId,
+        manufacturer: shipWithId.manufacturer || "Unknown Manufacturer",
+        type: shipWithId.type || shipWithId.name,
+        size: shipWithId.size || "Medium",
+        role: shipWithId.role || "Multipurpose",
+        crewRequirement: shipWithId.crewRequirement || 1,
+        cargoCapacity: shipWithId.cargoCapacity || 0,
+        length: shipWithId.length || 0,
+        beam: shipWithId.beam || 0,
+        height: shipWithId.height || 0,
+        speedSCM: shipWithId.speedSCM || 0,
+        status: "Flight Ready",
+        image: shipWithId.image || imagePath
+      };
+    }
+    
+    if (!selectedShips.some(s => s.shipId === enrichedShip.shipId)) {
+      setSelectedShips([...selectedShips, enrichedShip]);
       
       // Add status message for visual feedback
       setStatusMessage({
         type: 'success',
-        text: `Added ${ship.name} to mission vessels`,
-        shipId: ship.shipId
+        text: `Added ${enrichedShip.name} to mission vessels`,
+        shipId: enrichedShip.shipId
       });
       setTimeout(() => setStatusMessage(null), 3000);
     }
@@ -318,18 +477,38 @@ const MissionForm: React.FC<MissionFormProps> = ({
   };
 
   // Update the assignCrewToShip function to improve tracking of assignments
-  const assignCrewToShip = (userId: string, userName: string, shipId: string, shipName: string, shipType: string, role: string) => {
-    // Only allow empty shipId when explicitly removing an assignment
+  const assignCrewToShip = (
+    userId: string, 
+    userName: string, 
+    shipId: string, 
+    shipName: string, 
+    shipType: string, 
+    role: string, 
+    manufacturer: string = '', 
+    image: string = '',
+    isGroundSupport: boolean = false,
+    crewRequirement: number = 0
+  ) => {
+    // Special handling for ground-support-temp - convert to proper ground support format
+    if (shipId === 'ground-support-temp') {
+      isGroundSupport = true;
+      shipId = ''; // Clear the temporary ID
+      shipName = 'Ground Support';
+      shipType = 'Ground Support';
+      console.log('Converting to ground support assignment', { userId, userName, isGroundSupport });
+    }
+    
+    // Only allow empty shipId when explicitly removing an assignment or for ground support
     const isRemovingAssignment = shipId === '' && shipName === '' && shipType === '' && role === '';
     
-    // If shipId is empty and we're not explicitly removing, log an error and return
-    if (!shipId && !isRemovingAssignment) {
+    // If shipId is empty and we're not explicitly removing or ground support, log an error and return
+    if (!shipId && !isRemovingAssignment && !isGroundSupport) {
       console.error('Invalid assignment: shipId is empty but not explicitly removing assignment');
       return;
     }
     
-    // If we're adding an assignment, verify the ship exists in selectedShips
-    if (!isRemovingAssignment && shipId) {
+    // If we're adding an assignment, verify the ship exists in selectedShips (unless ground support)
+    if (!isRemovingAssignment && shipId && !isGroundSupport) {
       const shipExists = selectedShips.some(s => s.shipId === shipId);
       if (!shipExists) {
         console.error(`Cannot assign crew: Ship with ID ${shipId} not found in selected ships`);
@@ -348,7 +527,8 @@ const MissionForm: React.FC<MissionFormProps> = ({
       userName: a.userName,
       shipId: a.shipId,
       shipName: a.shipName,
-      role: a.role
+      role: a.role,
+      isGroundSupport: a.isGroundSupport
     }))));
     
     // If shipId is empty, we're removing the assignment
@@ -371,52 +551,51 @@ const MissionForm: React.FC<MissionFormProps> = ({
     
     // Check if user is already assigned to a different ship
     const existingAssignment = crewAssignments.find(a => a.userId === userId);
-    if (existingAssignment && existingAssignment.shipId !== shipId) {
-      // If being reassigned, show a message
-      setStatusMessage({
-        type: 'info',
-        text: `${userName} reassigned from ${existingAssignment.shipName} to ${shipName}`,
-        shipId: shipId
-      });
+    
+    // Prepare message text based on ground support or ship assignment
+    let messageText = '';
+    if (isGroundSupport) {
+      messageText = existingAssignment 
+        ? `${userName} reassigned as Ground Support with role: ${role}` 
+        : `${userName} assigned as Ground Support with role: ${role}`;
     } else {
-      // New assignment
-      setStatusMessage({
-        type: 'success',
-        text: `${userName} assigned to ${shipName} as ${role}`,
-        shipId: shipId
-      });
+      messageText = existingAssignment 
+        ? `${userName} reassigned from ${existingAssignment.shipName} to ${shipName}` 
+        : `${userName} assigned to ${shipName} as ${role}`;
     }
+    
+    // Show status message
+    setStatusMessage({
+      type: 'success',
+      text: messageText,
+      shipId: isGroundSupport ? null : shipId
+    });
     
     // Create a copy of the current assignments, excluding this user
     const updatedAssignments = [...crewAssignments.filter(a => a.userId !== userId)];
     
     // Create the new assignment
-    const newAssignment = {
+    const newAssignment: CrewAssignment = {
       userId,
       userName,
       shipId,
       shipName,
       shipType,
-      role
+      manufacturer,
+      image,
+      crewRequirement,
+      role,
+      isGroundSupport
     };
     
     // Add the new assignment
     updatedAssignments.push(newAssignment);
-    
-    console.log(`Assigned ${userName} to ${shipName} as ${role}`);
-    console.log('Updated assignments after adding:', updatedAssignments.length);
-    console.log('New assignments:', JSON.stringify(updatedAssignments.map(a => ({
-      userId: a.userId,
-      userName: a.userName,
-      shipId: a.shipId,
-      shipName: a.shipName,
-      role: a.role
-    }))));
-    
-    // Update state with the new assignments
     setCrewAssignments(updatedAssignments);
     
-    // Clear status message after a delay
+    console.log(`Assigned ${userName} to ${isGroundSupport ? 'Ground Support' : shipName} as ${role}`);
+    console.log('Updated assignments after adding:', updatedAssignments.length);
+    
+    // Clear the status message after a delay
     setTimeout(() => setStatusMessage(null), 3000);
   };
 
@@ -443,6 +622,83 @@ const MissionForm: React.FC<MissionFormProps> = ({
       console.error('Error uploading image:', error);
       alert('Failed to upload image. Please try again or use a direct URL.');
     }
+  };
+
+  // Update a ship property
+  const updateShipProperty = (shipId: string, property: string, value: any) => {
+    const updatedShips = selectedShips.map(s => 
+      s.shipId === shipId 
+        ? {...s, [property]: value} 
+        : s
+    );
+    setSelectedShips(updatedShips);
+  };
+
+  // Enrich ship data with Star Citizen wiki information
+  const enrichShipData = (ship: UserShip): UserShip => {
+    console.log(`Enriching ship data for: ${ship.name} (Type: ${ship.type})`);
+
+    // First try to find by exact name
+    let shipDetails = getShipByName(ship.name);
+    
+    // If not found by name, try by type
+    if (!shipDetails) {
+      shipDetails = getShipByName(ship.type);
+    }
+    
+    // If still not found, try searching in types
+    if (!shipDetails) {
+      const typeMatches = getShipsByType(ship.type);
+      if (typeMatches.length > 0) {
+        shipDetails = typeMatches[0];
+      }
+    }
+    
+    // Format the image path directly the same way it's used in userprofile
+    const formattedImageName = (ship.type || ship.name).toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[\.']/g, '')
+      .replace(/\//g, '_')
+      .replace(/[āáàäâã]/g, 'a')
+      .replace(/[ēéèëê]/g, 'e')
+      .replace(/[īíìïî]/g, 'i')
+      .replace(/[ōóòöôõ]/g, 'o')
+      .replace(/[ūúùüû]/g, 'u')
+      .replace(/[ÿý]/g, 'y');
+    
+    const imagePath = `/images/${formattedImageName}.png`;
+    console.log(`Using direct image path: ${imagePath}`);
+    
+    if (shipDetails) {
+      console.log(`Found ship details in database: ${shipDetails.name}`);
+      console.log(`Details: ${shipDetails.manufacturer}, ${shipDetails.size}, ${shipDetails.role?.join(',')}`);
+      
+      return { 
+        ...ship, 
+        manufacturer: ship.manufacturer || shipDetails.manufacturer,
+        crewRequirement: ship.crewRequirement || shipDetails.crewRequirement,
+        size: ship.size || shipDetails.size,
+        cargoCapacity: ship.cargoCapacity || shipDetails.cargoCapacity,
+        speedSCM: ship.speedSCM || shipDetails.speedSCM,
+        speedBoost: ship.speedBoost || shipDetails.speedBoost,
+        length: ship.length || shipDetails.length,
+        beam: ship.beam || shipDetails.beam,
+        height: ship.height || shipDetails.height,
+        image: imagePath,
+        role: shipDetails.role?.join(", ") || ""
+      };
+    }
+    
+    // If not found, return with default values and our direct path
+    console.warn(`No ship details found in database for: ${ship.name} (Type: ${ship.type})`);
+    
+    return {
+      ...ship,
+      manufacturer: ship.manufacturer || 'Unknown',
+      crewRequirement: ship.crewRequirement || 1,
+      size: ship.size || 'Medium',
+      image: imagePath
+    };
   };
 
   return (
@@ -558,6 +814,7 @@ const MissionForm: React.FC<MissionFormProps> = ({
                   selectedShips={selectedShips}
                   addShip={addShip}
                   removeShip={removeShip}
+                  setSelectedShips={setSelectedShips}
                   crewAssignments={crewAssignments}
                   assignCrewToShip={assignCrewToShip}
                   commonRoles={COMMON_ROLES}
@@ -629,8 +886,9 @@ interface VesselAssignmentTabProps {
   selectedShips: UserShip[];
   addShip: (ship: UserShip) => void;
   removeShip: (shipId: string) => void;
+  setSelectedShips: (ships: UserShip[]) => void;
   crewAssignments: CrewAssignment[];
-  assignCrewToShip: (userId: string, userName: string, shipId: string, shipName: string, shipType: string, role: string) => void;
+  assignCrewToShip: (userId: string, userName: string, shipId: string, shipName: string, shipType: string, role: string, manufacturer?: string, image?: string, isGroundSupport?: boolean, crewRequirement?: number) => void;
   commonRoles: string[];
   statusMessage: StatusMessage | null;
   setStatusMessage: (message: StatusMessage | null) => void;
@@ -1005,6 +1263,7 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
   selectedShips,
   addShip,
   removeShip,
+  setSelectedShips,
   crewAssignments,
   assignCrewToShip,
   commonRoles,
@@ -1099,78 +1358,78 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
   
   // Get assigned crew for a specific ship
   const getShipCrew = (shipId: string) => {
-    const crew = crewAssignments.filter(a => a.shipId === shipId);
+    if (!shipId) return [];
+    
+    const crew = crewAssignments.filter(a => a.shipId === shipId && !a.isGroundSupport);
     console.log(`Crew for ship ${shipId}:`, crew.map(c => c.userName));
+    return crew;
+  };
+  
+  // Get ground support crew
+  const getGroundSupportCrew = () => {
+    const crew = crewAssignments.filter(a => a.isGroundSupport);
+    console.log(`Ground support crew:`, crew.map(c => c.userName));
     return crew;
   };
   
   // Handle adding a new ship
   const handleAddShip = (ship: UserShip) => {
-    addShip(ship);
+    // Make sure ship has a valid ID before adding
+    const shipToAdd = {
+      ...ship,
+      shipId: ship.shipId || `ship-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    };
+    
+    // Pass the ship to the parent's addShip function
+    addShip(shipToAdd);
+    
+    // Update UI state
     setShowShipSelector(false);
     setAssignmentsFinalized(false);
     
     // Set this ship as active so users can see the crew assignment section
-    setActiveShipId(ship.shipId);
+    setActiveShipId(shipToAdd.shipId);
   };
   
   // Handle assigning a role to a user
-  const handleAssignRole = (userId: string, userName: string, shipId: string, shipName: string, shipType: string, role: string) => {
-    // Add validation to ensure we have a valid shipId
-    if (!shipId) {
+  const handleAssignRole = (
+    userId: string, 
+    userName: string, 
+    shipId: string, 
+    shipName: string, 
+    shipType: string, 
+    role: string,
+    manufacturer: string = '',
+    image: string = '',
+    isGroundSupport: boolean = false,
+    crewRequirement: number = 0
+  ) => {
+    // Add validation to ensure we have a valid shipId (unless ground support)
+    if (!shipId && !isGroundSupport) {
       console.error('Cannot assign crew: shipId is empty');
       return;
     }
     
     console.log('=== CREW ASSIGNMENT DEBUG ===');
     console.log(`Assigning user: ${userName} (${userId})`);
-    console.log(`To ship: ${shipName} (${shipId}) of type: ${shipType}`);
+    console.log(`To ${isGroundSupport ? 'Ground Support' : `ship: ${shipName} (${shipId}) of type: ${shipType}`}`);
     console.log(`With role: ${role}`);
     console.log('Current assignments before:', crewAssignments.length);
     console.log('Current unassigned crew:', unassignedCrew.map(u => u.name));
     
-    // Create the new assignment directly without using assignCrewToShip
-    // This ensures a direct state update for the assignment
-    const existingAssignment = crewAssignments.find(a => a.userId === userId);
-    
-    // Create a copy of current assignments, removing this user if they already exist
-    const updatedAssignments = crewAssignments.filter(a => a.userId !== userId);
-    
-    // Add the new assignment
-    const newAssignment = {
-      userId,
-      userName,
-      shipId,
-      shipName,
-      shipType,
-      role
-    };
-    
-    // Push the new assignment to the array
-    updatedAssignments.push(newAssignment);
-    
-    // Set the updated assignments
-    setCrewAssignments(updatedAssignments);
-    
-    // Show success message
-    setStatusMessage({
-      type: 'success',
-      text: existingAssignment 
-        ? `${userName} reassigned to ${shipName} as ${role}` 
-        : `${userName} assigned to ${shipName} as ${role}`,
-      shipId: shipId
-    });
-    
-    // Log the state after assignment for debugging
-    setTimeout(() => {
-      console.log('=== AFTER ASSIGNMENT ===');
-      console.log('Assignments after:', updatedAssignments.length);
-      console.log('New assignments:', JSON.stringify(updatedAssignments));
-      console.log('========================');
-    }, 0);
-    
-    // Clear the status message after a delay
-    setTimeout(() => setStatusMessage(null), 3000);
+    // Use the parent component's assignCrewToShip function
+    assignCrewToShip(
+      userId, 
+      userName, 
+      shipId, 
+      shipName, 
+      shipType, 
+      role,
+      manufacturer,
+      image,
+      isGroundSupport,
+      crewRequirement
+    );
   };
 
   // Handle save assignments
@@ -1318,289 +1577,566 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
             {selectedShips.map((ship, shipIndex) => (
               <div
                 key={`selected-ship-${ship.shipId}-${shipIndex}`}
-                className={`mg-panel bg-[rgba(var(--mg-panel-dark),0.3)] p-4 border rounded-sm relative group overflow-hidden ${
-                  activeShipId === ship.shipId 
-                    ? 'border-[rgba(var(--mg-primary),0.4)] bg-[rgba(var(--mg-panel-dark),0.5)]' : 
-                  statusMessage?.shipId === ship.shipId
-                    ? 'border-[rgba(var(--mg-success),0.4)] bg-[rgba(var(--mg-panel-dark),0.5)]'
-                    : 'border-[rgba(var(--mg-primary),0.1)]'
-                }`}
+                className="mg-panel bg-[rgba(var(--mg-panel-dark),0.3)] border rounded-sm mb-4 border-[rgba(var(--mg-primary),0.2)]"
               >
-                {/* Hover effect */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
-                </div>
-                
-                {/* Ship header */}
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="font-semibold text-lg flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-[rgba(var(--mg-primary),0.7)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      {ship.name}
-                    </h3>
-                    <p className="text-sm text-[rgba(var(--mg-primary),0.7)]">
-                      {ship.type} • Owned by {ship.ownerName}
-                    </p>
-                  </div>
-                  
-                  <div className="flex">
-                    <button
-                      type="button"
-                      className={`text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-primary),0.9)] p-1 ${
-                        activeShipId === ship.shipId ? 'bg-[rgba(var(--mg-primary),0.1)]' : ''
-                      }`}
-                      onClick={() => setActiveShipId(activeShipId === ship.shipId ? null : ship.shipId)}
-                      aria-label={activeShipId === ship.shipId ? "Hide crew assignments" : "Show crew assignments"}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    
-                    <button
-                      type="button"
-                      className="text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-error),0.9)] p-1 ml-1"
-                      onClick={() => removeShip(ship.shipId)}
-                      aria-label="Remove ship"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Ship crew assignment */}
-                {activeShipId === ship.shipId && (
-                  <div className="mt-3 border-t border-[rgba(var(--mg-primary),0.1)] pt-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-sm text-[rgba(var(--mg-primary),0.8)]">Crew Assignment</h4>
-                      {unassignedCrew.length > 0 && (
-                        <button
-                          type="button"
-                          className="mg-button-secondary py-1 px-2 text-xs flex items-center"
-                          onClick={() => {
-                            // Get the first unassigned crew member
-                            const firstUnassignedUser = unassignedCrew[0];
-                            console.log("Adding crew member to ship:", ship.name, "User:", firstUnassignedUser.name);
+                {/* Ship header and details - always visible */}
+                <div className="p-3">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-start">
+                      {/* Ship image */}
+                      <div className="w-56 h-40 mr-3 rounded-sm overflow-hidden bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.2)] flex items-center justify-center flex-shrink-0">
+                        <img 
+                          src={ship.image}
+                          alt={ship.name || ship.type}
+                          className="object-contain w-full h-full max-h-full"
+                          style={{ maxHeight: "100%" }}
+                          onError={(e) => {
+                            // Prevent infinite loops by setting a flag
+                            if ((e.target as HTMLImageElement).dataset.retried === 'true') {
+                              console.error(`Failed to load ship image after retry: ${ship.image}`);
+                              
+                              // Use a generic placeholder that definitely exists
+                              (e.target as HTMLImageElement).src = "/images/ship-placeholder.jpg";
+                              return;
+                            }
                             
-                            // Set up the role selector with this user and the current ship
-                            setShowRoleSelector({
-                              userId: firstUnassignedUser.userId,
-                              shipId: ship.shipId
-                            });
-                            setCustomRole('');
+                            // Mark as retried
+                            (e.target as HTMLImageElement).dataset.retried = 'true';
+                            
+                            // Log detailed info for debugging
+                            console.warn(`Ship image not found: ${ship.image} for ship: ${ship.name} (${ship.type})`);
+                            
+                            // Try using the name directly
+                            const fallbackByName = getDirectImagePath(ship.name);
+                            console.log(`Trying name-based fallback: ${fallbackByName}`);
+                            e.currentTarget.src = fallbackByName;
                           }}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                          </svg>
-                          Add Crew Member
-                        </button>
-                      )}
+                        />
+                      </div>
+                      
+                      {/* Ship details */}
+                      <div className="flex-grow">
+                        <div className="flex items-center">
+                          <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">{ship.manufacturer || 'Unknown Manufacturer'}</span>
+                        </div>
+                        <h4 className="text-sm text-[rgba(var(--mg-primary),0.9)] font-medium">{ship.name}</h4>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-1">
+                          <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                            <span className="opacity-70">Owner:</span> {ship.ownerName}
+                          </span>
+                          <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                            <span className="opacity-70">Crew:</span> {ship.crewRequirement || "Not specified"}
+                          </span>
+                          <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                            <span className="opacity-70">Size:</span> {ship.size || "Unknown"}
+                          </span>
+                          {ship.role && (
+                            <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                              <span className="opacity-70">Role:</span> {ship.role}
+                            </span>
+                          )}
+                          {ship.cargoCapacity !== undefined && (
+                            <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                              <span className="opacity-70">Cargo:</span> {ship.cargoCapacity} SCU
+                            </span>
+                          )}
+                          {ship.speedSCM !== undefined && (
+                            <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                              <span className="opacity-70">Speed:</span> {ship.speedSCM} m/s
+                            </span>
+                          )}
+                          {ship.length !== undefined && (
+                            <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                              <span className="opacity-70">Length:</span> {ship.length} m
+                            </span>
+                          )}
+                          {ship.beam !== undefined && (
+                            <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                              <span className="opacity-70">Beam:</span> {ship.beam} m
+                            </span>
+                          )}
+                          {ship.height !== undefined && (
+                            <span className="text-xs text-[rgba(var(--mg-primary),0.6)]">
+                              <span className="opacity-70">Height:</span> {ship.height} m
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     
-                    {/* Role assignment dialog */}
-                    {showRoleSelector && showRoleSelector.shipId === ship.shipId && (
-                      <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.6)] p-3 border border-[rgba(var(--mg-primary),0.3)] rounded-sm mt-2 mb-3">
-                        <div className="flex justify-between items-center mb-3">
-                          <h3 className="text-sm font-semibold">Assign Crew Member</h3>
-                          <button 
-                            type="button"
-                            className="text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-primary),0.9)]"
-                            onClick={() => setShowRoleSelector(null)}
-                            aria-label="Close"
+                    <div className="flex items-center">
+                      {/* Ship control buttons */}
+                      <button
+                        type="button"
+                        className="text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-error),0.9)] ml-2"
+                        onClick={() => removeShip(ship.shipId)}
+                        aria-label="Remove ship"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Additional ship information */}
+                  <div className="mt-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Ship role in mission */}
+                      <div>
+                        <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">Role in Mission</label>
+                        <select
+                          className="mg-input w-full py-1.5 px-2 text-sm bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
+                          value={ship.missionRole || ""}
+                          onChange={(e) => {
+                            const updatedShips = [...selectedShips];
+                            const shipIndex = updatedShips.findIndex(s => s.shipId === ship.shipId);
+                            if (shipIndex >= 0) {
+                              updatedShips[shipIndex] = {
+                                ...updatedShips[shipIndex],
+                                missionRole: e.target.value
+                              };
+                              setSelectedShips(updatedShips);
+                            }
+                          }}
+                        >
+                          <option value="">Select a role...</option>
+                          <option value="Combat">Combat</option>
+                          <option value="Transport">Transport</option>
+                          <option value="Support">Support</option>
+                          <option value="Exploration">Exploration</option>
+                          <option value="Medical">Medical</option>
+                          <option value="Cargo">Cargo</option>
+                          <option value="Mining">Mining</option>
+                          <option value="Salvage">Salvage</option>
+                          <option value="Refueling">Refueling</option>
+                          <option value="Repair">Repair</option>
+                        </select>
+                      </div>
+                      
+                      {/* Ship equipment */}
+                      <div>
+                        <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">Equipment</label>
+                        <input
+                          type="text"
+                          className="mg-input w-full py-1.5 px-2 text-sm bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
+                          placeholder="e.g. Medical supplies, Mining lasers"
+                          value={ship.equipment || ""}
+                          onChange={(e) => {
+                            const updatedShips = [...selectedShips];
+                            const shipIndex = updatedShips.findIndex(s => s.shipId === ship.shipId);
+                            if (shipIndex >= 0) {
+                              updatedShips[shipIndex] = {
+                                ...updatedShips[shipIndex],
+                                equipment: e.target.value
+                              };
+                              setSelectedShips(updatedShips);
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Ship crew assignment - always visible */}
+                <div className="border-t border-[rgba(var(--mg-primary),0.1)] pt-3 p-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-sm text-[rgba(var(--mg-primary),0.8)]">Crew Assignment</h4>
+                    {unassignedCrew.length > 0 && (
+                      <button
+                        type="button"
+                        className="mg-button-secondary py-1 px-2 text-xs flex items-center"
+                        onClick={() => {
+                          // Get the first unassigned crew member
+                          const firstUnassignedUser = unassignedCrew[0];
+                          console.log("Adding crew member to ship:", ship.name, "User:", firstUnassignedUser.name);
+                          
+                          // Set up the role selector with this user and the current ship
+                          setShowRoleSelector({
+                            userId: firstUnassignedUser.userId,
+                            shipId: ship.shipId
+                          });
+                          setCustomRole('');
+                        }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Add Crew Member
+                      </button>
+                    )}
+                  </div>
+                  
+                  {/* Role assignment dialog for ships */}
+                  {showRoleSelector && showRoleSelector.shipId && showRoleSelector.shipId !== 'ground-support-temp' && showRoleSelector.shipId === ship.shipId && (
+                    <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.6)] p-3 border border-[rgba(var(--mg-primary),0.3)] rounded-sm mt-2 mb-3">
+                      <div className="flex justify-between items-center mb-3">
+                        <h3 className="text-sm font-semibold">Assign Crew Member</h3>
+                        <button 
+                          type="button"
+                          className="text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-primary),0.9)]"
+                          onClick={() => setShowRoleSelector(null)}
+                          aria-label="Close"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      
+                      {/* User selection */}
+                      <div className="mb-3">
+                        <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">Crew Member</label>
+                        {unassignedCrew.length > 0 ? (
+                          <select
+                            className="mg-input w-full py-1.5 px-2 text-sm bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
+                            value={showRoleSelector.userId}
+                            onChange={(e) => {
+                              console.log("Selected crew member changed to:", e.target.value);
+                              setShowRoleSelector({
+                                ...showRoleSelector, 
+                                userId: e.target.value
+                              });
+                            }}
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            {unassignedCrew.map((user, userIndex) => (
+                              <option key={`crew-option-${user.userId}-${userIndex}`} value={user.userId}>{user.name}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <div className="text-sm text-[rgba(var(--mg-primary),0.6)] py-1">
+                            No unassigned personnel available
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Role selection */}
+                      <div className="mb-3">
+                        <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">Role</label>
+                        <select
+                          className="mg-input w-full py-1.5 px-2 text-sm bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
+                          value={customRole}
+                          onChange={(e) => setCustomRole(e.target.value)}
+                        >
+                          <option value="">Select a role...</option>
+                          {commonRoles.map((role, roleIndex) => (
+                            <option key={`role-option-${role}-${roleIndex}`} value={role}>{role}</option>
+                          ))}
+                        </select>
+                      </div>
+                      
+                      {/* Assign button */}
+                      <button
+                        type="button"
+                        className="mg-button-primary w-full py-1.5 text-sm"
+                        onClick={() => {
+                          console.log("Confirm Assignment clicked. Current state:", {
+                            showRoleSelector,
+                            customRole,
+                            unassignedCrew: unassignedCrew.map(u => ({ id: u.userId, name: u.name })),
+                            shipId: showRoleSelector?.shipId
+                          });
+                          
+                          // First ensure we have all required data
+                          if (!showRoleSelector || !showRoleSelector.userId || !customRole) {
+                            console.error('Missing required data for assignment', { 
+                              showRoleSelector: !!showRoleSelector,
+                              userId: showRoleSelector?.userId || 'missing', 
+                              role: customRole || 'missing'
+                            });
+                            return;
+                          }
+                          
+                          // Find the user
+                          const user = selectedUsers.find(u => u.userId === showRoleSelector.userId);
+                          if (!user) {
+                            console.error(`User with ID ${showRoleSelector.userId} not found in selected users`);
+                            return;
+                          }
+                          
+                          // Find the ship using the stored shipId in showRoleSelector
+                          const targetShipId = showRoleSelector.shipId;
+                          if (!targetShipId || targetShipId === 'ground-support-temp') {
+                            console.error('Ship ID is empty or invalid');
+                            return;
+                          }
+                          
+                          // Find the ship details using the shipId
+                          const targetShip = selectedShips.find(s => s.shipId === targetShipId);
+                          if (!targetShip) {
+                            console.error(`Ship with ID ${targetShipId} not found in selected ships`);
+                            return;
+                          }
+                          
+                          // Assign to the target ship using the found ship details
+                          assignCrewToShip(
+                            user.userId, 
+                            user.name, 
+                            targetShip.shipId, 
+                            targetShip.name, 
+                            targetShip.type, 
+                            customRole,
+                            targetShip.manufacturer,
+                            targetShip.image,
+                            false,
+                            targetShip.crewRequirement
+                          );
+                          
+                          // Get the updated unassigned crew (after the assignment)
+                          const remainingUnassigned = selectedUsers.filter(
+                            u => !crewAssignments.some(a => a.userId === u.userId) && u.userId !== user.userId
+                          );
+                          
+                          // If there are still unassigned crew members, update the dialog to the next user
+                          if (remainingUnassigned.length > 0) {
+                            // Find the next unassigned user
+                            const nextUser = remainingUnassigned[0];
+                            console.log(`Moving to next unassigned user: ${nextUser.name}`);
+                            
+                            // Update the role selector with the next user
+                            setShowRoleSelector({
+                              userId: nextUser.userId,
+                              shipId: targetShipId // Keep the same ship
+                            });
+                            setCustomRole(''); // Reset the role for the next user
+                          } else {
+                            // If no more unassigned users, close the dialog
+                            console.log('No more unassigned users, closing dialog');
+                            setShowRoleSelector(null);
+                            setCustomRole('');
+                          }
+                        }}
+                        disabled={!customRole || unassignedCrew.length === 0}
+                      >
+                        Confirm Assignment
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Crew list */}
+                  <div className="space-y-2 mt-3">
+                    {getShipCrew(ship.shipId).length === 0 ? (
+                      <p className="text-sm text-[rgba(var(--mg-primary),0.6)]">No crew assigned to this vessel</p>
+                    ) : (
+                      getShipCrew(ship.shipId).map((crew, crewIndex) => (
+                        <div key={`crew-assignment-${crew.userId}-${crewIndex}`} 
+                          className={`flex justify-between items-center bg-[rgba(var(--mg-panel-dark),0.2)] p-2 rounded-sm ${
+                            statusMessage?.shipId === ship.shipId && statusMessage?.text.includes(crew.userName) 
+                              ? 'border border-[rgba(var(--mg-success),0.3)]' 
+                              : ''
+                          }`}
+                        >
+                          <div className="flex items-center">
+                            <div className="w-6 h-6 rounded-full bg-[rgba(var(--mg-primary),0.2)] border border-[rgba(var(--mg-primary),0.4)] flex items-center justify-center text-xs flex-shrink-0 mr-2">
+                              {crew.userName.charAt(0).toUpperCase()}
+                            </div>
+                            <span className="text-sm">{crew.userName}</span>
+                            <span className="text-xs ml-2 px-2 py-0.5 bg-[rgba(var(--mg-primary),0.1)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm">
+                              {crew.role}
+                            </span>
+                          </div>
+                          
+                          <button
+                            type="button"
+                            className="text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-error),0.9)]"
+                            onClick={() => {
+                              // Remove this crew assignment
+                              assignCrewToShip(
+                                crew.userId, 
+                                crew.userName, 
+                                '', 
+                                '', 
+                                '', 
+                                ''
+                              );
+                            }}
+                            aria-label="Remove crew member"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                           </button>
                         </div>
-                        
-                        {/* User selection */}
-                        <div className="mb-3">
-                          <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">Crew Member</label>
-                          {unassignedCrew.length > 0 ? (
-                            <select
-                              className="mg-input w-full py-1.5 px-2 text-sm bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
-                              value={showRoleSelector.userId}
-                              onChange={(e) => {
-                                console.log("Selected crew member changed to:", e.target.value);
-                                setShowRoleSelector({
-                                  ...showRoleSelector, 
-                                  userId: e.target.value
-                                });
-                              }}
-                            >
-                              {unassignedCrew.map((user, userIndex) => (
-                                <option key={`crew-option-${user.userId}-${userIndex}`} value={user.userId}>{user.name}</option>
-                              ))}
-                            </select>
-                          ) : (
-                            <div className="text-sm text-[rgba(var(--mg-primary),0.6)] py-1">
-                              No unassigned personnel available
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Role selection */}
-                        <div className="mb-3">
-                          <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">Role</label>
-                          <select
-                            className="mg-input w-full py-1.5 px-2 text-sm bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
-                            value={customRole}
-                            onChange={(e) => setCustomRole(e.target.value)}
-                          >
-                            <option value="">Select a role...</option>
-                            {commonRoles.map((role, roleIndex) => (
-                              <option key={`role-option-${role}-${roleIndex}`} value={role}>{role}</option>
-                            ))}
-                          </select>
-                        </div>
-                        
-                        {/* Assign button */}
-                        <button
-                          type="button"
-                          className="mg-button-primary w-full py-1.5 text-sm"
-                          onClick={() => {
-                            console.log("Confirm Assignment clicked. Current state:", {
-                              showRoleSelector,
-                              customRole,
-                              unassignedCrew: unassignedCrew.map(u => ({ id: u.userId, name: u.name })),
-                              shipId: showRoleSelector?.shipId
-                            });
-                            
-                            // First ensure we have all required data
-                            if (!showRoleSelector || !showRoleSelector.userId || !customRole) {
-                              console.error('Missing required data for assignment', { 
-                                showRoleSelector: !!showRoleSelector,
-                                userId: showRoleSelector?.userId || 'missing', 
-                                role: customRole || 'missing'
-                              });
-                              return;
-                            }
-                            
-                            // Find the user
-                            const user = selectedUsers.find(u => u.userId === showRoleSelector.userId);
-                            if (!user) {
-                              console.error(`User with ID ${showRoleSelector.userId} not found in selected users`);
-                              return;
-                            }
-                            
-                            // Find the ship using the stored shipId in showRoleSelector
-                            const targetShipId = showRoleSelector.shipId;
-                            if (!targetShipId) {
-                              console.error('Ship ID is empty or invalid');
-                              return;
-                            }
-                            
-                            // Find the ship details using the shipId
-                            const targetShip = selectedShips.find(s => s.shipId === targetShipId);
-                            if (!targetShip) {
-                              console.error(`Ship with ID ${targetShipId} not found in selected ships`);
-                              return;
-                            }
-                            
-                            // Assign to the target ship using the found ship details
-                            handleAssignRole(
-                              user.userId, 
-                              user.name, 
-                              targetShip.shipId, 
-                              targetShip.name, 
-                              targetShip.type, 
-                              customRole
-                            );
-                            
-                            // Get the updated unassigned crew (after the assignment)
-                            const remainingUnassigned = selectedUsers.filter(
-                              u => !crewAssignments.some(a => a.userId === u.userId) && u.userId !== user.userId
-                            );
-                            
-                            // If there are still unassigned crew members, update the dialog to the next user
-                            if (remainingUnassigned.length > 0) {
-                              // Find the next unassigned user
-                              const nextUser = remainingUnassigned[0];
-                              console.log(`Moving to next unassigned user: ${nextUser.name}`);
-                              
-                              // Update the role selector with the next user
-                              setShowRoleSelector({
-                                userId: nextUser.userId,
-                                shipId: targetShipId // Keep the same ship
-                              });
-                              setCustomRole(''); // Reset the role for the next user
-                            } else {
-                              // If no more unassigned users, close the dialog
-                              console.log('No more unassigned users, closing dialog');
-                              setShowRoleSelector(null);
-                              setCustomRole('');
-                            }
-                          }}
-                          disabled={!customRole || unassignedCrew.length === 0}
-                        >
-                          Confirm Assignment
-                        </button>
-                      </div>
+                      ))
                     )}
-                    
-                    {/* Crew list */}
-                    <div className="space-y-2">
-                      {getShipCrew(ship.shipId).length === 0 ? (
-                        <p className="text-sm text-[rgba(var(--mg-primary),0.6)]">No crew assigned to this vessel</p>
-                      ) : (
-                        getShipCrew(ship.shipId).map((crew, crewIndex) => (
-                          <div key={`crew-assignment-${crew.userId}-${crewIndex}`} 
-                            className={`flex justify-between items-center bg-[rgba(var(--mg-panel-dark),0.2)] p-2 rounded-sm ${
-                              statusMessage?.shipId === ship.shipId && statusMessage?.text.includes(crew.userName) 
-                                ? 'border border-[rgba(var(--mg-success),0.3)]' 
-                                : ''
-                            }`}
-                          >
-                            <div className="flex items-center">
-                              <div className="w-6 h-6 rounded-full bg-[rgba(var(--mg-primary),0.2)] border border-[rgba(var(--mg-primary),0.4)] flex items-center justify-center text-xs flex-shrink-0 mr-2">
-                                {crew.userName.charAt(0).toUpperCase()}
-                              </div>
-                              <span className="text-sm">{crew.userName}</span>
-                              <span className="text-xs ml-2 px-2 py-0.5 bg-[rgba(var(--mg-primary),0.1)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm">
-                                {crew.role}
-                              </span>
-                            </div>
-                            
-                            <button
-                              type="button"
-                              className="text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-error),0.9)]"
-                              onClick={() => {
-                                // Remove this crew assignment
-                                assignCrewToShip(
-                                  crew.userId, 
-                                  crew.userName, 
-                                  '', 
-                                  '', 
-                                  '', 
-                                  ''
-                                );
-                              }}
-                              aria-label="Remove crew member"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                              </svg>
-                            </button>
-                          </div>
-                        ))
-                      )}
-                    </div>
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
       
-      {/* Ground Forces Section */}
+      {/* Ground Support Section */}
+      <div className="mt-6 mb-6">
+        <div className="flex justify-between items-center mb-3">
+          <h3 className="text-sm font-semibold text-[rgba(var(--mg-primary),0.9)]">
+            <span className="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-[rgba(var(--mg-success),0.7)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Ground Support Personnel
+            </span>
+          </h3>
+        </div>
+        
+        {/* Role assignment dialog for ground support */}
+        {showRoleSelector && showRoleSelector.shipId === 'ground-support-temp' && (
+          <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.6)] p-3 border border-[rgba(var(--mg-success),0.3)] rounded-sm mt-2 mb-3">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-sm font-semibold text-[rgba(var(--mg-success),0.9)]">Assign to Ground Support</h3>
+              <button 
+                type="button"
+                className="text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-primary),0.9)]"
+                onClick={() => setShowRoleSelector(null)}
+                aria-label="Close"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* User selection */}
+            <div className="mb-3">
+              <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">Personnel</label>
+              {unassignedCrew.length > 0 ? (
+                <select
+                  className="mg-input w-full py-1.5 px-2 text-sm bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
+                  value={showRoleSelector.userId}
+                  onChange={(e) => {
+                    setShowRoleSelector({
+                      ...showRoleSelector, 
+                      userId: e.target.value
+                    });
+                  }}
+                >
+                  {unassignedCrew.map((user, userIndex) => (
+                    <option key={`ground-crew-option-${user.userId}-${userIndex}`} value={user.userId}>{user.name}</option>
+                  ))}
+                </select>
+              ) : (
+                <div className="text-sm text-[rgba(var(--mg-primary),0.6)] py-1">
+                  No unassigned personnel available
+                </div>
+              )}
+            </div>
+            
+            {/* Role selection for ground support */}
+            <div className="mb-4">
+              <label className="block text-xs text-[rgba(var(--mg-primary),0.7)] mb-1">Role</label>
+              <div className="grid grid-cols-2 gap-2">
+                {/* Common roles */}
+                {["Ground Support", "Medical Support", "Logistics", "Communications", "Security"].map(role => (
+                  <button
+                    key={`ground-role-${role}`}
+                    type="button"
+                    className={`text-xs py-1.5 px-2 border rounded-sm text-left ${
+                      customRole === role 
+                        ? 'bg-[rgba(var(--mg-success),0.1)] border-[rgba(var(--mg-success),0.4)] text-[rgba(var(--mg-success),0.9)]' 
+                        : 'bg-[rgba(var(--mg-panel-dark),0.4)] border-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.8)]'
+                    } hover:bg-[rgba(var(--mg-success),0.05)] hover:border-[rgba(var(--mg-success),0.3)]`}
+                    onClick={() => setCustomRole(role)}
+                  >
+                    {role}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  placeholder="Custom role..."
+                  value={customRole}
+                  onChange={(e) => setCustomRole(e.target.value)}
+                  className="mg-input w-full py-1.5 px-2 text-sm bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.25)] rounded-sm focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
+                />
+              </div>
+            </div>
+            
+            {/* Confirm button */}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="mg-button-primary py-1.5 px-3 text-sm bg-[rgba(var(--mg-success),0.2)] border-[rgba(var(--mg-success),0.4)] text-[rgba(var(--mg-success),0.9)]"
+                disabled={!customRole || !showRoleSelector.userId}
+                onClick={() => {
+                  if (customRole && showRoleSelector.userId) {
+                    const user = selectedUsers.find(u => u.userId === showRoleSelector.userId);
+                    
+                    if (user) {
+                      // Assign this user to ground support
+                      handleAssignRole(
+                        user.userId, 
+                        user.name, 
+                        'ground-support-temp', 
+                        'Ground Support', 
+                        'Ground Support', 
+                        customRole
+                      );
+                      
+                      // Clear the role selector
+                      setShowRoleSelector(null);
+                      setCustomRole('');
+                    }
+                  }
+                }}
+              >
+                Confirm Assignment
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {/* Ground Support crew list */}
+        <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.3)] border border-[rgba(var(--mg-primary),0.15)] rounded-sm p-4">
+          {getGroundSupportCrew().length === 0 ? (
+            <p className="text-sm text-[rgba(var(--mg-primary),0.6)]">No ground support personnel assigned</p>
+          ) : (
+            <div className="space-y-2">
+              {getGroundSupportCrew().map((crew, crewIndex) => (
+                <div 
+                  key={`ground-crew-${crew.userId}-${crewIndex}`} 
+                  className="flex justify-between items-center bg-[rgba(var(--mg-panel-dark),0.2)] p-2 rounded-sm border border-[rgba(var(--mg-success),0.2)]"
+                >
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 rounded-full bg-[rgba(var(--mg-success),0.2)] border border-[rgba(var(--mg-success),0.4)] flex items-center justify-center text-xs flex-shrink-0 mr-2">
+                      {crew.userName.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-sm">{crew.userName}</span>
+                    <span className="text-xs ml-2 px-2 py-0.5 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.2)] rounded-sm">
+                      {crew.role}
+                    </span>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    className="text-[rgba(var(--mg-primary),0.6)] hover:text-[rgba(var(--mg-error),0.9)]"
+                    onClick={() => {
+                      // Remove this crew assignment
+                      assignCrewToShip(
+                        crew.userId, 
+                        crew.userName, 
+                        '', 
+                        '', 
+                        '', 
+                        ''
+                      );
+                    }}
+                    aria-label="Remove crew member"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Unassigned Personnel Section */}
       <div>
         <label className="block text-sm text-[rgba(var(--mg-primary),0.8)] mb-2">
           Unassigned Personnel
@@ -1693,7 +2229,23 @@ const VesselAssignmentTab: React.FC<VesselAssignmentTabProps> = ({
                         setCustomRole('');
                       }}
                     >
-                      Assign
+                      Assign to Ship
+                    </button>
+                    
+                    {/* Ground Support button */}
+                    <button
+                      type="button"
+                      className="mg-button-secondary py-1 px-2 text-xs ml-2 bg-[rgba(var(--mg-success),0.1)] border-[rgba(var(--mg-success),0.3)] text-[rgba(var(--mg-success),0.9)]"
+                      onClick={() => {
+                        // Open a role selector dialog for ground support
+                        setShowRoleSelector({
+                          userId: user.userId,
+                          shipId: 'ground-support-temp' // Special ID for ground support
+                        });
+                        setCustomRole('Ground Support'); // Default role for ground support
+                      }}
+                    >
+                      Assign to Ground Support
                     </button>
                   </div>
                 )}

@@ -614,12 +614,9 @@ export const shipDatabase: ShipDetails[] = [
   
   // RSI
   {
-    name: "Aurora MR",
     manufacturer: "RSI",
-    type: "Aurora MR",
     size: "Small",
     role: ["Starter", "Light Fighter"],
-    image: getShipImagePath("Aurora MR"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 3,
@@ -1214,12 +1211,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 3650500
   },
   {
-    name: "F7C Hornet Mk I",
     manufacturer: "Anvil Aerospace",
-    type: "F7C Hornet Mk I",
     size: "Small",
     role: ["Medium Fighter"],
-    image: getShipImagePath("F7C Hornet Mk I"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 2,
@@ -1231,12 +1225,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 73535
   },
   {
-    name: "F7C Hornet Mk II",
     manufacturer: "Anvil Aerospace",
-    type: "F7C Hornet Mk II",
     size: "Small",
     role: ["Medium Fighter"],
-    image: getShipImagePath("F7C Hornet Mk II"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 2,
@@ -1248,12 +1239,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 73535
   },
   {
-    name: "F7C Hornet Wildfire Mk I",
     manufacturer: "Anvil Aerospace",
-    type: "F7C Hornet Wildfire Mk I",
     size: "Small",
     role: ["Medium Fighter"],
-    image: getShipImagePath("F7C Hornet Wildfire Mk I"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 0,
@@ -1265,12 +1253,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 73535
   },
   {
-    name: "F7C-M Hornet Heartseeker Mk II",
     manufacturer: "Anvil Aerospace",
-    type: "F7C-M Hornet Heartseeker Mk II",
     size: "Small",
     role: ["Medium Fighter"],
-    image: getShipImagePath("F7C-M Hornet Heartseeker Mk II"),
     crewRequirement: 1,
     maxCrew: 2,
     cargoCapacity: 0,
@@ -1282,12 +1267,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 78466
   },
   {
-    name: "F7C-M Super Hornet Heartseeker Mk I",
     manufacturer: "Anvil Aerospace",
-    type: "F7C-M Super Hornet Heartseeker Mk I",
     size: "Small",
     role: ["Medium Fighter"],
-    image: getShipImagePath("F7C-M Super Hornet Heartseeker Mk I"),
     crewRequirement: 1,
     maxCrew: 2,
     cargoCapacity: 0,
@@ -1299,12 +1281,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 78466
   },
   {
-    name: "F7C-M Super Hornet Mk I",
     manufacturer: "Anvil Aerospace",
-    type: "F7C-M Super Hornet Mk I",
     size: "Small",
     role: ["Medium Fighter"],
-    image: getShipImagePath("F7C-M Super Hornet Mk I"),
     crewRequirement: 1,
     maxCrew: 2,
     cargoCapacity: 0,
@@ -1316,12 +1295,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 78466
   },
   {
-    name: "F7C M Super Hornet Mk II",
     manufacturer: "Anvil Aerospace",
-    type: "F7C M Super Hornet Mk II",
     size: "Small",
     role: ["Medium Fighter"],
-    image: getShipImagePath("F7C M Super Hornet Mk II"),
     crewRequirement: 1,
     maxCrew: 2,
     cargoCapacity: 0,
@@ -1333,12 +1309,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 78466
   },
   {
-    name: "F7C-R Hornet Tracker Mk I",
     manufacturer: "Anvil Aerospace",
-    type: "F7C-R Hornet Tracker Mk I",
     size: "Small",
     role: ["Pathfinder"],
-    image: getShipImagePath("F7C-R Hornet Tracker Mk I"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 0,
@@ -1350,12 +1323,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 73497
   },
   {
-    name: "F7C-R Hornet Tracker Mk II",
     manufacturer: "Anvil Aerospace",
-    type: "F7C-R Hornet Tracker Mk II",
     size: "Small",
     role: ["Pathfinder"],
-    image: getShipImagePath("F7C-R Hornet Tracker Mk II"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 0,
@@ -1367,12 +1337,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 73497
   },
   {
-    name: "F7C-S Hornet Ghost Mk I",
     manufacturer: "Anvil Aerospace",
-    type: "F7C-S Hornet Ghost Mk I",
     size: "Small",
     role: ["Stealth Fighter"],
-    image: getShipImagePath("F7C-S Hornet Ghost Mk I"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 0,
@@ -1384,12 +1351,9 @@ export const shipDatabase: ShipDetails[] = [
     mass: 73454
   },
   {
-    name: "F7C-S Hornet Ghost Mk II",
     manufacturer: "Anvil Aerospace",
-    type: "F7C-S Hornet Ghost Mk II",
     size: "Small",
     role: ["Stealth Fighter"],
-    image: getShipImagePath("F7C-S Hornet Ghost Mk II"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 0,
@@ -3334,12 +3298,9 @@ export const shipDatabase: ShipDetails[] = [
     height: 13.0
   },
   {
-    name: "Zeus Mk II CL",
     manufacturer: "RSI",
-    type: "Zeus Mk II CL",
     size: "Small",
     role: ["Light Freight"],
-    image: getShipImagePath("Zeus Mk II CL"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 6,
@@ -3348,12 +3309,9 @@ export const shipDatabase: ShipDetails[] = [
     height: 5.0
   },
   {
-    name: "Zeus Mk II ES",
     manufacturer: "RSI",
-    type: "Zeus Mk II ES",
     size: "Small",
     role: ["Starter", "Pathfinder"],
-    image: getShipImagePath("Zeus Mk II ES"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 3,
@@ -3362,12 +3320,9 @@ export const shipDatabase: ShipDetails[] = [
     height: 5.0
   },
   {
-    name: "Zeus Mk II MR",
     manufacturer: "RSI",
-    type: "Zeus Mk II MR",
     size: "Small",
     role: ["Starter", "Light Fighter"],
-    image: getShipImagePath("Zeus Mk II MR"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 3,
@@ -3376,12 +3331,9 @@ export const shipDatabase: ShipDetails[] = [
     height: 5.0
   },
   {
-    name: "Zeus Mk II MR",
     manufacturer: "RSI",
-    type: "Zeus Mk II MR",
     size: "Small",
     role: ["Starter", "Light Fighter"],
-    image: getShipImagePath("Zeus Mk II MR"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 3,
@@ -3391,12 +3343,9 @@ export const shipDatabase: ShipDetails[] = [
   },
   // Add missing RSI ships
   {
-    name: "Aurora MR",
     manufacturer: "RSI",
-    type: "Aurora MR",
     size: "Small",
     role: ["Light Fighter"],
-    image: getShipImagePath("Aurora MR"),
     crewRequirement: 1,
     maxCrew: 1,
     cargoCapacity: 3,
@@ -3493,65 +3442,6 @@ export const ensureShipTypes = () => {
 
 // Call this immediately to fix all ships
 ensureShipTypes();
-
-// Function to remove duplicate ships from the database
-export const removeDuplicateShips = () => {
-  try {
-    const initialCount = shipDatabase.length;
-    
-    // Create a map to identify duplicates (case-insensitive)
-    const uniqueShips: Record<string, ShipDetails> = {};
-    const duplicates: string[] = [];
-    
-    // First pass: identify all duplicates
-    for (const ship of shipDatabase) {
-      const normalizedName = ship.name.toLowerCase();
-      
-      if (uniqueShips[normalizedName]) {
-        duplicates.push(ship.name);
-      } else {
-        uniqueShips[normalizedName] = ship;
-      }
-    }
-    
-    // If duplicates were found, remove them
-    if (duplicates.length > 0) {
-      // In development, we can log this information
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`Before deduplication: ${initialCount} ships`);
-        console.log(`Found ${duplicates.length} duplicate ships`);
-      }
-      
-      // Create a new array with only unique ships
-      const deduplicatedShips = Object.values(uniqueShips);
-      
-      // Replace the original database with the deduplicated one
-      shipDatabase.length = 0;
-      deduplicatedShips.forEach(ship => shipDatabase.push(ship));
-      
-      // In development, we can log this information
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`After deduplication: ${shipDatabase.length} ships`);
-      }
-    }
-    
-    return shipDatabase.length;
-  } catch (error) {
-    // Don't crash the application if deduplication fails
-    console.error('Error during ship deduplication:', error);
-    return shipDatabase.length;
-  }
-};
-
-// Call the deduplication function right away
-try {
-  removeDuplicateShips();
-} catch (error) {
-  // Fail silently in production
-  if (process.env.NODE_ENV === 'development') {
-    console.error('Failed to deduplicate ships:', error);
-  }
-}
 
 // Ensure lookup by name works for all ships
 export const getShipByName = (name: string): ShipDetails | undefined => {
@@ -3655,17 +3545,6 @@ export const shipManufacturers: ShipManufacturer[] = [
       { name: "Carrack Expedition", image: formatShipImageName("Carrack Expedition") },
       { name: "Centurion", image: formatShipImageName("Centurion") },
       { name: "Crucible", image: formatShipImageName("Crucible") },
-      { name: "F7C Hornet Mk I", image: formatShipImageName("F7C Hornet Mk I") },
-      { name: "F7C Hornet Mk II", image: formatShipImageName("F7C Hornet Mk II") },
-      { name: "F7C Hornet Wildfire Mk I", image: formatShipImageName("F7C Hornet Wildfire Mk I") },
-      { name: "F7C-M Hornet Heartseeker Mk II", image: formatShipImageName("F7C-M Hornet Heartseeker Mk II") },
-      { name: "F7C-M Super Hornet Heartseeker Mk I", image: formatShipImageName("F7C-M Super Hornet Heartseeker Mk I") },
-      { name: "F7C-M Super Hornet Mk I", image: formatShipImageName("F7C-M Super Hornet Mk I") },
-      { name: "F7C M Super Hornet Mk II", image: formatShipImageName("F7C M Super Hornet Mk II") },
-      { name: "F7C-R Hornet Tracker Mk I", image: formatShipImageName("F7C-R Hornet Tracker Mk I") },
-      { name: "F7C-R Hornet Tracker Mk II", image: formatShipImageName("F7C-R Hornet Tracker Mk II") },
-      { name: "F7C-S Hornet Ghost Mk I", image: formatShipImageName("F7C-S Hornet Ghost Mk I") },
-      { name: "F7C-S Hornet Ghost Mk II", image: formatShipImageName("F7C-S Hornet Ghost Mk II") },
       { name: "F8C Lightening", image: formatShipImageName("F8C Lightening") },
       { name: "Gladiator", image: formatShipImageName("Gladiator") },
       { name: "Hawk", image: formatShipImageName("Hawk") },
@@ -3886,7 +3765,6 @@ export const shipManufacturers: ShipManufacturer[] = [
       { name: "Aurora ES", image: formatShipImageName("Aurora ES") },
       { name: "Aurora LN", image: formatShipImageName("Aurora LN") },
       { name: "Aurora LX", image: formatShipImageName("Aurora LX") },
-      { name: "Aurora MR", image: formatShipImageName("Aurora MR") },
       { name: "Constellation Andromeda", image: formatShipImageName("Constellation Andromeda") },
       { name: "Constellation Aquila", image: formatShipImageName("Constellation Aquila") },
       { name: "Constellation Phoenix", image: formatShipImageName("Constellation Phoenix") },
@@ -3900,9 +3778,6 @@ export const shipManufacturers: ShipManufacturer[] = [
       { name: "Polaris", image: formatShipImageName("Polaris") },
       { name: "Scorpius", image: formatShipImageName("Scorpius") },
       { name: "Scorpius Antares", image: formatShipImageName("Scorpius Antares") },
-      { name: "Zeus Mk II CL", image: formatShipImageName("Zeus Mk II CL") },
-      { name: "Zeus Mk II ES", image: formatShipImageName("Zeus Mk II ES") },
-      { name: "Zeus Mk II MR", image: formatShipImageName("Zeus Mk II MR") }
     ]
   },
   {

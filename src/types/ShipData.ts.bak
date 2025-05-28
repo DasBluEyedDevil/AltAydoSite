@@ -3494,65 +3494,6 @@ export const ensureShipTypes = () => {
 // Call this immediately to fix all ships
 ensureShipTypes();
 
-// Function to remove duplicate ships from the database
-export const removeDuplicateShips = () => {
-  try {
-    const initialCount = shipDatabase.length;
-    
-    // Create a map to identify duplicates (case-insensitive)
-    const uniqueShips: Record<string, ShipDetails> = {};
-    const duplicates: string[] = [];
-    
-    // First pass: identify all duplicates
-    for (const ship of shipDatabase) {
-      const normalizedName = ship.name.toLowerCase();
-      
-      if (uniqueShips[normalizedName]) {
-        duplicates.push(ship.name);
-      } else {
-        uniqueShips[normalizedName] = ship;
-      }
-    }
-    
-    // If duplicates were found, remove them
-    if (duplicates.length > 0) {
-      // In development, we can log this information
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`Before deduplication: ${initialCount} ships`);
-        console.log(`Found ${duplicates.length} duplicate ships`);
-      }
-      
-      // Create a new array with only unique ships
-      const deduplicatedShips = Object.values(uniqueShips);
-      
-      // Replace the original database with the deduplicated one
-      shipDatabase.length = 0;
-      deduplicatedShips.forEach(ship => shipDatabase.push(ship));
-      
-      // In development, we can log this information
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`After deduplication: ${shipDatabase.length} ships`);
-      }
-    }
-    
-    return shipDatabase.length;
-  } catch (error) {
-    // Don't crash the application if deduplication fails
-    console.error('Error during ship deduplication:', error);
-    return shipDatabase.length;
-  }
-};
-
-// Call the deduplication function right away
-try {
-  removeDuplicateShips();
-} catch (error) {
-  // Fail silently in production
-  if (process.env.NODE_ENV === 'development') {
-    console.error('Failed to deduplicate ships:', error);
-  }
-}
-
 // Ensure lookup by name works for all ships
 export const getShipByName = (name: string): ShipDetails | undefined => {
   if (!name) return undefined;

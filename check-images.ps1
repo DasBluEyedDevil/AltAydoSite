@@ -131,3 +131,79 @@ if ($missingImages.Count -eq 0) {
     Write-Output "1. Make sure all missing images are in the public/images directory"
     Write-Output "2. Or update the image references in the code to point to existing images"
 }
+
+# Check for missing ship images in the project
+# This script compares the ship names in ShipData.ts with the image files in public/images
+
+# Get the content of ShipData.ts
+$shipDataPath = Join-Path $PSScriptRoot "src\types\ShipData.ts"
+$shipDataContent = Get-Content $shipDataPath -Raw
+
+# Extract all ship names from the manufacturer lists
+$shipNameRegex = '\{\s*name:\s*"([^"]+)",\s*image:'
+$shipNames = [regex]::Matches($shipDataContent, $shipNameRegex) | 
+    ForEach-Object { $_.Groups[1].Value } | 
+    Sort-Object -Unique
+
+# Function to format ship name to match expected image name
+function Format-ShipImageName {
+    param (
+        [string]$shipName
+    )
+    
+    # Special case for San'tok.yāi
+    if ($shipName -eq "San'tok.yāi") {
+        return "santokyai.png"
+    }
+    
+    $formatted = $shipName.ToLower() -replace '\s+', '_' -replace "[\.'\\]", '' -replace '/', '_'
+    # Replace accented characters
+    $formatted = $formatted -replace '[āáàäâã]', 'a' -replace '[ēéèëê]', 'e' -replace '[īíìïî]', 'i' -replace '[ōóòöôõ]', 'o' -replace '[ūúùüû]', 'u' -replace '[ÿý]', 'y'
+    return "$formatted.png"
+}
+
+# Get all image files in the public/images directory
+$imagesPath = Join-Path $PSScriptRoot "public\images"
+$imageFiles = Get-ChildItem -Path $imagesPath -Filter "*.png" | Select-Object -ExpandProperty Name
+
+# Check which ships don't have corresponding images
+$missingImages = @()
+$totalShips = $shipNames.Count
+$existingCount = 0
+$missingCount = 0
+
+Write-Host "Checking $totalShips ships for missing images..."
+foreach ($shipName in $shipNames) {
+    $expectedImageName = Format-ShipImageName $shipName
+    if (-not $imageFiles.Contains($expectedImageName)) {
+        $missingImages += [PSCustomObject]@{
+            ShipName = $shipName
+            ExpectedFileName = $expectedImageName
+        }
+        $missingCount++
+    } else {
+        $existingCount++
+    }
+}
+
+# Display results
+Write-Host "`nResults:"
+Write-Host "========"
+Write-Host "Total ships: $totalShips"
+Write-Host "Ships with images: $existingCount"
+Write-Host "Ships missing images: $missingCount"
+
+if ($missingImages.Count -gt 0) {
+    Write-Host "`nMissing images:"
+    Write-Host "==============="
+    foreach ($item in $missingImages) {
+        Write-Host "$($item.ShipName) => $($item.ExpectedFileName)"
+    }
+    
+    # Export to CSV for easier tracking
+    $csvPath = Join-Path $PSScriptRoot "missing-ship-images.csv"
+    $missingImages | Export-Csv -Path $csvPath -NoTypeInformation
+    Write-Host "`nExported missing images list to: $csvPath"
+} else {
+    Write-Host "`nAll ships have corresponding images!"
+}

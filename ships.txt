@@ -1,0 +1,186 @@
+Name	Ship size	Ship role	SCM	Boost	Freight Capacity SCU	Crew min	Crew max	Length (m)	Beam (m)	Height (m)	Mass
+(kg)	Status	Manufacturer	Patch release
+100i	Small	Starter;Touring	210		2	1	1	19.3	11.0	4.0		Flight Ready	ORIG	
+125a	Small	Starter;Light Fighter	230		2	1	1	19.3	11.0	4.0		Flight Ready	ORIG	
+135c	Small	Starter;Light Freight	190		6	1	1	19.3	11.0	4.0		Flight Ready	ORIG	Alpha 3.11.0
+300i	Small	Touring	204	1,190	8	1	1	27.0	17.0	8.0	66,320	Flight Ready	ORIG	Patch 1 (Original)
+Alpha 3.5.0 (Rework)
+315p	Small	Pathfinder	210	1,225	12	1	1	27.0	17.0	8.0	69,220	Flight Ready	ORIG	Patch 1 (Original)
+Alpha 3.5.1 (Rework)
+325a	Small	Interdiction interception	225	1,315	4	1	1	27.0	17.0	8.0	81,435.00	Flight Ready	ORIG	
+350r	Small	Racing	258	1,345	4	1	1	27.0	17.0	8.0	58,530	Flight Ready	ORIG	Patch 1 (Original)
+Alpha 3.5.1 (Rework)
+400i	Large	Pathfinder	184	1,249	42	1	3	60.0	32.0	12.5	455,927.06	Flight Ready	ORIG	
+600i Executive-Edition	Large	Expedition	145	975	40	2	5	91.5	52.0	17.0	1,576,792	Flight Ready	ORIG	
+600i Explorer	Large	Expedition	145	975	40	2	5	91.5	52.0	17.0	1,626,251.25	Flight Ready	ORIG	
+600i Touring	Large	Touring	135	950	16	3	5	91.5	52.0	17.0	1,576,792	Flight Ready	ORIG	
+85X	Small	Touring	255	1,185	0	1	2	13.0	10.0	2.0	19,097	Flight Ready	ORIG	
+890 Jump	Capital	Touring	80		484	3	5	210.0	71.0	40.0	44,246,556.00	Flight Ready	ORIG	
+A2 Hercules Starlifter	Large	Transport Gunship	135	961	216		8	94.0	70.0	23.0	3,191,991.75	Flight Ready	CRSD	
+Apollo Medivac	Large	Support - Medical	195		28		2	43.0	30.0	10.0	376,500	Announced	RSI	TBA
+Apollo Triage	Large	Support - Medical	205		28		2	43.0	30.0	10.0	376,500	Announced	RSI	TBA
+Ares Star Fighter Inferno	Medium	Heavy Combat Fighter	170	818	0	1	1	27.2	30.2	5.5	343,454.97	Flight Ready	CRSD	
+Ares Star Fighter Ion	Medium	Heavy Combat Fighter	170	818	0	1	1	27.2	30.2	5.5	342,194.97	Flight Ready	CRSD	
+Arrow	Small	Light Fighter	270		0	1	1	16.0	12.0	4.0	34,377.00	Flight Ready	ANVL	
+Aurora CL	Light Freight	Small	185	1,095	6	1	1	18.0	8.0	4.0	25,172	Flight Ready	RSI	N/A
+Aurora ES	Small	Starter;Pathfinder	190	1,140	3	1	1	18.0	8.0	4.0	25,172	Flight Ready	RSI	N/A
+Aurora LN	Small	Light Fighter	185	1,210	3	1	1	18.0	8.0	4.0	25,338	Flight Ready	RSI	
+Aurora LX	Small	Pathfinder	190	1,200	3	1	1	18.0	8.0	4.0	25,017	Flight Ready	RSI	N/A
+Aurora MR	Small	Light Fighter	195	1,210	3	1	1	18.00	8.00	4.00	28,696.99	Flight Ready	RSI	
+Avenger Stalker	Small	Interdiction	250	1,310	0	1	1	22.5	16.5	5.5	50,040	Flight Ready	AEGS	
+Avenger Titan	Small	Light Freight	188	1,113	8	1	1	22.5	16.5	5.5	52,868.42	Flight Ready	AEGS	
+Avenger Titan Renegade	Small	Light Freight	188	1,113	8	1	1	22.5	16.5	5.5	52,868.42	Flight Ready	AEGS	
+Avenger Warlock	Small	Interdiction	240	1,305	0	1	1	22.5	16.5	5.5	50,070	Flight Ready	AEGS	
+Bengal	Capital	Fleet carrier						990				Production	RSI	TBA
+Blade	Small	Light Fighter	290	1,240	0	1	1	16.5	20.0	5.5	26,056	Flight Ready	ESRA	
+Blade (vanduul)	Small	Light Fighter				1	1					Production	VNCL	
+Buccaneer	Small	Interdiction	280	1,315	0	1	1	15.0	16.0	4.5	42,276.00	Flight Ready	DRAK	
+C1 Spirit	Medium	Medium Freight	204	405	64	1	2	47.5	44	10	314,271	Flight Ready	CRSD	
+C2 Hercules Starlifter	Large	Transport	135	962	696		2	94.0	70.0	23.0	3,193,461.00	Flight Ready	CRSD	
+C8 Pisces	Small	Exploration	140		4	1	3	12.0	10.0	3.2		Flight Ready	ANVL	
+C8R Pisces Rescue	Small	Medical	164			1	3	13.0	10.0	3.2		Flight Ready	ANVL	Alpha 3.17.4
+C8X Pisces Expedition	Small	Exploration	140		4	1	3	13.0	10.0	3.2		Flight Ready	ANVL	Alpha 3.7.2
+Carrack	Large	Expedition	208	1,076	456	4	6	126.5	76.5	30.0	4,397,858	Flight Ready	ANVL	
+Carrack Best in Show 2950 Edition	Large	Expedition	208	1,076	456	4	6	126.5	76.5	30.0	4,397,858	Flight Ready	ANVL	
+Carrack Expedition	Large	Expedition	208	1,076	456	4	6	126.5	76.5	30.0	4,397,858	Flight Ready	ANVL	
+Caterpillar	Large	Transport	130	890	576	2	4	111.5	39.0	13.5	1,673,626.25	Flight Ready	DRAK	
+Caterpillar Best In Show Edition	Large	Transport	130	890	576	2	4	111.5	39.0	13.5	1,608,205	Flight Ready	DRAK	
+Caterpillar Pirate Edition	Large	Transport	130	890	564	2	4	111.5	39.0	13.5	1,608,205	Flight Ready	DRAK	
+Collector												Concept	VNCL	
+Constellation Andromeda	Large	Medium Freight;Gunship	190	910	96	3	4	61.0	26.0	14.0	436,531.22	Flight Ready	RSI	
+Constellation Aquila	Large	Expedition	190	985	96	3	4	61.0	26.0	14.0	453,823.25	Flight Ready	RSI	
+Constellation Phoenix	Large	Touring			96	3	4	61.0	26.0	14.0	417,510	Flight Ready	RSI	Alpha 3.3.0
+Constellation Phoenix Emerald	Large	Touring			96	3	4	61.0	26.0	14.0	417,510	Flight Ready	RSI	Alpha 3.4.0
+Constellation Taurus	Large	Medium Freight			174	3	4	61.0	26.0	14.0	431,529.28	Flight Ready	RSI	
+Corsair	Large	Exploration			72		4	55.0	27.0	31.0		Flight Ready	DRAK	
+Crucible	Large	Heavy Repair			230	3	8	90.0	50.0	20.0	3,650,500	Announced	ANVL	TBA
+Cutlass Black	Medium	Medium Fighter;Medium Freight	220	1,115	46	2	2	29.0	26.5	10.0	226,700	Flight Ready	DRAK	
+Cutlass Black Best In Show Edition	Medium	Medium Fighter;Medium Freight	220	1,115	46	2	2	29.0	26.5	10.0	226,700	Flight Ready	DRAK	?
+Cutlass Black Best in Show 2950 Edition	Medium	Medium Fighter;Medium Freight	220	1,115	46	2	2	29.0	26.5	10.0	226,700	Flight Ready	DRAK	
+Cutlass Blue	Medium	Interdiction	220	1,115	12	2	2	29.0	26.5	10.0	226,700	Flight Ready	DRAK	
+Cutlass Red	Medium	Medical	165	1,198	12	2	2	36.0	26.0	12.0	226,700	Flight Ready	DRAK	
+Cutter	Small	Light Freight	180	1010	4	1	1	20	13	6	70,000	Flight Ready	DRAK	
+Defender	Small	Light Fighter			0	1	2	25.5	20.0	8.0	78,406	Flight Ready	SOUL	
+Driller	Capital	Escort and troop carrier						1,700[1]				Production	VNCL	
+Eclipse	Medium	Stealth Bomber	195	980	0	1	1	20.5	36.6	4.4	57,938.02	Flight Ready	AEGS	Alpha 3.2.0
+Eclipse Best in Show 2950 Edition	Medium	Stealth Bomber	195	980	0	1	1	20.5	36.6	4.4	54,216	Flight Ready	AEGS	Alpha 3.11.1
+Endeavor	Capital	Heavy Science			500			200.0	48.0	20.0	4,055,000	Announced	MISC	
+Endeavor Discovery	Capital	Heavy Science			500	3	5	200.0	48.0	20.0	4,055,000	Announced	MISC	TBA
+Endeavor Hope	Capital	Heavy Science			500	3	5	200.0	48.0	20.0	4,055,000	Announced	MISC	TBA
+Endeavor Olympic	Capital	Heavy Science			500	3	5	200.0	48.0	20.0	4,055,000	Announced	MISC	TBA
+F7A Hornet	Small	Medium Fighter	200	1,500	0	1	1	22.5	22.0	7.0	80,695.01	Production	ANVL	TBA
+F7C Hornet	Small	Medium Fighter	235	1,225	2	1	1	22.5	21.5	6.5	73,535	Flight Ready	ANVL	?
+F7C Hornet Wildfire	Small	Medium Fighter	185	1,224	0	1	1	22.5	21.5	6.5	73,535	Flight Ready	ANVL	Alpha 2.6.0
+F7C-M Super Hornet	Small	Medium Fighter	230	1,220	0	1	2	25.5	24.0	6.5	78,466	Flight Ready	ANVL	
+F7C-M Super Hornet Heartseeker	Small	Medium Fighter	230	1,220	0	1	2	25.5	24.0	6.5	78,466	Flight Ready	ANVL	Alpha 3.5.0
+F7C-R Hornet Tracker	Small	Pathfinder	240	1,215	0	1	1	22.5	21.5	6.5	73,497	Flight Ready	ANVL	?
+F7C-S Hornet Ghost	Small	Stealth Fighter	235	1,225	0	1	1	22.5	21.5	6.5	73,454	Flight Ready	ANVL	?
+F8A Lightning	Small	Heavy Fighter				1	1				161,236.03	Production	ANVL	TBA
+F8C Lightning	Small	Heavy Fighter				1	1					Production	ANVL	TBA
+F8C Lightning Executive-Edition	Small	Heavy Fighter				1	1					Production	ANVL	TBA
+Freelancer	Medium	Medium Freight	205	1,005	66	2	4	38.0	23.5	9.5	209,230	Flight Ready	MISC	
+Freelancer DUR	Medium	Expedition			36	2	4	38.0	23.5	9.5	213,680	Flight Ready	MISC	Alpha 3.4.0
+Freelancer MAX	Medium	Medium Freight			120	2	4	38.0	36.0	9.5	336,230	Flight Ready	MISC	
+Freelancer MIS	Medium	Gunship			36	2	4	38.0	23.5	9.5	213,680	Flight Ready	MISC	Alpha 3.4.0
+Fury	Snub	Snub Fighter	230	1,250	0	1	1	7	5.40	2.60	15,339.00	Flight Ready	MISC	Alpha 3.19.0
+Genesis Starliner	Large	Passenger			300	2	8	85.0	90.0	16.0	3,120,000	Announced	CRSD	TBA
+Gladiator	Small	Bomber	200	980	0	1	2	22.5	22.5	6.0	87,497	Flight Ready	ANVL	
+Gladius	Small	Light Fighter	207	1,235	0	1	1	20.0	17.0	5.5	57,685.05	Flight Ready	AEGS	
+Gladius Valiant	Small	Light Fighter	207	1,235	0	1	1	20.0	17.0	5.5	57,685.06	Flight Ready	AEGS	
+Glaive	Medium	Medium Fighter	255	1,230	0	1	1	31.0	31.5	8.5	66,013	Flight Ready	ESRA	?
+Hammerhead	Large	Heavy Gunship			40	3	8	115.0	75.0	16.0	4,630,030.00	Flight Ready	AEGS	Alpha 3.3.0
+Hammerhead Best In Show Edition	Large	Heavy Gunship			40	3	8	115.0	75.0	16.0	4,260,000	Flight Ready	AEGS	N/A
+Hawk	Small	Light Fighter	200	500	0	1	1	17.0	22.0	6.5	40,000	Flight Ready	ANVL	Alpha 3.4.0
+Herald	Small	Medium Data	235	1,360	0	1	1	23.5	12.5	9.0	66,031	Flight Ready	DRAK	Alpha 2.6.0
+Hull A	Small	Medium Freight			64			22.0	8.0	4.0	122,650	Flight Ready	MISC	
+Hull B	Medium	Heavy Freight			384	1	1	49.0	15.5	17.0	387,500	Announced	MISC	
+Hull D	Capital	Heavy Freight			20,736	3	5	209.0	70.0	70.0	1,216,000.00	Announced	MISC	
+Hull E	Capital	Heavy Freight			98,304	4	5	372.0	104.0	104.0	1,652,000	Announced	MISC	
+Hurricane	Small	Heavy Fighter	265	1,125	0	2	2	22.0	14.5	6.0	86,454	Flight Ready	ANVL	
+Idris-K	Capital	Frigate										Announced	AEGS	TBA
+Idris-M	Capital	Frigate			831	8	28	242.0	126.0	46.0	37,866,540.00	Production	AEGS	TBA
+Idris-P	Capital	Frigate			995	8	28	233.0	126.0	46.0	37,310,200	Announced	AEGS	TBA
+Javelin	Capital	Destroyer			5,400	12	80	480.0	198.0	72.0	109,860,179	Production	AEGS	TBA
+Khartu-Al	Small	Light Fighter	300	1,325	0	1	1	31.5	12.5	8.5	67,115	Flight Ready	AOPA	
+Kingship	Capital	Fleet Carrier						2,800[2]				Production	VNCL	
+Kraken	Capital	Multi-Role - Light Carrier			3,792		10	270.0	104.0	64.0		Announced	DRAK	TBA
+Kraken Conversion Kit												Announced	DRAK	TBA
+Kraken Privateer	Capital	Multi-Role - Light Carrier			768		10	270.0	104.0	64.0		Announced	DRAK	TBA
+Legionnaire	Small	Boarding ship			0	1	2	32.0m	23.3	10.2m		Announced	ANVL	
+Liberator	Large	Transporter	115		400	1	2	119.00	67.0	25.0		Announced	ANVL	
+M2 Hercules Starlifter	Large	Transport Military	130	962	522		3	94.0	70.0	23.0		Flight Ready	CRSD	
+M50	Small	Racing	330	1,345	0	1	1	11.0	10.0	3.0	10,580	Flight Ready	ORIG	?
+MOLE	Medium	Prospecting and Mining	127	1,089	288 (24*12)	1	4	45.0	25.0	15.0		Flight Ready	ARGO	
+MOLE Carbon	Medium	Prospecting and Mining			288 (24*12)	1	4	45.0	25.0	15.0		Flight Ready	ARGO	
+MOLE Talus	Medium	Prospecting and Mining			288 (24*12)	1	4	45.0	25.0	15.0		Flight Ready	ARGO	
+MPUV Cargo	Snub	Light Freight	150	900	2	1	1	9.5	8.5	4.3	12,187	Flight Ready	ARGO	
+MPUV Personnel	Snub	Passenger	150	920	0	1	1	9.3	8.5	4.3	12,307	Flight Ready	ARGO	
+Mantis	Small	Military;Stealth	168	1,220	0	1	1	30.0	17.0	8.0	225,621	Flight Ready	RSI	
+Merchantman	Capital	Heavy Freight			2,880	4	8	160.0	160.0	65.0	9,635,000	Production	SOUL	
+Mercury Star Runner	Medium	Medium Cargo;Medium Data	215	1,287	114	2	3	56.0	51.0	16.0	1,633,722.00	Flight Ready	CRSD	
+Mustang Alpha	Small	Cargo	255	1,160	4	1	1	21.50	18.00	9.00	32,970.00	Flight Ready	CNOU	?
+Mustang Alpha Vindicator	Small	Starter;Light Freight	255	1,160	4	1	1	17.5	15.5	5.5	32,970	Flight Ready	CNOU	?
+Mustang Beta	Small	Pathfinder	250	1,215	0	1	1	21.5	18.0	9.0	39,610	Flight Ready	CNOU	?
+Mustang Delta	Small	Light Fighter	240	1,225	0	1	1	21.0	18.0	9.0	37,345	Flight Ready	CNOU	
+Mustang Gamma	Small	Racing	325	1,340	0	1	1	21.5	18.0	9.0	30,263	Flight Ready	CNOU	?
+Mustang Omega	Small	Racing	325	1,340	0	1	1	21.5	18.0	9.0	30,263	Flight Ready	CNOU	?
+Nautilus	Large	Minelayer	115		64	4	8	125.0	72.0	21.6	13,526,320	Announced	AEGS	TBA
+Nautilus Solstice	Large	Minelayer	115		64	4	8	125.0	72.0	21.6	13,526,320	Announced	AEGS	TBA
+Nomad	Small	Light Freight	180	1,171	24	1	1	26.5	18.3	9.2	228,123	Flight Ready	CNOU	
+Odyssey	Large	Expedition			252	1	6	140.0	90.0	35.0		Announced	MISC	
+Orion	Capital	Heavy Mining			384	4	7	170.0	50.0	50.0	26,496,000	Announced	RSI	TBA
+P-52 Merlin	Snub	Snub Fighter	270	1,030	0	1	1	12.0	7.7	2.2	8,493	Flight Ready	KRIG	N/A
+P-72 Archimedes	Snub	Racing	250		0	1	1	12.0	7.7	2.2	8,290	Flight Ready	KRIG	Alpha 3.6.0
+P-72 Archimedes Emerald	Snub	Racing	250		0	1	1	12.0	7.7	2.2	8,290	Flight Ready	KRIG	Alpha 3.10.0
+Pegasus	Capital	Escort Carrier										Production	RSI	
+Perseus	Sub-capital	Gun-Boat	92		50	6	6	100.0	50.0	21.0		Concept	RSI	TBA
+Pirate Gladius	Small	Light Fighter	207	1,235	0	1	1	20.0	17.0	5.5	57,685.06	Flight Ready	AEGS	
+Prospector	Small	Prospecting and Mining	200	1,210	0	1	1	24.0	15.0	7.0	146,117.98	Flight Ready	MISC	
+Prowler	Medium	Dropship	178	1,116	0	2	2	34.0	33.0	15.0	171,700	Flight Ready	ESRA	Alpha 3.9.0
+RAFT	Medium	Medium Freight	134	839	96 (3x32)	1	2	39.5	23.0	12.0	1,183,477.88	Flight Ready	ARGO	
+Railen	Medium	Cargo			320		4	53	Flight: 52.0 meters
+Landed: 52.0	Flight: 67.0 meters
+Landed: 37.0		Concept	GAMA	
+Razor	Small	Racing	335	1,345	0	1	1	11.5	8.2	2.7	10,925	Flight Ready	MISC	Alpha 3.1.0
+Razor EX	Small	Stealth	325	1,340	0	1	1	11.5	8.2	2.7	10,925	Flight Ready	MISC	?
+Razor LX	Small	Luxury	340	1,345	0	1	1	11.5	8.2	2.7	10,925	Flight Ready	MISC	?
+Reclaimer	Large	Heavy Salvage	100	930	180	4	5	155.0	118.0	50.0	9,500,158	Flight Ready	AEGS	Alpha 3.1.0
+Reclaimer Best In Show Edition	Large	Heavy Salvage	100	930	180	4	5	155.0	118.0	50.0	9,500,158	Flight Ready	AEGS	?
+Redeemer	Medium	Gunship	139	959	2	3	4	37.5	19.5	11.0	473,296.41	Flight Ready	AEGS	
+Reliant Kore	Small	Starter;Light Freight	220	1,150	6	1	2	14.5	28.5	4.0	38,566	Flight Ready	MISC	Alpha 2.5.0
+Reliant Mako	Small	Reporting			0	1	2	14.5	28.5	4.0	38,566	Flight Ready	MISC	Alpha 3.5.0
+Reliant Sen	Small	Light Science			2	1	2	14.5	28.5	4.0	38,566	Flight Ready	MISC	Alpha 3.5.0
+Reliant Tana	Small	Light Fighter			1	1	2	14.5	28.5	4.0	38,566	Flight Ready	MISC	
+Retaliator Base	Large	Heavy Bomber	185	815	0	4	7	69.5	42.5	12.5	300,392	Production	AEGS	TBA
+Retaliator Bomber	Large	Heavy Bomber	145	814	0	4	7	69.5	42.5	12.5	348,634.34	Flight Ready	AEGS	
+SRV	Small	Industrial;Civilian	200		10	1	1	28.5	19.5	8.7	231,680	Announced	ARGO	TBA
+Sabre	Small	Stealth Fighter/medium fighter	275	1,235	0	1	1	24.0	26.0	5.0	92,235.71	Flight Ready	AEGS	
+Sabre Comet	Small	Stealth Fighter	215	1,235	0	1	1	24.0	26.0	5.0	78,513	Flight Ready	AEGS	Alpha 2.6.0
+Sabre Firebird	Small	Medium Fighter	240	1,400	0	1	1	26.0	30.0	3.8	78,513	Flight Ready	AEGS	
+Sabre Raven	Small	Interdiction	275	1,235	0	1	1	24.0	20.5	5.0	69,433	Flight Ready	AEGS	Alpha 3.0.0
+San'tok.yāi	Medium	Medium Fighter	265		0	1	1	24.0	23.0	10.0	106,566	Concept	AOPA	TBA
+Scorpius	Small	Heavy Fighter			0	1	2	24.5	Flying: 33.0 meters
+Landed: 13.2	Flying: 13.0 meters
+Landed: 6.1		Flight Ready	RSI	
+Scorpius Antares	Small	Heavy Fighter			0	1	2	Flying: 24.5 meters
+Landed: 30.0	Flying: 33.0 meters
+Landed: 13.2	Flying: 6.1 meters
+Landed: 6.1		Flight Ready	RSI	
+Scythe	Small	Medium Fighter	194	1,230	0	1	1	31.0	23.0	8.5	73,941.98	Flight Ready	[[Vanduul Clans (originally)
+Esperia (human conversion)]]	
+Scythe (vanduul)	Small	Medium Fighter				1	1					Production	VNCL	
+Starfarer	Large	Heavy Refuelling	890		291	4	8	101.0	46.5	23.5	3,510,025	Flight Ready	MISC	
+Starfarer Gemini	Large	Heavy Refuelling	890		291	4	6	101.0	46.5	23.5	3,517,864	Flight Ready	MISC	
+Talon	Small	Light Fighter	250	1,235	0	1	1	20.0	18.0	5.0	60,836.04	Flight Ready	ESRA	
+Talon Shrike	Small	Light Fighter	250	1,235	0	1	1	20.0	18.0	5.0	60,836.04	Flight Ready	ESRA	
+Terrapin	Small	Pathfinder	210	1,205	0	1	1	19.5	14.5	6.0	172,377.97	Flight Ready	ANVL	Alpha 3.1.0
+Valkyrie	Small	Military;Industrial			30		5	38.0	28.0	9.5	75,000	Flight Ready	ANVL	Alpha 3.3.0
+Valkyrie Best in Show 2950 Edition	Small	Military;Industrial			30		5	38.0	28.0	9.5	75,000	Flight Ready	ANVL	Alpha 3.11.1
+Valkyrie Liberator Edition	Small	Military;Industrial			30		5	38.0	28.0	9.5	75,000	Flight Ready	ANVL	?
+Vanguard Harbinger	Medium	Bomber			0	2	2	38.0	26.5	9.5	240,092	Flight Ready	AEGS	
+Vanguard Hoplite	Medium	Dropship	230	1,020	0	2	2	38.0	26.5	9.5	229,440	Flight Ready	AEGS	Alpha 2.6.0
+Vanguard Sentinel	Medium	Interdiction			0	2	2	38.0	26.5	9.5	238,616	Flight Ready	AEGS	Alpha 3.7.0
+Vanguard Warden	Medium	Heavy Fighter	225	1,115	0	2	2	38.0	26.5	9.5	256,409.25	Flight Ready	AEGS	Alpha 2.1.0
+Void		Heavy Bomber						124	90	33		Production	VNCL	
+Vulcan	Medium	Medium Repair;Medium Refuel	210		12	1	3	38.5	16.5	10.0	625,330	Announced	AEGS	TBA
+Vulture	Small	Light Salvage	165		12	1	1	33.0	16.0	9.0	114,591	Flight Ready	DRAK	TBA

@@ -245,34 +245,51 @@ export async function updateMission(id: string, missionData: Partial<MissionResp
     
     // Create a filter that works with the ID format
     const filter = createIdFilter(id);
+    console.log(`STORAGE: Using filter for update:`, filter);
     
     // Create a MongoDB update document without 'id' field
     const updateData = { ...missionData };
     delete (updateData as any).id; // Remove 'id' as it shouldn't be in the $set
     
-    // Update mission in database
-    const result = await db.collection('missions').updateOne(
-      filter,
-      { 
-        $set: { 
-          ...updateData,
-          updatedAt: new Date().toISOString()
-        } 
+    // Log the update data for debugging
+    console.log(`STORAGE: Update data prepared:`, JSON.stringify(updateData, null, 2).substring(0, 200) + '...');
+    
+    try {
+      // Update mission in database
+      const result = await db.collection('missions').updateOne(
+        filter,
+        { 
+          $set: { 
+            ...updateData,
+            updatedAt: new Date().toISOString()
+          } 
+        }
+      );
+      
+      if (result.matchedCount === 0) {
+        console.log(`STORAGE: Mission not found in MongoDB: ${id}`);
+        return null;
       }
-    );
-    
-    if (result.matchedCount === 0) {
-      console.log(`STORAGE: Mission not found in MongoDB: ${id}`);
-      return null;
+      
+      // Get updated mission
+      const updatedMission = await getMissionById(id);
+      console.log(`STORAGE: Mission updated in MongoDB: ${updatedMission?.name}`);
+      return updatedMission;
+    } catch (updateError: unknown) {
+      console.error('STORAGE: MongoDB update operation failed:', updateError);
+      const errorMsg = updateError instanceof Error ? updateError.message : 'Unknown update error';
+      throw new Error(`Database update operation failed: ${errorMsg}`);
     }
-    
-    // Get updated mission
-    const updatedMission = await getMissionById(id);
-    console.log(`STORAGE: Mission updated in MongoDB: ${updatedMission?.name}`);
-    return updatedMission;
   } catch (error) {
     console.error('STORAGE: MongoDB updateMission failed:', error);
-    throw new Error('Database connection failed: Cannot update mission');
+    
+    // Try to provide more specific error messages
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.log(`STORAGE: Falling back to local storage due to error: ${errorMessage}`);
+    
+    // Optional: Implement fallback to local storage here if needed
+    
+    throw new Error(`Database connection failed: Cannot update mission - ${errorMessage}`);
   }
 }
 

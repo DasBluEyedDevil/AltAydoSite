@@ -9,6 +9,10 @@ export interface MissionParticipant {
   shipId?: string;
   shipName?: string;
   shipType?: string;
+  manufacturer?: string;
+  image?: string;
+  crewRequirement?: number;
+  isGroundSupport?: boolean;
   roles: string[];
 }
 
