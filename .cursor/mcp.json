@@ -3,9 +3,10 @@
     "AltAydoSite Docs": {
       "command": "npx",
       "args": [
-        "mcp-remote"
-      ],
-      "url": "https://gitmcp.io/DasBluEyedDevil/AltAydoSite"      
+        "mcp-remote",
+        "url",
+        "https://gitmcp.io/DasBluEyedDevil/AltAydoSite"   
+      ]
     },
     "sequential-thinking": {
       "command": "npx",

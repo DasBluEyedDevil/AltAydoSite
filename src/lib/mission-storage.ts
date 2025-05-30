@@ -85,10 +85,12 @@ function tryConvertToObjectId(id: string): ObjectId | string {
 }
 
 function createIdFilter(id: string): any {
-  const objectId = tryConvertToObjectId(id);
-  if (objectId instanceof ObjectId) {
-    return { _id: objectId };
-  } else {
+  try {
+    // Try to convert to MongoDB ObjectId
+    return { _id: new ObjectId(id) };
+  } catch (error) {
+    // If conversion fails, it's not a valid ObjectId format
+    console.log(`ID ${id} is not a valid MongoDB ObjectId, using string ID filter`);
     return { id: id };
   }
 }
@@ -251,6 +253,11 @@ export async function updateMission(id: string, missionData: Partial<MissionResp
     const updateData = { ...missionData };
     delete (updateData as any).id; // Remove 'id' as it shouldn't be in the $set
     
+    // If _id exists in the data, also delete it to prevent update errors
+    if ((updateData as any)._id) {
+      delete (updateData as any)._id;
+    }
+    
     // Log the update data for debugging
     console.log(`STORAGE: Update data prepared:`, JSON.stringify(updateData, null, 2).substring(0, 200) + '...');
     
@@ -280,7 +287,7 @@ export async function updateMission(id: string, missionData: Partial<MissionResp
       const errorMsg = updateError instanceof Error ? updateError.message : 'Unknown update error';
       throw new Error(`Database update operation failed: ${errorMsg}`);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('STORAGE: MongoDB updateMission failed:', error);
     
     // Try to provide more specific error messages
