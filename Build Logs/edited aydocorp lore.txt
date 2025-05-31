@@ -1,0 +1,131 @@
+﻿Christoff Revan was born on August 14, 2924, in Neo Taurii, Kampos, to Senator Paulus Revan and his wife, Tyrenia. Raised in privilege, his early years were comfortable and full of promise. That changed abruptly after his eighth birthday, when his father was accused of bribery and tax evasion. Seeking redemption, Paulus invested the family’s fortune into a nearly completed terraforming project—only for it to be destroyed in an eco-terrorist attack. With their finances ruined, Paulus took Tyrenia on a cruise aboard their luxury 890 Jump, the Markheim, hoping to shield her from the full extent of their losses. The ship never reached its destination. Vanduul raiders intercepted and annihilated it in the Vega system. No one survived.
+Left orphaned, Christoff was placed in a state-run boarding school. The transition from wealth to institutional care was harsh, but his resilience soon became apparent. At age 11, his exceptional test scores attracted the attention of UEE recruiters, who were scouring the empire for gifted youth due to increasing military pressures. Christoff was offered a place in a special pilot program and eagerly accepted, driven by a lifelong fascination with space. He graduated in 2941 and began active duty the following year, serving aboard the UEES Integrity. After four years of honorable service, he left the military in 2946.
+That same year, with the backing of investor Ike Days, Christoff founded Aydo City Delivery (ACD). Initially, the company struggled to gain traction in a market dominated by long-established players. The breakthrough came in 2947, when a tip about the poor living conditions of miners at Pinecone inspired Christoff to deliver high-end goods directly to the outpost. The venture was an immediate success. Demand soared, prompting the rapid expansion of the fleet and new contracts, including regular supply runs to Encole Station.
+By 2948, ACD had secured a distribution deal with Seahorse Fisheries, transporting seafood across the Ellis system. The relationship proved so lucrative that, in 2950, Christoff acquired a majority stake in the company, leading to a formal merger. To reflect its broader scope beyond delivery, ACD was renamed AydoExpress, and the parent company became Aydo Amalgamated Industries (AAI).
+Diversification efforts continued into 2951. Christoff acquired Empyrion Industries, an industrial firm based in Sol, after lengthy negotiations. Later that year, he learned that Midnight Security, a struggling security outfit run by his former rival Kirk Torrence, was up for sale. Christoff seized the opportunity, acquiring the firm at a discounted rate. Shortly after the purchase, the company was restructured and rebranded as Aydo Protective Services, shifting its focus to professional corporate protection.
+With a presence established in multiple star systems and a growing network of operations, the company was rebranded once again. In 2952, it officially became Aydo Intergalactic Corporation (AIC) under UEE recognition, reflecting its status as a full-spectrum interstellar enterprise.
+Today, AIC operates through several key subsidiaries:
+* AydoExpress, specializing in logistics and personnel transport
+
+* Empyrion Industries, focused on industrial production and resource operations
+
+* Midnight Security, responsible for internal security and asset protection
+
+From a turbulent childhood to the helm of a multi-system conglomerate, Christoff Revan’s journey is a story of adaptation, vision, and transformation—one that continues to shape AydoCorp’s path into the stars.
+
+
+
+
+
+
+
+
+
+
+
+
+Don’t use the below for the corporate history, use it for the section of lore/info in the subsidiary tab VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
+
+
+
+
+
+
+
+Sub lore:
+
+
+🔺 AydoExpress
+Public-Facing Logistics & Transport Division
+ Motto: “We Move the Future.”
+Overview:
+ AydoExpress is the flagship subsidiary of AydoCorp — the only division that directly interfaces with clients, contracts, and the greater Star Citizen community. Originally founded in 2946 as Aydo City Delivery, this small startup gained notoriety after flying high-end goods into remote and underserved frontier locations. After a string of successful contracts, it rebranded in 2950 as AydoExpress following a merger with Seahorse Fisheries.
+Lore Summary:
+ AydoExpress rose to prominence when its founder, Christoff Revan, personally delivered critical supplies and comforts to miners at Pinecone — an underserved and isolated outpost in the Ellis system. This bold move not only established AydoExpress’s reputation for reliability and reach but also revealed a gap in the market that few others dared to serve: high-risk, low-access zones where traditional logistics struggled.
+Since then, AydoExpress has become synonymous with precision delivery under pressure, specializing in mid- to large-scale cargo hauling, personnel transport, and custom logistics solutions. Whether working for independent clients, allied organizations, or participating in corporate convoys, AydoExpress is the operational face of AydoCorp.
+Operations Profile:
+   * Cargo hauling (legal goods only)
+
+   * Personnel shuttle & escort
+
+   * Convoy logistics
+
+   * Infrastructure supply runs
+
+   * Special event contracts & in-org missions
+
+Fleet Includes: Hercules series, Hull series, Caterpillar, Freelancer MAX, Pisces for personnel shuttle, and other support vehicles.
+________________
+
+
+⚙️ Empyrion Industries
+Internal Industrial Operations Division
+ Motto: “From the Ground, We Build.”
+Overview:
+ Empyrion Industries is the heavy-lifting, dirt-covered heart of AydoCorp — responsible for mining, salvage, refining, and materials processing. Acquired in 2951 during a strategic expansion into the Sol system, Empyrion does not provide external services. It functions entirely as AydoCorp’s internal resource pipeline, supplying materials needed for operations, contracts, and infrastructure development.
+Lore Summary:
+ Founded decades prior to its acquisition, Empyrion Industries once attempted to compete in the saturated Sol industrial sector but suffered due to aging infrastructure, poor management, and lack of capital. Seeing potential, Christoff Revan made an aggressive buyout offer. After months of negotiation and pressure, the deal was secured — and Empyrion was brought under AydoCorp’s umbrella as a fully owned subsidiary.
+Since the acquisition, the division has undergone sweeping modernization. New ships, AI-enhanced automation, and modular base support have turned Empyrion into an indispensable part of AydoCorp’s self-sufficiency model. The materials harvested and refined by Empyrion feed directly into AydoExpress missions, internal infrastructure projects, and support long-term asset accumulation.
+Operations Profile:
+      * Quantanium & ore mining
+
+      * Salvage and wreck processing
+
+      * Resource refinement (internal refineries and partner facilities)
+
+      * Industrial fleet maintenance
+
+      * Infrastructure support and construction
+
+Fleet Includes: MISC Prospector, Argo MOLE, Reclaimer, Vulture, Vulcan, and ground-based industrial vehicles.
+________________
+
+
+🛡️ Midnight Security
+Internal Security & Risk Management Division
+ Motto: “Secure the Core.”
+Overview:
+Midnight Security (MS) is the in-house corporate security division tasked with protecting AydoCorp assets, personnel, data, and critical operations. Originally acquired in 2951 from a struggling former UEE pilot, the division was quickly overhauled, restructured, and integrated into the AydoCorp hierarchy.
+Lore Summary:
+ MS was born out of a mix of opportunism and rivalry. Kirk Torrence, a former UEE pilot and one-time peer of Christoff Revan, found himself managing a fading security company and was forced to sell. Unbeknownst to him, Revan himself was the buyer. After a discreet acquisition, Revan revealed his involvement only after the ink had dried — a personal moment of vindication.
+Post-acquisition, Midnight Security has become a highly professional, tightly regulated arm of the corporation. It is not a PMC and does not accept external contracts. MS handles convoy escort, internal investigations, shipboard security, base defense, personnel protection, and the quiet resolution of risks. Their presence is rarely public — and always strategic.
+Operations Profile:
+         * Protection of AydoCorp convoys and industrial sites
+
+         * Internal threat response and anti-sabotage
+
+         * Data & asset protection
+
+         * High-value personnel transport
+
+         * Risk assessments for major ops and deployments
+
+Fleet Includes: Cutlass Steel, Valkyrie, Redeemer, Hammerhead, support fighters, ground rovers, and NPC security teams for key facilities.
+
+
+🕶️ [REDACTED] – The Hidden Arm of AydoCorp
+Codename: The Null Division
+ Motto: “No light. No trace.”
+ Classification: Black-Level Internal Entity | Public Existence: Denied
+Overview:
+ Official records do not acknowledge the existence of the so-called "Null Division" — a clandestine, compartmentalized cell operating within the deepest layers of AydoCorp’s internal architecture. Formed quietly in the wake of AydoCorp’s Sol system expansion, the Null Division exists solely to serve the covert interests of the corporation through means deemed too controversial or illegal for public knowledge.
+Function:
+ While AydoExpress hauls freight, Empyrion Industries extracts ore, and Aydo Protective Services keeps the lights on — the Null Division operates in the shadows between the cracks of the law. Under multiple false flags and burner shell companies, this group manages AydoCorp's deniable operations, including:
+            * Corporate espionage (data theft, insider influence)
+
+            * Industrial sabotage (rival disruption, tech infiltration)
+
+            * Black-market logistics (contraband movement via ghost manifests)
+
+            * Drug production and smuggling in low-surveillance zones
+
+            * Financial manipulation through loan sharking and extortion enforcement
+
+Origins:
+ The Null Division traces its roots to a failed merger attempt with a criminal-adjacent enterprise in Pyro. While the deal fell through, certain relationships and operational concepts remained. Christoff Revan, ever pragmatic, approved a quiet skunkworks initiative under a single condition: absolute secrecy, compartmentalization, and no traceable connection to AydoCorp proper. Only select Directors and Board members are aware of its existence, and even fewer control its directives.
+Structure & Operations:
+ Null Division is believed to use civilian-flagged ships, unregistered drops, proxy fleets, and disposable personnel. Its members may operate under the guise of freelancers, shadow contractors, or even competitors. Internally, agents are rotated frequently, and all official documentation routes through encrypted non-corp networks.
+Rumors suggest its field operations have been responsible for the collapse of two minor competitor orgs, the sudden halting of a regulatory investigation, and the disappearance of whistleblowers in Stanton.
+In-Lore Presence:
+ To the average org member or external observer, Null Division does not exist. In RP scenarios, any mention of it is met with denials or silence. If discovered, assets are burned, digital trails scrubbed, and loose ends… removed.

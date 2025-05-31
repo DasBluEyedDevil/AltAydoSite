@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MissionResponse, MissionStatus, MissionType } from '@/types/Mission';
 
-// New Mission Planner Components
+// New Mission Database Components
 import MissionDashboard from '@/components/fleet-ops/mission-planner/MissionDashboard';
 import MissionDetail from '@/components/fleet-ops/mission-planner/MissionDetail';
 import MissionForm from '@/components/fleet-ops/mission-planner/MissionForm';
@@ -13,7 +13,7 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 import ErrorNotification from '@/components/ErrorNotification';
 import HoloModal from '@/components/fleet-ops/mission-planner/HoloModal';
 
-export default function MissionPlannerPage() {
+export default function MissionDatabasePage() {
   const { data: session, status } = useSession();
   const [missions, setMissions] = useState<MissionResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -321,7 +321,7 @@ export default function MissionPlannerPage() {
       {/* Initialization Overlay */}
       <AnimatePresence>
         {!isInitialized && (
-          <LoadingOverlay text="Initializing Mission Planner" />
+          <LoadingOverlay text="Initializing Mission Database" />
         )}
       </AnimatePresence>
 

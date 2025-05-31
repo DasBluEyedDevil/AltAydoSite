@@ -274,64 +274,8 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
     <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-4 rounded-sm overflow-hidden relative">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
       
-      <div className="flex items-center mb-4">
-        <div className="h-5 w-5 relative mr-2">
-          <Image 
-            src="/images/Aydo_Corp_logo_employees.png" 
-            alt="AydoCorp Employee Portal" 
-            fill 
-            className="object-contain"
-          />
-        </div>
-        <h2 className="mg-title text-sm font-quantify tracking-wider">EMPLOYEE RESOURCES</h2>
-      </div>
-      
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-        {getVisibleTiles().map((tile, i) => (
-          <motion.div
-            key={tile.id}
-            custom={i}
-            variants={tileVariants}
-            initial="hidden"
-            animate={isInitialized ? "visible" : "hidden"}
-            whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-            className={`relative rounded-sm overflow-hidden ${tile.borderStyle || 'border border-[rgba(var(--mg-primary),0.3)]'} hover:border-[rgba(var(--mg-primary),0.6)] transition-colors cursor-pointer`}
-          >
-            <Link href={tile.path || '#'}>
-              <div className="h-full w-full p-3 bg-gradient-to-br from-[rgba(0,0,0,0.3)] to-[rgba(0,0,0,0.5)]">
-                {tile.image && (
-                  <div className="absolute inset-0 opacity-10">
-                    <Image 
-                      src={tile.image} 
-                      alt={tile.title} 
-                      fill 
-                      className="object-cover" 
-                    />
-                  </div>
-                )}
-                
-                <div className="relative z-10 h-full flex flex-col">
-                  <div className="flex items-center mb-2">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center bg-[rgba(var(--mg-primary),0.15)]">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke={tile.color}>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={tile.icon} />
-                      </svg>
-                    </div>
-                    <h3 className="ml-2 text-xs font-quantify tracking-wider text-[rgba(var(--mg-text),0.9)]">{tile.title}</h3>
-                  </div>
-                  
-                  {tile.description && (
-                    <p className="text-[10px] text-[rgba(var(--mg-text),0.6)]">{tile.description}</p>
-                  )}
-                </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
-      </div>
-      
       {/* Employee Status */}
-      <div className="mt-6 border-t border-[rgba(var(--mg-primary),0.2)] pt-4">
+      <div className="mt-0 pt-0">
         <div className="flex items-center mb-3">
           <div className="w-5 h-5 rounded-full flex items-center justify-center bg-[rgba(var(--mg-primary),0.15)]">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

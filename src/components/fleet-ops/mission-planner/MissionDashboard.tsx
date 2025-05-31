@@ -73,26 +73,8 @@ const MissionDashboard: React.FC<MissionDashboardProps> = ({
         className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4"
       >
         <div>
-          <h1 className="mg-title text-3xl font-quantify tracking-wider flex items-center relative">
-            <motion.span 
-              className="mr-2"
-              animate={{ 
-                textShadow: [
-                  '0 0 5px #3f7eaa33', 
-                  '0 0 15px #3f7eaa66', 
-                  '0 0 5px #3f7eaa33'
-                ] 
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            >
-              MISSION PLANNER
-            </motion.span>
-            
-            <motion.span 
-              className="inline-block w-2 h-2 bg-[rgba(var(--mg-primary),0.8)] rounded-full"
-              animate={{ opacity: [1, 0.5, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            />
+          <h1 className="mg-title text-lg md:text-xl font-quantify tracking-wider text-[rgba(var(--mg-primary),0.9)]">
+            MISSION DATABASE
           </h1>
           <p className="mg-text-secondary text-sm mt-1 opacity-70 ml-1">
             Manage operations and assign personnel

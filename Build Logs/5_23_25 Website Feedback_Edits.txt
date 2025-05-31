@@ -1,0 +1,40 @@
+﻿6. Employee Portal:
+   1. Corporate Archives
+      1. Corporate History
+         1. Contains revised org lore segment:
+            1. Use edited aydocorp lore for now I guess (chat gpt edit, still need to give it a proper look-over)
+      2. Hierarchy Chart
+         1. Has hierarchy tree with CEO (Chief Executive Officer) on top, COO (Chief Operations Officer) right below with CTO (Chief Technology Officer) and CSO (Chief Safety Officer) flanking (labels of UdonMan, Kaibo_Z, IDays, and Devil respectively); underneath and connected to COO are the Director of AydoExpress, Director of Empyrion Industries, and Director of Midnight Security (labels of Vacated, RamboSteph, and Vacated respectively…or something else instead of ‘vacated’, since I’m technically AE director and Kaibo will technically be MS director until we find actual ones); under all of them put one manager slot (labels of ArcZeroNine for EI manager, Delta_Dart_42 for AE manager, and MR-GR33N for MS manager)
+            1. Format of blocks would be title on top in big letters, lore name in middle, then RSI username below (need to ask Arc and Steph what their RP names are, for now just use (Arc[placeholder] and Steph[placeholder]); since Green is probably not coming back for awhile, just use whatever for the RP name, I’m sure he won’t mind… (use Green[placeholder])
+            2. Maybe the blocks would only show the rank title, but if you clicked on them it would flip over to show the above with a little animation?
+         2. Generic chart labeling our general rank tree from top to bottom: Board Member, Director, Manager, Supervisor, Senior Employee, Employee, Intern/Freelancer
+         3. Generic subsidiary chart that has three columns going down listing the ranks of all 3 subsidiaries side by side: 
+            1. AydoExpress: Director, Subdirector, Manager, Supervisor, Loadmaster, Senior Service Agent, Service Agent, Associate, Trainee
+            2. Empyrion Industries: Director, Subdirector, Manager, Supervisor, Journeyman, Senior Specialist, Specialist, Technician, Initiate
+            3. Midnight Security (we don’t have a logo yet, so I guess maybe find something generic or leave no picture…up to you): Director, Vice Director, Risk Manager, Security Supervisor, Compliance Officer, Compliance Agent, Security Specialist, Security Associate, Observer
+      3. Subsidiaries
+         1. Remove please, it’s redundant since any info we could put here we can very well easily put in the actual subsidiary tab
+      4. Resources
+         1. Not really sure what to put here, like…it’d be nice to have the links of all the stuff we have in the useful links channel, just unsure what format to have on the website. Maybe the page is just one big list with A - Z filtering?
+   2. Subsidiaries
+      1. AydoExpress - Logistics
+      2. Empyrion Industries - Mining
+      3. Midnight Security - Security
+   3. Career Development
+      1. Training Guides
+      2. Certifications
+      3. Rank Advancement
+   4. Operations
+      1. Fleet Database
+         1. Direct pull from the user ships database, with filterable columns
+      2. Trade Route Database
+         1. Similar in functionality to the Mission Database, but for storing and updating profitable trade routes
+      3. Mission Database
+         1. this is the Mission planner
+   6. Events Calendar
+      1. Would be nice for the ability for admin roles (us board members) to be able to create events on there to post. Otherwise, just something similar like Google’s calendar and whatnot; having stuff able to be posted on there as recurring on a specified basis would be nice too.
+      2. Events should have the ability to be color-coded for it being a general event, or a particular subsidiary event
+
+
+* I think the “Employee Resources” block under the pictures is a bit redundant given you can access them on the side tabs to the left…maybe should remove it?[a]
+* Some images seem broken
