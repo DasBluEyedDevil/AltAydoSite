@@ -88,7 +88,7 @@ export default function HeroSection() {
                   className="mg-subtitle text-base md:text-lg opacity-90 tracking-widest mb-6 text-center"
                 >
                   <span className="mg-flicker inline-block bg-gradient-to-r from-[rgba(var(--mg-primary),0.9)] via-[rgba(var(--mg-accent),0.8)] to-[rgba(var(--mg-primary),0.9)] bg-clip-text text-transparent">
-                    EXCELLENCE IN INTERGALACTIC LOGISTICS
+                    AydoCorp: The New Horizon of Commercial Logistics
                   </span>
                 </motion.div>
 

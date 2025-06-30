@@ -48,10 +48,10 @@ export async function GET() {
     const { client } = await connectToDatabase();
     const db = client.db();
     
-    // Get all transactions for the current user sorted by date
+    // Get all transactions (not just current user's) sorted by date
     const transactions = await db
       .collection('transactions')
-      .find({ submittedBy: session.user.email })
+      .find({})
       .sort({ submittedAt: -1 })
       .toArray();
 
@@ -86,6 +86,16 @@ export async function POST(request: Request) {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Check if user has required role (Director or Board Member)
+    const userRole = session.user.role;
+    const authorizedRoles = ['Director', 'Board Member'];
+    if (!userRole || !authorizedRoles.includes(userRole)) {
+      return NextResponse.json(
+        { error: 'Insufficient permissions. Only Directors and Board Members can submit transactions.' },
+        { status: 403 }
+      );
     }
 
     // Apply rate limiting

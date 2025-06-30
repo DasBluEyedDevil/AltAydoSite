@@ -69,6 +69,10 @@ export default function FinanceTracker() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 403) {
+          setError('Insufficient permissions. Only Directors and Board Members can submit transactions.');
+          return;
+        }
         if (response.status === 429) {
           setError('Rate limit exceeded. Please try again later.');
           setRateLimitResetTime(data.resetTime);
@@ -86,6 +90,9 @@ export default function FinanceTracker() {
       setError('Failed to submit transaction. Please try again later.');
     }
   };
+
+  // Check if user has permission to submit transactions
+  const canSubmitTransactions = session?.user?.role && ['Director', 'Board Member'].includes(session.user.role);
 
   // Format the reset time as a countdown
   const formatResetTime = (resetTime: number) => {
@@ -263,7 +270,7 @@ export default function FinanceTracker() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.6 }}
               >
-                Track and manage corporate finances and transactions
+                View corporate finances and transaction history
               </motion.p>
             </div>
           </motion.div>
@@ -407,31 +414,54 @@ export default function FinanceTracker() {
         </motion.div>
       </motion.div>
 
-      {/* Create Transaction Button */}
-      <motion.div 
-        className="flex justify-end"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 2.8 }}
-      >
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="mg-button relative px-6 py-3 text-lg flex items-center space-x-2 overflow-hidden group"
+      {/* Create Transaction Button - Only for Directors and Board Members */}
+      {canSubmitTransactions && (
+        <motion.div 
+          className="flex justify-end"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 2.8 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.1)] to-transparent transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          <span>Create Transaction</span>
-        </button>
-      </motion.div>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="mg-button relative px-6 py-3 text-lg flex items-center space-x-2 overflow-hidden group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.1)] to-transparent transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            <span>Create Transaction</span>
+          </button>
+        </motion.div>
+      )}
 
-      {/* Transaction Modal */}
-      <TransactionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleSubmit}
-      />
+      {/* Info message for non-authorized users */}
+      {!canSubmitTransactions && (
+        <motion.div 
+          className="flex justify-end"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 2.8 }}
+        >
+          <div className="text-center p-4 bg-[rgba(var(--mg-panel-dark),0.3)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm">
+            <p className="text-sm text-[rgba(var(--mg-text),0.7)]">
+              Only Directors and Board Members can submit transactions.
+            </p>
+            <p className="text-xs text-[rgba(var(--mg-text),0.5)] mt-1">
+              Contact leadership to submit financial transactions.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Transaction Modal - Only for authorized users */}
+      {canSubmitTransactions && (
+        <TransactionModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleSubmit}
+        />
+      )}
 
       {/* Transactions List */}
       <motion.div 

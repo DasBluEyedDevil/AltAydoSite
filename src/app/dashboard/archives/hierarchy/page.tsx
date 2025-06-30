@@ -147,12 +147,14 @@ export default function HierarchyChartPage() {
               </div>
             </div>
             
-            {/* Connecting lines */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 top-[11rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
+            {/* Connecting lines from Board Level */}
             <div className="absolute left-1/2 transform -translate-x-1/2 top-[11rem] w-[30rem] h-px bg-[rgba(var(--mg-primary),0.6)]"></div>
             
-            {/* Director Level */}
-            <div className="flex justify-center space-x-4 sm:space-x-10 mb-8">
+            {/* Vertical line from COO to Directors */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 top-[11rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
+            
+            {/* Director Level - All under COO */}
+            <div className="flex justify-center space-x-4 sm:space-x-8 mb-8">
               <div className="w-48 sm:w-56">
                 <PersonCard 
                   title="Director of AydoExpress"
@@ -176,13 +178,16 @@ export default function HierarchyChartPage() {
               </div>
             </div>
             
-            {/* Connecting lines */}
-            <div className="absolute left-1/4 transform -translate-x-1/2 top-[19rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
+            {/* Horizontal line connecting all directors under COO */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 top-[19rem] w-[28rem] h-px bg-[rgba(var(--mg-primary),0.6)]"></div>
+            
+            {/* Vertical lines from each director to their managers */}
+            <div className="absolute left-1/2 transform -translate-x-[14rem] top-[19rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
             <div className="absolute left-1/2 transform -translate-x-1/2 top-[19rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute left-3/4 transform -translate-x-1/2 top-[19rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
+            <div className="absolute left-1/2 transform translate-x-[14rem] top-[19rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
             
             {/* Manager Level */}
-            <div className="flex justify-center space-x-4 sm:space-x-10">
+            <div className="flex justify-center space-x-4 sm:space-x-8">
               <div className="w-48 sm:w-56">
                 <PersonCard 
                   title="AydoExpress Manager"

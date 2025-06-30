@@ -11,49 +11,201 @@ interface ResourceLink {
   description?: string;
 }
 
-// Placeholder data - to be replaced with actual links later
-const placeholderLinks: ResourceLink[] = [
+// Resource links from Discord useful links channel
+const resourceLinks: ResourceLink[] = [
+  // AydoCorp Official Links
   {
-    id: '1',
-    title: 'AydoCorp Official Website',
-    url: 'https://aydocorp.space',
+    id: 'rsi-webpage',
+    title: 'AydoCorp RSI Organization Page',
+    url: 'https://robertsspaceindustries.com/orgs/AYDOCORP',
     category: 'official',
-    description: 'The official website of Aydo Intergalactic Corporation'
+    description: 'Official RSI organization page for Aydo Intergalactic Corporation'
   },
   {
-    id: '2',
-    title: 'Employee Handbook',
-    url: '#',
-    category: 'guidelines',
-    description: 'Guidelines and policies for all AydoCorp employees'
-  },
-  {
-    id: '3',
-    title: 'Benefits Portal',
-    url: '#',
+    id: 'discord-invite',
+    title: 'AydoCorp Discord Server',
+    url: 'https://discord.gg/aydocorp',
     category: 'official',
-    description: 'Access your employee benefits information'
-  },
-  {
-    id: '4',
-    title: 'Discord Server',
-    url: '#',
-    category: 'community',
     description: 'Join our community Discord server'
   },
   {
-    id: '5',
-    title: 'Mission Guidelines',
-    url: '#',
-    category: 'guidelines',
-    description: 'Standard operating procedures for missions'
+    id: 'youtube-page',
+    title: 'AydoCorp Official YouTube',
+    url: 'https://www.youtube.com/watch?v=09tIsGZ6-ec',
+    category: 'official',
+    description: 'Official YouTube channel for AydoCorp'
   },
   {
-    id: '6',
-    title: 'Trade Routes Documentation',
-    url: '#',
-    category: 'operations',
-    description: 'Information about common trade routes'
+    id: 'suggestions-box',
+    title: 'AydoCorp Suggestions Box',
+    url: 'https://forms.gle/fS7Ho1YD6Zk9DQCT8',
+    category: 'official',
+    description: 'Submit suggestions and feedback to AydoCorp leadership'
+  },
+  {
+    id: 'staff-application',
+    title: 'AydoCorp Staff Application',
+    url: 'https://forms.gle/yfxcfCYVTKDxVXc58',
+    category: 'official',
+    description: 'Apply for staff positions within AydoCorp'
+  },
+  {
+    id: 'fleetyards-invite',
+    title: 'AydoCorp Fleetyards Fleet',
+    url: 'https://fltyrd.net/fi/YWOm5AoNlg/',
+    category: 'official',
+    description: 'Join our organization fleet on Fleetyards'
+  },
+  
+  // Logistics and Trade Links
+  {
+    id: 'aaron-halo-routes',
+    title: 'Aaron Halo Mining Routes',
+    url: 'https://cstone.space/resources/knowledge-base/36-refinery-to-aaron-halo-mining-routes',
+    category: 'logistics',
+    description: 'Mining routes from refineries to Aaron Halo'
+  },
+  {
+    id: 'ark-starmap',
+    title: 'ARK Starmap',
+    url: 'https://robertsspaceindustries.com/starmap',
+    category: 'references',
+    description: 'Official Star Citizen star map and navigation tool'
+  },
+  
+  // Tools
+  {
+    id: 'erkul-games',
+    title: 'Erkul Games',
+    url: 'https://www.erkul.games/',
+    category: 'ships',
+    description: 'Ship loadout calculator and configuration tool'
+  },
+  {
+    id: 'eva-community',
+    title: 'EVA Community',
+    url: 'https://eva.community/',
+    category: 'community',
+    description: 'Star Citizen community platform and tools'
+  },
+  {
+    id: 'fleetyards',
+    title: 'Fleetyards',
+    url: 'https://fleetyards.net/',
+    category: 'ships',
+    description: 'Fleet management and ship database'
+  },
+  {
+    id: 'galactapedia',
+    title: 'Galactapedia',
+    url: 'https://robertsspaceindustries.com/galactapedia',
+    category: 'references',
+    description: 'Official Star Citizen lore and universe encyclopedia'
+  },
+  {
+    id: 'gallog-trading',
+    title: 'Gallog Trading',
+    url: 'https://www.gallog.co/trading',
+    category: 'logistics',
+    description: 'Trading routes and commodity price tracking'
+  },
+  {
+    id: 'interdiction-calculator',
+    title: 'Interdiction Calculator',
+    url: 'https://snareplan.dolus.eu/',
+    category: 'tools',
+    description: 'Calculate interdiction points and routes'
+  },
+  {
+    id: 'item-finder',
+    title: 'Item Finder',
+    url: 'https://finder.cstone.space/',
+    category: 'tools',
+    description: 'Find items and their locations in Star Citizen'
+  },
+  {
+    id: 'daymar-rally-official',
+    title: 'Official Daymar Rally Website',
+    url: 'https://www.daymarrally.com/',
+    category: 'racing',
+    description: 'Official website for the Daymar Rally racing event'
+  },
+  {
+    id: 'refinery-calculator',
+    title: 'Refinery/Mining Calculator',
+    url: 'https://regolith.rocks/',
+    category: 'logistics',
+    description: 'Calculate mining yields and refinery outputs'
+  },
+  {
+    id: 'rsi-ship-matrix',
+    title: 'RSI Ship Matrix',
+    url: 'https://robertsspaceindustries.com/ship-matrix',
+    category: 'ships',
+    description: 'Official ship specifications and comparison tool'
+  },
+  {
+    id: 'sc-trade-tools',
+    title: 'SC-Trade Tools',
+    url: 'https://sc-trade.tools/home',
+    category: 'logistics',
+    description: 'Comprehensive trading tools and route optimization'
+  },
+  {
+    id: 'scr-daymar-rally',
+    title: 'SCR Daymar Rally',
+    url: 'https://scr.gg/event/daymar-rally/',
+    category: 'racing',
+    description: 'Daymar Rally section of Star Citizen Racing'
+  },
+  {
+    id: 'server-status',
+    title: 'Server Status',
+    url: 'https://status.robertsspaceindustries.com/',
+    category: 'tools',
+    description: 'Official RSI server status and service monitoring'
+  },
+  {
+    id: 'spectrum',
+    title: 'Spectrum',
+    url: 'https://robertsspaceindustries.com/spectrum/community/SC',
+    category: 'community',
+    description: 'Official Star Citizen community forums'
+  },
+  {
+    id: 'star-citizen-racing',
+    title: 'Star Citizen Racing',
+    url: 'https://www.scr.gg/',
+    category: 'racing',
+    description: 'Premier Star Citizen racing community and events'
+  },
+  {
+    id: 'starjump-fleetviewer',
+    title: 'Starjump Fleetviewer (Hangar.link)',
+    url: 'https://hangar.link/',
+    category: 'ships',
+    description: 'Recommended fleet management and hangar viewing tool'
+  },
+  {
+    id: 'starship42',
+    title: 'Starship42 Fleetviewer',
+    url: 'https://starship42.com/',
+    category: 'ships',
+    description: 'Fleet management and ship visualization tool'
+  },
+  {
+    id: 'travel-guide',
+    title: 'Travel Guide (VerseGuide)',
+    url: 'https://verseguide.com/',
+    category: 'references',
+    description: 'Comprehensive travel and location guide for Star Citizen'
+  },
+  {
+    id: 'uex-corp',
+    title: 'UEX Corp',
+    url: 'https://uexcorp.space/',
+    category: 'logistics',
+    description: 'Trading platform and market analysis tools'
   }
 ];
 
@@ -65,7 +217,7 @@ export default function ResourcesPage() {
   const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
   
   // Filter links based on search term and selected letter
-  const filteredLinks = placeholderLinks.filter(link => {
+  const filteredLinks = resourceLinks.filter((link: ResourceLink) => {
     const matchesSearch = searchTerm === '' || 
       link.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (link.description && link.description.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -143,7 +295,7 @@ export default function ResourcesPage() {
           {/* Resources List */}
           <div className="space-y-4">
             {filteredLinks.length > 0 ? (
-              filteredLinks.map((link) => (
+              filteredLinks.map((link: ResourceLink) => (
                 <motion.div
                   key={link.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -154,8 +306,12 @@ export default function ResourcesPage() {
                   {/* Category indicator */}
                   <div className={`absolute left-0 top-0 bottom-0 w-1 ${
                     link.category === 'official' ? 'bg-[rgba(var(--mg-primary),0.7)]' :
-                    link.category === 'guidelines' ? 'bg-[rgba(var(--mg-accent),0.7)]' :
-                    link.category === 'operations' ? 'bg-[rgba(200,200,100,0.7)]' :
+                    link.category === 'logistics' ? 'bg-[rgba(255,165,0,0.7)]' :
+                    link.category === 'ships' ? 'bg-[rgba(var(--mg-accent),0.7)]' :
+                    link.category === 'tools' ? 'bg-[rgba(200,200,100,0.7)]' :
+                    link.category === 'community' ? 'bg-[rgba(128,255,128,0.7)]' :
+                    link.category === 'racing' ? 'bg-[rgba(255,100,100,0.7)]' :
+                    link.category === 'references' ? 'bg-[rgba(180,130,255,0.7)]' :
                     'bg-[rgba(150,150,150,0.7)]'
                   }`}></div>
                   
