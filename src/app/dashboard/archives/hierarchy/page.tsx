@@ -9,9 +9,10 @@ interface PersonCardProps {
   loreName: string;
   handle: string;
   isFlippable?: boolean;
+  className?: string;
 }
 
-const PersonCard: React.FC<PersonCardProps> = ({ title, loreName, handle, isFlippable = true }) => {
+const PersonCard: React.FC<PersonCardProps> = ({ title, loreName, handle, isFlippable = true, className = "" }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleClick = () => {
@@ -21,7 +22,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ title, loreName, handle, isFlip
   };
 
   return (
-    <div className="relative w-full h-36 cursor-pointer" style={{ perspective: '1000px' }}>
+    <div className={`relative w-full h-32 cursor-pointer ${className}`} style={{ perspective: '1000px' }}>
       <div
         className="absolute w-full h-full"
         onClick={handleClick}
@@ -29,25 +30,21 @@ const PersonCard: React.FC<PersonCardProps> = ({ title, loreName, handle, isFlip
           transformStyle: 'preserve-3d',
           transition: 'transform 0.6s',
           transform: isFlipped ? 'rotateY(180deg)' : '',
-          position: 'relative',
-          zIndex: isFlipped ? 100 : 1
         }}
       >
         {/* Front of card */}
         <div 
-          className={`absolute w-full h-full flex flex-col justify-center items-center p-3 mg-panel bg-[rgba(var(--mg-panel-dark),0.7)] border border-[rgba(var(--mg-primary),0.4)] rounded-sm ${isFlippable ? 'hover:bg-[rgba(var(--mg-panel-dark),0.8)]' : ''}`}
+          className="absolute w-full h-full flex flex-col justify-center items-center p-3 mg-panel bg-[rgba(var(--mg-panel-dark),0.7)] border border-[rgba(var(--mg-primary),0.4)] rounded-sm hover:bg-[rgba(var(--mg-panel-dark),0.8)] transition-colors"
           style={{ 
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
-            position: 'absolute',
-            transform: 'translateZ(0)'
           }}
         >
-          <div className="text-lg font-quantify tracking-wider text-center text-[rgba(var(--mg-primary),0.9)]">
+          <div className="text-sm font-quantify tracking-wider text-center text-[rgba(var(--mg-primary),0.9)] leading-tight">
             {title}
           </div>
           {isFlippable && (
-            <div className="text-[10px] text-[rgba(var(--mg-text),0.6)] mt-2">
+            <div className="text-[10px] text-[rgba(var(--mg-text),0.6)] mt-1">
               (Click for details)
             </div>
           )}
@@ -59,17 +56,16 @@ const PersonCard: React.FC<PersonCardProps> = ({ title, loreName, handle, isFlip
           style={{ 
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg) translateZ(0)',
-            position: 'absolute'
+            transform: 'rotateY(180deg)',
           }}
         >
           <div className="text-xs text-[rgba(var(--mg-text),0.6)]">
             {title}
           </div>
-          <div className="text-lg font-quantify tracking-wider text-center text-[rgba(var(--mg-primary),0.9)] my-2">
+          <div className="text-sm font-quantify tracking-wider text-center text-[rgba(var(--mg-primary),0.9)] my-1">
             {loreName}
           </div>
-          <div className="text-sm text-[rgba(var(--mg-accent),0.8)]">
+          <div className="text-xs text-[rgba(var(--mg-accent),0.8)]">
             {handle}
           </div>
         </div>
@@ -83,178 +79,219 @@ export default function HierarchyChartPage() {
     <div className="min-h-screen bg-black bg-opacity-95 p-6 relative">
       {/* Holographic background effects */}
       <div className="absolute inset-0 bg-holo-grid bg-[length:50px_50px] opacity-5 pointer-events-none"></div>
-      <div className="hexagon-bg absolute inset-0 opacity-5 pointer-events-none"></div>
-
-      <div className="max-w-6xl mx-auto">
+      
+      <div className="max-w-7xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <h1 className="mg-title text-2xl sm:text-3xl lg:text-4xl mb-4">Hierarchy Chart</h1>
+          <h1 className="mg-title text-2xl sm:text-3xl lg:text-4xl mb-4">AydoCorp Hierarchy Chart</h1>
           <div className="h-1 w-20 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.7)] to-transparent"></div>
         </motion.div>
 
-        {/* Personnel Hierarchy Tree */}
+        {/* Personnel Hierarchy Chart */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-6 rounded-sm relative mb-8"
+          className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-8 rounded-sm relative mb-8"
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
           
-          <h2 className="mg-subtitle text-xl mb-6">Personnel Chart</h2>
+          <h2 className="mg-subtitle text-xl mb-8 text-center">Organizational Structure</h2>
           
-          <div className="relative">
+          {/* Hierarchy Tree */}
+          <div className="space-y-8">
+            
             {/* CEO Level */}
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center">
               <div className="w-64">
                 <PersonCard 
-                  title="CEO"
+                  title="Chief Executive Officer"
                   loreName="Christoff Revan" 
                   handle="Udon"
                 />
               </div>
             </div>
             
-            {/* Vertical lines from CEO to each board member */}
-            <div className="absolute left-1/2 transform -translate-x-[10rem] top-36 h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute left-1/2 transform -translate-x-1/2 top-36 h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute left-1/2 transform translate-x-[10rem] top-36 h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
+            {/* Connection line to board */}
+            <div className="flex justify-center">
+              <div className="w-px h-8 bg-[rgba(var(--mg-primary),0.6)]"></div>
+            </div>
             
-            {/* CMO, COO, CSO Level */}
-            <div className="flex justify-center space-x-4 sm:space-x-10 mb-8">
-              <div className="w-48 sm:w-56">
+            {/* Board Level */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="space-y-4">
                 <PersonCard 
-                  title="CMO"
+                  title="Chief Marketing Officer"
                   loreName="Zane Makay" 
                   handle="Noodles"
                 />
+                <div className="text-center text-xs text-[rgba(var(--mg-text),0.5)]">
+                  Marketing & Communications
+                </div>
               </div>
-              <div className="w-48 sm:w-56">
+              
+              <div className="space-y-4">
                 <PersonCard 
-                  title="COO"
+                  title="Chief Operations Officer"
                   loreName="Kaibo Zaber" 
                   handle="Kaibo_Z"
                 />
+                <div className="text-center text-xs text-[rgba(var(--mg-text),0.5)]">
+                  Subsidiary Operations
+                </div>
+                
+                {/* Connection line to subsidiaries */}
+                <div className="flex justify-center">
+                  <div className="w-px h-8 bg-[rgba(var(--mg-primary),0.6)]"></div>
+                </div>
+                
+                {/* Subsidiary Directors under COO */}
+                <div className="space-y-4 pt-4">
+                  <div className="grid gap-4">
+                    <PersonCard 
+                      title="Director - AydoExpress"
+                      loreName="Darren Express" 
+                      handle="Delta_Dart_42"
+                      className="text-xs"
+                    />
+                    <PersonCard 
+                      title="Director - Empyrion Industries"
+                      loreName="Stephanie Carder" 
+                      handle="RamboSteph"
+                      className="text-xs"
+                    />
+                    <PersonCard 
+                      title="Director - Midnight Security"
+                      loreName="Marcus Green" 
+                      handle="MR-GR33N"
+                      className="text-xs"
+                    />
+                  </div>
+                  
+                  {/* Connection to managers */}
+                  <div className="flex justify-center">
+                    <div className="w-px h-6 bg-[rgba(var(--mg-primary),0.4)]"></div>
+                  </div>
+                  
+                  {/* Subsidiary Managers */}
+                  <div className="grid gap-3">
+                    <div className="grid grid-cols-1 gap-2 text-xs">
+                      <div className="p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm">
+                        <div className="text-[rgba(var(--mg-text),0.8)]">AydoExpress Manager</div>
+                        <div className="text-[rgba(var(--mg-accent),0.6)]">Alex Delivery (Alex_D)</div>
+                      </div>
+                      <div className="p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm">
+                        <div className="text-[rgba(var(--mg-text),0.8)]">Empyrion Manager</div>
+                        <div className="text-[rgba(var(--mg-accent),0.6)]">Archie Zero (ArcZeroNine)</div>
+                      </div>
+                      <div className="p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm">
+                        <div className="text-[rgba(var(--mg-text),0.8)]">Security Manager</div>
+                        <div className="text-[rgba(var(--mg-accent),0.6)]">Devon Shield (Shield_GS)</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="w-48 sm:w-56">
+              
+              <div className="space-y-4">
                 <PersonCard 
-                  title="CSO"
+                  title="Chief Security Officer"
                   loreName="Christus Sanctus" 
                   handle="Devil"
                 />
-              </div>
-            </div>
-            
-            {/* Vertical line from COO to Directors - Only the COO connects to subsidiary directors */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 top-[11rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            
-            {/* Director Level - All under COO */}
-            <div className="flex justify-center space-x-4 sm:space-x-8 mb-8">
-              <div className="w-48 sm:w-56">
-                <PersonCard 
-                  title="Director of AydoExpress"
-                  loreName="Darren Express" 
-                  handle="Delta_Dart_42"
-                />
-              </div>
-              <div className="w-48 sm:w-56">
-                <PersonCard 
-                  title="Director of Empyrion Industries"
-                  loreName="Stephanie Carder" 
-                  handle="RamboSteph"
-                />
-              </div>
-              <div className="w-48 sm:w-56">
-                <PersonCard 
-                  title="Director of Midnight Security"
-                  loreName="Marcus Green" 
-                  handle="MR-GR33N"
-                />
-              </div>
-            </div>
-            
-            {/* Horizontal line connecting all directors under COO */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 top-[19rem] w-[28rem] h-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            
-            {/* Vertical lines from each director to their managers */}
-            <div className="absolute left-1/2 transform -translate-x-[14rem] top-[19rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute left-1/2 transform -translate-x-1/2 top-[19rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute left-1/2 transform translate-x-[14rem] top-[19rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            
-            {/* Manager Level */}
-            <div className="flex justify-center space-x-4 sm:space-x-8">
-              <div className="w-48 sm:w-56">
-                <PersonCard 
-                  title="AydoExpress Manager"
-                  loreName="Alex Delivery" 
-                  handle="Alex_D"
-                />
-              </div>
-              <div className="w-48 sm:w-56">
-                <PersonCard 
-                  title="Empyrion Industries Manager"
-                  loreName="Archie Zero" 
-                  handle="ArcZeroNine"
-                />
-              </div>
-              <div className="w-48 sm:w-56">
-                <PersonCard 
-                  title="Midnight Security Manager"
-                  loreName="Devon Shield" 
-                  handle="Shield_GS"
-                />
+                <div className="text-center text-xs text-[rgba(var(--mg-text),0.5)]">
+                  Corporate Security & Compliance
+                </div>
               </div>
             </div>
           </div>
         </motion.div>
         
-        {/* Generic Rank Tree */}
+        {/* General Rank Structure */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-6 rounded-sm relative mb-8"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
         >
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
-          
-          <h2 className="mg-subtitle text-xl mb-6">General Rank Structure</h2>
-          
-          <div className="grid grid-cols-1 gap-3 max-w-md mx-auto">
-            {["Board Member", "Director", "Manager", "Supervisor", "Senior Employee", "Employee", "Intern/Freelancer"].map((rank, i) => (
-              <motion.div
-                key={rank}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 * i, duration: 0.5 }}
-                className={`flex items-center p-3 mg-panel bg-[rgba(var(--mg-panel-dark),0.7)] border border-[rgba(var(--mg-primary),0.4)] rounded-sm`}
-              >
-                <div className="h-2 w-2 rounded-full bg-[rgba(var(--mg-primary),0.8)] mr-3"></div>
-                <span className="mg-text">{rank}</span>
-              </motion.div>
-            ))}
+          {/* Corporate Ranks */}
+          <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-6 rounded-sm relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
+            
+            <h2 className="mg-subtitle text-lg mb-6">Corporate Rank Structure</h2>
+            
+            <div className="space-y-3">
+              {[
+                { rank: "Board Member", level: "Executive" },
+                { rank: "Director", level: "Senior Leadership" },
+                { rank: "Manager", level: "Management" },
+                { rank: "Supervisor", level: "Team Lead" },
+                { rank: "Senior Employee", level: "Experienced" },
+                { rank: "Employee", level: "Standard" },
+                { rank: "Intern/Freelancer", level: "Entry Level" }
+              ].map((item, i) => (
+                <motion.div
+                  key={item.rank}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * i, duration: 0.5 }}
+                  className="flex items-center justify-between p-3 bg-[rgba(var(--mg-panel-dark),0.7)] border border-[rgba(var(--mg-primary),0.3)] rounded-sm"
+                >
+                  <div className="flex items-center">
+                    <div className="h-2 w-2 rounded-full bg-[rgba(var(--mg-primary),0.8)] mr-3"></div>
+                    <span className="mg-text font-semibold">{item.rank}</span>
+                  </div>
+                  <span className="text-xs text-[rgba(var(--mg-text),0.6)]">{item.level}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Reference */}
+          <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-6 rounded-sm relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
+            
+            <h2 className="mg-subtitle text-lg mb-6">Reporting Structure</h2>
+            
+            <div className="space-y-4">
+              <div className="p-4 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-4 border-[rgba(var(--mg-primary),0.6)] rounded-sm">
+                <h3 className="text-sm font-semibold text-[rgba(var(--mg-primary),0.9)] mb-2">Board Members</h3>
+                <p className="text-xs text-[rgba(var(--mg-text),0.7)]">Report directly to CEO. Responsible for strategic oversight of their respective divisions.</p>
+              </div>
+              
+              <div className="p-4 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-4 border-[rgba(var(--mg-accent),0.6)] rounded-sm">
+                <h3 className="text-sm font-semibold text-[rgba(var(--mg-accent),0.9)] mb-2">Subsidiary Directors</h3>
+                <p className="text-xs text-[rgba(var(--mg-text),0.7)]">Report to COO. Manage day-to-day operations of AydoExpress, Empyrion Industries, and Midnight Security.</p>
+              </div>
+              
+              <div className="p-4 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-4 border-[rgba(var(--mg-secondary),0.6)] rounded-sm">
+                <h3 className="text-sm font-semibold text-[rgba(var(--mg-secondary),0.9)] mb-2">Managers & Staff</h3>
+                <p className="text-xs text-[rgba(var(--mg-text),0.7)]">Report through subsidiary chain of command. Handle operational tasks and team management.</p>
+              </div>
+            </div>
           </div>
         </motion.div>
-        
-        {/* Subsidiary Rank Charts */}
+
+        {/* Subsidiary Details */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-6 rounded-sm relative"
+          className="mt-8 mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-6 rounded-sm relative"
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
           
-          <h2 className="mg-subtitle text-xl mb-6">Subsidiary Rank Charts</h2>
+          <h2 className="mg-subtitle text-xl mb-6">Subsidiary Organizations</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* AydoExpress Ranks */}
-            <div>
+            {/* AydoExpress */}
+            <div className="space-y-4">
               <div className="flex items-center mb-4">
-                <div className="h-8 w-8 relative mr-2 rounded-sm overflow-hidden">
+                <div className="h-10 w-10 relative mr-3 rounded-sm overflow-hidden">
                   <Image 
                     src="/images/Aydo_Express.png" 
                     alt="AydoExpress Logo" 
@@ -262,38 +299,28 @@ export default function HierarchyChartPage() {
                     className="object-contain"
                   />
                 </div>
-                <h3 className="mg-subtitle">AydoExpress</h3>
+                <div>
+                  <h3 className="mg-subtitle text-lg">AydoExpress</h3>
+                  <p className="text-xs text-[rgba(var(--mg-text),0.6)]">Transportation & Logistics</p>
+                </div>
               </div>
               
               <div className="space-y-2">
                 {[
-                  "Director",
-                  "Subdirector",
-                  "Manager",
-                  "Supervisor",
-                  "Loadmaster",
-                  "Senior Service Agent",
-                  "Service Agent",
-                  "Associate",
-                  "Trainee"
+                  "Director", "Subdirector", "Manager", "Supervisor", 
+                  "Loadmaster", "Senior Service Agent", "Service Agent", "Associate", "Trainee"
                 ].map((rank, i) => (
-                  <motion.div
-                    key={rank}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 * i, duration: 0.4 }}
-                    className="flex items-center p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-2 border-[rgba(0,210,255,0.6)] rounded-sm"
-                  >
+                  <div key={rank} className="flex items-center p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-2 border-[rgba(0,210,255,0.6)] rounded-sm">
                     <span className="mg-text text-sm">{rank}</span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
             
-            {/* Empyrion Industries Ranks */}
-            <div>
+            {/* Empyrion Industries */}
+            <div className="space-y-4">
               <div className="flex items-center mb-4">
-                <div className="h-8 w-8 relative mr-2 rounded-sm overflow-hidden">
+                <div className="h-10 w-10 relative mr-3 rounded-sm overflow-hidden">
                   <Image 
                     src="/images/Empyrion_Industries.png" 
                     alt="Empyrion Industries Logo" 
@@ -301,74 +328,54 @@ export default function HierarchyChartPage() {
                     className="object-contain"
                   />
                 </div>
-                <h3 className="mg-subtitle">Empyrion Industries</h3>
+                <div>
+                  <h3 className="mg-subtitle text-lg">Empyrion Industries</h3>
+                  <p className="text-xs text-[rgba(var(--mg-text),0.6)]">Manufacturing & Engineering</p>
+                </div>
               </div>
               
               <div className="space-y-2">
                 {[
-                  "Director",
-                  "Subdirector",
-                  "Manager",
-                  "Supervisor",
-                  "Journeyman",
-                  "Senior Specialist",
-                  "Specialist",
-                  "Technician",
-                  "Initiate"
+                  "Director", "Subdirector", "Manager", "Supervisor",
+                  "Journeyman", "Senior Specialist", "Specialist", "Technician", "Initiate"
                 ].map((rank, i) => (
-                  <motion.div
-                    key={rank}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 * i, duration: 0.4 }}
-                    className="flex items-center p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-2 border-[rgba(200,220,255,0.6)] rounded-sm"
-                  >
+                  <div key={rank} className="flex items-center p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-2 border-[rgba(200,220,255,0.6)] rounded-sm">
                     <span className="mg-text text-sm">{rank}</span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
             
-            {/* Midnight Security Ranks */}
-            <div>
+            {/* Midnight Security */}
+            <div className="space-y-4">
               <div className="flex items-center mb-4">
-                <div className="h-8 w-8 relative mr-2 rounded-sm overflow-hidden bg-[rgba(var(--mg-panel-dark),0.7)] flex items-center justify-center">
+                <div className="h-10 w-10 relative mr-3 rounded-sm overflow-hidden bg-[rgba(var(--mg-panel-dark),0.7)] flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-9.618 5.04C2.141 13.669 2.931 18.16 5.25 21.15c1.094 1.39 2.362 2.393 3.75 2.85M15.75 21.15c1.094-1.39 2.163-2.927 2.81-4.666" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-9.618 5.04C2.141 13.669 2.931 18.16 5.25 21.15c1.094 1.39 2.362 2.393 3.75 2.85" />
                   </svg>
                 </div>
-                <h3 className="mg-subtitle">Midnight Security</h3>
+                <div>
+                  <h3 className="mg-subtitle text-lg">Midnight Security</h3>
+                  <p className="text-xs text-[rgba(var(--mg-text),0.6)]">Security & Risk Management</p>
+                </div>
               </div>
               
               <div className="space-y-2">
                 {[
-                  "Director",
-                  "Vice Director",
-                  "Risk Manager",
-                  "Security Supervisor",
-                  "Compliance Officer",
-                  "Compliance Agent",
-                  "Security Specialist",
-                  "Security Associate",
-                  "Observer"
+                  "Director", "Vice Director", "Risk Manager", "Security Supervisor",
+                  "Compliance Officer", "Compliance Agent", "Security Specialist", "Security Associate", "Observer"
                 ].map((rank, i) => (
-                  <motion.div
-                    key={rank}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 * i, duration: 0.4 }}
-                    className="flex items-center p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-2 border-[rgba(120,140,180,0.6)] rounded-sm"
-                  >
+                  <div key={rank} className="flex items-center p-2 bg-[rgba(var(--mg-panel-dark),0.5)] border-l-2 border-[rgba(120,140,180,0.6)] rounded-sm">
                     <span className="mg-text text-sm">{rank}</span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
         </motion.div>
         
-        <div className="mt-6 text-center text-xs text-[rgba(var(--mg-text),0.6)]">
-          AYDO INTERGALACTIC CORPORATION - INTERNAL ARCHIVES
+        <div className="mt-8 text-center text-xs text-[rgba(var(--mg-text),0.6)]">
+          AYDO INTERGALACTIC CORPORATION - CORPORATE ARCHIVES SYSTEM
         </div>
       </div>
     </div>
