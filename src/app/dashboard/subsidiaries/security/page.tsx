@@ -5,18 +5,23 @@ import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { EscortRequestResponse, SecurityAssetType, ThreatLevel } from '@/types/EscortRequest';
+import EscortRequestTracker from '@/components/security/EscortRequestTracker';
 
-interface EscortRequest {
+interface EscortFormData {
   requestedBy: string;
   threatAssessment: 'done' | 'needed';
-  threatLevel?: string;
+  threatLevel?: ThreatLevel;
   shipsToEscort: number;
   startLocation: string;
   endLocation: string;
   secondaryLocations: string;
   plannedRoute: string;
-  assetsRequested: string[];
+  assetsRequested: SecurityAssetType[];
   additionalNotes: string;
+  priority: 'Low' | 'Medium' | 'High' | 'Urgent';
+  estimatedDuration?: string;
+  preferredDateTime?: string;
 }
 
 interface MidnightRank {
@@ -28,20 +33,26 @@ interface MidnightRank {
 
 export default function MidnightSecurityPage() {
   const { data: session } = useSession();
-  const [activeTab, setActiveTab] = useState<'overview' | 'escort' | 'training' | 'calendar' | 'organization'>('overview');
-  const [escortForm, setEscortForm] = useState<EscortRequest>({
-    requestedBy: '',
+  const [activeTab, setActiveTab] = useState<'overview' | 'escort' | 'requests' | 'training' | 'calendar' | 'organization'>('overview');
+  const [escortForm, setEscortForm] = useState<EscortFormData>({
+    requestedBy: session?.user?.name || '',
     threatAssessment: 'needed',
-    threatLevel: '',
+    threatLevel: undefined,
     shipsToEscort: 1,
     startLocation: '',
     endLocation: '',
     secondaryLocations: '',
     plannedRoute: '',
     assetsRequested: [],
-    additionalNotes: ''
+    additionalNotes: '',
+    priority: 'Medium',
+    estimatedDuration: '',
+    preferredDateTime: ''
   });
   const [expandedTrainingDoc, setExpandedTrainingDoc] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<EscortRequestResponse | null>(null);
 
   // Check if user has access to training docs (Leadership roles only for now)
   const hasTrainingAccess = session?.user?.role && ['Director', 'Manager', 'Board Member'].includes(session.user.role);
@@ -89,22 +100,76 @@ export default function MidnightSecurityPage() {
 
   const handleEscortSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement escort request submission
-    console.log('Escort request submitted:', escortForm);
-    alert('Escort request submitted successfully!');
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+
+    try {
+      const response = await fetch('/api/security/escort-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(escortForm)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const newRequest = await response.json();
+      setSubmitMessage(`Escort request submitted successfully! Request ID: #${newRequest.id.slice(-8).toUpperCase()}`);
+      
+      // Reset form
+      setEscortForm({
+        requestedBy: session?.user?.name || '',
+        threatAssessment: 'needed',
+        threatLevel: undefined,
+        shipsToEscort: 1,
+        startLocation: '',
+        endLocation: '',
+        secondaryLocations: '',
+        plannedRoute: '',
+        assetsRequested: [],
+        additionalNotes: '',
+        priority: 'Medium',
+        estimatedDuration: '',
+        preferredDateTime: ''
+      });
+
+      // Switch to requests tab to show the new request
+      setTimeout(() => {
+        setActiveTab('requests');
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error submitting escort request:', error);
+      setSubmitMessage(`Error: ${error instanceof Error ? error.message : 'Failed to submit request'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleInputChange = (field: keyof EscortRequest, value: any) => {
+  const handleInputChange = (field: keyof EscortFormData, value: any) => {
     setEscortForm(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleAssetToggle = (asset: string) => {
+  const handleAssetToggle = (asset: SecurityAssetType) => {
     setEscortForm(prev => ({
       ...prev,
       assetsRequested: prev.assetsRequested.includes(asset)
         ? prev.assetsRequested.filter(a => a !== asset)
         : [...prev.assetsRequested, asset]
     }));
+  };
+
+  const handleRequestClick = (request: EscortRequestResponse) => {
+    setSelectedRequest(request);
+    // Could open a detailed view modal or navigate to detail page
+  };
+
+  const handleCreateNewRequest = () => {
+    setActiveTab('escort');
   };
 
   return (
@@ -150,7 +215,8 @@ export default function MidnightSecurityPage() {
           <div className="flex flex-wrap gap-2 sm:gap-4">
             {[
               { id: 'overview' as const, label: 'Overview' },
-              { id: 'escort' as const, label: 'Escort Request' },
+              { id: 'escort' as const, label: 'New Request' },
+              { id: 'requests' as const, label: 'Track Requests' },
               { id: 'training' as const, label: 'Training Docs' },
               { id: 'calendar' as const, label: 'Event Calendar' },
               { id: 'organization' as const, label: 'Organization Chart' }
@@ -228,10 +294,20 @@ export default function MidnightSecurityPage() {
             <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-6 rounded-sm relative">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(255,100,100,0.6)] to-transparent"></div>
               
-              <h2 className="mg-subtitle text-xl mb-4">Escort Request Form</h2>
+              <h2 className="mg-subtitle text-xl mb-4">Submit New Escort Request</h2>
               <p className="text-sm text-[rgba(var(--mg-text),0.7)] mb-6">
                 For Aydo Intergalactic Corporation employees only. Complete this form to request security escort services.
               </p>
+
+              {submitMessage && (
+                <div className={`p-4 rounded-lg mb-6 ${
+                  submitMessage.includes('Error') 
+                    ? 'bg-[rgba(var(--mg-error),0.1)] border border-[rgba(var(--mg-error),0.3)] text-[rgba(var(--mg-error),0.9)]'
+                    : 'bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] text-[rgba(var(--mg-success),0.9)]'
+                }`}>
+                  {submitMessage}
+                </div>
+              )}
 
               <form onSubmit={handleEscortSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -245,6 +321,20 @@ export default function MidnightSecurityPage() {
                       placeholder="Your username"
                       required
                     />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm mb-2 text-[rgba(var(--mg-text),0.7)]">Priority Level</label>
+                    <select
+                      value={escortForm.priority}
+                      onChange={(e) => handleInputChange('priority', e.target.value)}
+                      className="w-full mg-input bg-[rgba(var(--mg-panel-light),0.3)] border border-[rgba(255,100,100,0.3)]"
+                    >
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                      <option value="Urgent">Urgent</option>
+                    </select>
                   </div>
 
                   <div>
@@ -287,13 +377,18 @@ export default function MidnightSecurityPage() {
                     </label>
                   </div>
                   {escortForm.threatAssessment === 'done' && (
-                    <input
-                      type="text"
-                      value={escortForm.threatLevel}
+                    <select
+                      value={escortForm.threatLevel || ''}
                       onChange={(e) => handleInputChange('threatLevel', e.target.value)}
                       className="w-full mg-input bg-[rgba(var(--mg-panel-light),0.3)] border border-[rgba(255,100,100,0.3)]"
-                      placeholder="Describe the threat level assessment"
-                    />
+                    >
+                      <option value="">Select threat level</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                      <option value="Critical">Critical</option>
+                      <option value="Unknown">Unknown</option>
+                    </select>
                   )}
                 </div>
 
@@ -349,6 +444,29 @@ export default function MidnightSecurityPage() {
                   </p>
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm mb-2 text-[rgba(var(--mg-text),0.7)]">Estimated Duration</label>
+                    <input
+                      type="text"
+                      value={escortForm.estimatedDuration}
+                      onChange={(e) => handleInputChange('estimatedDuration', e.target.value)}
+                      className="w-full mg-input bg-[rgba(var(--mg-panel-light),0.3)] border border-[rgba(255,100,100,0.3)]"
+                      placeholder="e.g., 2 hours, 1 day"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm mb-2 text-[rgba(var(--mg-text),0.7)]">Preferred Date/Time</label>
+                    <input
+                      type="datetime-local"
+                      value={escortForm.preferredDateTime}
+                      onChange={(e) => handleInputChange('preferredDateTime', e.target.value)}
+                      className="w-full mg-input bg-[rgba(var(--mg-panel-light),0.3)] border border-[rgba(255,100,100,0.3)]"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-sm mb-2 text-[rgba(var(--mg-text),0.7)]">Assets Requested</label>
                   <div className="grid grid-cols-2 gap-2">
@@ -361,8 +479,8 @@ export default function MidnightSecurityPage() {
                       <label key={asset} className="flex items-center">
                         <input
                           type="checkbox"
-                          checked={escortForm.assetsRequested.includes(asset)}
-                          onChange={() => handleAssetToggle(asset)}
+                          checked={escortForm.assetsRequested.includes(asset as SecurityAssetType)}
+                          onChange={() => handleAssetToggle(asset as SecurityAssetType)}
                           className="mr-2"
                         />
                         <span className="text-sm">{asset}</span>
@@ -385,12 +503,39 @@ export default function MidnightSecurityPage() {
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="mg-button px-6 py-2 bg-[rgba(255,100,100,0.2)] border border-[rgba(255,100,100,0.6)] text-[rgba(255,100,100,0.9)] hover:bg-[rgba(255,100,100,0.3)]"
+                    disabled={isSubmitting}
+                    className={`mg-button px-6 py-2 bg-[rgba(255,100,100,0.2)] border border-[rgba(255,100,100,0.6)] text-[rgba(255,100,100,0.9)] hover:bg-[rgba(255,100,100,0.3)] transition-colors ${
+                      isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   >
-                    Submit Escort Request
+                    {isSubmitting ? 'Submitting...' : 'Submit Escort Request'}
                   </button>
                 </div>
               </form>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Track Requests Tab */}
+        {activeTab === 'requests' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-6"
+          >
+            <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-6 rounded-sm relative">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(255,100,100,0.6)] to-transparent"></div>
+              
+              <h2 className="mg-subtitle text-xl mb-6">Escort Request Tracking</h2>
+              <p className="text-sm text-[rgba(var(--mg-text),0.7)] mb-6">
+                Track and manage your escort requests. Click on any request to view detailed information.
+              </p>
+
+              <EscortRequestTracker 
+                onRequestClick={handleRequestClick}
+                onCreateRequest={handleCreateNewRequest}
+              />
             </div>
           </motion.div>
         )}
