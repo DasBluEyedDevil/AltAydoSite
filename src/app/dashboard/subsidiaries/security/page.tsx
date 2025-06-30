@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { EscortRequestResponse, SecurityAssetType, ThreatLevel } from '@/types/EscortRequest';
 import EscortRequestTracker from '@/components/security/EscortRequestTracker';
+import EscortRequestDetail from '@/components/security/EscortRequestDetail';
 
 interface EscortFormData {
   requestedBy: string;
@@ -53,6 +54,8 @@ export default function MidnightSecurityPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<EscortRequestResponse | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [requests, setRequests] = useState<EscortRequestResponse[]>([]);
 
   // Check if user has access to training docs (Leadership roles only for now)
   const hasTrainingAccess = session?.user?.role && ['Director', 'Manager', 'Board Member'].includes(session.user.role);
@@ -165,11 +168,27 @@ export default function MidnightSecurityPage() {
 
   const handleRequestClick = (request: EscortRequestResponse) => {
     setSelectedRequest(request);
-    // Could open a detailed view modal or navigate to detail page
+    setShowDetailModal(true);
   };
 
   const handleCreateNewRequest = () => {
     setActiveTab('escort');
+  };
+
+  const handleRequestUpdate = (updatedRequest: EscortRequestResponse) => {
+    setRequests(prev => prev.map(req => req.id === updatedRequest.id ? updatedRequest : req));
+    setSelectedRequest(updatedRequest);
+  };
+
+  const handleRequestDelete = (requestId: string) => {
+    setRequests(prev => prev.filter(req => req.id !== requestId));
+    setSelectedRequest(null);
+    setShowDetailModal(false);
+  };
+
+  const handleCloseDetailModal = () => {
+    setShowDetailModal(false);
+    setSelectedRequest(null);
   };
 
   return (
@@ -535,6 +554,16 @@ export default function MidnightSecurityPage() {
               <EscortRequestTracker 
                 onRequestClick={handleRequestClick}
                 onCreateRequest={handleCreateNewRequest}
+                onRequestsChange={setRequests}
+              />
+
+              {/* Escort Request Detail Modal */}
+              <EscortRequestDetail
+                request={selectedRequest}
+                isOpen={showDetailModal}
+                onClose={handleCloseDetailModal}
+                onUpdate={handleRequestUpdate}
+                onDelete={handleRequestDelete}
               />
             </div>
           </motion.div>

@@ -9,12 +9,14 @@ interface EscortRequestTrackerProps {
   onRequestClick?: (request: EscortRequestResponse) => void;
   showCreateButton?: boolean;
   onCreateRequest?: () => void;
+  onRequestsChange?: (requests: EscortRequestResponse[]) => void;
 }
 
 const EscortRequestTracker: React.FC<EscortRequestTrackerProps> = ({
   onRequestClick,
   showCreateButton = true,
-  onCreateRequest
+  onCreateRequest,
+  onRequestsChange
 }) => {
   const { data: session } = useSession();
   const [requests, setRequests] = useState<EscortRequestResponse[]>([]);
@@ -45,6 +47,7 @@ const EscortRequestTracker: React.FC<EscortRequestTrackerProps> = ({
       
       const data = await response.json();
       setRequests(data);
+      onRequestsChange?.(data);
       setError(null);
     } catch (err) {
       console.error('Error fetching escort requests:', err);
