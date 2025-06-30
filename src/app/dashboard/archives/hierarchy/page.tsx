@@ -119,8 +119,10 @@ export default function HierarchyChartPage() {
               </div>
             </div>
             
-            {/* Vertical line from CEO to COO */}
+            {/* Vertical lines from CEO to each board member */}
+            <div className="absolute left-1/2 transform -translate-x-[10rem] top-36 h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
             <div className="absolute left-1/2 transform -translate-x-1/2 top-36 h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
+            <div className="absolute left-1/2 transform translate-x-[10rem] top-36 h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
             
             {/* CMO, COO, CSO Level */}
             <div className="flex justify-center space-x-4 sm:space-x-10 mb-8">
@@ -147,10 +149,7 @@ export default function HierarchyChartPage() {
               </div>
             </div>
             
-            {/* Connecting lines from Board Level */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 top-[11rem] w-[30rem] h-px bg-[rgba(var(--mg-primary),0.6)]"></div>
-            
-            {/* Vertical line from COO to Directors */}
+            {/* Vertical line from COO to Directors - Only the COO connects to subsidiary directors */}
             <div className="absolute left-1/2 transform -translate-x-1/2 top-[11rem] h-8 w-px bg-[rgba(var(--mg-primary),0.6)]"></div>
             
             {/* Director Level - All under COO */}
