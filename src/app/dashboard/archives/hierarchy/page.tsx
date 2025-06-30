@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
@@ -123,48 +123,7 @@ const PersonCard: React.FC<PersonCardProps> = ({
   );
 };
 
-// Search and Filter component
-const SearchBar: React.FC<{
-  searchTerm: string;
-  onSearchChange: (term: string) => void;
-  selectedFilter: string;
-  onFilterChange: (filter: string) => void;
-}> = ({ searchTerm, onSearchChange, selectedFilter, onFilterChange }) => {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mb-6 p-4 bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.3)] rounded-lg backdrop-blur-sm"
-    >
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1">
-          <input
-            type="text"
-            placeholder="Search personnel, roles, or handles..."
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full px-4 py-2 bg-[rgba(var(--mg-panel-dark),0.8)] border border-[rgba(var(--mg-primary),0.4)] rounded-md text-[rgba(var(--mg-text),0.9)] placeholder-[rgba(var(--mg-text),0.5)] focus:outline-none focus:border-[rgba(var(--mg-primary),0.8)] transition-colors"
-          />
-        </div>
-        <div className="flex gap-2">
-          {['All', 'Executive', 'Board', 'Directors', 'Managers'].map((filter) => (
-            <button
-              key={filter}
-              onClick={() => onFilterChange(filter)}
-              className={`px-3 py-2 rounded-md text-xs font-semibold transition-all ${
-                selectedFilter === filter
-                  ? 'bg-[rgba(var(--mg-primary),0.8)] text-black'
-                  : 'bg-[rgba(var(--mg-panel-dark),0.6)] text-[rgba(var(--mg-text),0.7)] hover:bg-[rgba(var(--mg-primary),0.2)]'
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+
 
 // Navigation Tabs component
 const NavigationTabs: React.FC<{
@@ -253,38 +212,8 @@ const CollapsibleSection: React.FC<{
 };
 
 export default function HierarchyChartPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('All');
   const [activeTab, setActiveTab] = useState('overview');
   const [highlightedConnections, setHighlightedConnections] = useState<string[]>([]);
-
-  // Define all personnel data
-  const personnel = useMemo(() => [
-    { id: 'ceo', title: 'Chief Executive Officer', loreName: 'Christoff Revan', handle: 'Udon', level: 'executive' as const, category: 'Executive' },
-    { id: 'cmo', title: 'Chief Marketing Officer', loreName: 'Zane Makay', handle: 'Noodles', level: 'board' as const, category: 'Board' },
-    { id: 'coo', title: 'Chief Operations Officer', loreName: 'Kaibo Zaber', handle: 'Kaibo_Z', level: 'board' as const, category: 'Board' },
-    { id: 'cso', title: 'Chief Security Officer', loreName: 'Christus Sanctus', handle: 'Devil', level: 'board' as const, category: 'Board' },
-    { id: 'express-dir', title: 'Director - AydoExpress', loreName: 'Darren Express', handle: 'Delta_Dart_42', level: 'director' as const, category: 'Directors' },
-    { id: 'empyrion-dir', title: 'Director - Empyrion Industries', loreName: 'Stephanie Carder', handle: 'RamboSteph', level: 'director' as const, category: 'Directors' },
-    { id: 'security-dir', title: 'Director - Midnight Security', loreName: 'Marcus Green', handle: 'MR-GR33N', level: 'director' as const, category: 'Directors' },
-    { id: 'express-mgr', title: 'AydoExpress Manager', loreName: 'Alex Delivery', handle: 'Alex_D', level: 'manager' as const, category: 'Managers' },
-    { id: 'empyrion-mgr', title: 'Empyrion Manager', loreName: 'Archie Zero', handle: 'ArcZeroNine', level: 'manager' as const, category: 'Managers' },
-    { id: 'security-mgr', title: 'Security Manager', loreName: 'Devon Shield', handle: 'Shield_GS', level: 'manager' as const, category: 'Managers' }
-  ], []);
-
-  // Filter personnel based on search and filter
-  const filteredPersonnel = useMemo(() => {
-    return personnel.filter(person => {
-      const matchesSearch = searchTerm === '' || 
-        person.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        person.loreName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        person.handle.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesFilter = selectedFilter === 'All' || person.category === selectedFilter;
-      
-      return matchesSearch && matchesFilter;
-    });
-  }, [personnel, searchTerm, selectedFilter]);
 
   const renderOverviewTab = () => (
     <motion.div
@@ -768,13 +697,6 @@ export default function HierarchyChartPage() {
             subsidiary management, and reporting relationships across all divisions.
           </p>
         </motion.div>
-
-        <SearchBar 
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          selectedFilter={selectedFilter}
-          onFilterChange={setSelectedFilter}
-        />
 
         <NavigationTabs 
           activeTab={activeTab}
