@@ -3,7 +3,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useEvents } from '@/hooks/useEvents';
+import { useUserTimezone } from '@/hooks/useUserTimezone';
 import { EventData, EventType } from '@/lib/eventMapper';
+import { getDateTimeInTimezone, getTimezoneAbbreviation } from '@/lib/timezone';
 
 // Function to get days in month
 const getDaysInMonth = (year: number, month: number) => {
@@ -27,8 +29,20 @@ const EventsCalendar = () => {
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [showEventModal, setShowEventModal] = useState(false);
   
-  // Use the events hook for Discord integration
-  const { events: eventsData, loading, error, source, lastSync, refetch } = useEvents();
+  // Get user's timezone preference first
+  const { timezone: userTimezone, loading: timezoneLoading } = useUserTimezone();
+  
+  // Use the events hook for Discord integration (now timezone-aware)
+  const { events: eventsData, loading, error, source, lastSync, refetch, refreshWithTimezone } = useEvents();
+  
+  // Debug logging
+  console.log('EventsCalendar Debug:', {
+    userTimezone,
+    timezoneLoading,
+    eventsCount: eventsData.length,
+    sampleEventTime: eventsData.length > 0 ? eventsData[0].time : 'No events',
+    source
+  });
 
   // Month navigation
   const goToPreviousMonth = () => {
@@ -151,12 +165,14 @@ const EventsCalendar = () => {
         <div className="flex items-center space-x-3">
           <h2 className="mg-title text-lg font-quantify">UPCOMING EVENTS</h2>
           
-          {/* Discord Integration Status */}
+                      {/* Discord Integration Status */}
           <div className="flex items-center space-x-2">
-            {loading ? (
+            {loading || timezoneLoading ? (
               <div className="flex items-center space-x-1">
                 <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                <span className="text-xs text-[rgba(var(--mg-text),0.6)]">Syncing...</span>
+                <span className="text-xs text-[rgba(var(--mg-text),0.6)]">
+                  {timezoneLoading ? 'Loading timezone...' : 'Syncing...'}
+                </span>
               </div>
             ) : source === 'discord' ? (
               <div className="flex items-center space-x-1">
@@ -170,12 +186,27 @@ const EventsCalendar = () => {
               </div>
             )}
             
+            {/* Timezone indicator */}
+            {!timezoneLoading && (
+              <div className="flex items-center space-x-1">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-[rgba(var(--mg-text),0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-xs text-[rgba(var(--mg-text),0.5)]">
+                  {getTimezoneAbbreviation(userTimezone)}
+                </span>
+              </div>
+            )}
+            
             {/* Refresh Button */}
             <button 
               className="mg-btn-icon p-1 text-xs opacity-70 hover:opacity-100"
-              onClick={() => refetch()}
-              disabled={loading}
-              title="Refresh events"
+              onClick={() => {
+                console.log('Manual refresh triggered, refreshing timezone and events');
+                refreshWithTimezone();
+              }}
+              disabled={loading || timezoneLoading}
+              title={`Refresh timezone and events (current timezone: ${getTimezoneAbbreviation(userTimezone)})`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -246,7 +277,7 @@ const EventsCalendar = () => {
       </div>
 
       {/* Empty state when no events */}
-      {!loading && eventsData.length === 0 && (
+      {!loading && !timezoneLoading && eventsData.length === 0 && (
         <div className="text-center py-8">
           <div className="mg-text opacity-60 mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -256,6 +287,16 @@ const EventsCalendar = () => {
           <p className="mg-subtitle text-sm">No events scheduled</p>
           <p className="text-xs text-[rgba(var(--mg-text),0.5)] mt-1">
             {error ? 'Discord integration not configured' : 'No upcoming events from Discord'}
+          </p>
+        </div>
+      )}
+
+      {/* Timezone change notice */}
+      {!loading && !timezoneLoading && eventsData.length > 0 && (
+        <div className="mt-2 text-center">
+          <p className="text-xs text-[rgba(var(--mg-text),0.4)]">
+            Times shown in {getTimezoneAbbreviation(userTimezone)} timezone. 
+            Changed your timezone? Click refresh above.
           </p>
         </div>
       )}
@@ -301,20 +342,8 @@ const EventsCalendar = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <p className="text-sm">
-                  {selectedEvent.date.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
+                  {getDateTimeInTimezone(selectedEvent.date, userTimezone)}
                 </p>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[rgba(var(--mg-primary),0.9)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="text-sm">{selectedEvent.time}</p>
               </div>
               
               <div className="pt-2 border-t border-[rgba(var(--mg-primary),0.1)]">

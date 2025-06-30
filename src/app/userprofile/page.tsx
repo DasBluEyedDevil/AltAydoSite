@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import UserFleetBuilderWrapper from '../../components/UserFleetBuilderWrapper';
 import { UserShip } from '../../types/user';
+import { TIMEZONE_OPTIONS, detectUserTimezone } from '../../lib/timezone';
 
 export default function UserProfilePage() {
   const { data: session, status } = useSession();
@@ -26,7 +27,8 @@ export default function UserProfilePage() {
     photo: '',
     payGrade: '',
     position: '',
-    division: ''
+    division: '',
+    timezone: ''
   });
   
   // Redirect to login if not authenticated
@@ -55,12 +57,13 @@ export default function UserProfilePage() {
   }, [session, status]);
   
   // Refresh profile data periodically while editing to catch potential ship updates
+  // But only refresh ships data, not form fields that user might be actively editing
   useEffect(() => {
     if (isEditing) {
       const interval = setInterval(() => {
-        console.log('Refreshing profile data to check for ships updates');
-        fetchProfileData();
-      }, 5000); // Check every 5 seconds while in edit mode
+        console.log('Refreshing ships data only (preserving form state)');
+        fetchShipsData();
+      }, 10000); // Check every 10 seconds while in edit mode (less frequent)
       
       return () => clearInterval(interval);
     }
@@ -93,7 +96,8 @@ export default function UserProfilePage() {
         photo: profileData.photo || '',
         payGrade: profileData.payGrade || '',
         position: profileData.position || '',
-        division: profileData.division || ''
+        division: profileData.division || '',
+        timezone: profileData.timezone || ''
       }));
       
       // Set ships from profile data if available
@@ -107,6 +111,33 @@ export default function UserProfilePage() {
       if (!String(error).includes('401')) {
         setErrorMessage('Could not load profile data. Using local data only.');
       }
+    }
+  };
+
+  // Fetch only ships data without overwriting form fields (for background refresh)
+  const fetchShipsData = async () => {
+    try {
+      const response = await fetch('/api/profile', {
+        headers: {
+          'Cache-Control': 'no-cache'
+        },
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        return; // Silently fail for background refresh
+      }
+      
+      const profileData = await response.json();
+      
+      // Only update ships, not form fields
+      if (profileData.ships) {
+        console.log('Background refresh: Updated ships data');
+        setUserShips(profileData.ships);
+      }
+    } catch (error) {
+      console.error('Background ships refresh failed:', error);
+      // Silently fail for background refresh
     }
   };
   
@@ -179,10 +210,14 @@ export default function UserProfilePage() {
   
   const handleEditToggle = () => {
     setIsEditing(prev => !prev);
-    if (isEditing) {
-      // If canceling, revert changes by refetching profile data
-      fetchProfileData();
-    }
+    // Don't auto-revert changes when toggling edit mode
+    // User can manually cancel if needed
+  };
+
+  const handleCancelEdit = () => {
+    // Revert changes by refetching profile data
+    fetchProfileData();
+    setIsEditing(false);
   };
   
   const handleSaveProfile = async () => {
@@ -208,6 +243,7 @@ export default function UserProfilePage() {
           payGrade: userData.payGrade,
           position: userData.position,
           division: userData.division,
+          timezone: userData.timezone, // Include timezone in the update
           ships: userShips // Include the ships data in the update
         }),
       });
@@ -227,7 +263,8 @@ export default function UserProfilePage() {
         photo: updatedProfile.photo || '',
         payGrade: updatedProfile.payGrade || '',
         position: updatedProfile.position || '',
-        division: updatedProfile.division || ''
+        division: updatedProfile.division || '',
+        timezone: updatedProfile.timezone || ''
       }));
       
       // Update ships if provided in the response
@@ -293,7 +330,7 @@ export default function UserProfilePage() {
             {isEditing ? (
               <div className="flex space-x-2">
                 <button 
-                  onClick={handleEditToggle}
+                  onClick={handleCancelEdit}
                   className="mg-button-secondary px-4 py-2 text-xs tracking-wider border border-[rgba(var(--mg-primary),0.3)] hover:border-[rgba(var(--mg-primary),0.5)]"
                   disabled={isSaving}
                 >
@@ -424,6 +461,44 @@ export default function UserProfilePage() {
                   ) : (
                     <div className="mg-value py-2 px-3 bg-[rgba(var(--mg-panel-dark),0.4)] rounded-sm">
                       {userData.rsiAccountName || 'Not set'}
+                    </div>
+                  )}
+                </div>
+
+                <div className="mb-4 md:col-span-2">
+                  <label className="mg-subtitle text-xs mb-1 block tracking-wider">TIMEZONE</label>
+                  {isEditing ? (
+                    <div className="flex gap-2">
+                      <select
+                        name="timezone"
+                        value={userData.timezone}
+                        onChange={handleInputChange}
+                        className="flex-1 py-2 px-3 bg-[rgba(var(--mg-panel-dark),0.4)] rounded-sm border border-[rgba(var(--mg-primary),0.2)] focus:border-[rgba(var(--mg-primary),0.5)] focus:outline-none"
+                      >
+                        <option value="">Select Timezone</option>
+                        {TIMEZONE_OPTIONS.map(tz => (
+                          <option key={tz.value} value={tz.value}>
+                            {tz.label}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const detectedTz = detectUserTimezone();
+                          setUserData(prev => ({ ...prev, timezone: detectedTz }));
+                        }}
+                        className="px-3 py-2 bg-[rgba(var(--mg-primary),0.1)] hover:bg-[rgba(var(--mg-primary),0.2)] rounded-sm text-xs tracking-wider text-[rgba(var(--mg-primary),0.9)]"
+                        title="Auto-detect timezone"
+                      >
+                        AUTO
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="mg-value py-2 px-3 bg-[rgba(var(--mg-panel-dark),0.4)] rounded-sm">
+                      {userData.timezone ? 
+                        TIMEZONE_OPTIONS.find(tz => tz.value === userData.timezone)?.label || userData.timezone 
+                        : 'Not set (UTC default)'}
                     </div>
                   )}
                 </div>

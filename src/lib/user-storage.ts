@@ -240,15 +240,25 @@ export async function createUser(user: User): Promise<User> {
 export async function updateUser(id: string, userData: Partial<User>): Promise<User | null> {
   console.log(`STORAGE: Updating user: ${id}`);
   console.log('STORAGE: Update data includes ships:', userData.ships !== undefined);
+  console.log('STORAGE: Update data includes timezone:', userData.timezone !== undefined);
+  console.log('STORAGE: Update fields:', Object.keys(userData));
   
   if (userData.ships) {
     console.log(`STORAGE: Ships data in update has ${userData.ships.length} ships`);
     console.log('STORAGE: First few ships:', userData.ships.slice(0, 2));
   }
   
+  if (userData.timezone !== undefined) {
+    console.log('STORAGE: Timezone in update:', userData.timezone);
+  }
+  
   if (await shouldUseMongoDb()) {
     try {
-      return await mongoDb.updateUser(id, userData);
+      const result = await mongoDb.updateUser(id, userData);
+      if (result && userData.timezone !== undefined) {
+        console.log('STORAGE: MongoDB update successful, returned timezone:', result.timezone);
+      }
+      return result;
     } catch (error) {
       console.error('STORAGE: MongoDB updateUser failed, falling back to local storage:', error);
       usingFallbackStorage = true;
@@ -265,8 +275,9 @@ export async function updateUser(id: string, userData: Partial<User>): Promise<U
     return null;
   }
   
-  // Log existing user ships
+  // Log existing user data
   console.log(`STORAGE: Existing user has ${users[userIndex].ships?.length || 0} ships before update`);
+  console.log(`STORAGE: Existing user timezone before update:`, users[userIndex].timezone);
   
   const updatedUser = {
     ...users[userIndex],
@@ -274,7 +285,7 @@ export async function updateUser(id: string, userData: Partial<User>): Promise<U
     updatedAt: new Date().toISOString()
   };
   
-  // Log ships data before saving
+  // Explicitly handle special fields
   if (userData.ships) {
     console.log('STORAGE: Updating ships for user:', userData.ships);
     console.log(`STORAGE: Ships count in update data: ${userData.ships.length}`);
@@ -282,11 +293,17 @@ export async function updateUser(id: string, userData: Partial<User>): Promise<U
     updatedUser.ships = userData.ships;
   }
   
-  // Log the updated user ships count
+  if (userData.timezone !== undefined) {
+    console.log('STORAGE: Updating timezone for user:', userData.timezone);
+    updatedUser.timezone = userData.timezone;
+  }
+  
+  // Log the updated user data
   console.log(`STORAGE: Updated user ships count: ${updatedUser.ships?.length || 0}`);
+  console.log(`STORAGE: Updated user timezone: ${updatedUser.timezone}`);
   
   saveLocalUser(updatedUser);
-  console.log('STORAGE: User updated, ships count:', (updatedUser.ships || []).length);
+  console.log('STORAGE: User updated in local storage - final timezone:', updatedUser.timezone);
   return updatedUser;
 }
 

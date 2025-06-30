@@ -14,6 +14,7 @@
     "lint": "next lint",
     "kill-port": "node kill-port.js",
     "migrate-users": "tsx src/scripts/migrate-users.ts",
+    "migrate-timezone": "tsx src/scripts/migrate-timezone.ts",
     "test-cosmos": "tsx src/scripts/test-cosmos-connection.ts",
     "test-mongo": "tsx src/scripts/test-mongodb-connection.ts",
     "gen-mongo-connection": "tsx src/scripts/cosmos-connection-string.ts",

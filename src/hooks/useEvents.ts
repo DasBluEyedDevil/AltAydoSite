@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { EventData, EventType } from '@/lib/eventMapper';
+import { useUserTimezone } from './useUserTimezone';
 
 // No fallback events - only pull from Discord
 
@@ -10,6 +11,7 @@ interface UseEventsReturn {
   source: 'discord' | 'fallback';
   lastSync: string | null;
   refetch: () => Promise<void>;
+  refreshWithTimezone: () => Promise<void>;
 }
 
 interface DiscordEventsResponse {
@@ -26,6 +28,10 @@ export function useEvents(): UseEventsReturn {
   const [error, setError] = useState<string | null>(null);
   const [source, setSource] = useState<'discord' | 'fallback'>('fallback');
   const [lastSync, setLastSync] = useState<string | null>(null);
+  const hasInitialized = useRef(false);
+  
+  // Get user's timezone but don't auto-refetch on changes
+  const { timezone: userTimezone, loading: timezoneLoading, refetch: refetchTimezone } = useUserTimezone();
 
   const fetchEvents = useCallback(async () => {
     try {
@@ -49,11 +55,16 @@ export function useEvents(): UseEventsReturn {
         setError(data.error);
       } else if (data.events && data.events.length > 0) {
         // Discord events available
-        // Convert date strings back to Date objects
-        const processedEvents = data.events.map(event => ({
-          ...event,
-          date: new Date(event.date)
-        }));
+        // Convert date strings back to Date objects and ensure timezone formatting
+        const processedEvents = data.events.map(event => {
+          const eventDate = new Date(event.date);
+          return {
+            ...event,
+            date: eventDate
+          };
+        });
+        
+        console.log('Processed events with current timezone:', userTimezone, processedEvents.length, 'events');
         
         setEvents(processedEvents);
         setSource('discord');
@@ -74,12 +85,29 @@ export function useEvents(): UseEventsReturn {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [userTimezone]);
 
-  // Fetch events on component mount
+  // Refresh both timezone and events (for when timezone changes)
+  const refreshWithTimezone = useCallback(async () => {
+    console.log('Refreshing timezone and events...');
+    await refetchTimezone();
+    // Small delay to ensure timezone is updated before fetching events
+    setTimeout(() => {
+      fetchEvents();
+    }, 100);
+  }, [refetchTimezone, fetchEvents]);
+
+  // Fetch events only on initial load
   useEffect(() => {
+    // Don't fetch until timezone has loaded and we haven't initialized yet
+    if (timezoneLoading || hasInitialized.current) {
+      return;
+    }
+    
+    console.log('Initial events fetch with timezone:', userTimezone);
     fetchEvents();
-  }, [fetchEvents]);
+    hasInitialized.current = true;
+  }, [timezoneLoading, userTimezone]); // Only run once after timezone loads
 
   return {
     events,
@@ -87,6 +115,7 @@ export function useEvents(): UseEventsReturn {
     error,
     source,
     lastSync,
-    refetch: fetchEvents
+    refetch: fetchEvents,
+    refreshWithTimezone
   };
 } 

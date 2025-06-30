@@ -210,9 +210,12 @@ export async function updateUser(id: string, user: Partial<User>): Promise<User 
       return null;
     }
     
-    // Log if ships data is included
+    // Log updates for debugging
     if (user.ships) {
       console.log('MongoDB: Updating ships data for user', id, user.ships.length);
+    }
+    if (user.timezone) {
+      console.log('MongoDB: Updating timezone for user', id, 'to:', user.timezone);
     }
     
     const updatedUser = { 
@@ -221,10 +224,15 @@ export async function updateUser(id: string, user: Partial<User>): Promise<User 
       updatedAt: new Date().toISOString() 
     };
     
-    // Explicitly ensure ships are set if provided
+    // Explicitly ensure special fields are set if provided
     if (user.ships) {
       updatedUser.ships = user.ships;
     }
+    if (user.timezone !== undefined) {
+      updatedUser.timezone = user.timezone;
+    }
+    
+    console.log('MongoDB: Final update data includes timezone:', !!updatedUser.timezone, updatedUser.timezone);
     
     await userCollection!.replaceOne({ id }, updatedUser);
     

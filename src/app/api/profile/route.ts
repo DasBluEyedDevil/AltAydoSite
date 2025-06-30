@@ -21,6 +21,7 @@ const profileUpdateSchema = z.object({
   payGrade: z.string().optional().nullable(),
   position: z.string().optional().nullable(),
   division: z.string().optional().nullable(),
+  timezone: z.string().optional().nullable(),
   ships: z.array(userShipSchema).optional(),
 });
 
@@ -65,6 +66,7 @@ export async function GET() {
       payGrade: user.payGrade || null,
       position: user.position || null,
       division: user.division || null,
+      timezone: user.timezone || null,
       ships: user.ships || [],
     };
     
@@ -167,6 +169,7 @@ export async function PUT(request: NextRequest) {
         payGrade: updatedUser.payGrade || null,
         position: updatedUser.position || null,
         division: updatedUser.division || null,
+        timezone: updatedUser.timezone || null,
         ships: updatedUser.ships || [],
       };
       
@@ -213,6 +216,7 @@ export async function PUT(request: NextRequest) {
       payGrade: updatedUser.payGrade || null,
       position: updatedUser.position || null,
       division: updatedUser.division || null,
+      timezone: updatedUser.timezone || null,
       ships: updatedUser.ships || [],
     };
     

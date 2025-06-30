@@ -12,6 +12,7 @@ export interface User {
   payGrade?: string | null;
   position?: string | null;
   division?: string | null;
+  timezone?: string | null;
   ships?: UserShip[];
   createdAt?: string;
   updatedAt?: string;
@@ -30,6 +31,7 @@ export interface UserResponse {
   payGrade?: string | null;
   position?: string | null;
   division?: string | null;
+  timezone?: string | null;
   ships?: UserShip[];
 }
 

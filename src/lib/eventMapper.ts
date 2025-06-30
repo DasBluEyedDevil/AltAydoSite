@@ -1,4 +1,5 @@
 import { DiscordScheduledEvent } from '@/types/DiscordEvent';
+import { getTimeInTimezone, getTimezoneAbbreviation } from './timezone';
 
 // Import existing EventData interface and enum
 export enum EventType {
@@ -20,20 +21,15 @@ export interface EventData {
 /**
  * Map Discord event to internal EventData format
  */
-export function mapDiscordEventToEventData(discordEvent: DiscordScheduledEvent): EventData {
+export function mapDiscordEventToEventData(discordEvent: DiscordScheduledEvent, userTimezone: string = 'UTC'): EventData {
   // Parse the scheduled start time
   const startDate = new Date(discordEvent.scheduled_start_time);
   
   // Determine event type based on name or description keywords
   const eventType = determineEventType(discordEvent.name, discordEvent.description || '');
   
-  // Format time string
-  const timeString = startDate.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'UTC',
-    timeZoneName: 'short'
-  });
+  // Format time string in user's timezone
+  const timeString = `${getTimeInTimezone(startDate, userTimezone)} ${getTimezoneAbbreviation(userTimezone)}`;
 
   return {
     id: parseInt(discordEvent.id, 36), // Convert Discord snowflake to number (may need adjustment)
@@ -94,8 +90,8 @@ function determineEventType(title: string, description: string): EventType {
 /**
  * Map multiple Discord events to EventData array
  */
-export function mapDiscordEventsToEventData(discordEvents: DiscordScheduledEvent[]): EventData[] {
-  return discordEvents.map(mapDiscordEventToEventData);
+export function mapDiscordEventsToEventData(discordEvents: DiscordScheduledEvent[], userTimezone: string = 'UTC'): EventData[] {
+  return discordEvents.map(event => mapDiscordEventToEventData(event, userTimezone));
 }
 
 /**
