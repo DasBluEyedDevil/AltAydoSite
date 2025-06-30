@@ -93,6 +93,8 @@ const EventsCalendar = () => {
         return 'bg-yellow-500';
       case EventType.EmpyrionIndustries:
         return 'bg-orange-500';
+      case EventType.MidnightSecurity:
+        return 'bg-purple-500';
       default:
         return 'bg-gray-500';
     }
@@ -223,6 +225,10 @@ const EventsCalendar = () => {
           <div className="w-3 h-3 rounded-sm bg-orange-500"></div>
           <span className="text-xs text-[rgba(var(--mg-text),0.7)]">Empyrion Industries</span>
         </div>
+        <div className="flex items-center space-x-1">
+          <div className="w-3 h-3 rounded-sm bg-purple-500"></div>
+          <span className="text-xs text-[rgba(var(--mg-text),0.7)]">Midnight Security</span>
+        </div>
       </div>
       
       {/* Calendar grid header */}
@@ -238,6 +244,21 @@ const EventsCalendar = () => {
       <div className="grid grid-cols-7">
         {renderCalendarDays()}
       </div>
+
+      {/* Empty state when no events */}
+      {!loading && eventsData.length === 0 && (
+        <div className="text-center py-8">
+          <div className="mg-text opacity-60 mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p className="mg-subtitle text-sm">No events scheduled</p>
+          <p className="text-xs text-[rgba(var(--mg-text),0.5)] mt-1">
+            {error ? 'Discord integration not configured' : 'No upcoming events from Discord'}
+          </p>
+        </div>
+      )}
 
       {/* Event Details Modal */}
       {showEventModal && selectedEvent && (
@@ -258,7 +279,9 @@ const EventsCalendar = () => {
                       ? 'General Event' 
                       : selectedEvent.type === EventType.AydoExpress 
                         ? 'AydoExpress' 
-                        : 'Empyrion Industries'}
+                        : selectedEvent.type === EventType.EmpyrionIndustries
+                          ? 'Empyrion Industries'
+                          : 'Midnight Security'}
                   </p>
                 </div>
               </div>

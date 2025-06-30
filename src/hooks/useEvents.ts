@@ -1,49 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { EventData, EventType } from '@/lib/eventMapper';
 
-// Fallback events (original hardcoded events)
-const fallbackEvents: EventData[] = [
-  {
-    id: 1,
-    title: 'Weekly Community Gathering',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2),
-    time: '20:00 UTC',
-    type: EventType.General,
-    description: 'Our weekly community meetup for all members to socialize and plan activities.'
-  },
-  {
-    id: 2,
-    title: 'Cargo Run Training',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4),
-    time: '18:30 UTC',
-    type: EventType.AydoExpress,
-    description: 'Training session for new AydoExpress employees on cargo management and hauling operations.'
-  },
-  {
-    id: 3,
-    title: 'Mining Expedition',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 5),
-    time: '19:00 UTC',
-    type: EventType.EmpyrionIndustries,
-    description: 'Joint mining operation in the Aaron Halo asteroid belt. All mining vessels welcome.'
-  },
-  {
-    id: 4,
-    title: 'Fleet Week Preparation',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7),
-    time: '21:00 UTC',
-    type: EventType.General,
-    description: 'Preparation meeting for the upcoming Fleet Week event. All departments should send representatives.'
-  },
-  {
-    id: 5,
-    title: 'Logistics Route Planning',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 9),
-    time: '19:30 UTC',
-    type: EventType.AydoExpress,
-    description: 'Strategic meeting to plan new trade routes and optimize existing ones.'
-  }
-];
+// No fallback events - only pull from Discord
 
 interface UseEventsReturn {
   events: EventData[];
@@ -63,7 +21,7 @@ interface DiscordEventsResponse {
 }
 
 export function useEvents(): UseEventsReturn {
-  const [events, setEvents] = useState<EventData[]>(fallbackEvents);
+  const [events, setEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [source, setSource] = useState<'discord' | 'fallback'>('fallback');
@@ -84,9 +42,9 @@ export function useEvents(): UseEventsReturn {
       const data: DiscordEventsResponse = await response.json();
 
       if (data.error && data.events.length === 0) {
-        // Discord integration failed, use fallback
-        console.warn('Discord events unavailable, using fallback events:', data.error);
-        setEvents(fallbackEvents);
+        // Discord integration failed, no events to show
+        console.warn('Discord events unavailable:', data.error);
+        setEvents([]);
         setSource('fallback');
         setError(data.error);
       } else if (data.events && data.events.length > 0) {
@@ -102,8 +60,8 @@ export function useEvents(): UseEventsReturn {
         setLastSync(data.lastSync || new Date().toISOString());
         setError(null);
       } else {
-        // No events from Discord, use fallback
-        setEvents(fallbackEvents);
+        // No events from Discord
+        setEvents([]);
         setSource('fallback');
         setError('No Discord events found');
       }
@@ -111,7 +69,7 @@ export function useEvents(): UseEventsReturn {
     } catch (err) {
       console.error('Error fetching events:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch events');
-      setEvents(fallbackEvents);
+      setEvents([]);
       setSource('fallback');
     } finally {
       setLoading(false);

@@ -8,10 +8,12 @@ The AydoCorp website now supports automatic synchronization of Discord scheduled
 - **Smart Categorization**: Events are automatically categorized based on keywords:
   - **AydoExpress**: Events containing keywords like "cargo", "hauling", "transport", "delivery", "logistics"
   - **Empyrion Industries**: Events containing keywords like "mining", "extraction", "ore", "asteroid", "refinery"
+  - **Midnight Security**: Events containing keywords like "security", "escort", "protection", "patrol", "combat", "pvp", "bounty", "defense", "tactical"
   - **General**: All other events
-- **Graceful Fallback**: If Discord is unavailable, the calendar falls back to hardcoded events
-- **Real-time Status**: UI shows whether events are synced from Discord or using fallback
+- **Pure Discord Integration**: Events are pulled directly from Discord scheduled events only
+- **Real-time Status**: UI shows Discord sync status and connection state
 - **Manual Refresh**: Users can manually trigger event sync
+- **Empty State**: Clean display when no Discord events are scheduled
 
 ## Setup Instructions
 

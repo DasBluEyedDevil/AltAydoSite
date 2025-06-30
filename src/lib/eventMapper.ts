@@ -4,7 +4,8 @@ import { DiscordScheduledEvent } from '@/types/DiscordEvent';
 export enum EventType {
   General = 'general',
   AydoExpress = 'express',
-  EmpyrionIndustries = 'empyrion'
+  EmpyrionIndustries = 'empyrion',
+  MidnightSecurity = 'security'
 }
 
 export interface EventData {
@@ -49,6 +50,20 @@ export function mapDiscordEventToEventData(discordEvent: DiscordScheduledEvent):
  */
 function determineEventType(title: string, description: string): EventType {
   const text = (title + ' ' + description).toLowerCase();
+  
+  // Check for Midnight Security keywords
+  if (text.includes('security') || 
+      text.includes('escort') || 
+      text.includes('protection') || 
+      text.includes('midnight') ||
+      text.includes('patrol') ||
+      text.includes('combat') ||
+      text.includes('pvp') ||
+      text.includes('bounty') ||
+      text.includes('defense') ||
+      text.includes('tactical')) {
+    return EventType.MidnightSecurity;
+  }
   
   // Check for AydoExpress keywords
   if (text.includes('cargo') || 
