@@ -2,67 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-
-// Enum for event types
-enum EventType {
-  General = 'general',
-  AydoExpress = 'express',
-  EmpyrionIndustries = 'empyrion'
-}
-
-// Interface for event data
-interface EventData {
-  id: number;
-  title: string;
-  date: Date;
-  time: string;
-  type: EventType;
-  description: string;
-}
-
-// Sample event data
-const eventsData: EventData[] = [
-  {
-    id: 1,
-    title: 'Weekly Community Gathering',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2),
-    time: '20:00 UTC',
-    type: EventType.General,
-    description: 'Our weekly community meetup for all members to socialize and plan activities.'
-  },
-  {
-    id: 2,
-    title: 'Cargo Run Training',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4),
-    time: '18:30 UTC',
-    type: EventType.AydoExpress,
-    description: 'Training session for new AydoExpress employees on cargo management and hauling operations.'
-  },
-  {
-    id: 3,
-    title: 'Mining Expedition',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 5),
-    time: '19:00 UTC',
-    type: EventType.EmpyrionIndustries,
-    description: 'Joint mining operation in the Aaron Halo asteroid belt. All mining vessels welcome.'
-  },
-  {
-    id: 4,
-    title: 'Fleet Week Preparation',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7),
-    time: '21:00 UTC',
-    type: EventType.General,
-    description: 'Preparation meeting for the upcoming Fleet Week event. All departments should send representatives.'
-  },
-  {
-    id: 5,
-    title: 'Logistics Route Planning',
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 9),
-    time: '19:30 UTC',
-    type: EventType.AydoExpress,
-    description: 'Strategic meeting to plan new trade routes and optimize existing ones.'
-  }
-];
+import { useEvents } from '@/hooks/useEvents';
+import { EventData, EventType } from '@/lib/eventMapper';
 
 // Function to get days in month
 const getDaysInMonth = (year: number, month: number) => {
@@ -85,6 +26,9 @@ const EventsCalendar = () => {
   const [viewYear, setViewYear] = useState(currentYear);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [showEventModal, setShowEventModal] = useState(false);
+  
+  // Use the events hook for Discord integration
+  const { events: eventsData, loading, error, source, lastSync, refetch } = useEvents();
 
   // Month navigation
   const goToPreviousMonth = () => {
@@ -202,7 +146,41 @@ const EventsCalendar = () => {
   return (
     <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.4)] p-4 rounded-sm relative overflow-hidden">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="mg-title text-lg font-quantify">UPCOMING EVENTS</h2>
+        <div className="flex items-center space-x-3">
+          <h2 className="mg-title text-lg font-quantify">UPCOMING EVENTS</h2>
+          
+          {/* Discord Integration Status */}
+          <div className="flex items-center space-x-2">
+            {loading ? (
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                <span className="text-xs text-[rgba(var(--mg-text),0.6)]">Syncing...</span>
+              </div>
+            ) : source === 'discord' ? (
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-xs text-[rgba(var(--mg-text),0.6)]">Discord</span>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                <span className="text-xs text-[rgba(var(--mg-text),0.6)]">Local</span>
+              </div>
+            )}
+            
+            {/* Refresh Button */}
+            <button 
+              className="mg-btn-icon p-1 text-xs opacity-70 hover:opacity-100"
+              onClick={() => refetch()}
+              disabled={loading}
+              title="Refresh events"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+        </div>
         
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
