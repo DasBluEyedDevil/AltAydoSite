@@ -70,7 +70,7 @@ export default function FinanceTracker() {
 
       if (!response.ok) {
         if (response.status === 403) {
-          setError('Insufficient permissions. Only Directors and Board Members can submit transactions.');
+          setError('Insufficient permissions. Only users with clearance level 3 or higher can submit transactions.');
           return;
         }
         if (response.status === 429) {
@@ -92,7 +92,7 @@ export default function FinanceTracker() {
   };
 
   // Check if user has permission to submit transactions
-  const canSubmitTransactions = session?.user?.role && ['Director', 'Board Member'].includes(session.user.role);
+  const canSubmitTransactions = typeof session?.user?.clearanceLevel === 'number' && session.user.clearanceLevel >= 3;
 
   // Format the reset time as a countdown
   const formatResetTime = (resetTime: number) => {
@@ -414,7 +414,7 @@ export default function FinanceTracker() {
         </motion.div>
       </motion.div>
 
-      {/* Create Transaction Button - Only for Directors and Board Members */}
+      {/* Create Transaction Button - Only for clearance level 3+ */}
       {canSubmitTransactions && (
         <motion.div 
           className="flex justify-end"
@@ -445,7 +445,7 @@ export default function FinanceTracker() {
         >
           <div className="text-center p-4 bg-[rgba(var(--mg-panel-dark),0.3)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm">
             <p className="text-sm text-[rgba(var(--mg-text),0.7)]">
-              Only Directors and Board Members can submit transactions.
+              Only users with clearance level 3 or higher can submit transactions.
             </p>
             <p className="text-xs text-[rgba(var(--mg-text),0.5)] mt-1">
               Contact leadership to submit financial transactions.

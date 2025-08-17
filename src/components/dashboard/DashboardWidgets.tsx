@@ -143,9 +143,9 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       color: 'rgba(140, 200, 255, 0.8)',
       borderStyle: 'border-t-2 border-r border-b border-l',
       category: 'corporate',
-      path: '/dashboard/finance',
+      path: '/dashboard/finance-tracker',
       image: '/images/Aydo_Corp_logo_Gold.png',
-      requiredClearance: 2
+      requiredClearance: 1
     },
     {
       id: 'missions',

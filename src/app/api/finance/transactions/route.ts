@@ -88,12 +88,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user has required role (Director or Board Member)
-    const userRole = session.user.role;
-    const authorizedRoles = ['Director', 'Board Member'];
-    if (!userRole || !authorizedRoles.includes(userRole)) {
+    // Check if user has required clearance (level 3 or higher)
+    const clearance = session.user.clearanceLevel;
+    if (typeof clearance !== 'number' || clearance < 3) {
       return NextResponse.json(
-        { error: 'Insufficient permissions. Only Directors and Board Members can submit transactions.' },
+        { error: 'Insufficient permissions. Only users with clearance level 3 or higher can submit transactions.' },
         { status: 403 }
       );
     }
