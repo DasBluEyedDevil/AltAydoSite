@@ -131,6 +131,21 @@ export const authOptions: NextAuthOptions = {
         token.aydoHandle = user.aydoHandle;
         token.discordName = user.discordName;
         token.rsiAccountName = user.rsiAccountName;
+      } else if (token && token.id) {
+        // Refresh token data from storage to reflect any updates to clearance/role
+        try {
+          const latestUser = await userStorage.getUserById(token.id as string);
+          if (latestUser) {
+            token.clearanceLevel = latestUser.clearanceLevel;
+            token.role = latestUser.role;
+            // Keep aydoHandle and optional fields in sync as well
+            token.aydoHandle = latestUser.aydoHandle;
+            token.discordName = latestUser.discordName || null;
+            token.rsiAccountName = latestUser.rsiAccountName || null;
+          }
+        } catch (e) {
+          console.warn('AUTH: jwt callback - failed to refresh user from storage:', e);
+        }
       }
       return token;
     },
