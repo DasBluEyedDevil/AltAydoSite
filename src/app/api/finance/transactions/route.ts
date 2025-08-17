@@ -151,7 +151,7 @@ export async function POST(request: Request) {
       amount,
       category,
       description,
-      submittedBy: session.user.email,
+      submittedBy: session.user.aydoHandle || session.user.email || 'unknown',
       submittedAt: new Date()
     };
 
