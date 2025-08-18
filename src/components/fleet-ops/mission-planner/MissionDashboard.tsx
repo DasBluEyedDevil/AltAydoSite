@@ -23,8 +23,11 @@ const MissionDashboard: React.FC<MissionDashboardProps> = ({
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [isCreateButtonHovered, setIsCreateButtonHovered] = useState(false);
   
+  // Ensure missions is always an array before filtering
+  const missionArray = Array.isArray(missions) ? missions : [];
+
   // Filter and sort missions
-  const filteredMissions = missions
+  const filteredMissions = missionArray
     .filter(mission => 
       (statusFilter === 'all' || mission.status === statusFilter) &&
       (typeFilter === 'all' || mission.type === typeFilter)
