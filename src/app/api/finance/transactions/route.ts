@@ -51,7 +51,7 @@ export async function GET() {
     // Get all transactions (not just current user's) sorted by date
     const transactions = await db
       .collection('transactions')
-      .find({})
+      .find({}, { projection: { _id: 1, type: 1, amount: 1, category: 1, description: 1, submittedBy: 1, submittedAt: 1 } })
       .sort({ submittedAt: -1 })
       .toArray();
 
@@ -67,11 +67,13 @@ export async function GET() {
       return total + (transaction.type === 'DEPOSIT' ? transaction.amount : -transaction.amount);
     }, 0);
 
-    return NextResponse.json({
+    const res = NextResponse.json({
       transactions: typedTransactions,
       grandTotal,
       remainingRequests: apiRateLimiter.getRemainingRequests(session.user.email)
     });
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
   } catch (error) {
     console.error('Failed to fetch transactions:', error);
     return NextResponse.json(

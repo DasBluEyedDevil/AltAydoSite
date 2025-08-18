@@ -218,7 +218,7 @@ export async function GET(request: Request) {
     return new Response(imageBuffer, {
       headers: {
         'Content-Type': metadata.contentType,
-        'Cache-Control': 'public, max-age=31536000', // 1 year
+        'Cache-Control': 'public, max-age=31536000, immutable',
       }
     });
     

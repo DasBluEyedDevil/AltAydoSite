@@ -86,6 +86,8 @@ export async function createResetToken(userId: string, email: string): Promise<P
     expiresAt: new Date(Date.now() + 3600000).toISOString(), // 1 hour expiry
     used: false
   };
+  // Add TTL-compatible Date field alongside the string for compatibility
+  (token as any).expiresAtDate = new Date(Date.now() + 3600000);
   
   if (await shouldUseMongoDb()) {
     try {
