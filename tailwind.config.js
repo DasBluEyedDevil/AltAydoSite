@@ -119,8 +119,8 @@ module.exports = {
       backgroundImage: {
         'space-gradient': 'radial-gradient(circle at center, #0a1a2e 0%, #050a15 100%)',
         'holo-grid': 'linear-gradient(rgba(var(--mg-grid), 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--mg-grid), 0.1) 1px, transparent 1px)',
-        'hexagon-pattern': 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MiIgaGVpZ2h0PSI5MCI+PHBhdGggZD0iTTI2IDNMMSAyOXYzMmwyNSAyNiAyNS0yNlYyOUwyNiAzeiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDA3ZGZmIiBzdHJva2Utd2lkdGg9Ii41IiBvcGFjaXR5PSIuMSIvPjwvc3ZnPg==")',
-        'circuit-pattern': 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZD0iTTEwLDEwIEw5MCwxMCBMOTAsOTAgTDEwLDkwIFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLCAxNzAsIDI1NSwgMC4xKSIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48cGF0aCBkPSJNMzAsMzAgTDcwLDMwIEw3MCw3MCBMMzAsNzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxsaW5lIHgxPSIxMCIgeTE9IjMwIiB4Mj0iMzAiIHkyPSIzMCIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxsaW5lIHgxPSI3MCIgeTE9IjMwIiB4Mj0iOTAiIHkyPSIzMCIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxsaW5lIHgxPSIzMCIgeTE9IjcwIiB4Mj0iMTAiIHkyPSI3MCIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjxsaW5lIHgxPSI5MCIgeTE9IjcwIiB4Mj0iNzAiIHkyPSI3MCIgc3Ryb2tlPSJyZ2JhKDAsIDE3MCwgMjU1LCAwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvc3ZnPg==")',
+        'hexagon-pattern': "url('/assets/panel-hex.svg')",
+        'circuit-pattern': "url('/assets/panel-circuit.svg')",
       },
       boxShadow: {
         'mg': '0 0 20px 0 rgba(var(--mg-primary), 0.15), inset 0 0 15px 0 rgba(var(--mg-primary), 0.05)',
