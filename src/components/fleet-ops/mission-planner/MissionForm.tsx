@@ -217,7 +217,8 @@ const MissionForm: React.FC<MissionFormProps> = ({
           throw new Error(`Error fetching users: ${response.status}`);
         }
         
-        const apiUsers = await response.json();
+        const raw = await response.json();
+        const apiUsers = Array.isArray(raw) ? raw : (raw?.items ?? []);
         
         // Transform API users to the expected format
         const transformedUsers: User[] = apiUsers.map((apiUser: any) => ({

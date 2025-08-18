@@ -61,8 +61,9 @@ const OperationEditor: React.FC<OperationEditorProps> = ({
           throw new Error(`Error fetching users: ${response.status}`);
         }
         
-        const data = await response.json();
-        setUsers(data);
+        const raw = await response.json();
+        const items = Array.isArray(raw) ? raw : (raw?.items ?? []);
+        setUsers(items);
       } catch (err: any) {
         console.error('Error fetching users:', err);
       } finally {

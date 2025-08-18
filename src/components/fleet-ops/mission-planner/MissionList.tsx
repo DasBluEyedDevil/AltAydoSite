@@ -52,8 +52,8 @@ const MissionList: React.FC<MissionListProps> = ({
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 relative">
-        {/* Background grid */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        {/* Background grid (use CSS utility to avoid missing asset) */}
+        <div className="absolute inset-0 mg-grid-bg opacity-10"></div>
         
         {/* Data transmission visualization */}
         <div className="absolute inset-0 overflow-hidden">

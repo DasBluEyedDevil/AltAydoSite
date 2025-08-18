@@ -139,7 +139,7 @@ const HoloModal: React.FC<HoloModalProps> = ({
             <div className="hexagon-bg absolute inset-0 opacity-20 pointer-events-none"></div>
             
             {/* Grid background */}
-            <div className="absolute inset-0 bg-[url('/images/grid-pattern.png')] bg-repeat opacity-10"></div>
+            <div className="absolute inset-0 mg-grid-bg opacity-10"></div>
             
             {/* Cinematic light rays */}
             <motion.div 

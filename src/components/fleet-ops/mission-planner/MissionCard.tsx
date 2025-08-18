@@ -107,7 +107,7 @@ const MissionCard: React.FC<MissionCardProps> = ({ mission, onClick }) => {
       </motion.div>
       
       {/* Grid background */}
-      <div className="absolute inset-0 bg-[url('/images/grid-pattern.png')] bg-repeat opacity-10 pointer-events-none"></div>
+      <div className="absolute inset-0 mg-grid-bg opacity-10 pointer-events-none"></div>
       
       {/* Hexagon background pattern */}
       <div className="hexagon-bg absolute inset-0 opacity-5 pointer-events-none"></div>
