@@ -61,7 +61,8 @@ export default function MissionDatabasePage() {
         }
         
         const data = await response.json();
-        setMissions(data);
+        const items = Array.isArray(data) ? data : data.items;
+        setMissions(items || []);
         setLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
