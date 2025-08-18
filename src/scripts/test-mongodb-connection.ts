@@ -2,6 +2,7 @@ import 'dotenv/config';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as mongoDb from '../lib/mongodb-client';
+import { connectToDatabase } from '../lib/mongodb';
 
 // Make sure we load environment variables
 
@@ -75,7 +76,7 @@ async function testMongoDBConnection() {
 
   try {
     // Try to connect to MongoDB
-    await mongoDb.connect();
+    await connectToDatabase();
     console.log('✅ Successfully connected to MongoDB!');
 
     // Test getting all users

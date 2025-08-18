@@ -27,14 +27,18 @@ export async function middleware(request: NextRequest) {
 
       // If not authenticated, redirect to login
       if (!token) {
-        console.log("User not authenticated, redirecting to login");
+        if (process.env.NODE_ENV !== 'production') {
+          console.log("User not authenticated, redirecting to login");
+        }
         const url = new URL('/login', request.url);
         url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
         return NextResponse.redirect(url);
       }
 
       // User is authenticated, allow the request
-      console.log("User authenticated, allowing access to protected route");
+      if (process.env.NODE_ENV !== 'production') {
+        console.log("User authenticated, allowing access to protected route");
+      }
       return NextResponse.next();
     } catch (error) {
       console.error("Error in authentication middleware:", error);

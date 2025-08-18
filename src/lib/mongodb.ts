@@ -1,15 +1,16 @@
 import { MongoClient } from 'mongodb';
+import { ensureMongoIndexes } from '@/lib/mongo-indexes';
 
-// Check for either MongoDB URI or CosmosDB connection string
+// Check for either MongoDB URI or CosmosDB connection string (do not throw at import time)
 const mongoUri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
-console.log('MongoDB URI exists:', !!mongoUri);
-
-if (!mongoUri) {
-  throw new Error('Please add your MongoDB URI or CosmosDB connection string to .env.local');
+if (process.env.NODE_ENV !== 'production') {
+  console.log('MongoDB URI exists:', !!mongoUri);
 }
 
 const uri = mongoUri;
-console.log('MongoDB configuration detected');
+if (uri && process.env.NODE_ENV !== 'production') {
+  console.log('MongoDB configuration detected');
+}
 
 // Options optimized for vCore MongoDB
 const options = {
@@ -64,12 +65,21 @@ if (process.env.NODE_ENV === 'development') {
 
 export async function connectToDatabase() {
   try {
+    if (!uri) {
+      throw new Error('Please add your MongoDB URI or CosmosDB connection string to .env.local');
+    }
     const client = await clientPromise;
-    const db = client.db();
+    const dbName = process.env.COSMOS_DATABASE_ID;
+    const db = dbName ? client.db(dbName) : client.db();
 
     // Test the connection
     await db.command({ ping: 1 });
     console.log('✓ Database connection verified');
+
+    // Best-effort index setup (non-blocking)
+    ensureMongoIndexes(db).catch((err) => {
+      console.warn('Index setup skipped:', err);
+    });
 
     return { client, db };
   } catch (error) {
