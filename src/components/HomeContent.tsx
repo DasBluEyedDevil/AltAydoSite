@@ -752,7 +752,7 @@ const shipImages = [
                                     <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"></div>
                                     <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50">
                                       <p className="text-[rgba(var(--mg-primary),1)] text-xs text-center">
-                                        AydoCorp Fleet - Excellence in Intergalactic Operations
+                                        AydoCorp: The New Horizon of Commercial Logistics
                                       </p>
                                     </div>
                                   </div>
