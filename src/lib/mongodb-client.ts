@@ -1,4 +1,5 @@
 import { MongoClient, Collection, ObjectId } from 'mongodb';
+import { ensureMongoIndexes } from '@/lib/mongo-indexes';
 import { User } from '@/types/user';
 import { PasswordResetToken } from '@/types/password-reset';
 import { Transaction } from '@/types/finance';
@@ -51,6 +52,8 @@ export async function connectToDatabase() {
     console.log('Connected to MongoDB');
 
     const db = client.db(databaseId);
+    // Best-effort index setup
+    ensureMongoIndexes(db).catch(() => {});
     userCollection = db.collection(collectionId);
     resetTokenCollection = db.collection(resetTokensCollectionId);
     transactionCollection = db.collection(transactionsCollectionId);
@@ -139,10 +142,14 @@ export async function getUserByEmail(email: string): Promise<User | null> {
   try {
     await ensureConnection();
     
-    // Case-insensitive search for email
+    // Prefer normalized lookup when available
+    const emailLower = email.toLowerCase();
     const user = await userCollection!.findOne({ 
-      email: { $regex: new RegExp(`^${email}$`, 'i') } 
-    });
+      $or: [
+        { emailLower },
+        { email: { $regex: new RegExp(`^${email}$`, 'i') } },
+      ],
+    }, { projection: { _id: 0 } });
     
     if (!user) return null;
     
@@ -160,10 +167,14 @@ export async function getUserByHandle(aydoHandle: string): Promise<User | null> 
   try {
     await ensureConnection();
     
-    // Case-insensitive search for handle
+    // Prefer normalized lookup when available
+    const aydoHandleLower = aydoHandle.toLowerCase();
     const user = await userCollection!.findOne({ 
-      aydoHandle: { $regex: new RegExp(`^${aydoHandle}$`, 'i') } 
-    });
+      $or: [
+        { aydoHandleLower },
+        { aydoHandle: { $regex: new RegExp(`^${aydoHandle}$`, 'i') } },
+      ],
+    }, { projection: { _id: 0 } });
     
     if (!user) return null;
     
@@ -181,8 +192,10 @@ export async function createUser(user: User): Promise<User> {
   try {
     await ensureConnection();
     
-    // Ensure lowercase email to maintain consistency
+    // Ensure normalized fields
     user.email = user.email.toLowerCase();
+    (user as any).emailLower = user.email;
+    (user as any).aydoHandleLower = user.aydoHandle.toLowerCase();
     
     const result = await userCollection!.insertOne(user);
     console.log('User created successfully:', user.aydoHandle);
@@ -234,7 +247,7 @@ export async function updateUser(id: string, user: Partial<User>): Promise<User 
     
     console.log('MongoDB: Final update data includes timezone:', !!updatedUser.timezone, updatedUser.timezone);
     
-    await userCollection!.replaceOne({ id }, updatedUser);
+    await userCollection!.updateOne({ id }, { $set: updatedUser });
     
     return updatedUser;
   } catch (error) {
@@ -260,7 +273,7 @@ export async function getAllUsers(): Promise<User[]> {
   try {
     await ensureConnection();
     
-    const users = await userCollection!.find().toArray();
+    const users = await userCollection!.find({}, { projection: { _id: 0 } }).toArray();
     // Convert MongoDB documents to User objects
     return users.map(doc => {
       // Remove MongoDB's _id field if it exists

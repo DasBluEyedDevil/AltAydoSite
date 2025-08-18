@@ -22,6 +22,9 @@
     "verify-email": "tsx src/scripts/verify-email-config.ts",
     "gen-password": "tsx src/scripts/generate-password.ts"
   },
+  "engines": {
+    "node": ">=18 <=22"
+  },
   "dependencies": {
     "@azure/cosmos": "^4.4.1",
     "@azure/identity": "^4.10.0",

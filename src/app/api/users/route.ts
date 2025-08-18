@@ -12,7 +12,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    // Get all users
+    // Pagination params
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+    const pageSizeRaw = parseInt(searchParams.get('pageSize') || '50', 10);
+    const pageSize = Math.min(200, Math.max(1, pageSizeRaw));
+
+    // Get all users (storage currently returns full list)
     const users = await userStorage.getAllUsers();
     
     // Map to return only necessary info
@@ -25,7 +31,18 @@ export async function GET(request: NextRequest) {
       ships: user.ships || []
     }));
     
-    return NextResponse.json(usersList);
+    const start = (page - 1) * pageSize;
+    const paged = usersList.slice(start, start + pageSize);
+
+    const res = NextResponse.json({
+      items: paged,
+      page,
+      pageSize,
+      total: usersList.length,
+      totalPages: Math.ceil(usersList.length / pageSize) || 1,
+    });
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
     
   } catch (error: any) {
     console.error('Error fetching users:', error);

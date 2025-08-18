@@ -89,7 +89,22 @@ export async function GET(req: NextRequest) {
       };
     }));
     
-    return NextResponse.json(resourcesWithOwnerNames);
+    // Basic pagination at API layer
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+    const pageSizeRaw = parseInt(searchParams.get('pageSize') || '50', 10);
+    const pageSize = Math.min(200, Math.max(1, pageSizeRaw));
+    const start = (page - 1) * pageSize;
+    const paged = resourcesWithOwnerNames.slice(start, start + pageSize);
+
+    const res = NextResponse.json({
+      items: paged,
+      page,
+      pageSize,
+      total: resourcesWithOwnerNames.length,
+      totalPages: Math.ceil(resourcesWithOwnerNames.length / pageSize) || 1,
+    });
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
   } catch (error: any) {
     console.error('Error getting resources:', error);
     return NextResponse.json(

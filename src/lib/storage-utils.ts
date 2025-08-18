@@ -1,4 +1,5 @@
 import * as mongoDb from './mongodb-client';
+import { connectToDatabase } from './mongodb';
 
 /**
  * Checks if MongoDB connection is working.
@@ -10,7 +11,9 @@ export async function ensureDatabaseConnection(): Promise<boolean> {
   console.log('STORAGE: Testing MongoDB connection');
 
   try {
-    const connected = await mongoDb.ensureConnection(2);
+    // Use centralized connection
+    await connectToDatabase();
+    const connected = await mongoDb.ensureConnection(1);
     if (!connected) {
       throw new Error('Failed to connect to database after retries');
     }

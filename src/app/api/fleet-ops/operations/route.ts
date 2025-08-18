@@ -77,7 +77,9 @@ export async function GET(request: NextRequest) {
       };
     }));
     
-    return NextResponse.json(operationsWithDetails);
+    const res = NextResponse.json(operationsWithDetails);
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
     
   } catch (error: any) {
     console.error('Error fetching operations:', error);

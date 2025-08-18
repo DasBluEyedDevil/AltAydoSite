@@ -60,10 +60,15 @@ export async function GET(
           console.log(`Found image in MongoDB: ${image.filename}`);
           
           // Return the image with the correct content type
+          const etag = 'W/"' + (image._id?.toString() || image.filename) + '-' + (image.uploadedAt?.getTime?.() || 0) + '"';
+          if (request.headers.get('if-none-match') === etag) {
+            return new Response(null, { status: 304 });
+          }
           return new Response(image.data.buffer, {
             headers: {
               'Content-Type': image.contentType,
-              'Cache-Control': 'public, max-age=31536000', // 1 year
+              'Cache-Control': 'public, max-age=31536000, immutable',
+              'ETag': etag,
             }
           });
         }
@@ -92,10 +97,16 @@ export async function GET(
           const imageBuffer = fs.readFileSync(imagePath);
           
           // Return the image with the correct content type
+          const stats = fs.statSync(imagePath);
+          const etag = 'W/"' + imageId + '-' + stats.mtimeMs + '"';
+          if (request.headers.get('if-none-match') === etag) {
+            return new Response(null, { status: 304 });
+          }
           return new Response(imageBuffer, {
             headers: {
               'Content-Type': metadata.contentType,
-              'Cache-Control': 'public, max-age=31536000', // 1 year
+              'Cache-Control': 'public, max-age=31536000, immutable',
+              'ETag': etag,
             }
           });
         }

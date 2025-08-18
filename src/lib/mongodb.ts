@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { ensureMongoIndexes } from '@/lib/mongo-indexes';
 
 // Check for either MongoDB URI or CosmosDB connection string
 const mongoUri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
@@ -65,11 +66,17 @@ if (process.env.NODE_ENV === 'development') {
 export async function connectToDatabase() {
   try {
     const client = await clientPromise;
-    const db = client.db();
+    const dbName = process.env.COSMOS_DATABASE_ID;
+    const db = dbName ? client.db(dbName) : client.db();
 
     // Test the connection
     await db.command({ ping: 1 });
     console.log('✓ Database connection verified');
+
+    // Best-effort index setup (non-blocking)
+    ensureMongoIndexes(db).catch((err) => {
+      console.warn('Index setup skipped:', err);
+    });
 
     return { client, db };
   } catch (error) {

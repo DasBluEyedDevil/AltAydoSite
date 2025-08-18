@@ -58,10 +58,12 @@ export async function POST(request: NextRequest) {
     // Clean up expired tokens
     await resetTokenStorage.cleanupExpiredTokens();
 
-    return NextResponse.json(
+    const res = NextResponse.json(
       { message: 'If your email is registered, you will receive password reset instructions' },
       { status: 200 }
     );
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
   } catch (error) {
     console.error('Error processing forgot password request:', error);
     return NextResponse.json(

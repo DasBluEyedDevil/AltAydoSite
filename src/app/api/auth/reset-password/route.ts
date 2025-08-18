@@ -96,10 +96,12 @@ export async function POST(request: NextRequest) {
     // Mark token as used
     await resetTokenStorage.markTokenAsUsed(resetToken.id);
 
-    return NextResponse.json(
+    const res = NextResponse.json(
       { message: 'Password has been reset successfully. You can now log in with your new password.' },
       { status: 200 }
     );
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
   } catch (error) {
     console.error('Error processing reset password request:', error);
     return NextResponse.json(

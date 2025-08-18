@@ -163,7 +163,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     }
   },
-  debug: true, // Enable debug mode to see more NextAuth.js logs
+  debug: process.env.NODE_ENV !== 'production',
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
