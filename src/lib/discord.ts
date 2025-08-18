@@ -10,13 +10,6 @@ export class DiscordService {
   constructor() {
     this.botToken = process.env.DISCORD_BOT_TOKEN || '';
     this.guildId = process.env.DISCORD_GUILD_ID || '';
-    
-    if (!this.botToken) {
-      console.warn('Discord bot token not configured');
-    }
-    if (!this.guildId) {
-      console.warn('Discord guild ID not configured');
-    }
   }
 
   /**
@@ -98,4 +91,10 @@ export class DiscordService {
   }
 }
 
-export const discordService = new DiscordService(); 
+let discordServiceSingleton: DiscordService | null = null;
+export function getDiscordService(): DiscordService {
+  if (!discordServiceSingleton) {
+    discordServiceSingleton = new DiscordService();
+  }
+  return discordServiceSingleton;
+}

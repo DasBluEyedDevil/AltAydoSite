@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/auth';
-import { discordService } from '@/lib/discord';
+import { getDiscordService } from '@/lib/discord';
 import { mapDiscordEventsToEventData } from '@/lib/eventMapper';
 import * as userStorage from '@/lib/user-storage';
 
@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
       console.warn('Could not fetch user timezone, using UTC:', error);
     }
 
+    const discordService = getDiscordService();
     // Check if Discord service is configured
     if (!discordService.isConfigured()) {
       return NextResponse.json(
@@ -74,6 +75,7 @@ export async function POST(request: NextRequest) {
   try {
     const { eventId } = await request.json();
     
+    const discordService = getDiscordService();
     if (!discordService.isConfigured()) {
       return NextResponse.json(
         { error: 'Discord integration not configured' },
