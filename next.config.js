@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const assetBase = (process.env.ASSET_BASE_URL || 'https://aydocorp.space/aydo-images').replace(/\/$/, '');
+
 const nextConfig = {
     poweredByHeader: false,
     typescript: {
@@ -15,9 +17,25 @@ const nextConfig = {
     images: {
         unoptimized: true,
         dangerouslyAllowSVG: true,
-        remotePatterns: [],
+        remotePatterns: [
+            { protocol: 'https', hostname: 'aydocorp.space' },
+            { protocol: 'https', hostname: 'images.aydocorp.space' },
+            {
+                protocol: 'https',
+                hostname: '86104e02025c4d8a71e0cfe0c4349f1c.r2.cloudflarestorage.com',
+                pathname: '/aydo-images/**',
+            },
+        ],
     },
     output: 'standalone',
+    async rewrites() {
+        return [
+            {
+                source: '/images/:path*',
+                destination: `${assetBase}/:path*`,
+            },
+        ];
+    },
     async redirects() {
         return [
             {
