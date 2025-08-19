@@ -18,6 +18,15 @@ const nextConfig = {
         remotePatterns: [],
     },
     output: 'standalone',
+    async redirects() {
+        return [
+            {
+                source: '/dashboard/operations/traderoutes',
+                destination: '/dashboard/operations',
+                permanent: true,
+            },
+        ];
+    },
     async headers() {
         return [
             {
