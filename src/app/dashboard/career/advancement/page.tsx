@@ -376,7 +376,7 @@ export default function AdvancementPage() {
                       {reward.aydoexpress && (
                         <div>
                           <h4 className="text-sm font-quantify tracking-wider text-[rgba(0,210,255,0.8)] mb-2 flex items-center">
-                            <Image src="/images/Aydo_Express.png" alt="AydoExpress" width={16} height={16} className="mr-2" />
+                            <Image src="/reference/New_Aydo_Express.png" alt="AydoExpress" width={16} height={16} className="mr-2" />
                             AydoExpress
                           </h4>
                           <ul className="space-y-1">
@@ -390,7 +390,7 @@ export default function AdvancementPage() {
                       {reward.empyrion && (
                         <div>
                           <h4 className="text-sm font-quantify tracking-wider text-[rgba(255,165,0,0.8)] mb-2 flex items-center">
-                            <Image src="/images/Empyrion_Industries.png" alt="Empyrion" width={16} height={16} className="mr-2" />
+                            <Image src="/reference/New_Empyrion_Industries.png" alt="Empyrion" width={16} height={16} className="mr-2" />
                             Empyrion Industries
                           </h4>
                           <ul className="space-y-1">
@@ -404,9 +404,7 @@ export default function AdvancementPage() {
                       {reward.security && (
                         <div>
                           <h4 className="text-sm font-quantify tracking-wider text-[rgba(255,100,100,0.8)] mb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                            </svg>
+                            <Image src="/reference/New_Midnight_Security.png" alt="Midnight Security" width={16} height={16} className="mr-2" />
                             Midnight Security
                           </h4>
                           <ul className="space-y-1">

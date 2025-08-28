@@ -50,17 +50,17 @@ const navItems: NavItem[] = [
       {
         name: 'AydoExpress - Logistics',
         href: '/dashboard/subsidiaries/express',
-        icon: 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12'
+        icon: '/reference/New_Aydo_Express.png'
       },
       {
         name: 'Empyrion Industries - Mining',
         href: '/dashboard/subsidiaries/empyrion',
-        icon: 'M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z'
+        icon: '/reference/New_Empyrion_Industries.png'
       },
       {
         name: 'Midnight Security - Security',
         href: '/dashboard/subsidiaries/security',
-        icon: 'M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z'
+        icon: '/reference/New_Midnight_Security.png'
       }
     ]
   },
@@ -171,9 +171,9 @@ const DashboardSidebar = () => {
                     }`}
                   >
                     <div className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={item.icon} />
-                      </svg>
+                      <div className="h-4 w-4 mr-2 relative">
+                        <Image src={item.icon.startsWith('/reference/') ? item.icon : '/images/Aydo_Corp_logo_employees.png'} alt="icon" fill className="object-contain" />
+                      </div>
                       <span>{item.name}</span>
                       {item.badge && (
                         <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
@@ -209,9 +209,9 @@ const DashboardSidebar = () => {
                                   : 'hover:bg-[rgba(var(--mg-panel-dark),0.5)]'
                               }`}
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={child.icon} />
-                              </svg>
+                              <div className="h-4 w-4 mr-2 relative">
+                                <Image src={child.icon.startsWith('/reference/') ? child.icon : '/images/Aydo_Corp_logo_employees.png'} alt="icon" fill className="object-contain" />
+                              </div>
                               <span>{child.name}</span>
                               {child.badge && (
                                 <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
