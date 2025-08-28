@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cdn } from '@/lib/cdn';
 
 export default function SubsidiariesIndexPage() {
   const subsidiaries = [
@@ -12,7 +13,7 @@ export default function SubsidiariesIndexPage() {
       name: 'AydoExpress',
       subtitle: 'Logistics & Transport Division',
       description: 'Specializing in logistics and personnel transport',
-      icon: '/reference/New_Aydo_Express.png',
+      icon: cdn('/images/Aydo_Express.png'),
       color: 'rgba(0, 210, 255, 0.8)',
       link: '/dashboard/subsidiaries/express'
     },
@@ -21,7 +22,7 @@ export default function SubsidiariesIndexPage() {
       name: 'Empyrion Industries',
       subtitle: 'Industrial Operations Division',
       description: 'Focused on industrial production and resource operations',
-      icon: '/reference/New_Empyrion_Industries.png',
+      icon: cdn('/images/Empyrion_Industries.png'),
       color: 'rgba(200, 220, 255, 0.8)',
       link: '/dashboard/subsidiaries/empyrion'
     },
@@ -30,7 +31,7 @@ export default function SubsidiariesIndexPage() {
       name: 'Midnight Security',
       subtitle: 'Internal Security & Risk Management Division',
       description: 'Responsible for internal security and asset protection',
-      icon: '/reference/New_Midnight_Security.png',
+      icon: cdn('/images/New_Midnight_Security.png'),
       color: 'rgba(120, 140, 180, 0.8)',
       link: '/dashboard/subsidiaries/security'
     }
