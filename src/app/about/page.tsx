@@ -1525,7 +1525,7 @@ export default function About() {
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="relative w-32 h-auto aspect-[3/1]">
                               <Image
-                                src={require('@/lib/cdn').cdn('/images/Board_member_tag.png')}
+                                src={cdn('/Board_member_tag.png')}
                                 alt="Board Member"
                                 width={128}
                                 height={42}
@@ -1567,7 +1567,7 @@ export default function About() {
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="relative w-32 h-auto aspect-[3/1]">
                               <Image
-                                src={require('@/lib/cdn').cdn('/images/Board_member_tag.png')}
+                                src={cdn('/Board_member_tag.png')}
                                 alt="Board Member"
                                 width={128}
                                 height={42}
@@ -1606,7 +1606,7 @@ export default function About() {
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="relative w-32 h-auto aspect-[3/1]">
                               <Image
-                                src={require('@/lib/cdn').cdn('/images/Board_member_tag.png')}
+                                src={cdn('/Board_member_tag.png')}
                                 alt="Board Member"
                                 width={128}
                                 height={42}
@@ -1645,7 +1645,7 @@ export default function About() {
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="relative w-32 h-auto aspect-[3/1]">
                               <Image
-                                src={require('@/lib/cdn').cdn('/images/Board_member_tag.png')}
+                                src={cdn('/Board_member_tag.png')}
                                 alt="Board Member"
                                 width={128}
                                 height={42}

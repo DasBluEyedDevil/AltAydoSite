@@ -241,18 +241,18 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
   // Images in the public directory that are confirmed to exist
 // Some JPGs might be causing issues, so we'll include alternative formats or confirmed working images
 const shipImages = [
-    cdn('/images/sc.jpg'), // Working
-    cdn('/images/hull_e.png'), // Alternative for sc_banner_crusader.jpg
-    cdn('/images/791602-Ships-Fantastic-world-Star-Citizen.jpg'), // Alternative for Star-Citizen-4K-Wallpaper-3.jpg
-    cdn('/images/AydoCorp_Fleet_poster.jpg'), // Alternative nice fleet image
-    cdn('/images/sc_cargo.jpeg'), // Working
-    cdn('/images/CargoCapacity_ProposedFinal-Min.jpg'),
-    cdn('/images/Hovering_mining_on_cliffside_1.jpg'), // replacement for RSI_AYDO_Corp_image.png
-    cdn('/images/Star_Citizen_Ships_510048_2560x1440.jpg') // replacement for spacebg.jpg
+    cdn('/sc.jpg'), // Working
+    cdn('/hull_e.png'), // Alternative for sc_banner_crusader.jpg
+    cdn('/791602-Ships-Fantastic-world-Star-Citizen.jpg'), // Alternative for Star-Citizen-4K-Wallpaper-3.jpg
+    cdn('/AydoCorp_Fleet_poster.jpg'), // Alternative nice fleet image
+    cdn('/sc_cargo.jpeg'), // Working
+    cdn('/CargoCapacity_ProposedFinal-Min.jpg'),
+    cdn('/Hovering_mining_on_cliffside_1.jpg'), // replacement for RSI_AYDO_Corp_image.png
+    cdn('/Star_Citizen_Ships_510048_2560x1440.jpg') // replacement for spacebg.jpg
   ];
   
   // Fallback image in case one of the images fails to load
-  const fallbackImage = cdn('/images/spacebg.png');
+  const fallbackImage = cdn('/spacebg.png');
 
   // Simulate system scan
   const initiateSystemScan = useCallback(() => {
@@ -708,7 +708,7 @@ const shipImages = [
                                 <div className="absolute inset-0 flex items-center justify-center flex-col">
                                   <div className="h-38 w-38 md:h-46 md:w-46 relative">
                                     <Image 
-                                      src={cdn('/images/Aydo_Corp_3x3k_RSI.png')} 
+                                      src={cdn('/Aydo_Corp_3x3k_RSI.png')} 
                                       alt="AydoCorp Logo" 
                                       width={184}
                                       height={184}
@@ -747,7 +747,7 @@ const shipImages = [
                                         // If image fails to load, fall back to a default image
                                         console.error(`Failed to load image: ${shipImages[currentImageIndex]}`);
                                         const target = e.target as HTMLImageElement;
-                                        target.src = cdn('/images/spacebg.png'); // Use PNG version which is confirmed working
+                                        target.src = cdn('/spacebg.png'); // Use PNG version which is confirmed working
                                       }}
                                     />
                                     <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"></div>

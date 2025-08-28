@@ -6,7 +6,7 @@ import { bgUrl, cdn } from '@/lib/cdn';
 
 const LoadingScreen = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-90 bg-cover bg-center bg-blend-overlay" style={{ backgroundImage: bgUrl('/images/spacebg.jpg') }}>
+    <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-90 bg-cover bg-center bg-blend-overlay" style={{ backgroundImage: bgUrl('/spacebg.jpg') }}>
       <div className="relative z-10">
         {/* Holographic loading animation */}
         <motion.div 
@@ -28,7 +28,7 @@ const LoadingScreen = () => {
             {/* Aydo logo */}
             <div className="relative w-12 h-12 z-10">
               <Image 
-                src={cdn('/images/Aydo_Corp_logo_employees.png')} 
+                src={cdn('/Aydo_Corp_logo_employees.png')} 
                 alt="AydoCorp Logo" 
                 width={48}
                 height={48}

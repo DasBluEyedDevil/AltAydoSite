@@ -9,7 +9,7 @@ const services = [
   {
     id: 'hauling',
     title: 'HAULING & CARGO',
-    icon: cdn('/images/Aydo_Corp_logo_Silver.png'),
+    icon: cdn('/Aydo_Corp_logo_Silver.png'),
     description: 'Our hauling and cargo management technicians provide the expertise and manpower to handle your cargo needs efficiently and securely.',
     details: [
       'Secure cargo transport across all systems',
@@ -22,7 +22,7 @@ const services = [
   {
     id: 'transport',
     title: 'PERSONNEL TRANSPORT',
-    icon: cdn('/images/Aydo_Corp_logo_Silver.png'),
+    icon: cdn('/Aydo_Corp_logo_Silver.png'),
     description: 'Our pilots ensure you reach your destination safely and speedily, with premium transport options for individuals and groups.',
     details: [
       'VIP shuttle services',
@@ -35,7 +35,7 @@ const services = [
   {
     id: 'requisition',
     title: 'RESOURCE REQUISITION',
-    icon: cdn('/images/Aydo_Corp_logo_Silver.png'),
+    icon: cdn('/Aydo_Corp_logo_Silver.png'),
     description: 'Our sourcing specialists scour the stars for exactly what you need, with our industrial subsidiary providing resources in bulk.',
     details: [
       'Raw material sourcing',
@@ -48,7 +48,7 @@ const services = [
   {
     id: 'towing',
     title: 'TOWING & RECOVERY',
-    icon: cdn('/images/Aydo_Corp_logo_Silver.png'),
+    icon: cdn('/Aydo_Corp_logo_Silver.png'),
     description: "Whether you're stuck adrift or need salvaged ships moved elsewhere, our specialized towing equipment and experienced crew have you covered.",
     details: [
       'Emergency response teams',
@@ -109,7 +109,7 @@ export default function ServicesSection() {
                   <div className="mr-4 relative">
                     <div className="w-12 h-12 relative">
                       <Image
-                        src={service.icon || cdn('/images/icon-placeholder.png')}
+                        src={service.icon || cdn('/icon-placeholder.png')}
                         alt={service.title}
                         width={48}
                         height={48}

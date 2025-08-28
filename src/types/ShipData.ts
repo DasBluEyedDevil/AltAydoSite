@@ -66,7 +66,7 @@ export const getShipImagePath = (ship: ShipDetails | string): string => {
     .replace(/[ÿý]/g, 'y');
   
   // Return CDN-prefixed path
-  return cdn(`/images/${formattedName}.png`);
+  return cdn(`/${formattedName}.png`);
 };
 
 // Direct image path formatting function for consistent use across the app
@@ -82,7 +82,7 @@ export const getDirectImagePath = (shipName: string): string => {
     .replace(/[ūúùüû]/g, 'u')
     .replace(/[ÿý]/g, 'y');
   
-  return cdn(`/images/${formattedName}.png`);
+  return cdn(`/${formattedName}.png`);
 };
 
 // Comprehensive ship database with detailed information from Star Citizen Wiki

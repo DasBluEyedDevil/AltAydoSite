@@ -53,7 +53,7 @@ export default function Contact() {
       <section className="relative pt-28 pb-16">
         <div className="absolute inset-0 z-0">
           <Image
-            src={cdn('/images/AydoOffice1.png')}
+            src={cdn('/AydoOffice1.png')}
             alt="Contact AydoCorp"
             fill
             className="object-cover opacity-30"

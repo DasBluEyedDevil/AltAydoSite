@@ -21,7 +21,7 @@ const AlliesSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="relative overflow-hidden rounded h-36">
             <Image 
-              src={cdn('/images/jan-urschel-a.jpg')} 
+              src={cdn('/jan-urschel-a.jpg')} 
               alt="Banu Partnership" 
               fill
               className="object-cover"
@@ -49,7 +49,7 @@ const AlliesSection = () => {
           
           <div className="relative overflow-hidden rounded h-36">
             <Image 
-              src={cdn('/images/Firing_Concept.jpg')} 
+              src={cdn('/Firing_Concept.jpg')} 
               alt="Escort Fleet" 
               fill
               className="object-cover"

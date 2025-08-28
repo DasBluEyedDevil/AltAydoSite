@@ -55,7 +55,7 @@ export default function HeroSection() {
                   >
                     <div className="relative w-48 h-48 md:w-56 md:h-56">
                       <Image 
-                        src={cdn('/images/Aydo_Corp_logo_employees.png')} 
+                        src={cdn('/Aydo_Corp_logo_employees.png')} 
                         alt="Aydo Intergalactic Corporation Logo" 
                         fill
                         className="object-contain"

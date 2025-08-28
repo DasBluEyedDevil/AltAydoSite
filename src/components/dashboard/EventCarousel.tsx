@@ -7,42 +7,42 @@ import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
 const images = [
   {
-    src: cdn('/images/RSI_AYDO_Corp_image.png'),
+    src: cdn('/RSI_AYDO_Corp_image.png'),
     alt: 'AydoCorp Official Fleet',
     caption: 'AydoCorp Fleet Formation - Annual Corporate Showcase'
   },
   {
-    src: cdn('/images/hull_e.png'),
+    src: cdn('/hull_e.png'),
     alt: 'AydoExpress Logistics',
     caption: 'Hull-E Cargo Transport - Backbone of AydoExpress Operations'
   },
   {
-    src: cdn('/images/Hovering_mining_on_cliffside_1.jpg'),
+    src: cdn('/Hovering_mining_on_cliffside_1.jpg'),
     alt: 'Empyrion Industries Mining',
     caption: 'Empyrion Industries Prospector Mining Operations on Microtech'
   },
   {
-    src: cdn('/images/salvage_Near_world_lookings_at_wreckage.jpg'),
+    src: cdn('/salvage_Near_world_lookings_at_wreckage.jpg'),
     alt: 'Salvage Operations',
     caption: 'Reclaimer Salvage Operation - Resource Recovery Division'
   },
   {
-    src: cdn('/images/logisticsoffice.jpg'),
+    src: cdn('/logisticsoffice.jpg'),
     alt: 'AydoCorp Logistics Office',
     caption: 'Corporate Headquarters - Logistics Command Center'
   },
   {
-    src: cdn('/images/Star_Citizen_Ships_510048_2560x1440.jpg'),
+    src: cdn('/Star_Citizen_Ships_510048_2560x1440.jpg'),
     alt: 'Corporate Fleet Display',
     caption: 'AydoCorp Fleet Showcase - Annual Corporate Event'
   },
   {
-    src: cdn('/images/Asteroids_122018-Min.png'),
+    src: cdn('/Asteroids_122018-Min.png'),
     alt: 'Freelancer Operations',
     caption: 'MISC Freelancer on Assignment - Asteroid Field Navigation'
   },
   {
-    src: cdn('/images/CargoCapacity_ProposedFinal-Min.jpg'),
+    src: cdn('/CargoCapacity_ProposedFinal-Min.jpg'),
     alt: 'Constellation Taurus',
     caption: 'Constellation Taurus - Medium Cargo Transport Operations'
   }
@@ -210,7 +210,7 @@ const EventCarousel = () => {
           <div className="h-6 w-6 relative mr-2">
             <div className="absolute inset-0 rounded-full border border-[rgba(var(--mg-primary),0.4)]"></div>
             <Image 
-              src={cdn('/images/Aydo_Corp_logo_Silver.png')} 
+              src={cdn('/Aydo_Corp_logo_Silver.png')} 
               alt="AydoCorp Logo" 
               fill 
               className="object-contain p-0.5"
@@ -264,7 +264,7 @@ const EventCarousel = () => {
                 onError={(e) => {
                   // If image fails to load, fall back to a default image
                   const target = e.target as HTMLImageElement;
-                  target.src = cdn('/images/spacebg.jpg');
+                  target.src = cdn('/spacebg.jpg');
                 }}
               />
               

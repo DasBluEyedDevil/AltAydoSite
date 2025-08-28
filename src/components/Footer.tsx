@@ -204,7 +204,7 @@ export default function Footer() {
               >
                 <div className="relative w-24 h-auto overflow-hidden mg-container bg-transparent p-1 border-[rgba(var(--mg-primary),0.15)]">
                   <Image 
-                    src={cdn('/images/MadeByTheCommunity_Black.png')} 
+                    src={cdn('/MadeByTheCommunity_Black.png')} 
                     alt="Made By The Community" 
                     width={96}
                     height={48}

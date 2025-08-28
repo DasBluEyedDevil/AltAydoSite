@@ -377,7 +377,7 @@ export default function AdvancementPage() {
                       {reward.aydoexpress && (
                         <div>
                           <h4 className="text-sm font-quantify tracking-wider text-[rgba(0,210,255,0.8)] mb-2 flex items-center">
-                            <Image src={cdn('/images/Aydo_Express.png')} alt="AydoExpress" width={16} height={16} className="mr-2" />
+                            <Image src={cdn('/Aydo_Express.png')} alt="AydoExpress" width={16} height={16} className="mr-2" />
                             AydoExpress
                           </h4>
                           <ul className="space-y-1">
@@ -391,7 +391,7 @@ export default function AdvancementPage() {
                       {reward.empyrion && (
                         <div>
                           <h4 className="text-sm font-quantify tracking-wider text-[rgba(255,165,0,0.8)] mb-2 flex items-center">
-                            <Image src={cdn('/images/Empyrion_Industries.png')} alt="Empyrion" width={16} height={16} className="mr-2" />
+                            <Image src={cdn('/Empyrion_Industries.png')} alt="Empyrion" width={16} height={16} className="mr-2" />
                             Empyrion Industries
                           </h4>
                           <ul className="space-y-1">
@@ -405,7 +405,7 @@ export default function AdvancementPage() {
                       {reward.security && (
                         <div>
                           <h4 className="text-sm font-quantify tracking-wider text-[rgba(255,100,100,0.8)] mb-2 flex items-center">
-                            <Image src={cdn('/images/New_Midnight_Security.png')} alt="Midnight Security" width={16} height={16} className="mr-2" />
+                            <Image src={cdn('/New_Midnight_Security.png')} alt="Midnight Security" width={16} height={16} className="mr-2" />
                             Midnight Security
                           </h4>
                           <ul className="space-y-1">

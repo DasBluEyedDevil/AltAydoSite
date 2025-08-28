@@ -434,7 +434,7 @@ export default function CertificationsPage() {
           <div className="flex items-center mb-6">
             <div className="h-10 w-10 relative mr-4 rounded-sm overflow-hidden">
               <Image 
-                src={cdn('/images/Aydo_Express.png')} 
+                src={cdn('/Aydo_Express.png')} 
                 alt="AydoExpress Logo" 
                 fill 
                 className="object-contain"
@@ -467,7 +467,7 @@ export default function CertificationsPage() {
           <div className="flex items-center mb-6">
             <div className="h-10 w-10 relative mr-4 rounded-sm overflow-hidden">
               <Image 
-                src={cdn('/images/Empyrion_Industries.png')} 
+                src={cdn('/Empyrion_Industries.png')} 
                 alt="Empyrion Industries Logo" 
                 fill 
                 className="object-contain"
@@ -499,7 +499,7 @@ export default function CertificationsPage() {
           
           <div className="flex items-center mb-6">
             <div className="h-10 w-10 relative mr-4 rounded-sm overflow-hidden">
-              <Image src={cdn('/images/New_Midnight_Security.png')} alt="Midnight Security Logo" fill className="object-contain" />
+              <Image src={cdn('/New_Midnight_Security.png')} alt="Midnight Security Logo" fill className="object-contain" />
             </div>
             <h3 className="mg-subtitle text-xl">Midnight Security Certifications</h3>
           </div>
