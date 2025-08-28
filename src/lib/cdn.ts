@@ -1,5 +1,6 @@
 export function cdn(pathname: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || process.env.CLOUDFLARE_R2_BUCKET_URL || '';
+  const defaultBase = 'https://images.aydocorp.space';
+  const baseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || process.env.CLOUDFLARE_R2_BUCKET_URL || defaultBase;
   const pathPrefixEnv = process.env.NEXT_PUBLIC_IMAGE_PATH_PREFIX || '';
 
   if (!pathname) return baseUrl;
@@ -7,7 +8,7 @@ export function cdn(pathname: string): string {
   // If pathname already looks absolute (http/https), return as-is
   if (/^https?:\/\//i.test(pathname)) return pathname;
 
-  const cleanBase = (baseUrl || '').replace(/\/$/, '');
+  const cleanBase = (baseUrl || defaultBase).replace(/\/$/, '');
   let cleanPath = pathname.startsWith('/') ? pathname : `/${pathname}`;
 
   // Optional path prefix mapping (e.g., if your bucket uses /cdn instead of /images)
