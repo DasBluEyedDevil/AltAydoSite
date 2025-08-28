@@ -1,12 +1,7 @@
 {
   "mcpServers": {
     "AltAydoSite Docs": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "url",
-        "https://gitmcp.io/DasBluEyedDevil/AltAydoSite"   
-      ]
+      "url": "https://gitmcp.io/DasBluEyedDevil/AltAydoSite"
     },
     "sequential-thinking": {
       "command": "npx",
@@ -14,9 +9,6 @@
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
       ]
-    },
-    "skeet.build": {
-      "url": "https://skeet.sh/ot/09f747cf72bd023ee267d2abce665afb6899f42e11c36ceaacc24b9a609dd2da"
     }
   }
 }

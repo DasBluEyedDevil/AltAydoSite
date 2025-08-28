@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { bgUrl } from '@/lib/cdn';
 import Link from 'next/link';
 import { useSession, signIn } from 'next-auth/react';
 
@@ -135,7 +136,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-black bg-opacity-80 bg-cover bg-center bg-blend-overlay" style={{ backgroundImage: bgUrl('/images/spacebg.jpg') }}>
       <motion.div 
         className="w-full max-w-md"
         initial={{ opacity: 0, y: 20 }}
@@ -259,7 +260,7 @@ function LoginForm() {
 // Loading component
 function LoginLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
+    <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-80 bg-cover bg-center bg-blend-overlay" style={{ backgroundImage: bgUrl('/images/spacebg.jpg') }}>
       <div className="mg-loading-spinner">
         <div className="flex flex-col items-center">
           <div className="w-16 h-16 relative">

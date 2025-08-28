@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 
 interface NavItem {
   name: string;
@@ -147,7 +148,7 @@ const DashboardSidebar = () => {
       <div className="p-4 border-b border-[rgba(var(--mg-primary),0.15)] flex items-center">
         <div className="h-6 w-6 relative mr-2">
           <Image 
-            src="/images/Aydo_Corp_logo_employees.png" 
+            src={cdn('/images/Aydo_Corp_logo_employees.png')} 
             alt="AydoCorp Logo" 
             fill 
             className="object-contain"
@@ -172,7 +173,7 @@ const DashboardSidebar = () => {
                   >
                     <div className="flex items-center">
                       <div className="h-4 w-4 mr-2 relative">
-                        <Image src={item.icon.startsWith('/reference/') ? item.icon : '/images/Aydo_Corp_logo_employees.png'} alt="icon" fill className="object-contain" />
+                        <Image src={item.icon.startsWith('/reference/') ? item.icon : cdn('/images/Aydo_Corp_logo_employees.png')} alt="icon" fill className="object-contain" />
                       </div>
                       <span>{item.name}</span>
                       {item.badge && (
@@ -210,7 +211,7 @@ const DashboardSidebar = () => {
                               }`}
                             >
                               <div className="h-4 w-4 mr-2 relative">
-                                <Image src={child.icon.startsWith('/reference/') ? child.icon : '/images/Aydo_Corp_logo_employees.png'} alt="icon" fill className="object-contain" />
+                                <Image src={child.icon.startsWith('/reference/') ? child.icon : cdn('/images/Aydo_Corp_logo_employees.png')} alt="icon" fill className="object-contain" />
                               </div>
                               <span>{child.name}</span>
                               {child.badge && (

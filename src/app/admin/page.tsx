@@ -41,7 +41,7 @@ export default async function AdminDashboard() {
       {/* Space background */}
       <div className="absolute inset-0 z-0 opacity-20">
         <Image
-          src="/images/spacebg.jpg"
+          src={require('@/lib/cdn').cdn('/images/spacebg.jpg')}
           alt="Space Background"
           fill
           className="object-cover"
@@ -67,7 +67,7 @@ export default async function AdminDashboard() {
             {/* Centered Logo - Positioned absolutely to break from parent height constraints */}
             <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 mt-1.5">
               <Image 
-                src="/images/Aydo_Corp_3x3k_RSI.png" 
+                src={require('@/lib/cdn').cdn('/images/Aydo_Corp_3x3k_RSI.png')} 
                 alt="AydoCorp" 
                 width={192}
                 height={192}

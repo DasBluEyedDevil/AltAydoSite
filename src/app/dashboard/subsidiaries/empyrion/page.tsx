@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 import Link from 'next/link';
 
 export default function EmpyrionIndustriesPage() {
@@ -30,7 +31,7 @@ export default function EmpyrionIndustriesPage() {
         >
           <div className="h-16 w-16 relative mr-4">
             <Image 
-              src="/images/Empyrion_Industries.png" 
+              src={cdn('/images/Empyrion_Industries.png')} 
               alt="Empyrion Industries Logo" 
               fill 
               className="object-contain"
