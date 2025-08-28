@@ -361,7 +361,7 @@ export default function About() {
         <section className="relative pt-24 pb-16">
           <div className="absolute inset-0 z-0">
             <Image
-              src="/images/logisticsoffice.jpg"
+              src={require('@/lib/cdn').cdn('/images/logisticsoffice.jpg')}
               alt="AydoCorp Office"
               fill
               className="object-cover opacity-20"
@@ -982,7 +982,7 @@ export default function About() {
                         <div className="h-48 relative">
                           <div className="relative w-full h-full">
                             <Image 
-                              src="/images/AydoOffice1.png" 
+                              src={require('@/lib/cdn').cdn('/images/AydoOffice1.png')} 
                               alt="AydoCorp Headquarters" 
                               fill
                               className="object-cover"
@@ -1023,7 +1023,7 @@ export default function About() {
                         >
                           <div className="relative w-full h-full">
                             <Image 
-                              src="/images/hull_e.png" 
+                              src={require('@/lib/cdn').cdn('/images/hull_e.png')} 
                               alt="AydoCorp Fleet" 
                               fill
                               className="object-cover"
@@ -1375,7 +1375,7 @@ export default function About() {
                             <div className="flex items-center mb-4">
                               <div className="relative w-16 h-16">
                                 <Image 
-                                  src="/images/Aydo_Express.png" 
+                                  src={require('@/lib/cdn').cdn('/images/Aydo_Express.png')} 
                                   alt="AydoExpress Logo" 
                                   width={64}
                                   height={64}
@@ -1395,7 +1395,7 @@ export default function About() {
                             <div className="relative mt-4 overflow-hidden rounded-md h-48">
                               <div className="relative w-full h-full">
                                 <Image 
-                                  src="/images/hull_e.png" 
+                                  src={require('@/lib/cdn').cdn('/images/hull_e.png')} 
                                   alt="AydoExpress Fleet" 
                                   fill
                                   className="object-cover"
@@ -1418,7 +1418,7 @@ export default function About() {
                             <div className="flex items-center mb-4">
                               <div className="relative w-16 h-16">
                                 <Image 
-                                  src="/images/Empyrion_Industries.png" 
+                                  src={require('@/lib/cdn').cdn('/images/Empyrion_Industries.png')} 
                                   alt="Empyrion Industries Logo" 
                                   width={64}
                                   height={64}
@@ -1438,7 +1438,7 @@ export default function About() {
                             <div className="relative mt-4 overflow-hidden rounded-md h-48">
                               <div className="relative w-full h-full">
                                 <Image 
-                                  src="/images/reclaimer.png" 
+                                  src={require('@/lib/cdn').cdn('/images/reclaimer.png')} 
                                   alt="Empyrion Industries Operations" 
                                   fill
                                   className="object-cover"
@@ -1524,7 +1524,7 @@ export default function About() {
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="relative w-32 h-auto aspect-[3/1]">
                               <Image
-                                src="/images/Board_member_tag.png"
+                                src={require('@/lib/cdn').cdn('/images/Board_member_tag.png')}
                                 alt="Board Member"
                                 width={128}
                                 height={42}
@@ -1566,7 +1566,7 @@ export default function About() {
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="relative w-32 h-auto aspect-[3/1]">
                               <Image
-                                src="/images/Board_member_tag.png"
+                                src={require('@/lib/cdn').cdn('/images/Board_member_tag.png')}
                                 alt="Board Member"
                                 width={128}
                                 height={42}
@@ -1605,7 +1605,7 @@ export default function About() {
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="relative w-32 h-auto aspect-[3/1]">
                               <Image
-                                src="/images/Board_member_tag.png"
+                                src={require('@/lib/cdn').cdn('/images/Board_member_tag.png')}
                                 alt="Board Member"
                                 width={128}
                                 height={42}
@@ -1644,7 +1644,7 @@ export default function About() {
                           <div className="relative p-4 bg-[rgba(var(--mg-background),0.8)]">
                             <div className="relative w-32 h-auto aspect-[3/1]">
                               <Image
-                                src="/images/Board_member_tag.png"
+                                src={require('@/lib/cdn').cdn('/images/Board_member_tag.png')}
                                 alt="Board Member"
                                 width={128}
                                 height={42}

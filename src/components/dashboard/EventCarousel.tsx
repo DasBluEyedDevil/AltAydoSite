@@ -2,46 +2,47 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
 const images = [
   {
-    src: '/images/RSI_AYDO_Corp_image.png',
+    src: cdn('/images/RSI_AYDO_Corp_image.png'),
     alt: 'AydoCorp Official Fleet',
     caption: 'AydoCorp Fleet Formation - Annual Corporate Showcase'
   },
   {
-    src: '/images/hull_e.png',
+    src: cdn('/images/hull_e.png'),
     alt: 'AydoExpress Logistics',
     caption: 'Hull-E Cargo Transport - Backbone of AydoExpress Operations'
   },
   {
-    src: '/images/Hovering_mining_on_cliffside_1.jpg',
+    src: cdn('/images/Hovering_mining_on_cliffside_1.jpg'),
     alt: 'Empyrion Industries Mining',
     caption: 'Empyrion Industries Prospector Mining Operations on Microtech'
   },
   {
-    src: '/images/salvage_Near_world_lookings_at_wreckage.jpg',
+    src: cdn('/images/salvage_Near_world_lookings_at_wreckage.jpg'),
     alt: 'Salvage Operations',
     caption: 'Reclaimer Salvage Operation - Resource Recovery Division'
   },
   {
-    src: '/images/logisticsoffice.jpg',
+    src: cdn('/images/logisticsoffice.jpg'),
     alt: 'AydoCorp Logistics Office',
     caption: 'Corporate Headquarters - Logistics Command Center'
   },
   {
-    src: '/images/Star_Citizen_Ships_510048_2560x1440.jpg',
+    src: cdn('/images/Star_Citizen_Ships_510048_2560x1440.jpg'),
     alt: 'Corporate Fleet Display',
     caption: 'AydoCorp Fleet Showcase - Annual Corporate Event'
   },
   {
-    src: '/images/Asteroids_122018-Min.png',
+    src: cdn('/images/Asteroids_122018-Min.png'),
     alt: 'Freelancer Operations',
     caption: 'MISC Freelancer on Assignment - Asteroid Field Navigation'
   },
   {
-    src: '/images/CargoCapacity_ProposedFinal-Min.jpg',
+    src: cdn('/images/CargoCapacity_ProposedFinal-Min.jpg'),
     alt: 'Constellation Taurus',
     caption: 'Constellation Taurus - Medium Cargo Transport Operations'
   }
@@ -209,7 +210,7 @@ const EventCarousel = () => {
           <div className="h-6 w-6 relative mr-2">
             <div className="absolute inset-0 rounded-full border border-[rgba(var(--mg-primary),0.4)]"></div>
             <Image 
-              src="/images/Aydo_Corp_logo_Silver.png" 
+              src={cdn('/images/Aydo_Corp_logo_Silver.png')} 
               alt="AydoCorp Logo" 
               fill 
               className="object-contain p-0.5"
@@ -263,7 +264,7 @@ const EventCarousel = () => {
                 onError={(e) => {
                   // If image fails to load, fall back to a default image
                   const target = e.target as HTMLImageElement;
-                  target.src = '/images/spacebg.jpg';
+                  target.src = cdn('/images/spacebg.jpg');
                 }}
               />
               

@@ -64,7 +64,7 @@ export default function Join() {
       <section className="relative pt-20 pb-16">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/spacebg.png"
+            src={require('@/lib/cdn').cdn('/images/spacebg.png')}
             alt="AydoCorp Operations"
             fill
             className="object-cover opacity-30"
@@ -406,7 +406,7 @@ export default function Join() {
                     {/* The image container */}
                     <div className="absolute inset-0 overflow-hidden">
                       <Image
-                        src="/images/sc_banner_crusader.png"
+                        src={require('@/lib/cdn').cdn('/images/sc_banner_crusader.png')}
                         alt="AydoCorp Operations"
                         fill
                         className="object-cover scale-[1.02] hologram-projection"

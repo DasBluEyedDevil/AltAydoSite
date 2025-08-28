@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 import Link from 'next/link';
 
 export default function AydoExpressPage() {
@@ -30,7 +31,7 @@ export default function AydoExpressPage() {
         >
           <div className="h-16 w-16 relative mr-4">
             <Image 
-              src="/images/Aydo_Express.png" 
+              src={cdn('/images/Aydo_Express.png')} 
               alt="AydoExpress Logo" 
               fill 
               className="object-contain"

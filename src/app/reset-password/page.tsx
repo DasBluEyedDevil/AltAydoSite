@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { bgUrl } from '@/lib/cdn';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -82,7 +83,7 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-black bg-opacity-80 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-black bg-opacity-80 bg-cover bg-center bg-blend-overlay" style={{ backgroundImage: bgUrl('/images/spacebg.jpg') }}>
       <motion.div 
         className="w-full max-w-md"
         initial={{ opacity: 0, y: 20 }}

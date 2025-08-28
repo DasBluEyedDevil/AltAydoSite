@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cdn } from '@/lib/cdn';
 
 // Animation variants for tiles
 const tileVariants = {
@@ -100,7 +101,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t-2 border-r border-b border-l-2',
       category: 'subsidiary',
       path: '/dashboard/subsidiaries/express',
-      image: '/images/Aydo_Express.png'
+      image: cdn('/images/Aydo_Express.png')
     },
     {
       id: 'empyrion',
@@ -111,7 +112,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t border-r-2 border-b-2 border-l',
       category: 'subsidiary',
       path: '/dashboard/subsidiaries/empyrion',
-      image: '/images/Empyrion_Industries.png'
+      image: cdn('/images/Empyrion_Industries.png')
     },
     {
       id: 'organization',
@@ -122,7 +123,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t-2 border-r-2 border-b border-l-2',
       category: 'corporate',
       path: '/dashboard/archives/hierarchy',
-      image: '/images/Aydo_Corp_3x3k_RSI.png'
+      image: cdn('/images/Aydo_Corp_3x3k_RSI.png')
     },
     {
       id: 'training',
@@ -133,7 +134,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t border-r-2 border-b-2 border-l',
       category: 'training',
       path: '/dashboard/promotion/training',
-      image: '/images/Aydo_Corp_logo_employees.png'
+      image: cdn('/images/Aydo_Corp_logo_employees.png')
     },
     {
       id: 'finance',
@@ -144,7 +145,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t-2 border-r border-b border-l',
       category: 'corporate',
       path: '/dashboard/finance-tracker',
-      image: '/images/Aydo_Corp_logo_Gold.png',
+      image: cdn('/images/Aydo_Corp_logo_Gold.png'),
       requiredClearance: 1
     },
     {
@@ -156,7 +157,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t border-r border-b-2 border-l-2',
       category: 'corporate',
       path: '/dashboard/missions',
-      image: '/images/Aydo_Corp_logo_Silver.png'
+      image: cdn('/images/Aydo_Corp_logo_Silver.png')
     },
     {
       id: 'corporate-history',
@@ -167,7 +168,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t border-r-2 border-b border-l-2',
       category: 'corporate',
       path: '/dashboard/archives/history',
-      image: '/images/Board_member_tag.png'
+      image: cdn('/images/Board_member_tag.png')
     },
     {
       id: 'fleet',
@@ -178,7 +179,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t-2 border-r border-b-2 border-l',
       category: 'corporate',
       path: '/dashboard/fleet',
-      image: '/images/hull_e.png'
+      image: cdn('/images/hull_e.png')
     },
     {
       id: 'personnel',
@@ -189,7 +190,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t border-r border-b border-l-2',
       category: 'corporate',
       path: '/dashboard/employees',
-      image: '/images/AydoOffice1.png'
+      image: cdn('/images/AydoOffice1.png')
     },
     {
       id: 'communications',
@@ -200,7 +201,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t-2 border-r-2 border-b border-l',
       category: 'navigation',
       path: '/dashboard/communications',
-      image: '/images/RSI_AYDO_Corp_image.png'
+      image: cdn('/images/RSI_AYDO_Corp_image.png')
     },
     {
       id: 'logistics',
@@ -211,7 +212,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t border-r border-b-2 border-l',
       category: 'navigation',
       path: '/dashboard/logistics',
-      image: '/images/logisticsoffice.jpg'
+      image: cdn('/images/logisticsoffice.jpg')
     },
     {
       id: 'admin',
@@ -222,7 +223,7 @@ export default function DashboardWidgets({ user }: DashboardWidgetsProps) {
       borderStyle: 'border-t border-r-2 border-b border-l',
       category: 'corporate',
       path: '/dashboard/admin',
-      image: '/images/Aydo_Corp_logo_rel_gray_black.png',
+      image: cdn('/images/Aydo_Corp_logo_rel_gray_black.png'),
       requiredClearance: 3
     },
   ];

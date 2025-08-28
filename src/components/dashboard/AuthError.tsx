@@ -2,12 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { bgUrl } from '@/lib/cdn';
 
 const AuthError = () => {
   const router = useRouter();
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-90 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay">
+    <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-90 bg-cover bg-center bg-blend-overlay" style={{ backgroundImage: bgUrl('/images/spacebg.jpg') }}>
       <div className="holographic-projection relative z-10 max-w-md">
         <motion.div 
           className="mg-panel bg-[rgba(var(--mg-panel-dark),0.6)] p-8 backdrop-blur-md rounded-sm overflow-hidden border border-[rgba(var(--mg-danger),0.3)]"

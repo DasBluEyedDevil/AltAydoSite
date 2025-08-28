@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 
 interface HomeContentProps {
   isLoggedIn: boolean;
@@ -240,18 +241,18 @@ export default function HomeContent({ isLoggedIn, userName }: HomeContentProps) 
   // Images in the public directory that are confirmed to exist
 // Some JPGs might be causing issues, so we'll include alternative formats or confirmed working images
 const shipImages = [
-    '/images/sc.jpg', // Working
-    '/images/hull_e.png', // Alternative for sc_banner_crusader.jpg
-    '/images/791602-Ships-Fantastic-world-Star-Citizen.jpg', // Alternative for Star-Citizen-4K-Wallpaper-3.jpg
-    '/images/AydoCorp_Fleet_poster.jpg', // Alternative nice fleet image
-    '/images/sc_cargo.jpeg', // Working
-    '/images/CargoCapacity_ProposedFinal-Min.jpg',
-    '/images/Hovering_mining_on_cliffside_1.jpg', // replacement for RSI_AYDO_Corp_image.png
-    '/images/Star_Citizen_Ships_510048_2560x1440.jpg' // replacement for spacebg.jpg
+    cdn('/images/sc.jpg'), // Working
+    cdn('/images/hull_e.png'), // Alternative for sc_banner_crusader.jpg
+    cdn('/images/791602-Ships-Fantastic-world-Star-Citizen.jpg'), // Alternative for Star-Citizen-4K-Wallpaper-3.jpg
+    cdn('/images/AydoCorp_Fleet_poster.jpg'), // Alternative nice fleet image
+    cdn('/images/sc_cargo.jpeg'), // Working
+    cdn('/images/CargoCapacity_ProposedFinal-Min.jpg'),
+    cdn('/images/Hovering_mining_on_cliffside_1.jpg'), // replacement for RSI_AYDO_Corp_image.png
+    cdn('/images/Star_Citizen_Ships_510048_2560x1440.jpg') // replacement for spacebg.jpg
   ];
   
   // Fallback image in case one of the images fails to load
-  const fallbackImage = '/images/spacebg.png';
+  const fallbackImage = cdn('/images/spacebg.png');
 
   // Simulate system scan
   const initiateSystemScan = useCallback(() => {
@@ -707,7 +708,7 @@ const shipImages = [
                                 <div className="absolute inset-0 flex items-center justify-center flex-col">
                                   <div className="h-38 w-38 md:h-46 md:w-46 relative">
                                     <Image 
-                                      src="/images/Aydo_Corp_3x3k_RSI.png" 
+                                      src={cdn('/images/Aydo_Corp_3x3k_RSI.png')} 
                                       alt="AydoCorp Logo" 
                                       width={184}
                                       height={184}
@@ -746,7 +747,7 @@ const shipImages = [
                                         // If image fails to load, fall back to a default image
                                         console.error(`Failed to load image: ${shipImages[currentImageIndex]}`);
                                         const target = e.target as HTMLImageElement;
-                                        target.src = '/images/spacebg.png'; // Use PNG version which is confirmed working
+                                        target.src = cdn('/images/spacebg.png'); // Use PNG version which is confirmed working
                                       }}
                                     />
                                     <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"></div>

@@ -13,6 +13,7 @@ import LoadingScreen from '../../components/dashboard/LoadingScreen';
 import AuthError from '../../components/dashboard/AuthError';
 import { UserSession } from '../../lib/auth';
 import Image from 'next/image';
+import { bgUrl, cdn } from '@/lib/cdn';
  
 export default function DashboardPage() {
   const { data: session, status } = useSession() as { data: UserSession | null, status: string };
@@ -111,7 +112,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black bg-opacity-95 bg-[url('/images/spacebg.jpg')] bg-cover bg-center bg-blend-overlay relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-black bg-opacity-95 bg-cover bg-center bg-blend-overlay relative overflow-hidden" style={{ backgroundImage: bgUrl('/images/spacebg.jpg') }}>
       {/* Holographic grid background */}
       <div className="hex-grid absolute inset-0 opacity-5" />
       
@@ -160,7 +161,7 @@ export default function DashboardPage() {
                 <div className="absolute inset-2 rounded-full border border-[rgba(var(--mg-primary),0.3)]"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Image 
-                    src="/images/Aydo_Corp_logo_employees.png" 
+                    src={cdn('/images/Aydo_Corp_logo_employees.png')} 
                     alt="AydoCorp Logo" 
                     width={56}
                     height={56}
