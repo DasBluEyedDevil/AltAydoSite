@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const benefits = [
@@ -64,7 +65,7 @@ export default function Join() {
       <section className="relative pt-20 pb-16">
         <div className="absolute inset-0 z-0">
           <Image
-            src={require('@/lib/cdn').cdn('/images/spacebg.png')}
+            src={cdn('/images/spacebg.png')}
             alt="AydoCorp Operations"
             fill
             className="object-cover opacity-30"
@@ -406,7 +407,7 @@ export default function Join() {
                     {/* The image container */}
                     <div className="absolute inset-0 overflow-hidden">
                       <Image
-                        src={require('@/lib/cdn').cdn('/images/sc_banner_crusader.png')}
+                        src={cdn('/images/sc_banner_crusader.png')}
                         alt="AydoCorp Operations"
                         fill
                         className="object-cover scale-[1.02] hologram-projection"

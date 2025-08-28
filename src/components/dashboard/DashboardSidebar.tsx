@@ -51,17 +51,17 @@ const navItems: NavItem[] = [
       {
         name: 'AydoExpress - Logistics',
         href: '/dashboard/subsidiaries/express',
-        icon: '/reference/New_Aydo_Express.png'
+        icon: cdn('/images/Aydo_Express.png')
       },
       {
         name: 'Empyrion Industries - Mining',
         href: '/dashboard/subsidiaries/empyrion',
-        icon: '/reference/New_Empyrion_Industries.png'
+        icon: cdn('/images/Empyrion_Industries.png')
       },
       {
         name: 'Midnight Security - Security',
         href: '/dashboard/subsidiaries/security',
-        icon: '/reference/New_Midnight_Security.png'
+        icon: cdn('/images/New_Midnight_Security.png')
       }
     ]
   },
@@ -173,7 +173,7 @@ const DashboardSidebar = () => {
                   >
                     <div className="flex items-center">
                       <div className="h-4 w-4 mr-2 relative">
-                        <Image src={item.icon.startsWith('/reference/') ? item.icon : cdn('/images/Aydo_Corp_logo_employees.png')} alt="icon" fill className="object-contain" />
+                        <Image src={item.icon} alt="icon" fill className="object-contain" />
                       </div>
                       <span>{item.name}</span>
                       {item.badge && (
@@ -211,7 +211,7 @@ const DashboardSidebar = () => {
                               }`}
                             >
                               <div className="h-4 w-4 mr-2 relative">
-                                <Image src={child.icon.startsWith('/reference/') ? child.icon : cdn('/images/Aydo_Corp_logo_employees.png')} alt="icon" fill className="object-contain" />
+                                <Image src={child.icon} alt="icon" fill className="object-contain" />
                               </div>
                               <span>{child.name}</span>
                               {child.badge && (

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 
 interface CertificationItem {
   id: string;
@@ -433,7 +434,7 @@ export default function CertificationsPage() {
           <div className="flex items-center mb-6">
             <div className="h-10 w-10 relative mr-4 rounded-sm overflow-hidden">
               <Image 
-                src="/reference/New_Aydo_Express.png" 
+                src={cdn('/images/Aydo_Express.png')} 
                 alt="AydoExpress Logo" 
                 fill 
                 className="object-contain"
@@ -466,7 +467,7 @@ export default function CertificationsPage() {
           <div className="flex items-center mb-6">
             <div className="h-10 w-10 relative mr-4 rounded-sm overflow-hidden">
               <Image 
-                src="/reference/New_Empyrion_Industries.png" 
+                src={cdn('/images/Empyrion_Industries.png')} 
                 alt="Empyrion Industries Logo" 
                 fill 
                 className="object-contain"
@@ -498,7 +499,7 @@ export default function CertificationsPage() {
           
           <div className="flex items-center mb-6">
             <div className="h-10 w-10 relative mr-4 rounded-sm overflow-hidden">
-              <Image src="/reference/New_Midnight_Security.png" alt="Midnight Security Logo" fill className="object-contain" />
+              <Image src={cdn('/images/New_Midnight_Security.png')} alt="Midnight Security Logo" fill className="object-contain" />
             </div>
             <h3 className="mg-subtitle text-xl">Midnight Security Certifications</h3>
           </div>
