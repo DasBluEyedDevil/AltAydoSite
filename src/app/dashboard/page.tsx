@@ -4,19 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import DashboardWidgets from '../../components/dashboard/DashboardWidgets';
 import DashboardSidebar from '../../components/dashboard/DashboardSidebar';
 import EventCarousel from '../../components/dashboard/EventCarousel';
-import DashboardPanelLayout from '../../components/dashboard/DashboardPanelLayout';
-import SystemStatusPanel from '../../components/dashboard/panels/SystemStatusPanel';
+ 
 import UpcomingEventsPanel from '../../components/dashboard/panels/UpcomingEventsPanel';
-import LatestBriefingsPanel from '../../components/dashboard/panels/LatestBriefingsPanel';
 import DashboardFooter from '../../components/dashboard/DashboardFooter';
 import LoadingScreen from '../../components/dashboard/LoadingScreen';
 import AuthError from '../../components/dashboard/AuthError';
 import { UserSession } from '../../lib/auth';
 import Image from 'next/image';
-
+ 
 export default function DashboardPage() {
   const { data: session, status } = useSession() as { data: UserSession | null, status: string };
   const router = useRouter();
@@ -364,50 +361,19 @@ export default function DashboardPage() {
               
               {/* Main Dashboard Content Area */}
               <div className="flex-grow grid grid-cols-1 gap-4 sm:gap-6">
-                {/* Widgets Panel */}
-                <motion.div
-                  className="relative"
-                  variants={fadeInUpVariants}
-                  initial="hidden"
-                  animate="visible"
-                  custom={1}
-                >
-                  <div className="relative bg-[rgba(var(--mg-panel-dark),0.7)] backdrop-blur-md border border-[rgba(var(--mg-primary),0.3)] rounded-sm overflow-hidden">
-                    {/* Corner accents */}
-                    <div className={cornerAccent('tl')}></div>
-                    <div className={cornerAccent('tr')}></div>
-                    <div className={cornerAccent('bl')}></div>
-                    <div className={cornerAccent('br')}></div>
-                    
-                    {/* Left edge highlight */}
-                    <div className="absolute top-8 bottom-8 left-0 w-px bg-gradient-to-b from-transparent via-[rgba(var(--mg-primary),0.5)] to-transparent"></div>
-                    
-                    <div className="w-full mx-auto">
-                      <DashboardWidgets user={
-                        session?.user ? {
-                          name: session.user.name || undefined,
-                          email: session.user.email || undefined,
-                          picture: session.user.image || undefined,
-                          clearanceLevel: session.user.clearanceLevel
-                        } : undefined
-                      } />
-                    </div>
-                  </div>
-                </motion.div>
                 
-                {/* MobiGlas Panels Grid */}
+                {/* MobiGlas Panels Grid - only Upcoming Events retained */}
                 <motion.div
                   variants={fadeInUpVariants}
                   initial="hidden"
                   animate="visible"
                   custom={2}
                 >
-                  {/* MobiGlas styled content panels */}
-                  <DashboardPanelLayout>
-                    <SystemStatusPanel />
-                    <UpcomingEventsPanel />
-                    <LatestBriefingsPanel />
-                  </DashboardPanelLayout>
+                  <div className="grid grid-cols-1">
+                    <div className="w-full">
+                      <UpcomingEventsPanel />
+                    </div>
+                  </div>
                 </motion.div>
               </div>
             </div>

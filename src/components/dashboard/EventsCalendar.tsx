@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useEvents } from '@/hooks/useEvents';
 import { useUserTimezone } from '@/hooks/useUserTimezone';
@@ -97,6 +97,19 @@ const EventsCalendar = () => {
     setShowEventModal(false);
     setSelectedEvent(null);
   };
+
+  // Auto-open event when eventId is provided via query param
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const eventIdParam = params.get('eventId');
+    if (!eventIdParam || eventsData.length === 0) return;
+    const targetId = Number(eventIdParam);
+    const found = eventsData.find(e => e.id === targetId);
+    if (found) {
+      openEventDetails(found);
+    }
+  }, [eventsData]);
 
   // Get color for event type
   const getEventColor = (type: EventType) => {

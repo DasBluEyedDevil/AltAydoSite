@@ -28,8 +28,8 @@ export function mapDiscordEventToEventData(discordEvent: DiscordScheduledEvent, 
   // Determine event type based on name or description keywords
   const eventType = determineEventType(discordEvent.name, discordEvent.description || '');
   
-  // Format time string in user's timezone
-  const timeString = `${getTimeInTimezone(startDate, userTimezone)} ${getTimezoneAbbreviation(userTimezone)}`;
+  // Format time string in user's timezone (includes TZ abbreviation already)
+  const timeString = getTimeInTimezone(startDate, userTimezone);
 
   return {
     id: parseInt(discordEvent.id, 36), // Convert Discord snowflake to number (may need adjustment)
