@@ -13,7 +13,7 @@ export default function SubsidiariesIndexPage() {
       name: 'AydoExpress',
       subtitle: 'Logistics & Transport Division',
       description: 'Specializing in logistics and personnel transport',
-      icon: cdn('/images/Aydo_Express.png'),
+      icon: cdn('/images/New_Aydo_Express.png'),
       color: 'rgba(0, 210, 255, 0.8)',
       link: '/dashboard/subsidiaries/express'
     },
@@ -22,7 +22,7 @@ export default function SubsidiariesIndexPage() {
       name: 'Empyrion Industries',
       subtitle: 'Industrial Operations Division',
       description: 'Focused on industrial production and resource operations',
-      icon: cdn('/images/Empyrion_Industries.png'),
+      icon: cdn('/images/New_Empyrion_Industries.PNG'),
       color: 'rgba(200, 220, 255, 0.8)',
       link: '/dashboard/subsidiaries/empyrion'
     },

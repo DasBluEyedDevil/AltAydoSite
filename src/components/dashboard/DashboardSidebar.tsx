@@ -15,6 +15,11 @@ interface NavItem {
   badge?: string;
 }
 
+// Determine if an icon string is a URL (image) vs an SVG path data string
+function isImageIcon(icon: string): boolean {
+  return icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('/') || icon.startsWith('data:');
+}
+
 const navItems: NavItem[] = [
   {
     name: 'Dashboard',
@@ -51,12 +56,12 @@ const navItems: NavItem[] = [
       {
         name: 'AydoExpress - Logistics',
         href: '/dashboard/subsidiaries/express',
-        icon: cdn('/images/Aydo_Express.png')
+        icon: cdn('/images/New_Aydo_Express.png')
       },
       {
         name: 'Empyrion Industries - Mining',
         href: '/dashboard/subsidiaries/empyrion',
-        icon: cdn('/images/Empyrion_Industries.png')
+        icon: cdn('/images/New_Empyrion_Industries.PNG')
       },
       {
         name: 'Midnight Security - Security',
@@ -173,7 +178,13 @@ const DashboardSidebar = () => {
                   >
                     <div className="flex items-center">
                       <div className="h-4 w-4 mr-2 relative">
-                        <Image src={item.icon} alt="icon" fill className="object-contain" />
+                        {isImageIcon(item.icon) ? (
+                          <Image src={item.icon} alt="icon" fill className="object-contain" />
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={item.icon} />
+                          </svg>
+                        )}
                       </div>
                       <span>{item.name}</span>
                       {item.badge && (
@@ -211,7 +222,13 @@ const DashboardSidebar = () => {
                               }`}
                             >
                               <div className="h-4 w-4 mr-2 relative">
-                                <Image src={child.icon} alt="icon" fill className="object-contain" />
+                                {isImageIcon(child.icon) ? (
+                                  <Image src={child.icon} alt="icon" fill className="object-contain" />
+                                ) : (
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={child.icon} />
+                                  </svg>
+                                )}
                               </div>
                               <span>{child.name}</span>
                               {child.badge && (
