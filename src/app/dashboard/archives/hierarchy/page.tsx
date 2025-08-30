@@ -215,6 +215,100 @@ const CollapsibleSection: React.FC<{
   );
 };
 
+// Shared connector logic for building animated curved paths between refs
+function useConnectorPaths({
+  active,
+  containerRef,
+  refs,
+  tree,
+  horizontalOffsetStep = 8,
+  settleDelays = [50, 250, 600],
+}: {
+  active: boolean;
+  containerRef: React.MutableRefObject<HTMLDivElement | null>;
+  refs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
+  tree: Record<string, string[]>;
+  horizontalOffsetStep?: number;
+  settleDelays?: number[];
+}) {
+  const [paths, setPaths] = React.useState<Array<{ id: string; d: string }>>([]);
+  const [svgSize, setSvgSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
+
+  const recalc = React.useCallback(() => {
+    if (!active) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    setSvgSize({ width: Math.ceil(containerRect.width), height: Math.ceil(container.scrollHeight) });
+
+    const getBottomCenter = (el: HTMLElement) => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left - containerRect.left + r.width / 2, y: r.bottom - containerRect.top };
+    };
+    const getTopCenter = (el: HTMLElement) => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left - containerRect.left + r.width / 2, y: r.top - containerRect.top };
+    };
+
+    const pairs: Array<[string, string]> = [];
+    Object.entries(tree).forEach(([p, children]) => {
+      children.forEach((c) => pairs.push([p, c]));
+    });
+
+    const newPaths: Array<{ id: string; d: string }> = [];
+    const connectionMap = new Map<string, number>();
+
+    for (let i = 0; i < pairs.length; i++) {
+      const [fromId, toId] = pairs[i];
+      const fromEl = refs.current[fromId] as HTMLElement | null;
+      const toEl = refs.current[toId] as HTMLElement | null;
+      if (!fromEl || !toEl) continue;
+
+      const s = getBottomCenter(fromEl);
+      const t = getTopCenter(toEl);
+      const dy = t.y - s.y;
+      const dx = Math.abs(t.x - s.x);
+      const connectionKey = toId;
+      const connectionCount = connectionMap.get(connectionKey) || 0;
+      connectionMap.set(connectionKey, connectionCount + 1);
+      const horizontalOffset = connectionCount > 0
+        ? (connectionCount % 2 === 0 ? horizontalOffsetStep : -horizontalOffsetStep) * Math.floor(connectionCount / 2 + 1)
+        : 0;
+      const offset = Math.max(50, Math.min(180, Math.abs(dy) * 0.6 + dx * 0.2));
+      const adjustedTargetX = t.x + horizontalOffset;
+      const d = `M ${s.x} ${s.y} C ${s.x} ${s.y + offset} ${adjustedTargetX} ${t.y - offset} ${adjustedTargetX} ${t.y}`;
+      newPaths.push({ id: `${fromId}-${toId}-${i}`, d });
+    }
+    setPaths(newPaths);
+  }, [active, containerRef, refs, tree, horizontalOffsetStep]);
+
+  React.useLayoutEffect(() => {
+    recalc();
+  }, [recalc]);
+
+  React.useEffect(() => {
+    if (!active) return;
+    const container = containerRef.current;
+    const ro = new ResizeObserver(() => recalc());
+    if (container) ro.observe(container);
+    window.addEventListener('resize', recalc);
+    const raf = requestAnimationFrame(() => recalc());
+    const timers = settleDelays.map((ms) => setTimeout(() => recalc(), ms));
+    const onScroll = () => recalc();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', recalc);
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [active, containerRef, recalc, settleDelays]);
+
+  return { paths, svgSize, recalc };
+}
+
 export default function HierarchyChartPage() {
   const [activeTab, setActiveTab] = useState('hierarchy');
   // Connection rendering (Corporate chart)
@@ -226,7 +320,6 @@ export default function HierarchyChartPage() {
   const empRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
   const empContainerRef = React.useRef<HTMLDivElement | null>(null);
   const [empPaths, setEmpPaths] = React.useState<Array<{ id: string; d: string }>>([]);
-  const [empSvgSize, setEmpSvgSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
   // Midnight sub-tab state
   const [midnightSubTab, setMidnightSubTab] = useState<'pilot' | 'marine' | 'engineering' | 'gunnery'>('pilot');
@@ -241,7 +334,6 @@ export default function HierarchyChartPage() {
     if (!container) return;
 
     const containerRect = container.getBoundingClientRect();
-    setEmpSvgSize({ width: Math.ceil(containerRect.width), height: Math.ceil(container.scrollHeight) });
     const getBottomCenter = (el: HTMLElement) => {
       const r = el.getBoundingClientRect();
       return { x: r.left - containerRect.left + r.width / 2, y: r.bottom - containerRect.top };
@@ -355,6 +447,7 @@ export default function HierarchyChartPage() {
       return { x: r.left - containerRect.left + r.width / 2, y: r.top - containerRect.top };
     };
 
+    // Empyrion hierarchy mapping
     const tree: Record<string, string[]> = {
       eiDirector: ['shipCaptain'],
       shipCaptain: ['crew'],
@@ -363,25 +456,37 @@ export default function HierarchyChartPage() {
     };
 
     const pairs: Array<[string, string]> = [];
-    Object.entries(tree).forEach(([p, children]) => children.forEach((c) => pairs.push([p, c])));
+    Object.entries(tree).forEach(([p, children]) => {
+      children.forEach((c) => pairs.push([p, c]));
+    });
 
     const paths: Array<{ id: string; d: string }> = [];
+    // Track connections to handle convergence cases
     const connectionMap = new Map<string, number>();
+    
     for (let i = 0; i < pairs.length; i++) {
       const [fromId, toId] = pairs[i];
       const fromEl = empRefs.current[fromId] as HTMLElement | null;
       const toEl = empRefs.current[toId] as HTMLElement | null;
       if (!fromEl || !toEl) continue;
-
+      
       const s = getBottomCenter(fromEl);
       const t = getTopCenter(toEl);
       const dy = t.y - s.y;
       const dx = Math.abs(t.x - s.x);
+      
+      // Handle convergence: if multiple arrows point to same target, offset them slightly
       const connectionKey = toId;
       const connectionCount = connectionMap.get(connectionKey) || 0;
       connectionMap.set(connectionKey, connectionCount + 1);
-      const horizontalOffset = connectionCount > 0 ? (connectionCount % 2 === 0 ? 10 : -10) * Math.floor(connectionCount / 2 + 1) : 0;
+      
+      // Apply small horizontal offset for multiple connections to same target
+      const horizontalOffset = connectionCount > 0 ? (connectionCount % 2 === 0 ? 8 : -8) * Math.floor(connectionCount / 2 + 1) : 0;
+      
+      // Improved center alignment with adaptive offset based on distance
       const offset = Math.max(50, Math.min(180, Math.abs(dy) * 0.6 + dx * 0.2));
+      
+      // Enhanced curve calculation for better center alignment with convergence handling
       const adjustedTargetX = t.x + horizontalOffset;
       const d = `M ${s.x} ${s.y} C ${s.x} ${s.y + offset} ${adjustedTargetX} ${t.y - offset} ${adjustedTargetX} ${t.y}`;
       paths.push({ id: `${fromId}-${toId}-${i}`, d });
@@ -404,13 +509,13 @@ export default function HierarchyChartPage() {
     };
   }, [activeTab, recalcEmpConnections]);
 
+  // Improve reliability of empyrion connectors after layout/scroll
   React.useEffect(() => {
     if (activeTab !== 'empyrion') return;
     const raf = requestAnimationFrame(() => recalcEmpConnections());
     const t1 = setTimeout(() => recalcEmpConnections(), 50);
     const t2 = setTimeout(() => recalcEmpConnections(), 250);
     const t3 = setTimeout(() => recalcEmpConnections(), 600);
-    const t4 = setTimeout(() => recalcEmpConnections(), 1200);
     const onScroll = () => recalcEmpConnections();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
@@ -418,7 +523,6 @@ export default function HierarchyChartPage() {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
-      clearTimeout(t4);
       window.removeEventListener('scroll', onScroll);
     };
   }, [activeTab, recalcEmpConnections]);
@@ -440,7 +544,7 @@ export default function HierarchyChartPage() {
 
         <div ref={corpContainerRef} className="relative max-w-[1500px] mx-auto flex flex-col gap-20">
           {/* SVG connectors overlay */}
-          <svg className="pointer-events-none absolute inset-0 z-0" width={empSvgSize.width || '100%'} height={empSvgSize.height || '100%'}>
+          <svg className="pointer-events-none absolute inset-0 z-0" width="100%" height="100%">
             <defs>
               <linearGradient id="hierarchyLine" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="rgba(0,255,255,0.65)" />
