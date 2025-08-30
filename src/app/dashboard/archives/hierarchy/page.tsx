@@ -134,8 +134,10 @@ const NavigationTabs: React.FC<{
   onTabChange: (tab: string) => void;
 }> = ({ activeTab, onTabChange }) => {
   const tabs = [
-    { id: 'hierarchy', label: 'Corporate Hierarchy', icon: '📋' },
-    { id: 'crew', label: 'Crew Hierarchy', icon: '🧑\u200d🚀' },
+    { id: 'hierarchy', label: 'Corporate', icon: '📋' },
+    { id: 'empyrion', label: 'Empyrion Industries', icon: '⛏️' },
+    { id: 'aydoexpress', label: 'AydoExpress', icon: '🚚' },
+    { id: 'midnight', label: 'Midnight Security', icon: '🛡️' },
   ];
 
   return (
@@ -220,17 +222,17 @@ export default function HierarchyChartPage() {
   const corpContainerRef = React.useRef<HTMLDivElement | null>(null);
   const [corpPaths, setCorpPaths] = React.useState<Array<{ id: string; d: string }>>([]);
 
-  // Connection rendering (Crew chart)
-  const crewRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
-  const crewContainerRef = React.useRef<HTMLDivElement | null>(null);
-  const [crewPaths, setCrewPaths] = React.useState<Array<{ id: string; d: string }>>([]);
+  // Empyrion connectors
+  const empRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
+  const empContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const [empPaths, setEmpPaths] = React.useState<Array<{ id: string; d: string }>>([]);
+  const [empSvgSize, setEmpSvgSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
+
+  // Midnight sub-tab state
+  const [midnightSubTab, setMidnightSubTab] = useState<'pilot' | 'marine' | 'engineering' | 'gunnery'>('pilot');
 
   const setCorpRef = (id: string) => (el: HTMLDivElement | null) => {
     corpRefs.current[id] = el;
-  };
-
-  const setCrewRef = (id: string) => (el: HTMLDivElement | null) => {
-    crewRefs.current[id] = el;
   };
 
   const recalcCorpConnections = React.useCallback(() => {
@@ -239,6 +241,7 @@ export default function HierarchyChartPage() {
     if (!container) return;
 
     const containerRect = container.getBoundingClientRect();
+    setEmpSvgSize({ width: Math.ceil(containerRect.width), height: Math.ceil(container.scrollHeight) });
     const getBottomCenter = (el: HTMLElement) => {
       const r = el.getBoundingClientRect();
       return { x: r.left - containerRect.left + r.width / 2, y: r.bottom - containerRect.top };
@@ -248,39 +251,16 @@ export default function HierarchyChartPage() {
       return { x: r.left - containerRect.left + r.width / 2, y: r.top - containerRect.top };
     };
 
-    // Corporate hierarchy mapping (aligned to provided JSON)
+    // Simplified corporate hierarchy mapping per new diagram
     const tree: Record<string, string[]> = {
-      // Executive
-      ceo: ['cmo', 'coo', 'cso'], // CEO connects to all chiefs
+      ceo: ['cto', 'coo', 'cmo', 'cso'],
+      coo: ['eiDir', 'aeDir', 'msDir'],
+      cto: [],
       cmo: [],
-      coo: ['eiDir', 'aeDir', 'msDir'], // COO connects to directors
       cso: [],
-
-      // Directors
-      eiDir: ['mgrMining', 'mgrSalvage'],
-      aeDir: ['sectorRouteMgr'],
-      msDir: ['squadLeader'],
-
-      // Managers
-      mgrMining: ['miner'],
-      mgrSalvage: ['salvager'],
-      sectorRouteMgr: ['loadMaster', 'capitalHauler'],
-      squadLeader: ['securityPilot'],
-
-      // Senior Employees
-      loadMaster: ['hauler'],
-      capitalHauler: ['hauler'],
-
-      // Employees
-      miner: ['loader'],
-      salvager: ['loader'],
-      hauler: ['loader'],
-      securityPilot: ['gunman', 'turretman'],
-
-      // Interns/Freelancers
-      loader: [],
-      gunman: [],
-      turretman: [],
+      eiDir: [],
+      aeDir: [],
+      msDir: [],
     };
 
     const pairs: Array<[string, string]> = [];
@@ -355,9 +335,14 @@ export default function HierarchyChartPage() {
     };
   }, [activeTab, recalcCorpConnections]);
 
-  const recalcCrewConnections = React.useCallback(() => {
-    if (activeTab !== 'crew') return;
-    const container = crewContainerRef.current;
+  // --- Empyrion connectors ---
+  const setEmpRef = (id: string) => (el: HTMLDivElement | null) => {
+    empRefs.current[id] = el;
+  };
+
+  const recalcEmpConnections = React.useCallback(() => {
+    if (activeTab !== 'empyrion') return;
+    const container = empContainerRef.current;
     if (!container) return;
 
     const containerRect = container.getBoundingClientRect();
@@ -370,79 +355,63 @@ export default function HierarchyChartPage() {
       return { x: r.left - containerRect.left + r.width / 2, y: r.top - containerRect.top };
     };
 
-    // Ship crew hierarchy mapping (merged Engineer and Engineer-In-Training)
     const tree: Record<string, string[]> = {
-      capCaptain: ['mcCaptain'],
-      mcCaptain: ['flightDeck', 'crewChief'],
-      flightDeck: ['engineer'],
-      crewChief: ['engineer'],
-      engineer: ['engineerIT'],
-      engineerIT: [],
+      eiDirector: ['shipCaptain'],
+      shipCaptain: ['crew'],
+      crew: ['seasonal'],
+      seasonal: [],
     };
 
     const pairs: Array<[string, string]> = [];
-    Object.entries(tree).forEach(([p, children]) => {
-      children.forEach((c) => pairs.push([p, c]));
-    });
+    Object.entries(tree).forEach(([p, children]) => children.forEach((c) => pairs.push([p, c])));
 
     const paths: Array<{ id: string; d: string }> = [];
-    // Track connections to handle convergence cases
     const connectionMap = new Map<string, number>();
-    
     for (let i = 0; i < pairs.length; i++) {
       const [fromId, toId] = pairs[i];
-      const fromEl = crewRefs.current[fromId] as HTMLElement | null;
-      const toEl = crewRefs.current[toId] as HTMLElement | null;
+      const fromEl = empRefs.current[fromId] as HTMLElement | null;
+      const toEl = empRefs.current[toId] as HTMLElement | null;
       if (!fromEl || !toEl) continue;
-      
+
       const s = getBottomCenter(fromEl);
       const t = getTopCenter(toEl);
       const dy = t.y - s.y;
       const dx = Math.abs(t.x - s.x);
-      
-      // Handle convergence: if multiple arrows point to same target, offset them
       const connectionKey = toId;
       const connectionCount = connectionMap.get(connectionKey) || 0;
       connectionMap.set(connectionKey, connectionCount + 1);
-      
-      // Apply horizontal offset for multiple connections to same target
-      const horizontalOffset = connectionCount > 0 ? (connectionCount % 2 === 0 ? 15 : -15) * Math.floor(connectionCount / 2 + 1) : 0;
-      
-      // Improved center alignment with adaptive offset based on distance
+      const horizontalOffset = connectionCount > 0 ? (connectionCount % 2 === 0 ? 10 : -10) * Math.floor(connectionCount / 2 + 1) : 0;
       const offset = Math.max(50, Math.min(180, Math.abs(dy) * 0.6 + dx * 0.2));
-      
-      // Enhanced curve calculation for better center alignment with convergence handling
       const adjustedTargetX = t.x + horizontalOffset;
       const d = `M ${s.x} ${s.y} C ${s.x} ${s.y + offset} ${adjustedTargetX} ${t.y - offset} ${adjustedTargetX} ${t.y}`;
       paths.push({ id: `${fromId}-${toId}-${i}`, d });
     }
-    setCrewPaths(paths);
+    setEmpPaths(paths);
   }, [activeTab]);
 
   React.useLayoutEffect(() => {
-    recalcCrewConnections();
-  }, [recalcCrewConnections]);
+    recalcEmpConnections();
+  }, [recalcEmpConnections]);
 
   React.useEffect(() => {
-    if (activeTab !== 'crew') return;
-    const ro = new ResizeObserver(() => recalcCrewConnections());
-    if (crewContainerRef.current) ro.observe(crewContainerRef.current);
-    window.addEventListener('resize', recalcCrewConnections);
+    if (activeTab !== 'empyrion') return;
+    const ro = new ResizeObserver(() => recalcEmpConnections());
+    if (empContainerRef.current) ro.observe(empContainerRef.current);
+    window.addEventListener('resize', recalcEmpConnections);
     return () => {
       ro.disconnect();
-      window.removeEventListener('resize', recalcCrewConnections);
+      window.removeEventListener('resize', recalcEmpConnections);
     };
-  }, [activeTab, recalcCrewConnections]);
+  }, [activeTab, recalcEmpConnections]);
 
-  // Ensure connectors appear after layout settles when switching to crew
   React.useEffect(() => {
-    if (activeTab !== 'crew') return;
-    const raf = requestAnimationFrame(() => recalcCrewConnections());
-    const t1 = setTimeout(() => recalcCrewConnections(), 50);
-    const t2 = setTimeout(() => recalcCrewConnections(), 250);
-    const t3 = setTimeout(() => recalcCrewConnections(), 600);
-    const t4 = setTimeout(() => recalcCrewConnections(), 1200);
-    const onScroll = () => recalcCrewConnections();
+    if (activeTab !== 'empyrion') return;
+    const raf = requestAnimationFrame(() => recalcEmpConnections());
+    const t1 = setTimeout(() => recalcEmpConnections(), 50);
+    const t2 = setTimeout(() => recalcEmpConnections(), 250);
+    const t3 = setTimeout(() => recalcEmpConnections(), 600);
+    const t4 = setTimeout(() => recalcEmpConnections(), 1200);
+    const onScroll = () => recalcEmpConnections();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
@@ -452,7 +421,7 @@ export default function HierarchyChartPage() {
       clearTimeout(t4);
       window.removeEventListener('scroll', onScroll);
     };
-  }, [activeTab, recalcCrewConnections]);
+  }, [activeTab, recalcEmpConnections]);
 
   // Corporate hierarchy (primary)
   const renderHierarchyTab = () => (
@@ -471,7 +440,7 @@ export default function HierarchyChartPage() {
 
         <div ref={corpContainerRef} className="relative max-w-[1500px] mx-auto flex flex-col gap-20">
           {/* SVG connectors overlay */}
-          <svg className="pointer-events-none absolute inset-0 z-0" width="100%" height="100%">
+          <svg className="pointer-events-none absolute inset-0 z-0" width={empSvgSize.width || '100%'} height={empSvgSize.height || '100%'}>
             <defs>
               <linearGradient id="hierarchyLine" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="rgba(0,255,255,0.65)" />
@@ -503,109 +472,47 @@ export default function HierarchyChartPage() {
               />
             ))}
           </svg>
-          {/* Executive Level */}
+          {/* Executive */}
           <div className="relative p-6 sm:p-8 rounded-xl bg-[rgba(var(--mg-primary),0.04)] border border-[rgba(var(--mg-primary),0.25)] shadow-[0_0_40px_rgba(0,255,255,0.05)]">
             <div className="absolute -top-3 left-4 px-2 py-1 rounded-md bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.4)] text-[10px] tracking-widest font-quantify text-[rgba(var(--mg-primary),0.9)]">EXECUTIVE</div>
-            <div className="flex flex-col items-center gap-12">
-              <div className="flex justify-center">
-                <div className="w-64 relative z-10" ref={setCorpRef('ceo')}>
-                  <PersonCard title="Chief Executive Officer" level="executive" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-16 justify-items-center">
-                <div className="w-64 relative z-10" ref={setCorpRef('cmo')}>
-                  <PersonCard title="Chief Marketing Officer" level="board" />
-                </div>
-                <div className="w-64 relative z-10" ref={setCorpRef('coo')}>
-                  <PersonCard title="Chief Operations Officer" level="board" />
-                </div>
-                <div className="w-64 relative z-10" ref={setCorpRef('cso')}>
-                  <PersonCard title="Chief Safety Officer" level="board" />
-                </div>
+            <div className="flex justify-center">
+              <div className="w-64 relative z-10" ref={setCorpRef('ceo')}>
+                <PersonCard title="Chief Executive Officer (CEO)" level="executive" />
               </div>
             </div>
           </div>
 
-          {/* Director Level */}
+          {/* Chiefs */}
           <div className="relative p-6 sm:p-8 rounded-xl bg-[rgba(var(--mg-primary),0.04)] border border-[rgba(var(--mg-primary),0.25)] shadow-[0_0_40px_rgba(0,255,255,0.05)]">
-            <div className="absolute -top-3 left-4 px-2 py-1 rounded-md bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.4)] text-[10px] tracking-widest font-quantify text-[rgba(var(--mg-primary),0.9)]">DIRECTOR</div>
-            <div className="grid grid-cols-3 gap-16 justify-items-center">
+            <div className="absolute -top-3 left-4 px-2 py-1 rounded-md bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.4)] text-[10px] tracking-widest font-quantify text-[rgba(var(--mg-primary),0.9)]">CHIEFS</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-16 justify-items-center">
+              <div className="w-64 relative z-10" ref={setCorpRef('cto')}>
+                <PersonCard title="Chief Technology Officer (CTO)" level="board" />
+              </div>
+              <div className="w-64 relative z-10" ref={setCorpRef('coo')}>
+                <PersonCard title="Chief Operations Officer (COO)" level="board" />
+              </div>
+              <div className="w-64 relative z-10" ref={setCorpRef('cmo')}>
+                <PersonCard title="Chief Marketing Officer (CMO)" level="board" />
+              </div>
+              <div className="w-64 relative z-10" ref={setCorpRef('cso')}>
+                <PersonCard title="Chief Safety Officer (CSO)" level="board" />
+              </div>
+            </div>
+          </div>
+
+          {/* Directors */}
+          <div className="relative p-6 sm:p-8 rounded-xl bg-[rgba(var(--mg-primary),0.04)] border border-[rgba(var(--mg-primary),0.25)] shadow-[0_0_40px_rgba(0,255,255,0.05)]">
+            <div className="absolute -top-3 left-4 px-2 py-1 rounded-md bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.4)] text-[10px] tracking-widest font-quantify text-[rgba(var(--mg-primary),0.9)]">DIRECTORS</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-16 justify-items-center">
               <div className="w-64 relative z-10" ref={setCorpRef('eiDir')}>
-                <PersonCard title="Empyrion Industries Director" level="director" />
+                <PersonCard title="Director (Empyrion Industries)" level="director" />
               </div>
               <div className="w-64 relative z-10" ref={setCorpRef('aeDir')}>
-                <PersonCard title="AydoExpress Director" level="director" />
+                <PersonCard title="Director (AydoExpress)" level="director" />
               </div>
               <div className="w-64 relative z-10" ref={setCorpRef('msDir')}>
-                <PersonCard title="Midnight Security Director" level="director" />
-              </div>
-            </div>
-          </div>
-
-          {/* Manager Level */}
-          <div className="relative p-6 sm:p-8 rounded-xl bg-[rgba(var(--mg-primary),0.04)] border border-[rgba(var(--mg-primary),0.25)] shadow-[0_0_40px_rgba(0,255,255,0.05)]">
-            <div className="absolute -top-3 left-4 px-2 py-1 rounded-md bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.4)] text-[10px] tracking-widest font-quantify text-[rgba(var(--mg-primary),0.9)]">MANAGER</div>
-            <div className="grid grid-cols-4 gap-16 justify-items-center">
-              <div className="w-64 relative z-10" ref={setCorpRef('mgrMining')}>
-                <PersonCard title="Mining Manager" level="manager" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('mgrSalvage')}>
-                <PersonCard title="Salvage Manager" level="manager" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('sectorRouteMgr')}>
-                <PersonCard title="Sector Route Manager" level="manager" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('squadLeader')}>
-                <PersonCard title="Squadron Leader" level="manager" />
-              </div>
-            </div>
-          </div>
-
-          {/* Senior Employee Level */}
-          <div className="relative p-6 sm:p-8 rounded-xl bg-[rgba(var(--mg-primary),0.04)] border border-[rgba(var(--mg-primary),0.25)] shadow-[0_0_40px_rgba(0,255,255,0.05)]">
-            <div className="absolute -top-3 left-4 px-2 py-1 rounded-md bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.4)] text-[10px] tracking-widest font-quantify text-[rgba(var(--mg-primary),0.9)]">SENIOR EMPLOYEE</div>
-            <div className="max-w-xl mx-auto flex items-center justify-center gap-16">
-              <div className="w-64 relative z-10" ref={setCorpRef('loadMaster')}>
-                <PersonCard title="Load Master" level="staff" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('capitalHauler')}>
-                <PersonCard title="Capital Hauler" level="staff" />
-              </div>
-            </div>
-          </div>
-
-          {/* Employee Level */}
-          <div className="relative p-6 sm:p-8 rounded-xl bg-[rgba(var(--mg-primary),0.04)] border border-[rgba(var(--mg-primary),0.25)] shadow-[0_0_40px_rgba(0,255,255,0.05)]">
-            <div className="absolute -top-3 left-4 px-2 py-1 rounded-md bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.4)] text-[10px] tracking-widest font-quantify text-[rgba(var(--mg-primary),0.9)]">EMPLOYEE</div>
-            <div className="grid grid-cols-4 gap-16 justify-items-center">
-              <div className="w-64 relative z-10" ref={setCorpRef('miner')}>
-                <PersonCard title="Miner" level="staff" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('salvager')}>
-                <PersonCard title="Salvager" level="staff" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('hauler')}>
-                <PersonCard title="Hauler" level="staff" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('securityPilot')}>
-                <PersonCard title="Security Pilot" level="staff" />
-              </div>
-            </div>
-          </div>
-
-          {/* Intern/Freelancer Level */}
-          <div className="relative p-6 sm:p-8 rounded-xl bg-[rgba(var(--mg-primary),0.04)] border border-[rgba(var(--mg-primary),0.25)] shadow-[0_0_40px_rgba(0,255,255,0.05)]">
-            <div className="absolute -top-3 left-4 px-2 py-1 rounded-md bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.4)] text-[10px] tracking-widest font-quantify text-[rgba(var(--mg-primary),0.9)]">INTERN / FREELANCER</div>
-            <div className="grid grid-cols-3 gap-16 justify-items-center">
-              <div className="w-64 relative z-10" ref={setCorpRef('loader')}>
-                <PersonCard title="Loader" level="staff" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('gunman')}>
-                <PersonCard title="Gunman" level="staff" />
-              </div>
-              <div className="w-64 relative z-10" ref={setCorpRef('turretman')}>
-                <PersonCard title="Turretman" level="staff" />
+                <PersonCard title="Director (Midnight Security)" level="director" />
               </div>
             </div>
           </div>
@@ -614,10 +521,10 @@ export default function HierarchyChartPage() {
     </motion.div>
   );
 
-  // Crew hierarchy (secondary)
-  const renderCrewTab = () => (
+  // Empyrion Industries tab
+  const renderEmpyrionTab = () => (
     <motion.div
-      key="crew"
+      key="empyrion"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
@@ -625,85 +532,175 @@ export default function HierarchyChartPage() {
     >
       <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.45)] p-6 sm:p-8 rounded-lg relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
+        <h2 className="mg-subtitle text-xl mb-8 text-center">Empyrion Industries</h2>
 
-        <h2 className="mg-subtitle text-xl mb-8 text-center">Ship Crew</h2>
-
-        <div ref={crewContainerRef} className="relative max-w-4xl mx-auto flex flex-col gap-16">
+        <div ref={empContainerRef} className="relative max-w-[1500px] mx-auto flex flex-col gap-20">
           {/* SVG connectors overlay */}
           <svg className="pointer-events-none absolute inset-0 z-0" width="100%" height="100%">
             <defs>
-              <linearGradient id="crewHierarchyLine" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="empLine" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="rgba(0,255,255,0.65)" />
                 <stop offset="50%" stopColor="rgba(0,255,255,0.45)" />
                 <stop offset="100%" stopColor="rgba(0,255,255,0.25)" />
               </linearGradient>
-              <marker id="crewHierarchyArrow" viewBox="0 0 12 10" refX="12" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <marker id="empArrow" viewBox="0 0 12 10" refX="12" refY="5" markerWidth="8" markerHeight="8" orient="auto">
                 <path d="M 0 2 L 12 5 L 0 8 z" fill="rgba(0,255,255,0.7)" stroke="rgba(0,255,255,0.3)" strokeWidth="0.5"/>
               </marker>
-              <filter id="crewHierarchyGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <filter id="empGlow" x="-50%" y="-50%" width="200%" height="200%">
                 <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="rgba(0,255,255,0.4)" />
                 <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="rgba(0,255,255,0.2)" />
               </filter>
             </defs>
-            {crewPaths.map((p) => (
+            {empPaths.map((p) => (
               <motion.path
                 key={p.id}
                 d={p.d}
                 fill="none"
-                stroke="url(#crewHierarchyLine)"
+                stroke="url(#empLine)"
                 strokeWidth={2.5}
                 strokeLinecap="round"
-                markerEnd="url(#crewHierarchyArrow)"
-                filter="url(#crewHierarchyGlow)"
+                markerEnd="url(#empArrow)"
+                filter="url(#empGlow)"
                 style={{ opacity: 0.8 }}
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 1.2, ease: 'easeInOut' }}
+                transition={{ duration: 1.0, ease: 'easeInOut' }}
               />
             ))}
           </svg>
-          {/* Row 1 */}
+
           <div className="h-36 flex items-center justify-center relative z-10">
-            <div className="w-64 relative" ref={setCrewRef('capCaptain')}>
-              <PersonCard title="Capital Ship Captain" level="executive" />
+            <div className="w-64 relative" ref={setEmpRef('eiDirector')}>
+              <PersonCard title="Director" level="director" />
             </div>
           </div>
 
-
-
-          {/* Row 2 */}
           <div className="h-36 flex items-center justify-center relative z-10">
-            <div className="w-64 relative" ref={setCrewRef('mcCaptain')}>
-              <PersonCard title="Multi-Crew Ship Captain" level="board" />
+            <div className="w-64 relative" ref={setEmpRef('shipCaptain')}>
+              <PersonCard title="Ship Captain" level="manager" />
             </div>
           </div>
 
-          {/* Row 3: branch to two columns */}
-          <div className="h-36 relative z-10">
-            <div className="flex items-start justify-center gap-16 relative">
-              <div className="w-64 relative" ref={setCrewRef('flightDeck')}>
-                <PersonCard title="Flight Deck Officer" level="manager" />
-              </div>
-              <div className="w-64 relative" ref={setCrewRef('crewChief')}>
-                <PersonCard title="Crew Chief" level="manager" />
-              </div>
-            </div>
-          </div>
-
-          {/* Row 4: single Engineer (merged) */}
           <div className="h-36 flex items-center justify-center relative z-10">
-            <div className="w-64 relative" ref={setCrewRef('engineer')}>
-              <PersonCard title="Engineer" level="staff" />
+            <div className="w-64 relative" ref={setEmpRef('crew')}>
+              <PersonCard title="Crew" level="staff" />
             </div>
           </div>
 
-          {/* Row 5: EITs under each Engineer */}
-          <div className="h-36 flex items-start justify-center relative z-10">
-            <div className="w-64" ref={setCrewRef('engineerIT')}>
-              <PersonCard title="Engineer-In-Training" level="staff" />
+          <div className="h-36 flex items-center justify-center relative z-10">
+            <div className="w-64 relative" ref={setEmpRef('seasonal')}>
+              <PersonCard title="Seasonal Hire" level="staff" />
             </div>
           </div>
         </div>
+      </div>
+    </motion.div>
+  );
+
+  // AydoExpress tab
+  const renderAydoExpressTab = () => (
+    <motion.div
+      key="aydoexpress"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="space-y-12"
+    >
+      <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.45)] p-6 sm:p-8 rounded-lg relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
+        <h2 className="mg-subtitle text-xl mb-8 text-center">AydoExpress</h2>
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+          <PersonCard title="AydoExpress Director" level="director" />
+          <PersonCard title="Sector Route Manager" level="manager" />
+          <PersonCard title="Load Master" level="staff" />
+          <PersonCard title="Capital Hauler" level="staff" />
+          <PersonCard title="Hauler" level="staff" />
+          <PersonCard title="Loader" level="staff" />
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  // Midnight Security tab with sub-tabs
+  const renderMidnightTab = () => (
+    <motion.div
+      key="midnight"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="space-y-8"
+    >
+      {/* Sub-tabs */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <div className="flex flex-wrap gap-2 p-1 bg-[rgba(var(--mg-panel-dark),0.5)] rounded-lg border border-[rgba(var(--mg-primary),0.25)]">
+          {[
+            { id: 'pilot' as const, label: 'Pilot' },
+            { id: 'marine' as const, label: 'Marine' },
+            { id: 'engineering' as const, label: 'Engineering' },
+            { id: 'gunnery' as const, label: 'Gunnery' },
+          ].map((sub) => (
+            <button
+              key={sub.id}
+              onClick={() => setMidnightSubTab(sub.id)}
+              className={`px-4 py-2 rounded-md text-sm transition-all ${
+                midnightSubTab === sub.id
+                  ? 'bg-[rgba(var(--mg-primary),0.8)] text-black'
+                  : 'text-[rgba(var(--mg-text),0.8)] hover:bg-[rgba(var(--mg-primary),0.2)]'
+              }`}
+            >
+              {sub.label}
+            </button>
+          ))}
+        </div>
+      </motion.div>
+
+      <div className="mg-panel bg-[rgba(var(--mg-panel-dark),0.45)] p-6 sm:p-8 rounded-lg relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
+        <h2 className="mg-subtitle text-xl mb-8 text-center">Midnight Security</h2>
+
+        <AnimatePresence mode="wait">
+          {midnightSubTab === 'pilot' && (
+            <motion.div key="pilot" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <PersonCard title="Midnight Security Director" level="director" />
+                <PersonCard title="Squadron Leader" level="manager" />
+                <PersonCard title="Security Pilot" level="staff" />
+                <PersonCard title="Gunman" level="staff" />
+                <PersonCard title="Turretman" level="staff" />
+              </div>
+            </motion.div>
+          )}
+
+          {midnightSubTab === 'marine' && (
+            <motion.div key="marine" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <PersonCard title="Team Lead" level="manager" />
+                <PersonCard title="Boarding Marine" level="staff" />
+                <PersonCard title="Security Detail" level="staff" />
+              </div>
+            </motion.div>
+          )}
+
+          {midnightSubTab === 'engineering' && (
+            <motion.div key="engineering" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <PersonCard title="Systems Engineer" level="manager" />
+                <PersonCard title="Engineer" level="staff" />
+                <PersonCard title="Engineer-In-Training" level="staff" />
+              </div>
+            </motion.div>
+          )}
+
+          {midnightSubTab === 'gunnery' && (
+            <motion.div key="gunnery" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <PersonCard title="Fire Control Officer" level="manager" />
+                <PersonCard title="Turret Gunner" level="staff" />
+                <PersonCard title="Support Gunner" level="staff" />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
@@ -736,7 +733,9 @@ export default function HierarchyChartPage() {
 
         <AnimatePresence mode="wait">
           {activeTab === 'hierarchy' && renderHierarchyTab()}
-          {activeTab === 'crew' && renderCrewTab()}
+          {activeTab === 'empyrion' && renderEmpyrionTab()}
+          {activeTab === 'aydoexpress' && renderAydoExpressTab()}
+          {activeTab === 'midnight' && renderMidnightTab()}
         </AnimatePresence>
         
         <motion.div 
