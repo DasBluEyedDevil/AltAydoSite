@@ -1,3 +1,7 @@
+---
+layout: null
+---
+
 # OrgChart Component Documentation
 
 ## Overview
@@ -130,12 +134,12 @@ Additional CSS classes applied to the component wrapper.
 #### `headers`
 Static header labels for organizational levels:
 ```typescript
-headers={{
+headers={%raw%}{{
   ceo: 'Executive',
   executives: 'Board Members',
   directors: 'Management',
   managers: 'Staff'
-}}
+}}{%endraw%}
 ```
 
 #### `extraConnections`
@@ -165,10 +169,10 @@ peerWithParentIds={['assistantDirector']}  // Assistant Director appears next to
 #### `nodeOffsets`
 Fine-tune individual node positions:
 ```typescript
-nodeOffsets={{
+nodeOffsets={%raw%}{{
   assistantDirector: { x: -120, y: 0 },    // Move 120px left
   manager1: { x: 50, y: -10 }              // Move 50px right, 10px up
-}}
+}}{%endraw%}
 ```
 
 #### `isolateRowIds`
@@ -180,9 +184,9 @@ isolateRowIds={['assistantDirector']}     // Assistant Director gets own row
 #### `anchorXToId`
 Horizontally align nodes to other nodes' center X:
 ```typescript
-anchorXToId={{
+anchorXToId={%raw%}{{
   assistantDirector: 'gunneryManager'      // Align Assistant Director with Gunnery Manager
-}}
+}}{%endraw%}
 ```
 
 ## Advanced Features
@@ -308,8 +312,8 @@ const complexHierarchy: ChartNodeData = {
   tree={midnightSecurityHierarchy}
   headerResolver={getMidnightHeaderResolver()}
   isolateRowIds={['assistantDirector']}
-  nodeOffsets={{ assistantDirector: { x: -120, y: 0 } }}
-  anchorXToId={{ assistantDirector: 'gunneryManager' }}
+  nodeOffsets={%raw%}{{ assistantDirector: { x: -120, y: 0 } }}{%endraw%}
+  anchorXToId={%raw%}{{ assistantDirector: 'gunneryManager' }}{%endraw%}
 />
 ```
 
@@ -428,9 +432,9 @@ Modify Framer Motion animations:
 
 ```typescript
 <motion.div
-  initial={{ opacity: 0, scale: 0.8 }}
-  animate={{ opacity: 1, scale: 1 }}
-  transition={{ type: 'spring', stiffness: 300 }}
+  initial={%raw%}{{ opacity: 0, scale: 0.8 }}{%endraw%}
+  animate={%raw%}{{ opacity: 1, scale: 1 }}{%endraw%}
+  transition={%raw%}{{ type: 'spring', stiffness: 300 }}{%endraw%}
 >
   {/* content */}
 </motion.div>
