@@ -26,8 +26,20 @@ async function startMonitor() {
       process.exit(1);
     }
     
-    // Import and start the monitor
-    const { initializeDiscordRoleMonitor } = require('../src/lib/discord-role-monitor-init');
+    // Import and start the monitor (use tsx for TypeScript)
+    const { spawn } = require('child_process');
+    
+    console.log('Starting Discord Role Monitor via tsx...');
+    
+    const child = spawn('npx', ['tsx', '--esm', '../src/lib/discord-role-monitor-init.ts'], {
+      stdio: 'inherit',
+      cwd: __dirname
+    });
+    
+    child.on('error', (error) => {
+      console.error('Failed to start monitor:', error);
+      process.exit(1);
+    });
     
     // Force enable the monitor
     process.env.DISCORD_ROLE_MONITOR_ENABLED = 'true';
