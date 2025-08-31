@@ -64,12 +64,11 @@ INIT_SECRET=your-random-secret-here
 
 ### 5. Discord Role Setup
 
-Your Discord server needs roles that match the configuration in `src/lib/discord-role-mappings.ts`. The current configuration expects:
+The system is configured to use your **existing Discord roles** based on the Role List you provided. You don't need to create new roles - just use the role names exactly as they appear in your Discord server:
 
 #### Pay Grade Roles (standalone)
 - Executive
-- Director
-- Manager
+- Manager  
 - Supervisor
 - Senior Employee
 - Employee
@@ -77,13 +76,13 @@ Your Discord server needs roles that match the configuration in `src/lib/discord
 - Freelancer
 - Prospective Hire
 
-#### Division Roles
+#### Division Roles (optional - can be inferred from position)
 - AydoCorp HQ
 - AydoExpress
 - Empyrion Industries
 - Midnight Security
 
-#### Position Roles (with clearance levels)
+#### Position Roles (with clearance levels - use exact names from your Discord)
 
 **AydoCorp HQ:**
 - Chief Executive Officer (CEO) - Clearance 5
@@ -93,50 +92,50 @@ Your Discord server needs roles that match the configuration in `src/lib/discord
 - Chief Safety Officer (CSO) - Clearance 5
 
 **Empyrion Industries:**
-- EI Director - Clearance 4
-- EI Ship Captain - Clearance 3
-- EI Crew - Clearance 2
-- EI Seasonal Hire - Clearance 1
+- Director - Clearance 4
+- Ship Captain - Clearance 3
+- Crew - Clearance 2
+- Seasonal Hire - Clearance 1
 
 **AydoExpress:**
-- AE Director - Clearance 4
-- AE Sub-Director - Clearance 4
-- AE Supervisor - Clearance 3
-- AE Loadmaster - Clearance 3
-- AE Senior Service Agent - Clearance 2
-- AE Service Agent - Clearance 2
-- AE Associate - Clearance 1
-- AE Trainee - Clearance 1
+- Sub-Director - Clearance 4
+- Supervisor - Clearance 3
+- Loadmaster - Clearance 3
+- Senior Service Agent - Clearance 2
+- Service Agent - Clearance 2
+- Associate - Clearance 1
+- Trainee - Clearance 1
 
 **Midnight Security:**
-- MS Director - Clearance 4
-- MS Assistant Director - Clearance 4
-- MS Head Pilot - Clearance 3
-- MS Flight Lead - Clearance 3
-- MS Element Lead - Clearance 3
-- MS Seasoned Pilot - Clearance 2
-- MS Pilot - Clearance 2
-- MS Squad Lead - Clearance 3
-- MS Team Lead - Clearance 3
-- MS Veteran Marine - Clearance 2
-- MS Seasoned Marine - Clearance 2
-- MS Experienced Marine - Clearance 2
-- MS Marine - Clearance 1
-- MS Marine Trainee - Clearance 1
-- MS Engineering Manager - Clearance 3
-- MS Engineering Lead - Clearance 3
-- MS Veteran Engineer - Clearance 2
-- MS Seasoned Engineer - Clearance 2
-- MS Experienced Engineer - Clearance 2
-- MS Engineer - Clearance 1
-- MS Engineer Trainee - Clearance 1
-- MS Gunnery Manager - Clearance 3
-- MS Gunnery Lead - Clearance 3
-- MS Veteran Gunner - Clearance 2
-- MS Seasoned Gunner - Clearance 2
-- MS Experienced Gunner - Clearance 2
-- MS Gunner - Clearance 1
-- MS Gunnery Trainee - Clearance 1
+- Assistant Director - Clearance 4
+- Head Pilot - Clearance 3
+- Flight Lead - Clearance 3
+- Element Lead - Clearance 3
+- Seasoned Pilot - Clearance 2
+- Pilot - Clearance 2
+- Squad Lead - Clearance 3
+- Team Lead - Clearance 3
+- Veteran Marine - Clearance 2
+- Seasoned Marine - Clearance 2
+- Experienced Marine - Clearance 2
+- Marine - Clearance 1
+- Marine Trainee - Clearance 1
+- Engineering Manager - Clearance 3
+- Engineering Lead - Clearance 3
+- Veteran Engineer - Clearance 2
+- Seasoned Engineer - Clearance 2
+- Experienced Engineer - Clearance 2
+- Engineer - Clearance 1
+- Engineer Trainee - Clearance 1
+- Gunnery Manager - Clearance 3
+- Gunnery Lead - Clearance 3
+- Veteran Gunner - Clearance 2
+- Seasoned Gunner - Clearance 2
+- Experienced Gunner - Clearance 2
+- Gunner - Clearance 1
+- Gunnery Trainee - Clearance 1
+
+**Note:** The system automatically determines which division a person belongs to based on their position role. You don't need to assign separate division roles unless you want to override the automatic detection.
 
 ## API Endpoints
 

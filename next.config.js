@@ -18,6 +18,24 @@ const nextConfig = {
         remotePatterns: [],
     },
     output: 'standalone',
+    webpack: (config, { isServer }) => {
+        // Handle discord.js and its dependencies
+        if (isServer) {
+            config.externals.push({
+                'utf-8-validate': 'commonjs utf-8-validate',
+                'bufferutil': 'commonjs bufferutil',
+                'zlib-sync': 'commonjs zlib-sync'
+            });
+        } else {
+            config.resolve.fallback = {
+                ...config.resolve.fallback,
+                'zlib-sync': false,
+                'utf-8-validate': false,
+                'bufferutil': false
+            };
+        }
+        return config;
+    },
     async redirects() {
         return [
             {

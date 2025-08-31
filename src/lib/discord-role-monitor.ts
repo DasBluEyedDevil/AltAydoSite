@@ -213,6 +213,10 @@ export class DiscordRoleMonitor {
         if (mapping.position) {
           position = mapping.position;
           positions.push(roleName);
+          // Set division from position if not already set
+          if (!division && mapping.division) {
+            division = mapping.division;
+          }
         }
       }
     }

@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/auth';
 import { getDiscordRoleMonitor } from '@/lib/discord-role-monitor';
 
+// Force this API route to use Node.js runtime for discord.js compatibility
+export const runtime = 'nodejs';
+
 export async function GET(request: NextRequest) {
   try {
     // Check authentication and authorization

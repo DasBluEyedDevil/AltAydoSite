@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDiscordRoleMonitor } from '@/lib/discord-role-monitor-init';
 
+// Force this API route to use Node.js runtime for discord.js compatibility
+export const runtime = 'nodejs';
+
 // This endpoint can be called to initialize the Discord role monitor
 // It's designed to be called once when the application starts
 export async function POST(request: NextRequest) {

@@ -4,6 +4,9 @@ import { authOptions } from '../../../auth/auth';
 import { getDiscordRoleMonitor } from '@/lib/discord-role-monitor';
 import * as userStorage from '@/lib/user-storage';
 
+// Force this API route to use Node.js runtime for discord.js compatibility
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     // Check authentication

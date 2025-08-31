@@ -5,6 +5,9 @@ import { getDiscordService } from '@/lib/discord';
 import { mapDiscordEventsToEventData } from '@/lib/eventMapper';
 import * as userStorage from '@/lib/user-storage';
 
+// Force this API route to use Node.js runtime for discord.js compatibility
+export const runtime = 'nodejs';
+
 export async function GET(request: NextRequest) {
   try {
     // Get user's timezone preference
