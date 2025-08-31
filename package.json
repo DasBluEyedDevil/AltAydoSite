@@ -20,7 +20,8 @@
     "gen-mongo-connection": "tsx src/scripts/cosmos-connection-string.ts",
     "verify-cosmos": "tsx src/scripts/verify-cosmos.ts",
     "verify-email": "tsx src/scripts/verify-email-config.ts",
-    "gen-password": "tsx src/scripts/generate-password.ts"
+    "gen-password": "tsx src/scripts/generate-password.ts",
+    "start-discord-monitor": "node scripts/start-discord-monitor.js"
   },
   "engines": {
     "node": ">=18 <=22"
@@ -38,6 +39,7 @@
     "azure-ad-verify-token": "^3.0.3",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
+    "discord.js": "^14.22.1",
     "dotenv": "^16.5.0",
     "framer-motion": "^10.16.4",
     "mammoth": "^1.9.0",
