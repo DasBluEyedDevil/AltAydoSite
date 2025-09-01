@@ -1,8 +1,11 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import DiscordProvider from 'next-auth/providers/discord';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import { User } from '@/types/user';
 import * as userStorage from '@/lib/user-storage';
+import { syncDiscordProfile } from '@/lib/discord-oauth';
 
 // Admin user for fallback
 const adminUser: User = {
@@ -18,6 +21,16 @@ const adminUser: User = {
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // Discord OAuth Provider
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID!,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: 'identify email guilds.members.read'
+        }
+      }
+    }),
     // Traditional Credentials Provider
     CredentialsProvider({
       name: 'AydoCorp Credentials',
@@ -112,12 +125,81 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       console.log('AUTH: signIn callback called', { 
         provider: account?.provider,
         userId: user.id, 
         email: user.email 
       });
+
+      // Handle Discord OAuth sign in
+      if (account?.provider === 'discord') {
+        console.log('AUTH: Discord OAuth sign in detected');
+        
+        try {
+          // Sync Discord profile data (roles, division, position)
+          const discordProfile = profile as any;
+          const discordProfileData = await syncDiscordProfile(
+            account.access_token || '',
+            user.id,
+            discordProfile.username || user.name || 'discord_user'
+          );
+
+          // Check if user already exists by Discord ID
+          let existingUser = await userStorage.getUserByDiscordId(user.id);
+          
+          if (!existingUser) {
+            // Check if user exists by email
+            existingUser = await userStorage.getUserByEmail(user.email || '');
+          }
+
+          if (existingUser) {
+            // Update existing user with Discord info including roles
+            console.log('AUTH: Updating existing user with Discord data and roles');
+            await userStorage.updateUser(existingUser.id, {
+              discordId: user.id,
+              discordName: `${discordProfile.username}#${discordProfile.discriminator}`,
+              discordAvatar: user.image || null,
+              email: user.email || existingUser.email,
+              division: discordProfileData.division || existingUser.division,
+              position: discordProfileData.position || existingUser.position,
+              payGrade: discordProfileData.payGrade || existingUser.payGrade,
+              updatedAt: new Date().toISOString()
+            });
+          } else {
+            // Create new user from Discord profile including roles
+            console.log('AUTH: Creating new user from Discord profile with roles');
+            const newUser: User = {
+              id: crypto.randomUUID(),
+              aydoHandle: discordProfileData.displayName || discordProfile.username || user.name || 'discord_user',
+              email: user.email || '',
+              passwordHash: '', // No password for OAuth users
+              clearanceLevel: 1,
+              role: 'user',
+              discordId: user.id,
+              discordName: `${discordProfile.username}#${discordProfile.discriminator}`,
+              discordAvatar: user.image || null,
+              division: discordProfileData.division,
+              position: discordProfileData.position,
+              payGrade: discordProfileData.payGrade,
+              rsiAccountName: null,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            };
+
+            await userStorage.createUser(newUser);
+            console.log('AUTH: New Discord user created with roles:', {
+              id: newUser.id,
+              division: newUser.division,
+              position: newUser.position,
+              payGrade: newUser.payGrade
+            });
+          }
+        } catch (error) {
+          console.error('AUTH: Error handling Discord sign in:', error);
+          return false;
+        }
+      }
       
       return true;
     },
@@ -125,12 +207,35 @@ export const authOptions: NextAuthOptions = {
       // Pass user details to the token when signing in
       if (user) {
         console.log('AUTH: jwt callback - adding user data to token');
-        token.id = user.id;
-        token.clearanceLevel = user.clearanceLevel;
-        token.role = user.role;
-        token.aydoHandle = user.aydoHandle;
-        token.discordName = user.discordName;
-        token.rsiAccountName = user.rsiAccountName;
+        
+        if (account?.provider === 'discord') {
+          // For Discord OAuth users, get the user data from our database
+          let dbUser = await userStorage.getUserByDiscordId(user.id);
+          if (!dbUser) {
+            dbUser = await userStorage.getUserByEmail(user.email || '');
+          }
+          
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.clearanceLevel = dbUser.clearanceLevel;
+            token.role = dbUser.role;
+            token.aydoHandle = dbUser.aydoHandle;
+            token.discordName = dbUser.discordName;
+            token.discordId = dbUser.discordId;
+            token.discordAvatar = dbUser.discordAvatar;
+            token.rsiAccountName = dbUser.rsiAccountName;
+          }
+        } else {
+          // For credentials users, use the data from authorize
+          token.id = user.id;
+          token.clearanceLevel = user.clearanceLevel;
+          token.role = user.role;
+          token.aydoHandle = user.aydoHandle;
+          token.discordName = user.discordName;
+          token.discordId = user.discordId;
+          token.discordAvatar = user.discordAvatar;
+          token.rsiAccountName = user.rsiAccountName;
+        }
       } else if (token && token.id) {
         // Refresh token data from storage to reflect any updates to clearance/role
         try {
@@ -141,6 +246,8 @@ export const authOptions: NextAuthOptions = {
             // Keep aydoHandle and optional fields in sync as well
             token.aydoHandle = latestUser.aydoHandle;
             token.discordName = latestUser.discordName || null;
+            token.discordId = latestUser.discordId || null;
+            token.discordAvatar = latestUser.discordAvatar || null;
             token.rsiAccountName = latestUser.rsiAccountName || null;
           }
         } catch (e) {
@@ -158,7 +265,12 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
         session.user.aydoHandle = token.aydoHandle as string;
         session.user.discordName = token.discordName as string | null;
+        session.user.discordId = token.discordId as string | null;
+        session.user.discordAvatar = token.discordAvatar as string | null;
         session.user.rsiAccountName = token.rsiAccountName as string | null;
+        
+        // Set display name to AydoCorp handle for consistent display
+        session.user.name = token.aydoHandle as string;
       }
       return session;
     }

@@ -7,6 +7,17 @@ For the application to work correctly, you need to set up the following environm
 NEXTAUTH_SECRET=your_next_auth_secret
 NEXTAUTH_URL=http://localhost:3000
 
+# Discord OAuth Configuration (for user authentication)
+DISCORD_CLIENT_ID=your-discord-oauth-client-id
+DISCORD_CLIENT_SECRET=your-discord-oauth-client-secret
+
+# Discord Bot Configuration (for events integration)
+DISCORD_BOT_TOKEN=your-discord-bot-token
+DISCORD_GUILD_ID=your-discord-server-id
+
+# Optional: Cron job security (for automated Discord sync)
+CRON_SECRET=your-secure-cron-secret
+
 # Azure Cosmos DB Configuration
 COSMOS_ENDPOINT=your-cosmos-endpoint
 COSMOS_KEY=your-cosmos-key

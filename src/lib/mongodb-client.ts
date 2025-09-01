@@ -187,6 +187,26 @@ export async function getUserByHandle(aydoHandle: string): Promise<User | null> 
   }
 }
 
+// Get a user by Discord ID
+export async function getUserByDiscordId(discordId: string): Promise<User | null> {
+  try {
+    await ensureConnection();
+    
+    const user = await userCollection!.findOne({ 
+      discordId: discordId 
+    }, { projection: { _id: 0 } });
+    
+    if (!user) return null;
+    
+    // Remove MongoDB's _id field
+    const { _id, ...userData } = user;
+    return userData as User;
+  } catch (error) {
+    console.error('Error fetching user by Discord ID:', error);
+    return null;
+  }
+}
+
 // Create a new user
 export async function createUser(user: User): Promise<User> {
   try {

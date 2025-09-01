@@ -17,6 +17,10 @@ declare module "next-auth" {
       aydoHandle: string;
       /** The user's Discord name. */
       discordName?: string | null;
+      /** The user's Discord ID. */
+      discordId?: string | null;
+      /** The user's Discord avatar URL. */
+      discordAvatar?: string | null;
       /** The user's RSI account name. */
       rsiAccountName?: string | null;
     } & DefaultSession["user"];
@@ -35,6 +39,10 @@ declare module "next-auth" {
     aydoHandle: string;
     /** The user's Discord name. */
     discordName?: string | null;
+    /** The user's Discord ID. */
+    discordId?: string | null;
+    /** The user's Discord avatar URL. */
+    discordAvatar?: string | null;
     /** The user's RSI account name. */
     rsiAccountName?: string | null;
   }
@@ -53,6 +61,10 @@ declare module "next-auth/jwt" {
     aydoHandle: string;
     /** The user's Discord name. */
     discordName?: string | null;
+    /** The user's Discord ID. */
+    discordId?: string | null;
+    /** The user's Discord avatar URL. */
+    discordAvatar?: string | null;
     /** The user's RSI account name. */
     rsiAccountName?: string | null;
   }

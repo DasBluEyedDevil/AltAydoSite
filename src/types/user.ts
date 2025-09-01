@@ -6,6 +6,8 @@ export interface User {
   clearanceLevel: number;
   role: string;
   discordName: string | null;
+  discordId?: string | null;
+  discordAvatar?: string | null;
   rsiAccountName: string | null;
   bio?: string | null;
   photo?: string | null;
@@ -25,6 +27,8 @@ export interface UserResponse {
   clearanceLevel: number;
   role: string;
   discordName?: string | null;
+  discordId?: string | null;
+  discordAvatar?: string | null;
   rsiAccountName?: string | null;
   bio?: string | null;
   photo?: string | null;

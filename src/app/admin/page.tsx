@@ -126,6 +126,30 @@ export default async function AdminDashboard() {
             </div>
           </div>
 
+          {/* Discord Integration */}
+          <div className="border border-[rgba(var(--mg-primary),0.3)] bg-black/30 rounded p-6">
+            <div className="text-lg text-[rgba(var(--mg-primary),1)] mb-3 font-['Quantify']">Discord Integration</div>
+            <div className="text-sm text-gray-400 mb-4">
+              Automatic background sync keeps user profiles updated with Discord server roles
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] rounded">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-[rgba(var(--mg-success),0.8)] rounded-full animate-pulse"></div>
+                  <span className="text-sm text-[rgba(var(--mg-success),0.9)]">Auto-sync Active</span>
+                </div>
+                <span className="text-xs text-gray-400">Every 6 hours</span>
+              </div>
+              
+              <div className="text-xs text-gray-500">
+                • Automatically matches users with Discord members<br/>
+                • Updates divisions and positions based on current roles<br/>
+                • Runs in background without manual intervention
+              </div>
+            </div>
+          </div>
+
           {/* Placeholder for more functionality */}
           <div className="border border-[rgba(var(--mg-primary),0.3)] bg-black/30 rounded p-6 text-center">
             <div className="text-lg text-[rgba(var(--mg-primary),1)] mb-3">Admin Dashboard Under Development</div>

@@ -33,6 +33,16 @@ export async function getUserByHandle(aydoHandle: string): Promise<User | null> 
   }
 }
 
+export async function getUserByDiscordId(discordId: string): Promise<User | null> {
+  console.log(`STORAGE: [MongoDB] Getting user by Discord ID: ${discordId}`);
+  try {
+    return await mongoDb.getUserByDiscordId(discordId);
+  } catch (error) {
+    console.error('STORAGE: [MongoDB] getUserByDiscordId failed:', error);
+    return null;
+  }
+}
+
 export async function createUser(user: User): Promise<User> {
   console.log(`STORAGE: [MongoDB] Creating user: ${user.aydoHandle}`);
   if (!user.id) {
