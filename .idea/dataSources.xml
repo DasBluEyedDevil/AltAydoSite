@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="@aydocorpdb-vcore.global.mongocluster.cosmos.azure.com" uuid="48cc1442-b2a6-476a-a68d-71712fdb4c25">
+      <driver-ref>documentdb</driver-ref>
+      <synchronize>true</synchronize>
+      <configured-by-url>true</configured-by-url>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb+srv://devil:IHateGeico1!@aydocorpdb-vcore.global.mongocluster.cosmos.azure.com/?tls=true&amp;authMechanism=SCRAM-SHA-256&amp;retrywrites=false&amp;maxIdleTimeMS=120000</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.host.port" />
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="com.intellij.clouds.kubernetes.db.container.port" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>

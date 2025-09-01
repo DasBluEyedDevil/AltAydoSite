@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 // Data structure interface for org chart nodes
 export interface ChartNodeData {
@@ -22,13 +22,6 @@ export interface ChartNodeData {
 interface OrgChartProps {
   tree: ChartNodeData;
   className?: string;
-  headers?: {
-    ceo?: string;
-    executives?: string;
-    directors?: string;
-    managers?: string;
-    [key: string]: string | undefined; // Allow for additional levels
-  };
   // Optional additional connections to support multi-parent relationships
   extraConnections?: Array<{ from: string; to: string }>;
   // Optional resolver for dynamic header labels per level index
@@ -317,7 +310,7 @@ const PersonCard: React.FC<PersonCardProps> = ({
 };
 
 // Main OrgChart component
-const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', headers, extraConnections = [], headerResolver, peerWithParentIds = [], nodeOffsets = {}, isolateRowIds = [], anchorXToId = {} }) => {
+const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnections = [], peerWithParentIds = [], nodeOffsets = {}, isolateRowIds = [], anchorXToId = {} }) => {
   // State for managing flipped cards
   const [flippedNodes, setFlippedNodes] = useState<Record<string, boolean>>({});
   
@@ -337,104 +330,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', headers, extr
     setFlippedNodes(prev => ({ ...prev, [nodeId]: !prev[nodeId] }));
   };
 
-  // Level-based container components that properly contain cards with blue styling
-  const CEOLevel: React.FC<{ ceoData: ChartNodeData; headerText?: string }> = ({ ceoData, headerText = "EXECUTIVE" }) => (
-    <div className="w-full mt-12">
-      {/* Executive Container - properly contains the card */}
-      <div className="relative border border-primary/10 bg-primary/3 rounded-lg p-12 min-h-[200px] flex flex-col">
-        {/* Attached Header */}
-        <div className="absolute -top-3 left-6 bg-mg-dark px-3">
-          <span className="text-primary text-xs font-medium tracking-wider opacity-70">{headerText}</span>
-        </div>
-        
-        {/* Cards Container */}
-        <div className="flex justify-center items-center flex-1 pt-4">
-          <div 
-            className="w-56 z-10 flex-shrink-0" 
-            ref={(el) => { nodeRefs.current[ceoData.id] = el; }}
-          >
-            <PersonCard 
-              title={ceoData.front.title} 
-              level={ceoData.level} 
-              loreName={ceoData.back.loreName}
-              handle={ceoData.back.handle}
-              isFlipped={!!flippedNodes[ceoData.id]}
-              onFlip={() => handleFlip(ceoData.id)}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const ExecutiveLevel: React.FC<{ executives: ChartNodeData[]; headerText?: string }> = ({ executives, headerText = "CHIEFS" }) => (
-    <div className="w-full mt-12">
-      {/* Chiefs Container - properly contains all 4 cards */}
-      <div className="relative border border-primary/10 bg-primary/3 rounded-lg p-12 min-h-[200px] flex flex-col">
-        {/* Attached Header */}
-        <div className="absolute -top-3 left-6 bg-mg-dark px-3">
-          <span className="text-primary text-xs font-medium tracking-wider opacity-70">{headerText}</span>
-        </div>
-        
-        {/* Cards Container */}
-        <div className="flex justify-between items-center gap-4 flex-1 pt-4">
-          {executives.map(executive => (
-            <div key={executive.id} className="flex flex-col items-center flex-1">
-                          <div 
-              className="w-56 z-10 flex-shrink-0" 
-              ref={(el) => { nodeRefs.current[executive.id] = el; }}
-            >
-                <PersonCard 
-                  title={executive.front.title} 
-                  level={executive.level} 
-                  loreName={executive.back.loreName}
-                  handle={executive.back.handle}
-                  isFlipped={!!flippedNodes[executive.id]}
-                  onFlip={() => handleFlip(executive.id)}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  const SubsidiaryDirectorsLevel: React.FC<{ directors: ChartNodeData[]; headerText?: string }> = ({ directors, headerText = "DIRECTORS" }) => (
-    <div className="w-full mt-12">
-      {/* Directors Container - properly contains all 3 cards */}
-      <div className="relative border border-primary/10 bg-primary/3 rounded-lg p-12 min-h-[200px] flex flex-col">
-        {/* Attached Header */}
-        <div className="absolute -top-3 left-6 bg-mg-dark px-3">
-          <span className="text-primary text-xs font-medium tracking-wider opacity-70">{headerText}</span>
-        </div>
-        
-        {/* Cards Container */}
-        <div className="flex justify-center items-center gap-8 flex-1 pt-4">
-          {directors.map(director => (
-            <div key={director.id} className="flex flex-col items-center">
-              <div 
-                className="w-64 z-10 flex-shrink-0" 
-                ref={(el) => { nodeRefs.current[director.id] = el; }}
-              >
-                <PersonCard 
-                  title={director.front.title} 
-                  level={director.level} 
-                  loreName={director.back.loreName}
-                  handle={director.back.handle}
-                  isFlipped={!!flippedNodes[director.id]}
-                  onFlip={() => handleFlip(director.id)}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  // Function to extract levels from tree data
-  // Dynamic function to extract all levels from tree data
+  // Extract all levels from tree data
   const extractAllLevels = (treeData: ChartNodeData): ChartNodeData[][] => {
     const levels: ChartNodeData[][] = [];
     
@@ -514,26 +410,6 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', headers, extr
   // Extract all levels dynamically
   const allLevels = extractAllLevels(tree);
   
-  // Parent map to support placing peers on parent's row
-  const parentMap = React.useMemo(() => {
-    const map = new Map<string, string | null>();
-    const traverse = (node: ChartNodeData, parentId: string | null) => {
-      map.set(node.id, parentId);
-      node.children.forEach(child => traverse(child, node.id));
-    };
-    traverse(tree, null);
-    return map;
-  }, [tree]);
-  
-  // Define header mappings for each level
-  const getHeaderForLevel = (levelIndex: number): string => {
-    if (headerResolver) {
-      return headerResolver(levelIndex);
-    }
-    const headerKeys = ['ceo', 'executives', 'directors', 'managers'];
-    const headerKey = headerKeys[levelIndex];
-    return headers?.[headerKey] || `LEVEL ${levelIndex + 1}`;
-  };
 
   // Build tree map from ChartNodeData structure
   const buildTreeMap = useCallback((node: ChartNodeData): Record<string, string[]> => {
@@ -580,14 +456,12 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', headers, extr
     });
     if (changed) {
       setComputedOffsets(prev => ({ ...prev, ...newOffsets }));
-      // allow layout to update then recompute paths
       setTimeout(() => {
-        // Trigger a recalc by updating svg size indirectly
         const rect = container.getBoundingClientRect();
         setSvgSize({ width: Math.ceil(rect.width), height: Math.ceil(container.scrollHeight) });
       }, 0);
     }
-  }, [anchorXToId, nodeOffsets, tree]);
+  }, [anchorXToId, nodeOffsets, tree, computedOffsets]);
 
   // Calculate SVG connectors with clean parent-child connections only
   const recalcConnections = useCallback(() => {
@@ -928,7 +802,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', headers, extr
                                 loreName={node.back.loreName}
                                 handle={node.back.handle}
                                 level={mappedLevel as any}
-                                isFlipped={!!flippedNodes[node.id]}
+                                isFlipped={flippedNodes[node.id]}
                                 onFlip={() => handleFlip(node.id)}
                               />
                               );

@@ -1,23 +1,50 @@
-import { MongoClient, Collection, ObjectId } from 'mongodb';
+import { MongoClient, Collection } from 'mongodb';
 import { ensureMongoIndexes } from '@/lib/mongo-indexes';
 import { User } from '@/types/user';
 import { PasswordResetToken } from '@/types/password-reset';
-import { Transaction } from '@/types/finance';
 
-// MongoDB Configuration
-const mongoUri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
+// MongoDB Configuration (resolve dynamically instead of capturing at module load)
+function resolveMongoUri(): string | undefined {
+  let uri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
+  if (!uri) {
+    // Attempt to load from mongodb-connection.txt (format: MONGODB_URI=...)
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const filePath = path.join(process.cwd(), 'mongodb-connection.txt');
+      if (fs.existsSync(filePath)) {
+        const content = fs.readFileSync(filePath, 'utf8');
+        const line = content.split(/\r?\n/).find((l: string) => l.startsWith('MONGODB_URI='));
+        if (line) {
+          const val = line.substring('MONGODB_URI='.length).trim();
+            if (val) {
+              process.env.MONGODB_URI = val;
+              uri = val;
+            }
+        }
+      }
+    } catch (e) {
+      console.warn('Attempt to read mongodb-connection.txt failed');
+    }
+  }
+  return uri;
+}
+
 const databaseId = process.env.COSMOS_DATABASE_ID || 'aydocorp-database';
 const collectionId = process.env.COSMOS_CONTAINER_ID || 'users';
 const resetTokensCollectionId = 'resetTokens';
 const transactionsCollectionId = 'transactions';
 
 // Log connection details (safely)
-if (mongoUri) {
-  const sanitizedUri = mongoUri.replace(/\/\/[^@]+@/, '//[credentials]@');
-  console.log(`MongoDB URI found, starting with: ${sanitizedUri.substring(0, 40)}...`);
-} else {
-  console.warn('No MongoDB URI found in environment variables');
-}
+(function logInitial() {
+  const initial = resolveMongoUri();
+  if (initial) {
+    const sanitized = initial.replace(/\/\/[^@]+@/, '//[credentials]@');
+    console.log(`MongoDB URI resolved, starting with: ${sanitized.substring(0, 40)}...`);
+  } else {
+    console.warn('No MongoDB URI resolved at startup');
+  }
+})();
 
 // Client instance
 let client: MongoClient | null = null;
@@ -38,13 +65,15 @@ export async function connectToDatabase() {
           transactionCollection: transactionCollection as Collection,
         };
       } catch (e) {
-        // Connection is not valid, continue to create new connection
         console.log('Existing connection is not valid, creating new connection');
       }
     }
 
+    const mongoUri = resolveMongoUri();
     if (!mongoUri) {
-      throw new Error('MongoDB URI is not defined');
+      const msg = 'MongoDB URI is not defined';
+      console.error(msg);
+      return Promise.reject(new Error(msg));
     }
 
     client = new MongoClient(mongoUri);
@@ -52,7 +81,6 @@ export async function connectToDatabase() {
     console.log('Connected to MongoDB');
 
     const db = client.db(databaseId);
-    // Best-effort index setup
     ensureMongoIndexes(db).catch(() => {});
     userCollection = db.collection(collectionId);
     resetTokenCollection = db.collection(resetTokensCollectionId);
@@ -64,9 +92,11 @@ export async function connectToDatabase() {
       resetTokenCollection: resetTokenCollection as Collection,
       transactionCollection: transactionCollection as Collection,
     };
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-    throw error;
+  } catch (error: any) {
+    // Add context so this is not a simple rethrow
+    const message = `Failed to connect to MongoDB: ${error?.message || 'Unknown error'}`;
+    console.error(message);
+    throw new Error(message);
   }
 }
 
@@ -217,7 +247,7 @@ export async function createUser(user: User): Promise<User> {
     (user as any).emailLower = user.email;
     (user as any).aydoHandleLower = user.aydoHandle.toLowerCase();
     
-    const result = await userCollection!.insertOne(user);
+    await userCollection!.insertOne(user); // result not used; remove variable to silence warning
     console.log('User created successfully:', user.aydoHandle);
     return user;
   } catch (error: any) {
@@ -226,9 +256,8 @@ export async function createUser(user: User): Promise<User> {
     // Provide more detailed error information
     if (error.code === 11000) {
       throw new Error('User with this ID already exists');
-    } else {
-      throw new Error(`Failed to create user: ${error.message || 'Unknown error'}`);
     }
+    throw new Error(`Failed to create user: ${error.message || 'Unknown error'}`);
   }
 }
 
@@ -383,4 +412,4 @@ export async function cleanupExpiredTokens(): Promise<void> {
   } catch (error) {
     console.error('Error cleaning up expired tokens:', error);
   }
-} 
+}

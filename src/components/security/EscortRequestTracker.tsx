@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSession } from 'next-auth/react';
-import { EscortRequestResponse, EscortRequestStatus, EscortRequestFilters } from '@/types/EscortRequest';
+import { EscortRequestResponse, EscortRequestStatus } from '@/types/EscortRequest';
 
 interface EscortRequestTrackerProps {
   onRequestClick?: (request: EscortRequestResponse) => void;
@@ -18,7 +17,6 @@ const EscortRequestTracker: React.FC<EscortRequestTrackerProps> = ({
   onCreateRequest,
   onRequestsChange
 }) => {
-  const { data: session } = useSession();
   const [requests, setRequests] = useState<EscortRequestResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,25 +24,20 @@ const EscortRequestTracker: React.FC<EscortRequestTrackerProps> = ({
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
 
   // Fetch escort requests
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      
-      if (statusFilter !== 'all') {
-        params.append('status', statusFilter);
-      }
-      
-      if (priorityFilter !== 'all') {
-        params.append('priority', priorityFilter);
-      }
-
+      if (statusFilter !== 'all') params.append('status', statusFilter);
+      if (priorityFilter !== 'all') params.append('priority', priorityFilter);
       const response = await fetch(`/api/security/escort-requests?${params.toString()}`);
-      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        console.error('Escort requests fetch failed', response.status);
+        setError(`HTTP error ${response.status}`);
+        setRequests([]);
+        setLoading(false);
+        return;
       }
-      
       const data = await response.json();
       setRequests(data);
       onRequestsChange?.(data);
@@ -55,11 +48,11 @@ const EscortRequestTracker: React.FC<EscortRequestTrackerProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter, priorityFilter, onRequestsChange]);
 
   useEffect(() => {
     fetchRequests();
-  }, [statusFilter, priorityFilter]);
+  }, [fetchRequests]);
 
   // Get status color for display
   const getStatusColor = (status: EscortRequestStatus) => {
@@ -292,4 +285,4 @@ const EscortRequestTracker: React.FC<EscortRequestTrackerProps> = ({
   );
 };
 
-export default EscortRequestTracker; 
+export default EscortRequestTracker;

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { EventData, EventType } from '@/lib/eventMapper';
+import { EventData } from '@/lib/eventMapper';
 import { useUserTimezone } from './useUserTimezone';
 
 // No fallback events - only pull from Discord
@@ -99,15 +99,13 @@ export function useEvents(): UseEventsReturn {
 
   // Fetch events only on initial load
   useEffect(() => {
-    // Don't fetch until timezone has loaded and we haven't initialized yet
     if (timezoneLoading || hasInitialized.current) {
       return;
     }
-    
     console.log('Initial events fetch with timezone:', userTimezone);
     fetchEvents();
     hasInitialized.current = true;
-  }, [timezoneLoading, userTimezone]); // Only run once after timezone loads
+  }, [timezoneLoading, userTimezone, fetchEvents]); // Only run once after timezone loads
 
   return {
     events,
@@ -118,4 +116,4 @@ export function useEvents(): UseEventsReturn {
     refetch: fetchEvents,
     refreshWithTimezone
   };
-} 
+}

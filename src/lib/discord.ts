@@ -23,33 +23,26 @@ export class DiscordService {
       throw new Error('Discord configuration missing');
     }
 
-    try {
-      const response = await fetch(
-        `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events`,
-        {
-          headers: {
-            'Authorization': `Bot ${this.botToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Discord API error: ${response.status} - ${errorText}`);
+    const response = await fetch(
+      `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events`,
+      {
+        headers: {
+          'Authorization': `Bot ${this.botToken}`,
+          'Content-Type': 'application/json',
+        },
       }
+    );
 
-      const events: DiscordScheduledEvent[] = await response.json();
-      
-      // Filter out completed or canceled events
-      return events.filter(event => 
-        event.status === DiscordEventStatus.SCHEDULED || 
-        event.status === DiscordEventStatus.ACTIVE
-      );
-    } catch (error) {
-      console.error('Error fetching Discord events:', error);
-      throw error;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Discord API error: ${response.status} - ${errorText}`);
     }
+
+    const events: DiscordScheduledEvent[] = await response.json();
+    return events.filter(event =>
+      event.status === DiscordEventStatus.SCHEDULED ||
+      event.status === DiscordEventStatus.ACTIVE
+    );
   }
 
   /**
@@ -60,30 +53,25 @@ export class DiscordService {
       throw new Error('Discord configuration missing');
     }
 
-    try {
-      const response = await fetch(
-        `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events/${eventId}`,
-        {
-          headers: {
-            'Authorization': `Bot ${this.botToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          return null;
-        }
-        const errorText = await response.text();
-        throw new Error(`Discord API error: ${response.status} - ${errorText}`);
+    const response = await fetch(
+      `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events/${eventId}`,
+      {
+        headers: {
+          'Authorization': `Bot ${this.botToken}`,
+          'Content-Type': 'application/json',
+        },
       }
+    );
 
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching Discord event:', error);
-      throw error;
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      const errorText = await response.text();
+      throw new Error(`Discord API error: ${response.status} - ${errorText}`);
     }
+
+    return await response.json();
   }
 
   /**
@@ -193,6 +181,57 @@ export class DiscordService {
    */
   isConfigured(): boolean {
     return !!(this.botToken && this.guildId);
+  }
+
+  /**
+   * Ensure a role exists by name (case-insensitive); create if missing.
+   */
+  async ensureRoleByName(roleName: string): Promise<Role> {
+    if (!this.guild) {
+      await this.initializeBot();
+    }
+    if (!this.guild) throw new Error('Guild not available');
+
+    // Try to find existing role
+    const existing = this.guild.roles.cache.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+    if (existing) return existing;
+
+    // Create role if not exists
+    console.log(`Creating Discord role: ${roleName}`);
+    const created = await this.guild.roles.create({
+      name: roleName,
+      reason: 'Auto-created for AydoDB synchronization'
+    });
+    console.log(`Created role ${created.name} (${created.id})`);
+    return created;
+  }
+
+  /**
+   * Assign a role to a guild member by Discord user ID.
+   * Returns true if role was added, false if already present or member missing.
+   */
+  async assignRoleToMember(discordUserId: string, role: Role): Promise<{added: boolean; reason: string;}> {
+    if (!this.guild) {
+      await this.initializeBot();
+    }
+    if (!this.guild) throw new Error('Guild not available');
+
+    try {
+      const member = await this.guild.members.fetch(discordUserId);
+      if (!member) {
+        return { added: false, reason: 'member_not_found' };
+      }
+      if (member.roles.cache.has(role.id)) {
+        return { added: false, reason: 'already_has_role' };
+      }
+      await member.roles.add(role, 'Synced to AydoDB role assignment');
+      return { added: true, reason: 'added' };
+    } catch (err: any) {
+      if (err?.code === 10007) { // Unknown Member
+        return { added: false, reason: 'member_not_found' };
+      }
+      throw err;
+    }
   }
 }
 

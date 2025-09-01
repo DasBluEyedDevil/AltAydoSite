@@ -392,7 +392,7 @@ export default function CertificationsPage() {
           
           <h2 className="mg-subtitle text-xl mb-4">Employee Evaluation Certifications</h2>
           <p className="text-[rgba(var(--mg-text),0.8)] mb-6 leading-relaxed">
-            In order to rank up from an intern to be an employee in a subsidiary, we require all prospects to take a short evaluation of 15 - 30 minutes to test on basic skills. This evaluation can be waived if the evaluator has already been made aware of competence in said skills; however, if the prospect is not proficient during the process, the evaluator will act as an instructor to ensure that the evaluation is able to be passed during that session. If a prospect is unsure of one's competency, they should note that the session will take longer. Below are the following certifications to be completed:
+            In order to rank up from an intern to be an employee in a subsidiary, we require all prospects to take a short evaluation of 15 - 30 minutes to test on basic skills. This evaluation can be waived if the evaluator has already been made aware of competence in said skills; however, if the prospect is not proficient during the process, the evaluator will act as an instructor to ensure that the evaluation is able to be passed during that session. If a prospect is unsure of one&apos;s competency, they should note that the session will take longer. Below are the following certifications to be completed:
           </p>
           
           <div className="space-y-4">
@@ -418,7 +418,7 @@ export default function CertificationsPage() {
           
           <h2 className="mg-subtitle text-xl mb-4">Subsidiary Certifications</h2>
           <p className="text-[rgba(var(--mg-text),0.8)] mb-6 leading-relaxed">
-            In order to participate in a preferred role during our larger, more structured operations that we typically hold on a month to month basis, we require subsidiary employees to earn certifications showing competency in specific skills. Like with the employee evaluations, these are avenues to either learn or be evaluated in a skill, so if you're already familiar with certain things then we will merely ask for proof of competency and the evaluation process will be waived. Below are our current, available certifications (note, you do not have to be in a subsidiary to get subsidiary-specific certifications, any employee is eligible to earn all of them):
+            In order to participate in a preferred role during our larger, more structured operations that we typically hold on a month to month basis, we require subsidiary employees to earn certifications showing competency in specific skills. Like with the employee evaluations, these are avenues to either learn or be evaluated in a skill, so if you&apos;re already familiar with certain things then we will merely ask for proof of competency and the evaluation process will be waived. Below are our current, available certifications (note, you do not have to be in a subsidiary to get subsidiary-specific certifications, any employee is eligible to earn all of them):
           </p>
         </motion.div>
 
