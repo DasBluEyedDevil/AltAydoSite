@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 // Data structure interface for org chart nodes
@@ -310,7 +310,7 @@ const PersonCard: React.FC<PersonCardProps> = ({
 };
 
 // Main OrgChart component
-const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnections = [], peerWithParentIds = [], nodeOffsets = {}, isolateRowIds = [], anchorXToId = {} }) => {
+const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnections = [], headerResolver, peerWithParentIds = [], nodeOffsets = {}, isolateRowIds = [], anchorXToId = {} }) => {
   // State for managing flipped cards
   const [flippedNodes, setFlippedNodes] = useState<Record<string, boolean>>({});
   
@@ -408,8 +408,24 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
   };
 
   // Extract all levels dynamically
-  const allLevels = extractAllLevels(tree);
-  
+  const allLevels = useMemo(() => extractAllLevels(tree), [tree]);
+  const recalcLockRef = useRef(false);
+
+  // Header label resolver (was missing after refactor)
+  const getHeaderForLevel = useCallback((levelIndex: number): string => {
+    if (headerResolver) return headerResolver(levelIndex);
+    const levelNodes = allLevels[levelIndex];
+    if (!levelNodes || levelNodes.length === 0) return `LEVEL ${levelIndex + 1}`;
+    const nodeLevel = levelNodes[0].level;
+    switch (nodeLevel) {
+      case 'executive': return 'EXECUTIVE LEADERSHIP';
+      case 'board': return 'BOARD OF DIRECTORS';
+      case 'director': return 'DIRECTORS';
+      case 'manager': return 'MANAGEMENT';
+      case 'staff': return 'STAFF';
+      default: return `LEVEL ${levelIndex + 1}`;
+    }
+  }, [allLevels, headerResolver]);
 
   // Build tree map from ChartNodeData structure
   const buildTreeMap = useCallback((node: ChartNodeData): Record<string, string[]> => {
@@ -436,6 +452,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
     const containerRect = container.getBoundingClientRect();
     const newOffsets: Record<string, { x: number; y: number }> = {};
     let changed = false;
+    const TOLERANCE = 1; // px threshold to avoid jitter
     Object.entries(anchorXToId).forEach(([sourceId, targetId]) => {
       const srcEl = nodeRefs.current[sourceId];
       const tgtEl = nodeRefs.current[targetId];
@@ -444,35 +461,36 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
       const tgtRect = tgtEl.getBoundingClientRect();
       const srcCenterX = srcRect.left - containerRect.left + srcRect.width / 2;
       const tgtCenterX = tgtRect.left - containerRect.left + tgtRect.width / 2;
-      const deltaX = tgtCenterX - srcCenterX;
+      let deltaX = tgtCenterX - srcCenterX;
       const baseX = nodeOffsets[sourceId]?.x || 0;
       const baseY = nodeOffsets[sourceId]?.y || 0;
-      const desired = { x: baseX + deltaX, y: baseY };
+      // Round to integer to stabilize layout
+      const desiredX = Math.round(baseX + deltaX);
       const prev = computedOffsets[sourceId];
-      if (!prev || prev.x !== desired.x || prev.y !== desired.y) {
-        newOffsets[sourceId] = desired;
+      if (!prev || Math.abs(prev.x - desiredX) > TOLERANCE) {
+        newOffsets[sourceId] = { x: desiredX, y: baseY };
         changed = true;
       }
     });
     if (changed) {
       setComputedOffsets(prev => ({ ...prev, ...newOffsets }));
-      setTimeout(() => {
+      // No immediate svg resize unless size truly changes; defer minimal
+      requestAnimationFrame(() => {
         const rect = container.getBoundingClientRect();
-        setSvgSize({ width: Math.ceil(rect.width), height: Math.ceil(container.scrollHeight) });
-      }, 0);
+        setSvgSize(p => (p.width === Math.ceil(rect.width) && p.height === Math.ceil(container.scrollHeight)) ? p : { width: Math.ceil(rect.width), height: Math.ceil(container.scrollHeight) });
+      });
     }
-  }, [anchorXToId, nodeOffsets, tree, computedOffsets]);
+  }, [anchorXToId, nodeOffsets, tree]);
 
   // Calculate SVG connectors with clean parent-child connections only
   const recalcConnections = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    if (recalcLockRef.current) return; // prevent re-entrant calls within same frame
+    recalcLockRef.current = true;
+     const container = containerRef.current;
+     if (!container) { recalcLockRef.current = false; return; }
 
-    const containerRect = container.getBoundingClientRect();
-    setSvgSize({ 
-      width: Math.ceil(containerRect.width), 
-      height: Math.ceil(container.scrollHeight) 
-    });
+     const containerRect = container.getBoundingClientRect();
+     setSvgSize(prev => (prev.width === Math.ceil(containerRect.width) && prev.height === Math.ceil(container.scrollHeight)) ? prev : { width: Math.ceil(containerRect.width), height: Math.ceil(container.scrollHeight) });
 
     // Helper functions to get element positions
     const getBottomCenter = (el: HTMLElement) => {
@@ -672,7 +690,15 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
       });
     }
 
-    setPaths(newPaths);
+    setPaths(prev => {
+      if (prev.length === newPaths.length && prev.every((p,i)=>p.d===newPaths[i].d && p.hasArrow===newPaths[i].hasArrow && p.id===newPaths[i].id)) {
+        // release lock and exit without change
+        requestAnimationFrame(()=>{ recalcLockRef.current = false; });
+        return prev; // no changes
+      }
+      requestAnimationFrame(()=>{ recalcLockRef.current = false; });
+      return newPaths;
+    });
   }, [tree, buildTreeMap, extraConnections, peerWithParentIds, isolateRowIds]);
 
   // Effect to handle resizing and recalculation with proper cleanup
@@ -802,8 +828,8 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
                                 loreName={node.back.loreName}
                                 handle={node.back.handle}
                                 level={mappedLevel as any}
-                                isFlipped={flippedNodes[node.id]}
                                 onFlip={() => handleFlip(node.id)}
+                                isFlipped={flippedNodes[node.id]}
                               />
                               );
                             })()}
