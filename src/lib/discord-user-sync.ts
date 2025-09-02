@@ -23,6 +23,10 @@ interface DiscordRole {
   name: string;
   color: number;
   position: number;
+  hoist: boolean;
+  permissions: string;
+  managed: boolean;
+  mentionable: boolean;
 }
 
 interface SyncResult {
@@ -50,47 +54,42 @@ async function fetchAllGuildMembers(guildId: string): Promise<DiscordGuildMember
     throw new Error('Discord bot token not configured');
   }
 
-  try {
-    console.log(`Fetching all members from Discord guild: ${guildId}`);
-    
-    const members: DiscordGuildMember[] = [];
-    let after = '0';
-    let hasMore = true;
+  console.log(`Fetching all members from Discord guild: ${guildId}`);
+  
+  const members: DiscordGuildMember[] = [];
+  let after = '0';
+  let hasMore = true;
 
-    // Discord API returns max 1000 members per request, so we need to paginate
-    while (hasMore) {
-      const response = await fetch(
-        `https://discord.com/api/v10/guilds/${guildId}/members?limit=1000&after=${after}`,
-        {
-          headers: {
-            'Authorization': `Bot ${botToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch guild members: ${response.status} ${response.statusText}`);
+  // Discord API returns max 1000 members per request, so we need to paginate
+  while (hasMore) {
+    const response = await fetch(
+      `https://discord.com/api/v10/guilds/${guildId}/members?limit=1000&after=${after}`,
+      {
+        headers: {
+          'Authorization': `Bot ${botToken}`,
+          'Content-Type': 'application/json',
+        },
       }
+    );
 
-      const batch: DiscordGuildMember[] = await response.json();
-      members.push(...batch);
-
-      if (batch.length < 1000) {
-        hasMore = false;
-      } else {
-        after = batch[batch.length - 1].user.id;
-      }
-
-      console.log(`Fetched ${members.length} Discord members so far...`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch guild members: ${response.status} ${response.statusText}`);
     }
 
-    console.log(`Total Discord members fetched: ${members.length}`);
-    return members;
-  } catch (error) {
-    console.error('Error fetching Discord guild members:', error);
-    throw error;
+    const batch: DiscordGuildMember[] = await response.json();
+    members.push(...batch);
+
+    if (batch.length < 1000) {
+      hasMore = false;
+    } else {
+      after = batch[batch.length - 1].user.id;
+    }
+
+    console.log(`Fetched ${members.length} Discord members so far...`);
   }
+
+  console.log(`Total Discord members fetched: ${members.length}`);
+  return members;
 }
 
 /**
@@ -102,28 +101,23 @@ async function fetchGuildRoles(guildId: string): Promise<DiscordRole[]> {
     throw new Error('Discord bot token not configured');
   }
 
-  try {
-    const response = await fetch(
-      `https://discord.com/api/v10/guilds/${guildId}/roles`,
-      {
-        headers: {
-          'Authorization': `Bot ${botToken}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch guild roles: ${response.status} ${response.statusText}`);
+  const response = await fetch(
+    `https://discord.com/api/v10/guilds/${guildId}/roles`,
+    {
+      headers: {
+        'Authorization': `Bot ${botToken}`,
+        'Content-Type': 'application/json',
+      },
     }
+  );
 
-    const roles: DiscordRole[] = await response.json();
-    console.log(`Fetched ${roles.length} Discord roles`);
-    return roles;
-  } catch (error) {
-    console.error('Error fetching Discord guild roles:', error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(`Failed to fetch guild roles: ${response.status} ${response.statusText}`);
   }
+
+  const roles: DiscordRole[] = await response.json();
+  console.log(`Fetched ${roles.length} Discord roles`);
+  return roles;
 }
 
 /**

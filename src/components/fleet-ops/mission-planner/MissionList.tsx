@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MissionResponse } from '@/types/Mission';
@@ -204,7 +206,7 @@ const MissionList: React.FC<MissionListProps> = ({
           {/* Status text */}
           <div className="mt-5 flex flex-col items-center">
             <AnimatePresence mode="wait">
-              {["Connecting to database...", "Authorizing access...", "Downloading mission data..."].map((text, i) => (
+              {["Connecting to database...", "Authorizing access...", "Downloading mission data..."].map((text) => (
                 <motion.div
                   key={text}
                   initial={{ opacity: 0, height: 0 }}

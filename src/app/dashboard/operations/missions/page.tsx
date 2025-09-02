@@ -3,26 +3,24 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MissionResponse, MissionStatus, MissionType } from '@/types/Mission';
+import { MissionResponse } from '@/types/Mission';
 
 // New Mission Database Components
 import MissionDashboard from '@/components/fleet-ops/mission-planner/MissionDashboard';
 import MissionDetail from '@/components/fleet-ops/mission-planner/MissionDetail';
-import MissionForm from '@/components/fleet-ops/mission-planner/MissionForm';
+import MissionComposerModal from '@/components/fleet-ops/mission-planner/MissionComposerModal';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import ErrorNotification from '@/components/ErrorNotification';
 import HoloModal from '@/components/fleet-ops/mission-planner/HoloModal';
 
 export default function MissionDatabasePage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [missions, setMissions] = useState<MissionResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMission, setSelectedMission] = useState<MissionResponse | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMission, setEditingMission] = useState<MissionResponse | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [viewMode, setViewMode] = useState<'list' | 'detail' | 'form'>('list');
   
   // New state for modal controls
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -57,7 +55,10 @@ export default function MissionDatabasePage() {
         const response = await fetch('/api/fleet-ops/missions');
         
         if (!response.ok) {
-          throw new Error(`Error fetching missions: ${response.status}`);
+          const message = `Error fetching missions: ${response.status}`;
+          setError(message);
+          setLoading(false);
+          return;
         }
         
         const data = await response.json();
@@ -73,10 +74,37 @@ export default function MissionDatabasePage() {
     fetchMissions();
   }, [status]);
 
-  // Handle mission click
+  // Keep missions list in sync when deletions occur from other components (e.g., MissionComposerModal)
+  useEffect(() => {
+    const handler = (evt: Event) => {
+      try {
+        const e = evt as CustomEvent<any>;
+        const id = e?.detail?.id as string | undefined;
+        if (!id) return;
+        // Remove the deleted mission from local state
+        setMissions(prev => prev.filter(m => m.id !== id));
+        // If the deleted mission was open anywhere, close it/clear selection
+        setEditingMission(prev => (prev && prev.id === id ? null : prev));
+        setSelectedMission(prev => (prev && prev.id === id ? null : prev));
+        setShowFormModal(false);
+        setShowDetailModal(false);
+        // Surface a system message consistent with existing UX
+        setSystemMessage(`Mission has been deleted`);
+      } catch {
+        // no-op
+      }
+    };
+
+    window.addEventListener('mission:deleted', handler as EventListener);
+    return () => {
+      window.removeEventListener('mission:deleted', handler as EventListener);
+    };
+  }, []);
+
+  // Handle mission click - open Composer directly for editing
   const handleMissionClick = (mission: MissionResponse) => {
-    setSelectedMission(mission);
-    setShowDetailModal(true);
+    setEditingMission(mission);
+    setShowFormModal(true);
   };
 
   // Handle back button click
@@ -130,8 +158,11 @@ export default function MissionDatabasePage() {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `Error updating mission: ${response.status}`);
+          const errorData = await response.json().catch(() => ({} as any));
+          const message = (errorData as any).error || `Error updating mission: ${response.status}`;
+          setError(message);
+          setLoading(false);
+          return;
         }
 
         const updatedMission = await response.json();
@@ -163,8 +194,11 @@ export default function MissionDatabasePage() {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `Error creating mission: ${response.status}`);
+          const errorData = await response.json().catch(() => ({} as any));
+          const message = (errorData as any).error || `Error creating mission: ${response.status}`;
+          setError(message);
+          setLoading(false);
+          return;
         }
 
         const newMission = await response.json();
@@ -201,8 +235,11 @@ export default function MissionDatabasePage() {
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Error deleting mission: ${response.status}`);
+        const errorData = await response.json().catch(() => ({} as any));
+        const message = (errorData as any).error || `Error deleting mission: ${response.status}`;
+        setError(message);
+        setLoading(false);
+        return;
       }
       
       // Find mission name before deletion
@@ -427,20 +464,13 @@ export default function MissionDatabasePage() {
         )}
       </HoloModal>
       
-      {/* Mission Form Modal */}
-      <HoloModal
+      {/* Mission Composer Modal */}
+      <MissionComposerModal
         isOpen={showFormModal}
+        initialMission={editingMission}
         onClose={handleBack}
-        title={editingMission ? "EDIT MISSION" : "CREATE MISSION"}
-        width="md:w-4/5 lg:w-3/4"
-      >
-        <MissionForm
-          mission={editingMission}
-          onSave={handleSaveMission}
-          onCancel={handleBack}
-          onDelete={editingMission ? () => handleConfirmDelete(editingMission.id) : undefined}
-        />
-      </HoloModal>
+        onSave={handleSaveMission}
+      />
       
       {/* Delete Confirmation Modal */}
       <HoloModal

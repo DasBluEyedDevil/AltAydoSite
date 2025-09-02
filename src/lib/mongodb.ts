@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('MongoDB URI exists:', !!mongoUri);
 }
 
-const uri = mongoUri;
+const uri: string = mongoUri || '';
 if (uri && process.env.NODE_ENV !== 'production') {
   console.log('MongoDB configuration detected');
 }
@@ -64,10 +64,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export async function connectToDatabase() {
+  if (!uri) {
+    throw new Error('Please add your MongoDB URI or CosmosDB connection string to .env.local');
+  }
   try {
-    if (!uri) {
-      throw new Error('Please add your MongoDB URI or CosmosDB connection string to .env.local');
-    }
     const client = await clientPromise;
     const dbName = process.env.COSMOS_DATABASE_ID;
     const db = dbName ? client.db(dbName) : client.db();

@@ -1,11 +1,14 @@
+'use client';
+
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { shipDatabase } from '@/types/ShipData';
 
 // Direct image path formatting function
 const formatDirectImagePath = (shipName: string): string => {
   const formattedName = shipName.toLowerCase()
     .replace(/\s+/g, '_')
-    .replace(/[\.']/g, '')
+    .replace(/[.']/g, '')
     .replace(/\//g, '_')
     .replace(/[āáàäâã]/g, 'a')
     .replace(/[ēéèëê]/g, 'e')
@@ -84,14 +87,12 @@ const TestShipImages: React.FC = () => {
             <div className="mt-2 p-2 bg-gray-800">
               <h4 className="text-sm mb-1">Image Preview</h4>
               <div className="h-32 bg-gray-700 relative">
-                <img 
+                <Image
                   src={selectedShipImagePath}
                   alt={selectedShip.name}
-                  className="h-full object-contain mx-auto"
-                  onError={(e) => {
-                    console.error(`Error loading image for ${selectedShip.name}: ${selectedShipImagePath}`);
-                    (e.target as HTMLImageElement).src = "/images/ship-placeholder.jpg";
-                  }}
+                  fill
+                  sizes="128px"
+                  className="object-contain mx-auto"
                 />
               </div>
             </div>

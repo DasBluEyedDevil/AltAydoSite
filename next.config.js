@@ -19,16 +19,23 @@ const nextConfig = {
     },
     output: 'standalone',
     webpack: (config, { isServer }) => {
-        // Handle discord.js and its dependencies
+        // Handle discord.js and its dependencies safely
         if (isServer) {
+            // Ensure externals is an array before pushing
+            if (!Array.isArray(config.externals)) {
+                config.externals = config.externals ? [config.externals] : [];
+            }
             config.externals.push({
                 'utf-8-validate': 'commonjs utf-8-validate',
                 'bufferutil': 'commonjs bufferutil',
                 'zlib-sync': 'commonjs zlib-sync'
             });
         } else {
+            // Ensure resolve and resolve.fallback exist before spreading
+            config.resolve = config.resolve || {};
+            const existingFallback = (config.resolve.fallback) || {};
             config.resolve.fallback = {
-                ...config.resolve.fallback,
+                ...existingFallback,
                 'zlib-sync': false,
                 'utf-8-validate': false,
                 'bufferutil': false
