@@ -22,6 +22,7 @@ export interface DiscordScheduledEvent {
   };
   user_count?: number;
   image?: string;
+  recurrence_rule?: any; // raw Discord recurrence rule (if recurring)
 }
 
 // Discord API Response
@@ -48,4 +49,4 @@ export enum DiscordEntityType {
 // Privacy level enum  
 export enum DiscordPrivacyLevel {
   GUILD_ONLY = 2
-} 
+}

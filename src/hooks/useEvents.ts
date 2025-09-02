@@ -20,6 +20,8 @@ interface DiscordEventsResponse {
   count?: number;
   lastSync?: string;
   error?: string;
+  recurrenceExpanded?: boolean;
+  recurrenceHorizonDays?: number;
 }
 
 export function useEvents(): UseEventsReturn {
@@ -38,7 +40,20 @@ export function useEvents(): UseEventsReturn {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/events/discord', {
+      // Build query params for optional recurrence expansion
+      const qp = new URLSearchParams();
+      const expandCfg = process.env.NEXT_PUBLIC_EVENTS_RECURRENCE_EXPAND;
+      const horizonCfg = process.env.NEXT_PUBLIC_EVENTS_RECURRENCE_HORIZON_DAYS;
+      if (expandCfg && /^(1|true|yes|on)$/i.test(expandCfg)) {
+        qp.set('expand', '1');
+        if (horizonCfg && /^\d+$/.test(horizonCfg)) {
+          qp.set('horizon', horizonCfg);
+        }
+      }
+
+      const url = qp.toString() ? `/api/events/discord?${qp.toString()}` : '/api/events/discord';
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +70,6 @@ export function useEvents(): UseEventsReturn {
         setError(data.error);
       } else if (data.events && data.events.length > 0) {
         // Discord events available
-        // Convert date strings back to Date objects and ensure timezone formatting
         const processedEvents = data.events.map(event => {
           const eventDate = new Date(event.date);
           return {
@@ -63,9 +77,10 @@ export function useEvents(): UseEventsReturn {
             date: eventDate
           };
         });
-        
-        console.log('Processed events with current timezone:', userTimezone, processedEvents.length, 'events');
-        
+        console.log('Processed events with current timezone:', userTimezone, processedEvents.length, 'events', {
+          recurrenceExpanded: data.recurrenceExpanded,
+          horizon: data.recurrenceHorizonDays
+        });
         setEvents(processedEvents);
         setSource('discord');
         setLastSync(data.lastSync || new Date().toISOString());

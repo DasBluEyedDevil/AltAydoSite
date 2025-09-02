@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useEvents } from '@/hooks/useEvents';
 import { useUserTimezone } from '@/hooks/useUserTimezone';
 import { EventData, EventType } from '@/lib/eventMapper';
-import { getDateTimeInTimezone, getTimezoneAbbreviation } from '@/lib/timezone';
+import { getDateTimeInTimezone, getTimezoneAbbreviation, convertToUserTimezone } from '@/lib/timezone';
 
 // Function to get days in month
 const getDaysInMonth = (year: number, month: number) => {
@@ -18,10 +18,10 @@ const getFirstDayOfMonth = (year: number, month: number) => {
 };
 
 // Get current date
-const currentDate = new Date();
-const currentDay = currentDate.getDate();
-const currentMonth = currentDate.getMonth();
-const currentYear = currentDate.getFullYear();
+const currentDateUTC = new Date();
+const currentDay = currentDateUTC.getDate();
+const currentMonth = currentDateUTC.getMonth();
+const currentYear = currentDateUTC.getFullYear();
 
 const EventsCalendar = () => {
   const [viewMonth, setViewMonth] = useState(currentMonth);
@@ -33,8 +33,8 @@ const EventsCalendar = () => {
   const { timezone: userTimezone, loading: timezoneLoading } = useUserTimezone();
   
   // Use the events hook for Discord integration (now timezone-aware)
-  const { events: eventsData, loading, error, source, lastSync, refetch, refreshWithTimezone } = useEvents();
-  
+  const { events: eventsData, loading, error, source, refreshWithTimezone } = useEvents();
+
   // Debug logging
   console.log('EventsCalendar Debug:', {
     userTimezone,
@@ -76,14 +76,18 @@ const EventsCalendar = () => {
   // Day names for display
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  // Filter events for the current month view
+  // Filter events for the current month view using user timezone
   const monthEvents = eventsData.filter(event => {
-    return event.date.getMonth() === viewMonth && event.date.getFullYear() === viewYear;
+    const localDate = (!timezoneLoading && userTimezone) ? convertToUserTimezone(event.date, userTimezone) : event.date;
+    return localDate.getMonth() === viewMonth && localDate.getFullYear() === viewYear;
   });
 
-  // Get events for a specific day
+  // Get events for a specific day using user timezone
   const getEventsForDay = (day: number) => {
-    return monthEvents.filter(event => event.date.getDate() === day);
+    return monthEvents.filter(event => {
+      const localDate = (!timezoneLoading && userTimezone) ? convertToUserTimezone(event.date, userTimezone) : event.date;
+      return localDate.getDate() === day;
+    });
   };
 
   // Open event details modal
@@ -104,12 +108,31 @@ const EventsCalendar = () => {
     const params = new URLSearchParams(window.location.search);
     const eventIdParam = params.get('eventId');
     if (!eventIdParam || eventsData.length === 0) return;
-    const targetId = Number(eventIdParam);
-    const found = eventsData.find(e => e.id === targetId);
-    if (found) {
-      openEventDetails(found);
+    let found: EventData | undefined;
+    const numeric = Number(eventIdParam);
+    if (!Number.isNaN(numeric)) {
+      found = eventsData.find(e => e.id === numeric);
     }
+    if (!found) {
+      found = eventsData.find(e => e.originalDiscordEventId === eventIdParam);
+    }
+    if (found) openEventDetails(found);
   }, [eventsData]);
+
+  // If current viewed month has no events but there are events elsewhere, jump to earliest event's month
+  useEffect(() => {
+    if (loading || timezoneLoading || eventsData.length === 0) return;
+    const hasEventInView = eventsData.some(ev => {
+      const local = (!timezoneLoading && userTimezone) ? convertToUserTimezone(ev.date, userTimezone) : ev.date;
+      return local.getMonth() === viewMonth && local.getFullYear() === viewYear;
+    });
+    if (!hasEventInView) {
+      const first = eventsData[0];
+      const firstLocal = (!timezoneLoading && userTimezone) ? convertToUserTimezone(first.date, userTimezone) : first.date;
+      setViewMonth(firstLocal.getMonth());
+      setViewYear(firstLocal.getFullYear());
+    }
+  }, [eventsData, loading, timezoneLoading, userTimezone, viewMonth, viewYear]);
 
   // Get color for event type
   const getEventColor = (type: EventType) => {
@@ -141,7 +164,14 @@ const EventsCalendar = () => {
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const dayEvents = getEventsForDay(day);
-      const isToday = day === currentDay && viewMonth === currentMonth && viewYear === currentYear;
+      // Determine today in user timezone
+      let isToday = false;
+      if (!timezoneLoading && userTimezone) {
+        const nowLocal = convertToUserTimezone(currentDateUTC, userTimezone);
+        isToday = day === nowLocal.getDate() && viewMonth === nowLocal.getMonth() && viewYear === nowLocal.getFullYear();
+      } else {
+        isToday = day === currentDay && viewMonth === currentMonth && viewYear === currentYear;
+      }
       
       calendarDays.push(
         <div 
@@ -187,15 +217,10 @@ const EventsCalendar = () => {
                   {timezoneLoading ? 'Loading timezone...' : 'Syncing...'}
                 </span>
               </div>
-            ) : source === 'discord' ? (
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-xs text-[rgba(var(--mg-text),0.6)]">Discord</span>
-              </div>
             ) : (
               <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                <span className="text-xs text-[rgba(var(--mg-text),0.6)]">Local</span>
+                <div className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : 'bg-green-500'}`}></div>
+                <span className="text-xs text-[rgba(var(--mg-text),0.6)]">Discord</span>
               </div>
             )}
             
@@ -304,6 +329,24 @@ const EventsCalendar = () => {
         </div>
       )}
 
+      {/* Fallback list when there are events but none in this month */}
+      {!loading && !timezoneLoading && eventsData.length > 0 && monthEvents.length === 0 && (
+        <div className="mt-4 p-3 bg-[rgba(var(--mg-panel-dark),0.5)] rounded-sm">
+          <p className="text-xs text-[rgba(var(--mg-text),0.6)] mb-2">No events in this month. Showing next 10 upcoming events:</p>
+          <ul className="space-y-1 max-h-56 overflow-y-auto text-xs">
+            {eventsData.slice(0,10).map(e => {
+              const local = (!timezoneLoading && userTimezone) ? convertToUserTimezone(e.date, userTimezone) : e.date;
+              return (
+                <li key={e.id} className="flex items-center justify-between cursor-pointer hover:bg-[rgba(var(--mg-primary),0.1)] px-2 py-1 rounded" onClick={() => openEventDetails(e)}>
+                  <span className="truncate mr-2">{e.title}</span>
+                  <span className="opacity-60 whitespace-nowrap">{local.toLocaleDateString(undefined,{month:'short',day:'numeric'})} {e.time}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       {/* Timezone change notice */}
       {!loading && !timezoneLoading && eventsData.length > 0 && (
         <div className="mt-2 text-center">
@@ -379,4 +422,4 @@ const EventsCalendar = () => {
   );
 };
 
-export default EventsCalendar; 
+export default EventsCalendar;

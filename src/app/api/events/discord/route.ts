@@ -2,140 +2,149 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/auth';
 import { getDiscordService } from '@/lib/discord';
-import { mapDiscordEventsToEventData } from '@/lib/eventMapper';
+import { mapDiscordEventsToEventData, mapDiscordEventToEventData } from '@/lib/eventMapper';
 import * as userStorage from '@/lib/user-storage';
+import { DiscordScheduledEvent } from '@/types/DiscordEvent';
+import type { Session } from 'next-auth';
 
-// Force this API route to use Node.js runtime for discord.js compatibility
+// Ensure Node.js runtime (discord.js compatibility if needed elsewhere)
 export const runtime = 'nodejs';
 
-export async function GET(request: NextRequest) {
+async function resolveUserTimezone(): Promise<string> {
   try {
-    // Get user's timezone preference
-    let userTimezone = 'UTC'; // Default to UTC
-    
-    try {
-      const session = await getServerSession(authOptions);
-      if (session?.user?.id) {
-        const user = await userStorage.getUserById(session.user.id);
-        if (user?.timezone) {
-          userTimezone = user.timezone;
-          console.log(`Discord API: Using user timezone: ${userTimezone} for user ${session.user.id}`);
-        } else {
-          console.log(`Discord API: No timezone set for user ${session.user.id}, using UTC`);
-        }
-      } else {
-        console.log('Discord API: No user session found, using UTC timezone');
-      }
-    } catch (error) {
-      console.warn('Could not fetch user timezone, using UTC:', error);
+    const session = await getServerSession(authOptions as any) as Session | null;
+    if (session?.user?.id) {
+      const user = await userStorage.getUserById(session.user.id);
+      if (user?.timezone) return user.timezone;
     }
+  } catch (e) {
+    console.warn('[Events API] Timezone lookup failed, defaulting to UTC:', e);
+  }
+  return 'UTC';
+}
 
+function buildSuccessResponse(params: {
+  events: any[];
+  source: string;
+  userTimezone: string;
+  recurrenceExpanded: boolean;
+  recurrenceHorizonDays?: number;
+}) {
+  const { events, source, userTimezone, recurrenceExpanded, recurrenceHorizonDays } = params;
+  return NextResponse.json({
+    events,
+    source,
+    count: events.length,
+    lastSync: new Date().toISOString(),
+    userTimezone,
+    recurrenceExpanded,
+    recurrenceHorizonDays,
+    note: 'Events mapped from Discord scheduled events' + (recurrenceExpanded ? ' (recurrence pattern inferred from titles/descriptions)' : '')
+  });
+}
+
+function buildErrorResponse(message: string, userTimezone: string) {
+  return NextResponse.json({
+    events: [],
+    error: message,
+    source: 'discord',
+    count: 0,
+    lastSync: new Date().toISOString(),
+    userTimezone,
+    recurrenceExpanded: false
+  });
+}
+
+export async function GET(request: NextRequest) {
+  const userTimezone = await resolveUserTimezone();
+  const url = new URL(request.url);
+  const expandParam = url.searchParams.get('expand');
+  const horizonParam = url.searchParams.get('horizon');
+  const expand = /^(1|true|yes|on)$/i.test(expandParam || '');
+  const horizonDays = horizonParam && /^\d+$/.test(horizonParam) ? Math.min(365, Math.max(7, parseInt(horizonParam, 10))) : 180; // sane bounds
+
+  try {
     const discordService = getDiscordService();
-    // Check if Discord service is configured
-    if (!discordService.isConfigured()) {
-      return NextResponse.json(
-        { 
-          error: 'Discord integration not configured. Please set DISCORD_BOT_TOKEN and DISCORD_GUILD_ID environment variables.',
-          events: [],
-          userTimezone
-        },
-        { status: 200 } // Return 200 to allow fallback to hardcoded events
-      );
+    let discordEvents: DiscordScheduledEvent[] = [];
+    try {
+      discordEvents = await discordService.getScheduledEvents();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch Discord events';
+      console.error('[Events API][GET] Discord fetch error:', msg);
+      return buildErrorResponse(msg, userTimezone);
     }
 
-    // Fetch events from Discord
-    const discordEvents = await discordService.getScheduledEvents();
-    
-    // Map Discord events to internal format with user's timezone
-    const events = mapDiscordEventsToEventData(discordEvents, userTimezone);
-    
-    // Sort events by date
-    events.sort((a, b) => a.date.getTime() - b.date.getTime());
+    // If no events, short-circuit
+    if (!discordEvents.length) {
+      return buildSuccessResponse({ events: [], source: 'discord', userTimezone, recurrenceExpanded: false, recurrenceHorizonDays: expand ? horizonDays : undefined });
+    }
 
-    return NextResponse.json({
-      events,
+    // Always map; expansion only meaningful if expand flag set (we still use same mapper but report flag based on length change)
+    const mapped = mapDiscordEventsToEventData(discordEvents, userTimezone, expand ? horizonDays : 1); // horizon 1 => minimal expansion attempt
+    const baseMapped = discordEvents.map(e => mapDiscordEventToEventData(e, userTimezone));
+    const recurrenceExpanded = mapped.length > baseMapped.length;
+
+    return buildSuccessResponse({
+      events: mapped,
       source: 'discord',
-      count: events.length,
-      lastSync: new Date().toISOString(),
-      userTimezone
+      userTimezone,
+      recurrenceExpanded: recurrenceExpanded && expand,
+      recurrenceHorizonDays: expand ? horizonDays : undefined
     });
-
   } catch (error) {
-    console.error('Error fetching Discord events:', error);
-    
-    return NextResponse.json(
-      { 
-        error: error instanceof Error ? error.message : 'Failed to fetch Discord events',
-        events: []
-      },
-      { status: 200 } // Return 200 to allow fallback
-    );
+    console.error('[Events API][GET] Unexpected error:', error);
+    const msg = error instanceof Error ? error.message : 'Unexpected server error';
+    return buildErrorResponse(msg, userTimezone);
   }
 }
 
-// Optional: POST endpoint to manually trigger event sync
 export async function POST(request: NextRequest) {
+  const userTimezone = await resolveUserTimezone();
   try {
-    const { eventId } = await request.json();
-    
+    const body = await request.json().catch(() => ({}));
+    const { eventId, expand, horizon } = body || {};
+    const expandFlag = /^(1|true|yes|on)$/i.test(String(expand || ''));
+    const horizonDays = horizon && /^\d+$/.test(String(horizon)) ? Math.min(365, Math.max(7, parseInt(String(horizon), 10))) : 180;
+
     const discordService = getDiscordService();
-    if (!discordService.isConfigured()) {
-      return NextResponse.json(
-        { error: 'Discord integration not configured' },
-        { status: 400 }
-      );
-    }
 
     if (eventId) {
-      // Fetch specific event
-      const discordEvent = await discordService.getScheduledEvent(eventId);
-      if (!discordEvent) {
-        return NextResponse.json(
-          { error: 'Event not found' },
-          { status: 404 }
-        );
-      }
-      
-      return NextResponse.json({
-        event: discordEvent,
-        source: 'discord'
-      });
-    } else {
-      // Get user's timezone preference for manual sync
-      let userTimezone = 'UTC';
       try {
-        const session = await getServerSession(authOptions);
-        if (session?.user?.id) {
-          const user = await userStorage.getUserById(session.user.id);
-          if (user?.timezone) {
-            userTimezone = user.timezone;
-          }
+        const event = await discordService.getScheduledEvent(String(eventId));
+        if (!event) {
+          return NextResponse.json({ error: 'Event not found', events: [], source: 'discord', userTimezone }, { status: 404 });
         }
-      } catch (error) {
-        console.warn('Could not fetch user timezone for manual sync, using UTC:', error);
+        const mapped = mapDiscordEventToEventData(event, userTimezone);
+        return NextResponse.json({ event: mapped, source: 'discord', userTimezone, lastSync: new Date().toISOString() });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Failed to fetch event';
+        return buildErrorResponse(msg, userTimezone);
       }
-      
-      // Trigger full sync
-      const discordEvents = await discordService.getScheduledEvents();
-      const events = mapDiscordEventsToEventData(discordEvents, userTimezone);
-      
-      return NextResponse.json({
-        events,
-        source: 'discord',
-        count: events.length,
-        lastSync: new Date().toISOString(),
-        userTimezone
-      });
     }
 
+    // Fallback to bulk like GET
+    let discordEvents: DiscordScheduledEvent[] = [];
+    try {
+      discordEvents = await discordService.getScheduledEvents();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch Discord events';
+      return buildErrorResponse(msg, userTimezone);
+    }
+
+    const mapped = mapDiscordEventsToEventData(discordEvents, userTimezone, expandFlag ? horizonDays : 1);
+    const baseMapped = discordEvents.map(e => mapDiscordEventToEventData(e, userTimezone));
+    const recurrenceExpanded = mapped.length > baseMapped.length;
+
+    return buildSuccessResponse({
+      events: mapped,
+      source: 'discord',
+      userTimezone,
+      recurrenceExpanded: recurrenceExpanded && expandFlag,
+      recurrenceHorizonDays: expandFlag ? horizonDays : undefined
+    });
   } catch (error) {
-    console.error('Error in Discord events POST:', error);
-    
-    return NextResponse.json(
-      { 
-        error: error instanceof Error ? error.message : 'Failed to process request'
-      },
-      { status: 500 }
-    );
+    console.error('[Events API][POST] Unexpected error:', error);
+    const msg = error instanceof Error ? error.message : 'Unexpected server error';
+    return buildErrorResponse(msg, userTimezone);
   }
-} 
+}

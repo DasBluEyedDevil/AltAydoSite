@@ -24,7 +24,7 @@ export class DiscordService {
     }
 
     const response = await fetch(
-      `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events`,
+      `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events?with_recurrence=1`,
       {
         headers: {
           'Authorization': `Bot ${this.botToken}`,
