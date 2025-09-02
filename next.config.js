@@ -1,11 +1,6 @@
-const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     poweredByHeader: false,
-    // Force Next to treat this folder as the root (avoid walking up to parent lockfiles)
-    outputFileTracingRoot: __dirname,
-    // Ensure problematic ESM packages are transpiled (fixes framer-motion createMotionComponent error in Next 15)
-    transpilePackages: ['framer-motion'],
     typescript: {
         // !! WARN !!
         // Dangerously allow production builds to successfully complete even if
