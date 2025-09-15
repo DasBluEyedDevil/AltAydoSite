@@ -72,11 +72,12 @@ export default function SubsidiariesIndexPage() {
                   
                   <div className="p-6">
                     <div className="flex items-center mb-4">
-                      <div className="h-12 w-12 relative mr-4 rounded-sm overflow-hidden">
+                      <div className="h-16 w-16 relative mr-4 rounded-sm overflow-hidden">
                         <Image 
                           src={subsidiary.icon} 
                           alt={`${subsidiary.name} Logo`} 
-                          fill 
+                          width={64}
+                          height={64}
                           className="object-contain"
                         />
                       </div>
