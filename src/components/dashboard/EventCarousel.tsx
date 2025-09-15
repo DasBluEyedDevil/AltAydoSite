@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import { cdn } from '@/lib/cdn';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
@@ -100,8 +100,8 @@ const EventCarousel = () => {
     };
   }, []);
   
-  // Reset autoplay timer when manually changing slides
-  const resetAutoplay = () => {
+  // Reset autoplay timer when manually changing slides - memoized
+  const resetAutoplay = useCallback(() => {
     if (autoplayRef.current) {
       clearInterval(autoplayRef.current);
       autoplayRef.current = setInterval(() => {
@@ -109,55 +109,53 @@ const EventCarousel = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
       }, 6000);
     }
-  };
+  }, []);
 
-  const nextSlide = () => {
+  // Flash effect helper - memoized
+  const triggerFlashEffect = useCallback(() => {
+    containerControls.start({
+      boxShadow: ['0 0 0px rgba(var(--mg-primary), 0)', '0 0 15px rgba(var(--mg-primary), 0.3)', '0 0 0px rgba(var(--mg-primary), 0)'],
+      transition: { duration: 0.5 }
+    });
+  }, [containerControls]);
+
+  const nextSlide = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setDirection(1);
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     resetAutoplay();
-    
-    // Flash effect on container when changing slides
-    containerControls.start({
-      boxShadow: ['0 0 0px rgba(var(--mg-primary), 0)', '0 0 15px rgba(var(--mg-primary), 0.3)', '0 0 0px rgba(var(--mg-primary), 0)'],
-      transition: { duration: 0.5 }
-    });
-    
+    triggerFlashEffect();
+
     // Reset transitioning state after animation completes
     setTimeout(() => setIsTransitioning(false), 500);
-  };
+  }, [isTransitioning, resetAutoplay, triggerFlashEffect]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setDirection(-1);
     setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
     resetAutoplay();
-    
-    // Flash effect on container when changing slides
-    containerControls.start({
-      boxShadow: ['0 0 0px rgba(var(--mg-primary), 0)', '0 0 15px rgba(var(--mg-primary), 0.3)', '0 0 0px rgba(var(--mg-primary), 0)'],
-      transition: { duration: 0.5 }
-    });
-    
+    triggerFlashEffect();
+
     // Reset transitioning state after animation completes
     setTimeout(() => setIsTransitioning(false), 500);
-  };
+  }, [isTransitioning, resetAutoplay, triggerFlashEffect]);
 
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setDirection(index > currentIndex ? 1 : -1);
     setCurrentIndex(index);
     resetAutoplay();
-    
+
     // Reset transitioning state after animation completes
     setTimeout(() => setIsTransitioning(false), 500);
-  };
+  }, [isTransitioning, currentIndex, resetAutoplay]);
 
-  // Variants for the slide animations
-  const slideVariants = {
+  // Variants for the slide animations - memoized
+  const slideVariants = useMemo(() => ({
     enter: (direction: number) => ({
       x: direction > 0 ? '100%' : '-100%',
       opacity: 0,
@@ -183,7 +181,7 @@ const EventCarousel = () => {
         scale: { duration: 0.4 }
       }
     })
-  };
+  }), []);
 
   return (
     <motion.div 
