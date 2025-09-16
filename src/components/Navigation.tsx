@@ -22,26 +22,15 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-14">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center group">
+            <Link href="/" className="flex items-center justify-center group">
               <motion.div 
-                className="relative"
+                className="relative flex items-center justify-center"
                 whileHover={{ scale: 1.03 }}
               >
-                <motion.span 
-                  className="text-xl font-bold font-quantify mg-title"
-                  animate={{ 
-                    textShadow: ['0 0 6px rgba(var(--mg-primary), 0.5)', '0 0 2px rgba(var(--mg-primary), 0.3)', '0 0 6px rgba(var(--mg-primary), 0.5)']
-                  }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  AYDO
-                </motion.span>
-                <span className="ml-0.5 text-xl font-light text-[rgba(var(--mg-text),0.8)] font-quantify">CORP</span>
-                <motion.span 
-                  className="absolute -bottom-1 left-0 h-[1px] bg-[rgba(var(--mg-primary),0.5)]"
-                  initial={{ width: '0%' }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 1.5, delay: 0.2 }}
+                <img 
+                  src="https://images.aydocorp.space/1757983582998.png"
+                  alt="AydoCorp"
+                  className="h-20 w-auto"
                 />
               </motion.div>
             </Link>
