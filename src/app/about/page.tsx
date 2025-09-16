@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary';
-import AlliesSection from '../../components/AlliesSection';
 import AboutHero from '../../components/about/AboutHero';
 import DataFeedSection from '../../components/about/DataFeedSection';
 import HistorySection from '../../components/about/HistorySection';
@@ -95,10 +94,6 @@ export default function About() {
         <JoinCTASection connectionComplete={connectionComplete} />
 
         <AboutTabs />
-
-
-        {/* Strategic Alliances Section */}
-        <AlliesSection />
       </>
     </ErrorBoundary>
   );

@@ -31,8 +31,9 @@ function createIdFilter(id: string): any {
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -40,7 +41,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const imageId = params.id;
+    const imageId = id;
     if (!imageId) {
       return NextResponse.json({ error: 'Image ID is required' }, { status: 400 });
     }

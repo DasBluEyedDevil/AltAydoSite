@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import DirectiveCard from './DirectiveCard';
+import { ScanlineEffect } from '@/components/ui/mobiglas';
 
 interface DirectivesSectionProps {
   connectionComplete: boolean;
@@ -47,38 +48,7 @@ export default function DirectivesSection({ connectionComplete }: DirectivesSect
       </div>
 
       {/* Animated scan lines */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute w-full h-[1px]"
-          style={{
-            top: 0,
-            backgroundColor: "rgba(0, 215, 255, 0.2)"
-          }}
-          animate={{
-            top: ['0%', '100%']
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        <motion.div
-          className="absolute h-full w-[1px]"
-          style={{
-            right: 0,
-            backgroundColor: "rgba(0, 215, 255, 0.2)"
-          }}
-          animate={{
-            right: ['0%', '100%']
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      </div>
+      <ScanlineEffect variant="cross" speed="slow" opacity="low" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div

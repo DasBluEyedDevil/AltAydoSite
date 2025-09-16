@@ -98,6 +98,7 @@ The application includes comprehensive Discord integration:
 - Some API routes have rate limiting enabled
 - Mission builder uses complex React state management - understand the state flow before modifying
 - Always test both cloud and fallback storage modes when making storage-related changes
+- Utilize MobiGlas UI components when creating new pages/components
 
 # Using Gemini CLI for Large Codebase Analysis
 

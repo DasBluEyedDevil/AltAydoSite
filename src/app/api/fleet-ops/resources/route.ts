@@ -24,7 +24,7 @@ const resourceSchema = z.object({
 });
 
 // Helper to check if user has leadership role
-async function hasLeadershipRole(userId: string): Promise<boolean> {
+async function hasLeadershipRole(_userId: string): Promise<boolean> {
   // Remove role restrictions
   return true;
 
@@ -155,55 +155,13 @@ export async function POST(req: NextRequest) {
 }
 
 // GET /api/fleet-ops/resources/:id - Get a specific resource
-export async function GET_ONE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    // Get the session to check if the user is authenticated
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    
-    const resourceId = params.id;
-    
-    // Get the resource
-    const resource = await resourceStorage.getResourceById(resourceId);
-    if (!resource) {
-      return NextResponse.json({ error: 'Resource not found' }, { status: 404 });
-    }
-    
-    // Get owner name
-    const owner = await userStorage.getUserById(resource.owner);
-    const ownerName = owner ? owner.aydoHandle : 'Unknown';
-    
-    // If assigned to someone, get their name
-    let assignedToName;
-    if (resource.assignedTo) {
-      const assignedUser = await userStorage.getUserById(resource.assignedTo);
-      assignedToName = assignedUser ? assignedUser.aydoHandle : 'Unknown';
-    }
-    
-    return NextResponse.json({
-      ...resource,
-      ownerName,
-      assignedToName
-    });
-  } catch (error: any) {
-    console.error(`Error getting resource: ${error}`);
-    return NextResponse.json(
-      { error: `Failed to get resource: ${error.message || 'Unknown error'}` },
-      { status: 500 }
-    );
-  }
-}
 
 // PUT /api/fleet-ops/resources/:id - Update a resource
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     // Get the session to check if the user is authenticated
     const session = await getServerSession(authOptions);
@@ -211,7 +169,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    const resourceId = params.id;
+    const resourceId = id;
     
     // Get the existing resource
     const existingResource = await resourceStorage.getResourceById(resourceId);
@@ -316,8 +274,9 @@ export async function PUT(
 // DELETE /api/fleet-ops/resources/:id - Delete a resource
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     // Get the session to check if the user is authenticated
     const session = await getServerSession(authOptions);
@@ -325,7 +284,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    const resourceId = params.id;
+    const resourceId = id;
     
     // Get the existing resource
     const existingResource = await resourceStorage.getResourceById(resourceId);

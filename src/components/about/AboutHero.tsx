@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { cdn } from '@/lib/cdn';
 import { motion } from 'framer-motion';
+import { MobiGlasPanel, MobiGlasButton, StatusIndicator } from '@/components/ui/mobiglas';
 
 interface AboutHeroProps {
   time: Date;
@@ -27,13 +28,23 @@ export default function AboutHero({ time, scrollPosition, onInitializeDataFeed }
         className="sticky top-0 z-40 bg-black/90 border-b border-[rgba(var(--mg-primary),0.2)] py-1.5 px-4 text-xs text-[rgba(var(--mg-primary),0.8)] flex justify-between backdrop-blur-sm"
       >
         <div className="flex items-center gap-2">
-          <span className="inline-block h-2 w-2 rounded-full bg-[rgba(var(--mg-success),1)] animate-pulse"></span>
-          <span className="mg-text text-xs tracking-wider">SYSTEM ONLINE</span>
+          <StatusIndicator
+            status="online"
+            label="SYSTEM ONLINE"
+            size="sm"
+            withPulse
+          />
           <span className="text-[rgba(var(--mg-text),0.5)] mx-4">|</span>
           <span className="text-[rgba(var(--mg-text),0.7)]">USER ACCESS:</span> <span className="text-[rgba(var(--mg-primary),0.9)] ml-1 mg-subtitle">CIVILIAN</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[rgba(var(--mg-text),0.7)]">QUANTUM LINK:</span> <span className="text-[rgba(var(--mg-success),1)] ml-1">ACTIVE</span>
+          <span className="text-[rgba(var(--mg-text),0.7)]">QUANTUM LINK:</span>
+          <StatusIndicator
+            status="active"
+            label="ACTIVE"
+            size="sm"
+            variant="badge"
+          />
           <span className="ml-4 font-mono text-[rgba(var(--mg-text),0.8)]">{time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false})}</span>
         </div>
       </motion.div>
@@ -155,43 +166,17 @@ export default function AboutHero({ time, scrollPosition, onInitializeDataFeed }
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <MobiGlasPanel
+            variant="dark"
+            withHologram
+            withScanline
+            cornerAccents
+            padding="lg"
+            className="max-w-6xl mx-auto"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="mg-container p-0.5 relative overflow-hidden border-[rgba(var(--mg-primary),0.2)] max-w-6xl mx-auto"
           >
-            {/* Holographic boot-up sequence */}
-            <motion.div
-              className="absolute inset-0 bg-[rgba(var(--mg-primary),0.05)]"
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{ duration: 0.5 }}
-            />
-
-            {/* Holographic flicker effect */}
-            <motion.div
-              className="absolute inset-0 bg-[rgba(var(--mg-primary),0.1)]"
-              animate={{ opacity: [0.3, 0.1, 0.3, 0.2, 0.3] }}
-              transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-            />
-
-            {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-full">
-              <div className="mg-grid-bg"></div>
-              <div className="holo-noise"></div>
-              <div className="holo-scan"></div>
-              <div className="line-noise opacity-5"></div>
-            </div>
-
-            {/* Corner brackets */}
-            <div className="absolute top-0 left-0 w-16 h-16 border-l-2 border-t-2 border-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute top-0 right-0 w-16 h-16 border-r-2 border-t-2 border-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute bottom-0 left-0 w-16 h-16 border-l-2 border-b-2 border-[rgba(var(--mg-primary),0.6)]"></div>
-            <div className="absolute bottom-0 right-0 w-16 h-16 border-r-2 border-b-2 border-[rgba(var(--mg-primary),0.6)]"></div>
-
-            {/* Content */}
-            <div className="relative z-10 p-8">
               <motion.div
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -259,69 +244,38 @@ export default function AboutHero({ time, scrollPosition, onInitializeDataFeed }
                 </div>
 
                 {/* Interactive scan button */}
-                <motion.button
-                  className="mt-8 flex items-center justify-center mx-auto px-6 py-3 text-sm relative group"
-                  style={{
-                    borderWidth: "1px",
-                    borderStyle: "solid",
-                    borderColor: "rgba(0, 215, 255, 0.6)",
-                    backgroundColor: "rgba(0, 215, 255, 0.08)",
-                    color: "rgba(0, 215, 255, 1)",
-                    letterSpacing: "1px",
-                    fontWeight: "500"
-                  }}
-                  whileHover={{
-                    boxShadow: "0 0 20px rgba(0, 215, 255, 0.4)",
-                    backgroundColor: "rgba(0, 215, 255, 0.15)"
-                  }}
-                  whileTap={{ scale: 0.98 }}
+                <motion.div
                   initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    boxShadow: ["0 0 0px rgba(0, 215, 255, 0.2)", "0 0 15px rgba(0, 215, 255, 0.4)", "0 0 0px rgba(0, 215, 255, 0.2)"]
-                  }}
-                  transition={{
-                    opacity: { delay: 1.5 },
-                    boxShadow: { repeat: Infinity, duration: 2 }
-                  }}
-                  onClick={onInitializeDataFeed}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.5 }}
+                  className="mt-8 flex justify-center"
                 >
-                  {/* Animated background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[rgba(0,215,255,0.1)] via-[rgba(0,215,255,0.2)] to-[rgba(0,215,255,0.1)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                  {/* Pulse effect around button */}
-                  <div className="absolute -inset-0.5 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute inset-0 rounded-sm bg-transparent border border-[rgba(0,215,255,0.6)]"
-                      style={{
-                        animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
-                      }}
-                    ></div>
-                  </div>
-
-                  <motion.div
-                    className="mr-3 w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{
-                      borderWidth: "1px",
-                      borderStyle: "solid",
-                      borderColor: "rgba(0, 215, 255, 0.8)",
-                      backgroundColor: "rgba(0, 215, 255, 0.2)"
-                    }}
-                    animate={{
-                      boxShadow: [
-                        "0 0 0px rgba(0, 215, 255, 0)",
-                        "0 0 10px rgba(0, 215, 255, 0.8)",
-                        "0 0 0px rgba(0, 215, 255, 0)"
-                      ]
-                    }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
+                  <MobiGlasButton
+                    onClick={onInitializeDataFeed}
+                    variant="primary"
+                    size="lg"
+                    withScanline
+                    leftIcon={
+                      <motion.div
+                        className="w-4 h-4 rounded-full border border-[rgba(var(--mg-primary),0.8)] bg-[rgba(var(--mg-primary),0.2)] flex items-center justify-center"
+                        animate={{
+                          boxShadow: [
+                            "0 0 0px rgba(var(--mg-primary), 0)",
+                            "0 0 10px rgba(var(--mg-primary), 0.8)",
+                            "0 0 0px rgba(var(--mg-primary), 0)"
+                          ]
+                        }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        <div className="w-1.5 h-1.5 bg-[rgba(var(--mg-primary),1)] rounded-full"></div>
+                      </motion.div>
+                    }
                   >
-                    <div className="w-1.5 h-1.5 bg-[rgba(0,215,255,1)] rounded-full"></div>
-                  </motion.div>
-                  <span className="font-quantify tracking-wider">INITIALIZE DATA FEED</span>
-                </motion.button>
+                    INITIALIZE DATA FEED
+                  </MobiGlasButton>
+                </motion.div>
               </motion.div>
-            </div>
-          </motion.div>
+          </MobiGlasPanel>
         </div>
       </section>
     </>

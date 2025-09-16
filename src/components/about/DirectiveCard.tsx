@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { MobiGlasPanel } from '@/components/ui/mobiglas';
 
 interface DirectiveCardProps {
   icon: React.ReactNode;
@@ -26,71 +27,18 @@ export default function DirectiveCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       whileHover={{ scale: 1.02 }}
-      className="mg-container p-0.5 group cursor-pointer overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      className="cursor-pointer h-full"
     >
-      <div className="relative h-full w-full overflow-hidden">
-        {/* Holo projection effect on hover */}
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            backgroundColor: "rgba(0, 215, 255, 0.15)"
-          }}
-          animate={{
-            opacity: isHovered ? 0.2 : 0,
-            height: isHovered ? "100%" : "0%"
-          }}
-          transition={{ duration: 0.3 }}
-        />
-
-        {/* Animated border */}
-        <div className="absolute inset-px z-10 bg-transparent border border-[rgba(var(--mg-primary),0.3)] group-hover:border-[rgba(var(--mg-primary),0.6)] transition-colors duration-300"></div>
-
-        {/* Corner markers */}
-        <div className="absolute top-0 left-0 w-5 h-5 z-10">
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-          <div className="absolute top-0 left-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-        </div>
-        <div className="absolute top-0 right-0 w-5 h-5 z-10">
-          <div className="absolute top-0 right-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-          <div className="absolute top-0 right-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-        </div>
-        <div className="absolute bottom-0 left-0 w-5 h-5 z-10">
-          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-          <div className="absolute bottom-0 left-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-        </div>
-        <div className="absolute bottom-0 right-0 w-5 h-5 z-10">
-          <div className="absolute bottom-0 right-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-          <div className="absolute bottom-0 right-0 h-full w-[1px] bg-[rgba(var(--mg-primary),0.8)]"></div>
-        </div>
-
-        {/* Scanning effect */}
-        <motion.div
-          className="absolute inset-0 overflow-hidden"
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="absolute inset-0 overflow-hidden">
-            <motion.div
-              className="absolute top-0 w-full h-1"
-              style={{
-                background: 'linear-gradient(to right, transparent, rgba(0, 215, 255, 0.4), transparent)'
-              }}
-              animate={{
-                top: ['0%', '100%', '0%']
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            />
-          </div>
-        </motion.div>
-
-        {/* Inner content */}
-        <div className="relative z-0 h-full p-6 bg-[rgba(var(--mg-background),0.5)]">
+      <MobiGlasPanel
+        variant="dark"
+        withScanline={isHovered}
+        cornerAccents
+        padding="md"
+        className="h-full"
+      >
+      <div className="h-full">
           <div className="flex items-start mb-4">
             <motion.div
               className="mr-3 mt-1"
@@ -179,7 +127,7 @@ export default function DirectiveCard({
             </ul>
           </motion.div>
         </div>
-      </div>
+      </MobiGlasPanel>
     </motion.div>
   );
 }
