@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-interface StatusIndicatorProps {
+export interface StatusIndicatorProps {
   status: 'online' | 'offline' | 'warning' | 'error' | 'loading' | 'active' | 'inactive';
   label?: string;
   size?: 'xs' | 'sm' | 'md' | 'lg';

@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-interface CornerAccentsProps {
+export interface CornerAccentsProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'simple' | 'detailed' | 'animated';
   color?: 'primary' | 'secondary' | 'accent' | 'success' | 'warning';

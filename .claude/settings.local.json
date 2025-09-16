@@ -12,7 +12,11 @@
       "Bash(npm run build:*)",
       "Bash(xargs ls:*)",
       "WebFetch(domain:images.aydocorp.space)",
-      "WebFetch(domain:pub-f215b62a539f4dbfa33a9f9ef4c01d55.r2.dev)"
+      "WebFetch(domain:pub-f215b62a539f4dbfa33a9f9ef4c01d55.r2.dev)",
+      "Bash(npx tsc:*)",
+      "Bash(rg:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run kill-port:*)"
     ],
     "deny": [],
     "ask": []

@@ -2,15 +2,12 @@
 const nextConfig = {
     poweredByHeader: false,
     typescript: {
-        // !! WARN !!
-        // Dangerously allow production builds to successfully complete even if
-        // your project has type errors.
-        ignoreBuildErrors: true,
+        // TypeScript errors will now prevent production builds
+        ignoreBuildErrors: false,
     },
     eslint: {
-        // Warning: This allows production builds to successfully complete even if
-        // your project has ESLint errors.
-        ignoreDuringBuilds: true,
+        // ESLint errors will now prevent production builds
+        ignoreDuringBuilds: false,
     },
     images: {
         unoptimized: true,

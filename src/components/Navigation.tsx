@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 
 const navItems = [
@@ -27,10 +28,12 @@ export default function Navigation() {
                 className="relative flex items-center justify-center"
                 whileHover={{ scale: 1.03 }}
               >
-                <img 
-                  src="https://images.aydocorp.space/1757983582998.png"
+                <Image
+                  src="https://images.aydocorp.space/1758036690228.png"
                   alt="AydoCorp"
-                  className="h-20 w-auto"
+                  width={48}
+                  height={48}
+                  className="h-12 w-auto"
                 />
               </motion.div>
             </Link>
@@ -265,4 +268,4 @@ export default function Navigation() {
       </AnimatePresence>
     </nav>
   );
-} 
+}

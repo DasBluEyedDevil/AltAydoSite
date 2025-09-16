@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion, MotionProps } from 'framer-motion';
 
-interface MobiGlasPanelProps extends Omit<MotionProps, 'children'> {
+export interface MobiGlasPanelProps extends Omit<MotionProps, 'children'> {
   children: React.ReactNode;
   className?: string;
   title?: string;

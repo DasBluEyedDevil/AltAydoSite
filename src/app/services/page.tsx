@@ -16,6 +16,58 @@ export default function Services() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [loadingComplete, setLoadingComplete] = useState(false);
 
+  // Services data
+  const services = [
+    {
+      id: 'cargo',
+      title: "Cargo Transport & Management",
+      description: "Secure cargo transport across the verse",
+      detailedDescription: "Professional cargo transport with secure handling and delivery guarantee",
+      image: 'https://images.aydocorp.space/bigcattt1024x576.jpg',
+      icon: '🚛',
+      stats: [
+        { label: 'Capacity', value: '1000+ SCU' },
+        { label: 'Routes', value: '50+ Systems' }
+      ]
+    },
+    {
+      id: 'transit',
+      title: "Executive & Personnel Transit",
+      description: "Premium passenger transport and VIP services",
+      detailedDescription: "Luxury passenger transport for executives and VIP clientele",
+      image: 'https://images.aydocorp.space/400i.png',
+      icon: '✈️',
+      stats: [
+        { label: 'Comfort Rating', value: '5-Star' },
+        { label: 'Safety Record', value: '100%' }
+      ]
+    },
+    {
+      id: 'supply',
+      title: "Supply Chain Solutions",
+      description: "End-to-end logistics and supply management",
+      detailedDescription: "Complete supply chain optimization and resource management solutions",
+      image: 'https://images.aydocorp.space/Asteroids_122018-Min.png',
+      icon: '📦',
+      stats: [
+        { label: 'Efficiency', value: '98%+' },
+        { label: 'Networks', value: '200+ Stations' }
+      ]
+    },
+    {
+      id: 'recovery',
+      title: "Recovery and Assistance",
+      description: "Emergency response and asset recovery services",
+      detailedDescription: "Professional emergency response, rescue operations, and asset recovery",
+      image: 'https://images.aydocorp.space/starfarer_gemini.png',
+      icon: '🛟',
+      stats: [
+        { label: 'Response Time', value: '< 15 min' },
+        { label: 'Success Rate', value: '94.5%' }
+      ]
+    }
+  ];
+
   useEffect(() => {
     // Simulate initial loading process
     const timer = setTimeout(() => {
@@ -106,7 +158,7 @@ export default function Services() {
     }
     
     return () => clearInterval(interval);
-  }, [isScanning, scanProgress]);
+  }, [isScanning, scanProgress, services.length]);
 
   const startScan = () => {
     setIsScanning(true);
@@ -181,6 +233,7 @@ export default function Services() {
             fill
             className="object-cover opacity-20"
             priority
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black"></div>
           <div className="absolute inset-0 circuit-bg opacity-10"></div>
@@ -341,9 +394,7 @@ export default function Services() {
                           <div className="flex items-start mb-4">
                             <div className="mr-3 mt-1">
                               <div className="w-10 h-10 rounded-full bg-[rgba(var(--mg-primary),0.1)] border border-[rgba(var(--mg-primary),0.3)] flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[rgba(var(--mg-primary),1)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={service.icon} />
-                                </svg>
+                                <span className="text-lg text-[rgba(var(--mg-primary),1)]">{service.icon}</span>
                               </div>
                             </div>
                             <div>
@@ -521,6 +572,7 @@ export default function Services() {
                       alt={service.title}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent ${highlightedService === index ? 'bg-blue-900/30' : ''}`} />
                     
@@ -585,4 +637,4 @@ export default function Services() {
       </section>
     </div>
   );
-} 
+}

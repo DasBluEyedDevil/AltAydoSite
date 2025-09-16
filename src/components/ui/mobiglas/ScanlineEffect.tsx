@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-interface ScanlineEffectProps {
+export interface ScanlineEffectProps {
   variant?: 'horizontal' | 'vertical' | 'diagonal' | 'cross';
   speed?: 'slow' | 'medium' | 'fast';
   color?: 'primary' | 'secondary' | 'accent' | 'success' | 'warning';
