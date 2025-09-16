@@ -39,12 +39,7 @@ export default function AboutHero({ time, scrollPosition, onInitializeDataFeed }
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[rgba(var(--mg-text),0.7)]">QUANTUM LINK:</span>
-          <StatusIndicator
-            status="active"
-            label="ACTIVE"
-            size="sm"
-            variant="badge"
-          />
+          <span className="text-[rgba(var(--mg-success),1)] ml-1">ACTIVE</span>
           <span className="ml-4 font-mono text-[rgba(var(--mg-text),0.8)]">{time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false})}</span>
         </div>
       </motion.div>
