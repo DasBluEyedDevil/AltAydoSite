@@ -2,15 +2,12 @@
 const nextConfig = {
     poweredByHeader: false,
     typescript: {
-        // !! WARN !!
-        // Dangerously allow production builds to successfully complete even if
-        // your project has type errors.
-        ignoreBuildErrors: true,
+        // TypeScript errors will now prevent production builds
+        ignoreBuildErrors: false,
     },
     eslint: {
-        // Warning: This allows production builds to successfully complete even if
-        // your project has ESLint errors.
-        ignoreDuringBuilds: true,
+        // ESLint errors will now prevent production builds
+        ignoreDuringBuilds: false,
     },
     images: {
         unoptimized: true,
@@ -19,16 +16,23 @@ const nextConfig = {
     },
     output: 'standalone',
     webpack: (config, { isServer }) => {
-        // Handle discord.js and its dependencies
+        // Handle discord.js and its dependencies safely
         if (isServer) {
+            // Ensure externals is an array before pushing
+            if (!Array.isArray(config.externals)) {
+                config.externals = config.externals ? [config.externals] : [];
+            }
             config.externals.push({
                 'utf-8-validate': 'commonjs utf-8-validate',
                 'bufferutil': 'commonjs bufferutil',
                 'zlib-sync': 'commonjs zlib-sync'
             });
         } else {
+            // Ensure resolve and resolve.fallback exist before spreading
+            config.resolve = config.resolve || {};
+            const existingFallback = (config.resolve.fallback) || {};
             config.resolve.fallback = {
-                ...config.resolve.fallback,
+                ...existingFallback,
                 'zlib-sync': false,
                 'utf-8-validate': false,
                 'bufferutil': false

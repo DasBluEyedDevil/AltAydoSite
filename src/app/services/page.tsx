@@ -1,78 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { cdn } from '@/lib/cdn';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-
-const services = [
-  {
-    id: 'cargo-transport',
-    title: 'Cargo Transport & Management',
-    description: 'End-to-end cargo transportation services across all major systems, featuring real-time tracking and advanced security protocols.',
-    detailedDescription: 'Our fleet of Hull-series vessels and specialized cargo haulers ensure your goods reach their destination safely and efficiently. With quantum-encrypted tracking and AI-driven logistics optimization, we deliver unmatched reliability in even the most challenging sectors.',
-    image: cdn('/bigcattt1024x576.jpg'),
-    icon: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z',
-    stats: [
-      { label: 'Delivery Success Rate', value: '99.7%' },
-      { label: 'Systems Covered', value: '17' },
-      { label: 'Fleet Size', value: '48+' }
-    ]
-  },
-  {
-    id: 'executive-transit',
-    title: 'Executive & Personnel Transit',
-    description: 'Premium transportation services with the highest standards of comfort and security for corporate personnel.',
-    detailedDescription: 'Our executive fleet offers discreet, secure, and luxurious transport for VIPs and corporate teams. From 890 Jump luxury cruisers to Phoenix executive transports, we provide a seamless experience with dedicated crew and comprehensive security protocols.',
-    image: cdn('/starfarer_gemini.png'),
-    icon: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z',
-    stats: [
-      { label: 'Client Satisfaction', value: '98.3%' },
-      { label: 'Security Rating', value: 'A+' },
-      { label: 'Concierge Staff', value: '35' }
-    ]
-  },
-  {
-    id: 'supply-chain',
-    title: 'Supply Chain Solutions',
-    description: 'Comprehensive resource acquisition and logistics management tailored to your operational requirements.',
-    detailedDescription: 'From raw materials to finished products, our supply chain services integrate seamlessly with your operations. We employ advanced predictive analytics and strategic resource planning to optimize cost, reduce delays, and ensure continuous supply even in volatile markets.',
-    image: cdn('/Asteroids_122018-Min.png'),
-    icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
-    stats: [
-      { label: 'Resource Types', value: '250+' },
-      { label: 'Supply Accuracy', value: '99.4%' },
-      { label: 'Partners', value: '73' }
-    ]
-  },
-  {
-    id: 'recovery',
-    title: 'Recovery & Assistance',
-    description: 'Professional vessel recovery and assistance services, available continuously across all operational sectors.',
-    detailedDescription: 'When emergencies occur, our rapid response teams deploy within minutes. Equipped with advanced rescue vessels and specialty tools, we offer hull repairs, refueling, component replacement, and full recovery services — all backed by our "No Ship Left Behind" guarantee.',
-    image: cdn('/AdbDOm.jpg'),
-    icon: 'M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3',
-    stats: [
-      { label: 'Response Time', value: '8.5 min' },
-      { label: 'Success Rate', value: '97.6%' },
-      { label: 'Coverage Area', value: '11 systems' }
-    ]
-  },
-  {
-    id: 'strategic-ops',
-    title: 'Strategic Operations',
-    description: 'Collaborative ventures and partnerships for complex logistics operations requiring multi-party coordination.',
-    detailedDescription: 'For operations requiring exceptional coordination, our strategic services division provides comprehensive planning and execution. We specialize in high-value cargo movement, sensitive material transport, and multi-organizational logistics efforts across corporate and government sectors.',
-    image: cdn('/carrack_expedition.png'),
-    icon: 'M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2',
-    stats: [
-      { label: 'Classified Ops', value: '150+' },
-      { label: 'Sectors', value: 'Corp/Gov' },
-      { label: 'Clearance Level', value: 'Alpha-7' }
-    ]
-  }
-];
 
 export default function Services() {
   const [isScanning, setIsScanning] = useState(false);
@@ -84,6 +15,58 @@ export default function Services() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const [loadingComplete, setLoadingComplete] = useState(false);
+
+  // Services data
+  const services = [
+    {
+      id: 'cargo',
+      title: "Cargo Transport & Management",
+      description: "Secure cargo transport across the verse",
+      detailedDescription: "Professional cargo transport with secure handling and delivery guarantee",
+      image: 'https://images.aydocorp.space/bigcattt1024x576.jpg',
+      icon: '🚛',
+      stats: [
+        { label: 'Capacity', value: '1000+ SCU' },
+        { label: 'Routes', value: '50+ Systems' }
+      ]
+    },
+    {
+      id: 'transit',
+      title: "Executive & Personnel Transit",
+      description: "Premium passenger transport and VIP services",
+      detailedDescription: "Luxury passenger transport for executives and VIP clientele",
+      image: 'https://images.aydocorp.space/400i.png',
+      icon: '✈️',
+      stats: [
+        { label: 'Comfort Rating', value: '5-Star' },
+        { label: 'Safety Record', value: '100%' }
+      ]
+    },
+    {
+      id: 'supply',
+      title: "Supply Chain Solutions",
+      description: "End-to-end logistics and supply management",
+      detailedDescription: "Complete supply chain optimization and resource management solutions",
+      image: 'https://images.aydocorp.space/Asteroids_122018-Min.png',
+      icon: '📦',
+      stats: [
+        { label: 'Efficiency', value: '98%+' },
+        { label: 'Networks', value: '200+ Stations' }
+      ]
+    },
+    {
+      id: 'recovery',
+      title: "Recovery and Assistance",
+      description: "Emergency response and asset recovery services",
+      detailedDescription: "Professional emergency response, rescue operations, and asset recovery",
+      image: 'https://images.aydocorp.space/starfarer_gemini.png',
+      icon: '🛟',
+      stats: [
+        { label: 'Response Time', value: '< 15 min' },
+        { label: 'Success Rate', value: '94.5%' }
+      ]
+    }
+  ];
 
   useEffect(() => {
     // Simulate initial loading process
@@ -175,7 +158,7 @@ export default function Services() {
     }
     
     return () => clearInterval(interval);
-  }, [isScanning, scanProgress]);
+  }, [isScanning, scanProgress, services.length]);
 
   const startScan = () => {
     setIsScanning(true);
@@ -250,6 +233,7 @@ export default function Services() {
             fill
             className="object-cover opacity-20"
             priority
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black"></div>
           <div className="absolute inset-0 circuit-bg opacity-10"></div>
@@ -410,9 +394,7 @@ export default function Services() {
                           <div className="flex items-start mb-4">
                             <div className="mr-3 mt-1">
                               <div className="w-10 h-10 rounded-full bg-[rgba(var(--mg-primary),0.1)] border border-[rgba(var(--mg-primary),0.3)] flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[rgba(var(--mg-primary),1)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={service.icon} />
-                                </svg>
+                                <span className="text-lg text-[rgba(var(--mg-primary),1)]">{service.icon}</span>
                               </div>
                             </div>
                             <div>
@@ -590,6 +572,7 @@ export default function Services() {
                       alt={service.title}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent ${highlightedService === index ? 'bg-blue-900/30' : ''}`} />
                     
@@ -654,4 +637,4 @@ export default function Services() {
       </section>
     </div>
   );
-} 
+}

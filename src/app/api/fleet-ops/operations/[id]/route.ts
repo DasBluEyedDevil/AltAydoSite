@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/auth';
 import * as operationStorage from '@/lib/operation-storage';
 import * as userStorage from '@/lib/user-storage';
-import { Operation, OperationStatus } from '@/types/Operation';
+import { Operation } from '@/types/Operation';
 import { z } from 'zod';
 
 // Validation schema for updating an operation
@@ -29,7 +28,7 @@ const updateOperationSchema = z.object({
 });
 
 // Helper to check if user has leadership role
-async function hasLeadershipRole(userId: string): Promise<boolean> {
+async function hasLeadershipRole(_userId: string): Promise<boolean> {
   // Remove role restrictions
   return true;
 
@@ -45,7 +44,7 @@ async function hasLeadershipRole(userId: string): Promise<boolean> {
 }
 
 // Helper to check if user can modify an operation
-async function canModifyOperation(userId: string, operation: Operation): Promise<boolean> {
+async function canModifyOperation(_userId: string, _operation: Operation): Promise<boolean> {
   // Remove role restrictions - anyone can modify any operation
   return true;
 
@@ -63,8 +62,9 @@ async function canModifyOperation(userId: string, operation: Operation): Promise
 // GET handler - Get a specific operation
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -73,10 +73,9 @@ export async function GET(
     }
 
     const userId = session.user.id;
-    const operationId = params.id;
 
     // Get the operation
-    const operation = await operationStorage.getOperationById(operationId);
+    const operation = await operationStorage.getOperationById(id);
 
     if (!operation) {
       return NextResponse.json({ error: 'Operation not found' }, { status: 404 });
@@ -112,8 +111,9 @@ export async function GET(
 // PUT handler - Update an operation
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -122,10 +122,9 @@ export async function PUT(
     }
 
     const userId = session.user.id;
-    const operationId = params.id;
 
     // Get the operation
-    const operation = await operationStorage.getOperationById(operationId);
+    const operation = await operationStorage.getOperationById(id);
 
     if (!operation) {
       return NextResponse.json({ error: 'Operation not found' }, { status: 404 });
@@ -159,7 +158,7 @@ export async function PUT(
 
     // Update the operation
     const updates = validationResult.data;
-    const updatedOperation = await operationStorage.updateOperation(operationId, updates);
+    const updatedOperation = await operationStorage.updateOperation(id, updates);
 
     if (!updatedOperation) {
       return NextResponse.json({ error: 'Failed to update operation' }, { status: 500 });
@@ -186,8 +185,9 @@ export async function PUT(
 // DELETE handler - Delete an operation
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -196,7 +196,7 @@ export async function DELETE(
     }
 
     const userId = session.user.id;
-    const operationId = params.id;
+    const operationId = id;
 
     // Get the operation
     const operation = await operationStorage.getOperationById(operationId);

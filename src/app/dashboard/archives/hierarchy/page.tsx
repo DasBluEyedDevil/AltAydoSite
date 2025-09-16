@@ -294,40 +294,6 @@ export default function HierarchyPage() {
     }
   };
 
-  const getHeaders = () => {
-    switch (activeTab) {
-      case 'corporate':
-        return {
-          ceo: 'Executive',
-          executives: 'Board Members',
-          directors: 'Directors'
-        };
-      case 'empyrion':
-        return {
-          ceo: 'Upper Management',
-          executives: 'Lower Management',
-          directors: 'Employee',
-          managers: 'Intern'
-        };
-      case 'aydoexpress':
-        // Fallback labels (headerResolver below will provide precise per-level labels)
-        return {
-          ceo: 'Upper Management',
-          executives: 'Lower Management',
-          directors: 'Employee',
-          managers: 'Intern'
-        };
-      case 'midnight':
-        return {
-          ceo: 'Commander',
-          executives: 'Security Chiefs',
-          directors: 'Field Teams',
-          managers: 'Operatives'
-        };
-      default:
-        return undefined;
-    }
-  };
 
   // Dynamic header resolver to allow unlimited levels with custom labeling per level
   const getHeaderResolver = () => {
@@ -440,10 +406,9 @@ export default function HierarchyPage() {
             transition={{ duration: 0.3 }}
             className="w-full pb-4"
           >
-            <OrgChart 
-              tree={getCurrentHierarchy()} 
+            <OrgChart
+              tree={getCurrentHierarchy()}
               className="w-full"
-              headers={getHeaders()}
               headerResolver={getHeaderResolver()}
               extraConnections={getExtraConnections()}
               peerWithParentIds={activeTab === 'midnight' ? [] : []}

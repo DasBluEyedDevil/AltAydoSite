@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp add:*)",
+      "Bash(claude mcp:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run lint)",
+      "Read(//c/Users/dasbl/Downloads/**)",
+      "Bash(find:*)",
+      "Bash(gemini:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)",
+      "Bash(xargs ls:*)",
+      "WebFetch(domain:images.aydocorp.space)",
+      "WebFetch(domain:pub-f215b62a539f4dbfa33a9f9ef4c01d55.r2.dev)",
+      "Bash(npx tsc:*)",
+      "Bash(rg:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run kill-port:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

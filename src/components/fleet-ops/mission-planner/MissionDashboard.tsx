@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MissionResponse, MissionStatus, MissionType } from '@/types/Mission';
 import MissionList from './MissionList';

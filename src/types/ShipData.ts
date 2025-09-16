@@ -27,6 +27,7 @@ export interface ShipDetails {
   speedSCM?: number;           // Standard Combat Maneuvering speed
   speedBoost?: number;         // Boost speed
   mass?: number;               // Mass in kg
+  status?: string;             // Operational status (e.g., "Flight Ready")
 }
 
 // Create a function to format the image name from the ship name
@@ -38,7 +39,7 @@ export const formatShipImageName = (shipName: string): string => {
   
   return shipName.toLowerCase()
     .replace(/\s+/g, '_')
-    .replace(/[\.']/g, '')
+    .replace(/[.']/g, '')
     .replace(/\//g, '_')
     .replace(/[āáàäâã]/g, 'a')
     .replace(/[ēéèëê]/g, 'e')
@@ -56,7 +57,7 @@ export const getShipImagePath = (ship: ShipDetails | string): string => {
   // This is the crucial part - format exactly as used in userprofile
   const formattedName = shipName.toLowerCase()
     .replace(/\s+/g, '_')
-    .replace(/[\.']/g, '')
+    .replace(/[.']/g, '')
     .replace(/\//g, '_')
     .replace(/[āáàäâã]/g, 'a')
     .replace(/[ēéèëê]/g, 'e')
@@ -73,7 +74,7 @@ export const getShipImagePath = (ship: ShipDetails | string): string => {
 export const getDirectImagePath = (shipName: string): string => {
   const formattedName = shipName.toLowerCase()
     .replace(/\s+/g, '_')
-    .replace(/[\.']/g, '')
+    .replace(/[.']/g, '')
     .replace(/\//g, '_')
     .replace(/[āáàäâã]/g, 'a')
     .replace(/[ēéèëê]/g, 'e')

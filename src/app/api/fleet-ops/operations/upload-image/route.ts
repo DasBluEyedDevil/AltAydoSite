@@ -90,49 +90,50 @@ export async function POST(request: Request) {
 
         const result = await db.collection('missionImages').insertOne(imageDoc);
 
-        if (!result.insertedId) {
-          throw new Error('Failed to insert image into MongoDB');
-        }
-
-        // Only try to update mission if it's not a temporary ID
-        if (!isTempId) {
-          try {
-            // Only update if missionId is a valid ObjectId
-            if (mongoMissionId instanceof ObjectId) {
-              // Create a raw update using string keys to avoid TypeScript issues with MongoDB operators
-              const rawUpdate = {
-                "$push": {
-                  "images": {
-                    "_id": result.insertedId.toString(),
-                    "filename": image.name,
-                    "uploadedBy": session.user.id,
-                    "uploadedAt": new Date()
+        if (result.insertedId) {
+          // Only try to update mission if it's not a temporary ID
+          if (!isTempId) {
+            try {
+              // Only update if missionId is a valid ObjectId
+              if (mongoMissionId instanceof ObjectId) {
+                // Create a raw update using string keys to avoid TypeScript issues with MongoDB operators
+                const rawUpdate = {
+                  "$push": {
+                    "images": {
+                      "_id": result.insertedId.toString(),
+                      "filename": image.name,
+                      "uploadedBy": session.user.id,
+                      "uploadedAt": new Date()
+                    }
                   }
-                }
-              };
-              
-              // Use the raw update object
-              await db.collection('missions').updateOne(
-                { _id: mongoMissionId },
-                rawUpdate as any
-              );
+                };
+                
+                // Use the raw update object
+                await db.collection('missions').updateOne(
+                  { _id: mongoMissionId },
+                  rawUpdate as any
+                );
+              }
+            } catch (updateError) {
+              console.error('Error updating mission with image reference:', updateError);
+              // Continue even if we can't update the mission
             }
-          } catch (updateError) {
-            console.error('Error updating mission with image reference:', updateError);
-            // Continue even if we can't update the mission
           }
-        }
 
-        return NextResponse.json({ 
-          success: true,
-          message: 'Image uploaded successfully',
-          data: {
-            imageId: result.insertedId.toString(),
-            filename: image.name,
-            contentType: image.type,
-            size: image.size
-          }
-        });
+          return NextResponse.json({ 
+            success: true,
+            message: 'Image uploaded successfully',
+            data: {
+              imageId: result.insertedId.toString(),
+              filename: image.name,
+              contentType: image.type,
+              size: image.size
+            }
+          });
+        } else {
+          const error = new Error('Failed to insert image into MongoDB');
+          console.error('MongoDB image upload failed, falling back to local storage:', error);
+        }
       } catch (mongoError) {
         // Log MongoDB error but continue to fallback
         console.error('MongoDB image upload failed, falling back to local storage:', mongoError);
@@ -183,50 +184,4 @@ export async function POST(request: Request) {
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
-} 
-
-// Add GET route to retrieve images stored locally when needed
-export async function GET(request: Request) {
-  try {
-    const url = new URL(request.url);
-    const id = url.searchParams.get('id');
-
-    if (!id) {
-      return NextResponse.json({ error: 'Image ID is required' }, { status: 400 });
-    }
-
-    // Check if image exists in local storage
-    const metadataPath = path.join(imagesDir, `${id}.json`);
-    
-    if (!fs.existsSync(metadataPath)) {
-      return NextResponse.json({ error: 'Image not found' }, { status: 404 });
-    }
-
-    // Read metadata
-    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-    
-    // Read image file
-    const imagePath = metadata.storagePath;
-    
-    if (!fs.existsSync(imagePath)) {
-      return NextResponse.json({ error: 'Image file not found' }, { status: 404 });
-    }
-
-    const imageBuffer = fs.readFileSync(imagePath);
-
-    // Return image with proper content type
-    return new Response(imageBuffer, {
-      headers: {
-        'Content-Type': metadata.contentType,
-        'Cache-Control': 'public, max-age=31536000, immutable',
-      }
-    });
-    
-  } catch (error) {
-    console.error('Error retrieving image:', error);
-    return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
-  }
-} 
+}

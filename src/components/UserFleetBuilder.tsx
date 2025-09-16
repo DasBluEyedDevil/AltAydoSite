@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { UserShip } from '../types/user';
-import { getManufacturersList, getShipsByManufacturer, formatShipImageName } from '../types/ShipData';
+import { UserShip } from '@/types/user';
+import { getManufacturersList, getShipsByManufacturer } from '@/types/ShipData';
+import { resolveShipImage } from '@/lib/ships/image';
 import Image from 'next/image';
 
 interface UserFleetBuilderProps {
@@ -157,8 +158,8 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
                   );
                   
                   const shipId = `${ship.manufacturer}-${ship.name}`;
-                  const imagePath = `/images/${ship.image}`;
-                  const useDefaultImage = imageErrors[shipId] || !ship.image;
+                  const imagePath = resolveShipImage(ship.name);
+                  const useDefaultImage = imageErrors[shipId];
                   const isLoaded = loadedImages[shipId];
                   
                   return (
@@ -216,4 +217,4 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
 };
 
 // Add global style for dropdown select elements
-export default UserFleetBuilder; 
+export default UserFleetBuilder;

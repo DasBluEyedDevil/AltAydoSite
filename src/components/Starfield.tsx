@@ -47,17 +47,21 @@ const MobiGlassStarfield = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas dimensions
-    canvas.width = dimensions.width;
-    canvas.height = dimensions.height;
+    // Set canvas dimensions with pixel ratio optimization
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2x for performance
+    canvas.width = dimensions.width * pixelRatio;
+    canvas.height = dimensions.height * pixelRatio;
+    canvas.style.width = dimensions.width + 'px';
+    canvas.style.height = dimensions.height + 'px';
+    ctx.scale(pixelRatio, pixelRatio);
 
-    // Updated values based on reference images
-    const STAR_COUNT = 200;
-    const NEBULA_COUNT = 3;
-    const GRID_LINE_COUNT = 12;
-    const DATA_STREAM_COUNT = 4;
-    const HEX_GLOW_COUNT = 8;
-    const HOLOGRAM_CIRCLES_COUNT = 3;
+    // Optimized particle counts for better performance
+    const STAR_COUNT = 120; // Reduced from 200
+    const NEBULA_COUNT = 2; // Reduced from 3
+    const GRID_LINE_COUNT = 8; // Reduced from 12
+    const DATA_STREAM_COUNT = 3; // Reduced from 4
+    const HEX_GLOW_COUNT = 5; // Reduced from 8
+    const HOLOGRAM_CIRCLES_COUNT = 2; // Reduced from 3
     
     interface Star {
       x: number;
@@ -202,7 +206,7 @@ const MobiGlassStarfield = () => {
       centerX: canvas.width / 2 + (Math.random() - 0.5) * canvas.width * 0.5,
       centerY: canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.5,
       radius: Math.random() * 150 + 100,
-      width: Math.random() * 1 + 0.5,
+      width: Math.random() + 0.5,
       speed: Math.random() * 0.001 + 0.0005,
       opacity: Math.random() * 0.1 + 0.05,
       segmentLength: Math.PI / (Math.random() * 8 + 4), // Length of each segment
@@ -397,13 +401,13 @@ const MobiGlassStarfield = () => {
           hex.opacity += hex.speed;
           if (hex.opacity > hex.maxOpacity) {
             hex.opacity = hex.maxOpacity;
-            hex.active = Math.random() > 0.995 ? false : true;
+            hex.active = Math.random() <= 0.995;
           }
         } else {
           hex.opacity -= hex.speed;
           if (hex.opacity < 0) {
             hex.opacity = 0;
-            hex.active = Math.random() > 0.995 ? true : false;
+            hex.active = Math.random() > 0.995;
             if (hex.active) {
               // Choose a new position
               hex.x = Math.random() * canvas.width;
@@ -493,11 +497,13 @@ const MobiGlassStarfield = () => {
       };
     };
 
-    // Main animation loop
+    // Main animation loop with proper cleanup
+    let animationFrameId: number;
+
     const animate = () => {
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       drawStars();
       drawNebulas();
       drawGridLines();
@@ -505,15 +511,18 @@ const MobiGlassStarfield = () => {
       drawHexGlows();
       drawHologramCircles();
       drawFocusPoints();
-      
-      requestAnimationFrame(animate);
+
+      animationFrameId = requestAnimationFrame(animate);
     };
-    
+
     // Start animation
     animate();
-    
+
+    // Cleanup function to cancel animation frame
     return () => {
-      // No need to clean up animation as component unmount will take care of it
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [dimensions]);
 

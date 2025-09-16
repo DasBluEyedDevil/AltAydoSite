@@ -54,17 +54,17 @@ const navItems: NavItem[] = [
     icon: 'M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3',
     children: [
       {
-        name: 'AydoExpress - Logistics',
+        name: 'AydoExpress',
         href: '/dashboard/subsidiaries/express',
         icon: cdn('/images/New_Aydo_Express.png')
       },
       {
-        name: 'Empyrion Industries - Mining',
+        name: 'Empyrion Industries',
         href: '/dashboard/subsidiaries/empyrion',
         icon: cdn('/images/New_Empyrion_Industries.PNG')
       },
       {
-        name: 'Midnight Security - Security',
+        name: 'Midnight Security',
         href: '/dashboard/subsidiaries/security',
         icon: cdn('/images/New_Midnight_Security.png')
       }
@@ -223,7 +223,7 @@ const DashboardSidebar = () => {
                             >
                               <div className="h-4 w-4 mr-2 relative">
                                 {isImageIcon(child.icon) ? (
-                                  <Image src={child.icon} alt="icon" fill className="object-contain" />
+                                  <Image src={child.icon} alt="icon" width={36} height={36} className="object-contain" />
                                 ) : (
                                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d={child.icon} />
@@ -278,4 +278,4 @@ const DashboardSidebar = () => {
   );
 };
 
-export default DashboardSidebar; 
+export default DashboardSidebar; ; 
