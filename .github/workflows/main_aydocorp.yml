@@ -47,109 +47,51 @@ jobs:
           NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
           EOF
 
-      - name: Create next.config.js if it doesn't exist
+      - name: Ensure next.config.js exists
         run: |
           if [ ! -f next.config.js ]; then
             echo "/** @type {import('next').NextConfig} */
             const nextConfig = {
               poweredByHeader: false,
-              typescript: {
-                ignoreBuildErrors: true,
-              },
-              images: {
-                unoptimized: true,
-                dangerouslyAllowSVG: true,
-                formats: ['image/avif', 'image/webp'],
-                remotePatterns: [],
-              }
+              typescript: { ignoreBuildErrors: true },
+              images: { unoptimized: true, dangerouslyAllowSVG: true, formats: ['image/avif', 'image/webp'], remotePatterns: [] }
             };
-            
             module.exports = nextConfig;" > next.config.js
           fi
-          
-      - name: npm clean install and build
+
+      - name: Install deps and build
         run: |
           npm ci
           npm run build
-          
-      - name: Prepare for deployment
+
+      - name: Prepare deployment artifact (prefer standalone)
         run: |
-          # Create a deployment package with built Next.js app
-          # Include necessary files for Azure App Service
-          mkdir deploy
-          cp -r .next deploy/
-          cp -r public deploy/
-          cp -r src deploy/
-          cp package*.json deploy/
-          cp next.config.js deploy/
-          cp .env.local deploy/
-          
-          # Create web.config for Azure App Service
-          cat > deploy/web.config << 'EOF'
-          <?xml version="1.0" encoding="utf-8"?>
-          <configuration>
-            <system.webServer>
-              <handlers>
-                <add name="iisnode" path="server.js" verb="*" modules="iisnode"/>
-              </handlers>
-              <rewrite>
-                <rules>
-                  <rule name="StaticContent" stopProcessing="true">
-                    <match url="^(images|css|js|fonts|_next)(/.*)?$" />
-                    <action type="None" />
-                  </rule>
-                  <rule name="DynamicContent">
-                    <conditions>
-                      <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True"/>
-                    </conditions>
-                    <action type="Rewrite" url="server.js"/>
-                  </rule>
-                </rules>
-              </rewrite>
-              <staticContent>
-                <mimeMap fileExtension=".png" mimeType="image/png" />
-                <mimeMap fileExtension=".jpg" mimeType="image/jpeg" />
-                <mimeMap fileExtension=".jpeg" mimeType="image/jpeg" />
-                <mimeMap fileExtension=".gif" mimeType="image/gif" />
-                <mimeMap fileExtension=".svg" mimeType="image/svg+xml" />
-                <mimeMap fileExtension=".webp" mimeType="image/webp" />
-                <mimeMap fileExtension=".ico" mimeType="image/x-icon" />
-                <mimeMap fileExtension=".js" mimeType="application/javascript" />
-                <mimeMap fileExtension=".css" mimeType="text/css" />
-                <mimeMap fileExtension=".json" mimeType="application/json" />
-              </staticContent>
-              <iisnode node_env="production"
-                       nodeProcessCommandLine="&quot;%programfiles%\nodejs\node.exe&quot;"
-                       watchedFiles="*.js;iisnode.yml"/>
-            </system.webServer>
-          </configuration>
-          EOF
-          
-          # Create server.js for Azure App Service
-          cat > deploy/server.js << 'EOF'
-          const { createServer } = require('http');
-          const { parse } = require('url');
-          const next = require('next');
-          
-          const dev = false;
-          const app = next({ dev });
-          const handle = app.getRequestHandler();
-          
-          const PORT = process.env.PORT || 3000;
-          
-          app.prepare().then(() => {
-            createServer((req, res) => {
-              const parsedUrl = parse(req.url, true);
-              handle(req, res, parsedUrl);
-            }).listen(PORT, (err) => {
-              if (err) throw err;
-              console.log(`> Ready on http://localhost:${PORT}`);
-            });
-          });
-          EOF
-          
-          cd deploy
-          zip -r ../release.zip .
+          set -e
+          mkdir -p deploy
+          if [ -d .next/standalone ]; then
+            echo "Using Next.js standalone output"
+            # Copy standalone server (contains its own node_modules)
+            cp -R .next/standalone/* deploy/
+            # Ensure static assets and public are present
+            mkdir -p deploy/.next
+            cp -R .next/static deploy/.next/static
+            if [ -d public ]; then cp -R public deploy/public; fi
+            # package.json is optional but harmless
+            cp package.json deploy/package.json
+          else
+            echo "Standalone output not found; falling back to full app (node_modules + npm start)"
+            cp -R .next deploy/.next
+            if [ -d public ]; then cp -R public deploy/public; fi
+            cp package.json deploy/package.json
+            cp package-lock.json deploy/package-lock.json || true
+            # Include node_modules so Azure can run npm start without building
+            cp -R node_modules deploy/node_modules
+          fi
+          # Avoid shipping unnecessary large folders
+          find deploy -name "archive" -type d -prune -exec rm -rf {} + || true
+          find deploy -name "Build Logs" -type d -prune -exec rm -rf {} + || true
+          # Create zip
+          (cd deploy && zip -qr ../release.zip .)
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -163,7 +105,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -171,9 +113,9 @@ jobs:
           name: node-app
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip
-      
-      - name: 'Deploy to Azure Web App'
+        run: unzip -q release.zip
+
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
