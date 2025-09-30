@@ -14,8 +14,7 @@
       "Bash(cursor-agent-simple.bat --help)",
       "Bash(timeout:*)",
       "Bash(powershell:*)",
-      "Bash(npm run build:*)"
-    ],
+      "Bash(npm run build:*)",
     "deny": [],
     "ask": []
   }
