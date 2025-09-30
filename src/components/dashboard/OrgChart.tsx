@@ -410,6 +410,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
   // Extract all levels dynamically
   const allLevels = useMemo(() => extractAllLevels(tree), [tree]);
   const recalcLockRef = useRef(false);
+  const recalcConnectionsRef = useRef<() => void>();
 
   // Header label resolver (was missing after refactor)
   const getHeaderForLevel = useCallback((levelIndex: number): string => {
@@ -480,7 +481,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
         setSvgSize(p => (p.width === Math.ceil(rect.width) && p.height === Math.ceil(container.scrollHeight)) ? p : { width: Math.ceil(rect.width), height: Math.ceil(container.scrollHeight) });
       });
     }
-  }, [anchorXToId, nodeOffsets, tree]);
+  }, [anchorXToId, nodeOffsets, tree, computedOffsets]);
 
   // Calculate SVG connectors with clean parent-child connections only
   const recalcConnections = useCallback(() => {
@@ -701,6 +702,9 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
     });
   }, [tree, buildTreeMap, extraConnections, peerWithParentIds, isolateRowIds]);
 
+  // Keep a stable reference for effects
+  recalcConnectionsRef.current = recalcConnections;
+
   // Effect to handle resizing and recalculation with proper cleanup
   useEffect(() => {
     const container = containerRef.current;
@@ -708,27 +712,30 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
 
     // Settle delays for multiple recalculations
     const settleDelays = [50, 250, 600];
-    
+
+    // Use ref to get current function without dependency
+    const recalc = () => recalcConnectionsRef.current?.();
+
     // Initial calculation
-    recalcConnections();
+    recalc();
 
     // Set up resize observer for container
-    const resizeObserver = new ResizeObserver(() => recalcConnections());
+    const resizeObserver = new ResizeObserver(() => recalc());
     resizeObserver.observe(container);
 
     // Window resize handler
-    const handleResize = () => recalcConnections();
+    const handleResize = () => recalc();
     window.addEventListener('resize', handleResize);
 
     // Scroll handler for recalculation
-    const handleScroll = () => recalcConnections();
+    const handleScroll = () => recalc();
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // RAF for immediate calculation
-    const rafId = requestAnimationFrame(() => recalcConnections());
+    const rafId = requestAnimationFrame(() => recalc());
 
     // Settle timers for stabilization
-    const timers = settleDelays.map((ms) => setTimeout(() => recalcConnections(), ms));
+    const timers = settleDelays.map((ms) => setTimeout(() => recalc(), ms));
 
     return () => {
       resizeObserver.disconnect();
@@ -737,7 +744,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
       cancelAnimationFrame(rafId);
       timers.forEach(clearTimeout);
     };
-  }, [recalcConnections]);
+  }, []); // Empty dependency array - use ref for stable access
 
   return (
     <motion.div

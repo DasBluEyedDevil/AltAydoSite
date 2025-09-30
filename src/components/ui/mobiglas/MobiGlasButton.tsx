@@ -54,7 +54,7 @@ export default function MobiGlasButton({
 
   const baseClasses = `
     relative inline-flex items-center justify-center
-    font-quantify tracking-wider transition-all duration-300
+    tracking-wider transition-all duration-300
     disabled:opacity-50 disabled:cursor-not-allowed
     ${fullWidth ? 'w-full' : ''}
     ${withGlow ? 'mg-glow' : ''}
@@ -63,12 +63,17 @@ export default function MobiGlasButton({
     ${className}
   `.trim();
 
+  const buttonStyle = {
+    fontFamily: "'Quantify', sans-serif"
+  };
+
   return (
     <motion.button
       type={type}
       disabled={disabled || isLoading}
       onClick={onClick}
       className={baseClasses}
+      style={buttonStyle}
       whileHover={{ scale: disabled ? 1 : 1.02 }}
       whileTap={{ scale: disabled ? 1 : 0.98 }}
       {...motionProps}
