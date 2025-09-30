@@ -10,10 +10,22 @@ const protectedRoutes = [
 ];
 
 export async function middleware(request: NextRequest) {
+  // Validate URL to prevent bot/scanner errors with malformed URLs
+  try {
+    const url = new URL(request.url);
+    // Reject URLs with numeric-only hostnames (e.g., http://993776754175:8080/)
+    if (!url.hostname || url.hostname.match(/^\d+$/)) {
+      return new NextResponse('Bad Request', { status: 400 });
+    }
+  } catch (error) {
+    // Invalid URL format - reject immediately
+    return new NextResponse('Bad Request', { status: 400 });
+  }
+
   const { pathname } = request.nextUrl;
 
   // Check if the pathname is a protected route
-  const isProtectedRoute = protectedRoutes.some(route => 
+  const isProtectedRoute = protectedRoutes.some(route =>
     pathname.startsWith(route)
   );
 
@@ -62,6 +74,6 @@ export const config = {
     // - Static files (_next/static/*)
     // - Image optimization (_next/image/*)
     // - Static files in the public directory (favicon.ico, images, assets, etc)
-    '/((?!api|_next/static|_next/image|favicon.ico|images|assets|fonts|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.svg|.*\\.webp|.*\\.ico|.*\\.woff|.*\\.woff2|.*\\.ttf|.*\\.otf).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|images|assets|fonts|.*\.png|.*\.jpg|.*\.jpeg|.*\.gif|.*\.svg|.*\.webp|.*\.ico|.*\.woff|.*\.woff2|.*\.ttf|.*\.otf).*)',
   ],
-}; 
+};

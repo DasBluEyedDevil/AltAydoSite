@@ -12,8 +12,9 @@
       "Bash(\"./cursor-agent-simple.bat\" agent \"Fix the Services/About/Join/Contact button styling in src/components/Navigation.tsx. Change these buttons from ''mg-nav-item'' class to ''mg-button'' class to match the Login/Employee Portal button styling. The buttons should have consistent styling with the existing mg-button theme. Keep all the existing animations and hover effects but update the base styling class.\")",
       "Bash(cursor-agent-simple.bat agent \"Fix the Services/About/Join/Contact button styling in src/components/Navigation.tsx. Change these buttons from ''mg-nav-item'' class to ''mg-button'' class to match the Login/Employee Portal button styling. The buttons should have consistent styling with the existing mg-button theme. Keep all the existing animations and hover effects but update the base styling class.\")",
       "Bash(cursor-agent-simple.bat --help)",
-      "Bash(timeout:*)"
-    ],
+      "Bash(timeout:*)",
+      "Bash(powershell:*)",
+      "Bash(npm run build:*)",
     "deny": [],
     "ask": []
   }
