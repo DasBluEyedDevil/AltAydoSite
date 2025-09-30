@@ -47,17 +47,7 @@ jobs:
           NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
           EOF
 
-      - name: Ensure next.config.js exists
-        run: |
-          if [ ! -f next.config.js ]; then
-            echo "/** @type {import('next').NextConfig} */
-            const nextConfig = {
-              poweredByHeader: false,
-              typescript: { ignoreBuildErrors: true },
-              images: { unoptimized: true, dangerouslyAllowSVG: true, formats: ['image/avif', 'image/webp'], remotePatterns: [] }
-            };
-            module.exports = nextConfig;" > next.config.js
-          fi
+
 
       - name: Install deps and build
         run: |
