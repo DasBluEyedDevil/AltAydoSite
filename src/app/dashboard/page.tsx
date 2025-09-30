@@ -124,11 +124,11 @@ export default function DashboardPage() {
       {/* Header Bar */}
       <DashboardHeader session={session} />
 
-      {/* System status bar */}
-      <SystemStatusBar />
-      
       {/* Main Dashboard Container */}
       <div className="flex-grow relative z-10 px-4 sm:px-6 pb-4 sm:pb-6 overflow-hidden">
+        {/* System status bar */}
+        <SystemStatusBar />
+
         <div className="flex flex-col h-full space-y-4 sm:space-y-6">
           {/* Main Dashboard Layout - with angled borders and glowing edges */}
           <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">

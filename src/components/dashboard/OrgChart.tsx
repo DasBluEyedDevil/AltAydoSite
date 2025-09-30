@@ -410,6 +410,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
   // Extract all levels dynamically
   const allLevels = useMemo(() => extractAllLevels(tree), [tree]);
   const recalcLockRef = useRef(false);
+  const recalcConnectionsRef = useRef<() => void>();
 
   // Header label resolver (was missing after refactor)
   const getHeaderForLevel = useCallback((levelIndex: number): string => {
@@ -480,7 +481,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
         setSvgSize(p => (p.width === Math.ceil(rect.width) && p.height === Math.ceil(container.scrollHeight)) ? p : { width: Math.ceil(rect.width), height: Math.ceil(container.scrollHeight) });
       });
     }
-  }, [anchorXToId, nodeOffsets, tree]);
+  }, [anchorXToId, nodeOffsets, tree]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Calculate SVG connectors with clean parent-child connections only
   const recalcConnections = useCallback(() => {
@@ -699,7 +700,12 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
       requestAnimationFrame(()=>{ recalcLockRef.current = false; });
       return newPaths;
     });
-  }, [tree, buildTreeMap, extraConnections, peerWithParentIds, isolateRowIds]);
+  }, [tree, extraConnections, peerWithParentIds, isolateRowIds]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Keep a stable reference for effects - but only update when dependencies actually change
+  useEffect(() => {
+    recalcConnectionsRef.current = recalcConnections;
+  }, [recalcConnections]);
 
   // Effect to handle resizing and recalculation with proper cleanup
   useEffect(() => {
@@ -708,27 +714,30 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
 
     // Settle delays for multiple recalculations
     const settleDelays = [50, 250, 600];
-    
+
+    // Use ref to get current function without dependency
+    const recalc = () => recalcConnectionsRef.current?.();
+
     // Initial calculation
-    recalcConnections();
+    recalc();
 
     // Set up resize observer for container
-    const resizeObserver = new ResizeObserver(() => recalcConnections());
+    const resizeObserver = new ResizeObserver(() => recalc());
     resizeObserver.observe(container);
 
     // Window resize handler
-    const handleResize = () => recalcConnections();
+    const handleResize = () => recalc();
     window.addEventListener('resize', handleResize);
 
     // Scroll handler for recalculation
-    const handleScroll = () => recalcConnections();
+    const handleScroll = () => recalc();
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // RAF for immediate calculation
-    const rafId = requestAnimationFrame(() => recalcConnections());
+    const rafId = requestAnimationFrame(() => recalc());
 
     // Settle timers for stabilization
-    const timers = settleDelays.map((ms) => setTimeout(() => recalcConnections(), ms));
+    const timers = settleDelays.map((ms) => setTimeout(() => recalc(), ms));
 
     return () => {
       resizeObserver.disconnect();
@@ -737,7 +746,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
       cancelAnimationFrame(rafId);
       timers.forEach(clearTimeout);
     };
-  }, [recalcConnections]);
+  }, []); // Empty dependency array - use ref for stable access
 
   return (
     <motion.div
@@ -816,18 +825,12 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
                             }}
                           >
                             {(() => {
-                              const containerLabel = group.label.toLowerCase();
-                              const mappedLevel = containerLabel.includes('executive') ? 'executive'
-                                : containerLabel.includes('board') ? 'board'
-                                : (containerLabel.includes('upper') || containerLabel.includes('lower')) ? 'management'
-                                : containerLabel.includes('intern') ? 'intern'
-                                : 'employee';
                               return (
                               <PersonCard
                                 title={node.front.title}
                                 loreName={node.back.loreName}
                                 handle={node.back.handle}
-                                level={mappedLevel as any}
+                                level={node.level as any}
                                 onFlip={() => handleFlip(node.id)}
                                 isFlipped={flippedNodes[node.id]}
                               />

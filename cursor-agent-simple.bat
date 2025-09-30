@@ -18,4 +18,4 @@ goto :loop
 
 :execute
 REM Run cursor-agent in WSL Ubuntu as devil user
-wsl.exe -- bash -c "~/.local/bin/cursor-agent !args!"
+wsl.exe -- bash -c "cd '/mnt/host/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && ~/.local/bin/cursor-agent !args!"

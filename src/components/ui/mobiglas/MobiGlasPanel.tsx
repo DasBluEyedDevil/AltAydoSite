@@ -81,10 +81,12 @@ export default function MobiGlasPanel({
         <motion.div
           className="absolute top-0 w-full h-1 opacity-20 pointer-events-none"
           style={{
-            background: 'linear-gradient(to right, transparent, rgba(var(--mg-primary), 1), transparent)'
+            background: 'linear-gradient(to right, transparent, rgba(var(--mg-primary), 1), transparent)',
+            willChange: 'transform',
+            contain: 'layout style paint'
           }}
           animate={{
-            top: ['0%', '100%', '0%']
+            y: ['0%', '100%', '0%']
           }}
           transition={{
             duration: 8,

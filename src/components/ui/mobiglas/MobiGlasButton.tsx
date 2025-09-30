@@ -38,9 +38,9 @@ export default function MobiGlasButton({
   ...motionProps
 }: MobiGlasButtonProps) {
   const variantStyles = {
-    primary: 'mg-button bg-[rgba(var(--mg-primary),0.1)] border border-[rgba(var(--mg-primary),0.5)] text-[rgba(var(--mg-primary),1)] hover:bg-[rgba(var(--mg-primary),0.2)] hover:border-[rgba(var(--mg-primary),0.8)]',
-    secondary: 'mg-button bg-[rgba(var(--mg-secondary),0.1)] border border-[rgba(var(--mg-secondary),0.5)] text-[rgba(var(--mg-secondary),1)] hover:bg-[rgba(var(--mg-secondary),0.2)] hover:border-[rgba(var(--mg-secondary),0.8)]',
-    accent: 'mg-button bg-[rgba(var(--mg-accent),0.1)] border border-[rgba(var(--mg-accent),0.5)] text-[rgba(var(--mg-accent),1)] hover:bg-[rgba(var(--mg-accent),0.2)] hover:border-[rgba(var(--mg-accent),0.8)]',
+    primary: 'mg-button border border-[rgba(var(--mg-primary),0.5)] text-[rgba(var(--mg-primary),1)] hover:bg-[rgba(var(--mg-primary),0.2)] hover:border-[rgba(var(--mg-primary),0.8)]',
+    secondary: 'mg-button border border-[rgba(var(--mg-secondary),0.5)] text-[rgba(var(--mg-secondary),1)] hover:bg-[rgba(var(--mg-secondary),0.2)] hover:border-[rgba(var(--mg-secondary),0.8)]',
+    accent: 'mg-button border border-[rgba(var(--mg-accent),0.5)] text-[rgba(var(--mg-accent),1)] hover:bg-[rgba(var(--mg-accent),0.2)] hover:border-[rgba(var(--mg-accent),0.8)]',
     ghost: 'bg-transparent border-none text-[rgba(var(--mg-text),0.8)] hover:text-[rgba(var(--mg-primary),1)] hover:bg-[rgba(var(--mg-primary),0.1)]',
     outline: 'bg-transparent border border-[rgba(var(--mg-primary),0.3)] text-[rgba(var(--mg-primary),0.9)] hover:bg-[rgba(var(--mg-primary),0.1)] hover:border-[rgba(var(--mg-primary),0.6)]'
   };
@@ -54,8 +54,9 @@ export default function MobiGlasButton({
 
   const baseClasses = `
     relative inline-flex items-center justify-center
-    font-quantify tracking-wider transition-all duration-300
+    tracking-wider transition-all duration-300
     disabled:opacity-50 disabled:cursor-not-allowed
+    ${withCorners ? 'group' : ''}
     ${fullWidth ? 'w-full' : ''}
     ${withGlow ? 'mg-glow' : ''}
     ${variantStyles[variant]}
@@ -63,12 +64,17 @@ export default function MobiGlasButton({
     ${className}
   `.trim();
 
+  const buttonStyle = {
+    fontFamily: "'Quantify', sans-serif"
+  };
+
   return (
     <motion.button
       type={type}
       disabled={disabled || isLoading}
       onClick={onClick}
       className={baseClasses}
+      style={buttonStyle}
       whileHover={{ scale: disabled ? 1 : 1.02 }}
       whileTap={{ scale: disabled ? 1 : 0.98 }}
       {...motionProps}

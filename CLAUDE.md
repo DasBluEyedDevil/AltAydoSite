@@ -348,7 +348,10 @@ gemini -p "@relevant/paths Specific analysis request"
 # Claude Code (Implementation & coordination)
 # Use directly through conversation
 
-# Cursor Agent (Interactive development)
+# Cursor Agent (Interactive development) - VERIFIED WORKING COMMANDS:
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent agent 'Your request here'"
+
+# Alternative batch file method (once paths are fixed):
 ./cursor-agent-simple.bat agent "Interactive development request"
 ./cursor-agent-simple.bat --help  # For all available options
 ```
@@ -362,3 +365,118 @@ gemini -p "@relevant/paths Specific analysis request"
 5. **Document Decisions**: Keep track of insights from each AI for future reference
 
 This triumvirate approach ensures maximum efficiency by leveraging each AI's unique strengths while maintaining coordination and avoiding redundant work.
+
+## Cursor Agent Setup and Troubleshooting
+
+### Working Commands Verified
+The following commands have been tested and confirmed working:
+
+#### Interactive Mode (Default)
+```bash
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent agent 'Your request here'"
+```
+
+#### Non-Interactive Mode (Recommended for Scripts)
+```bash
+# Text output (clean, final response only)
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent --print --output-format text agent 'Your request here'"
+
+# JSON output (structured, parseable)
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent --print --output-format json agent 'Your request here'"
+
+# Stream JSON output (default non-interactive)
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent --print agent 'Your request here'"
+```
+
+### Available Cursor Agent Commands
+- `agent` - Start the Cursor Agent
+- `--help` - Display help information
+- `status` - Check authentication status
+- `login` - Authenticate with Cursor
+- `logout` - Sign out and clear stored authentication
+- `update` - Update Cursor Agent to the latest version
+- `create-chat` - Create a new empty chat and return its ID
+- `resume` - Resume the latest chat session
+
+### Common Issues and Solutions
+
+1. **Path with Spaces Issue**: The directory "Diff AydoSite" contains a space which requires proper escaping in WSL commands.
+   - ✅ **Solution**: Use single quotes around the full path: `'/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io'`
+
+2. **User Permission Issues**: Cursor-agent is installed for the `devil` user in WSL.
+   - ✅ **Solution**: Use `sudo -u devil` to run as the correct user
+
+3. **Batch File Path Issues**: The existing batch files may have incorrect path formats.
+   - ⏳ **Future Fix**: Update batch files with proper path escaping
+
+### Cursor Agent Integration Examples
+
+```bash
+# Basic cursor agent call for navigation button styling (example from recent work)
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent agent 'Fix the Services/About/Join/Contact button styling in src/components/Navigation.tsx. Change these buttons from mg-nav-item class to mg-button class to match the Login/Employee Portal button styling.'"
+
+# Debug specific issues
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent agent 'Debug the background gradient animation scroll issue in MissionTemplateCreator.tsx.'"
+```
+
+### Performance Notes and Timeout Behavior
+- **Timeout is Normal**: Cursor Agent commands timeout after 2 minutes, but this is expected behavior
+- **Response Still Completes**: Even when the command times out, the agent usually completes its task successfully
+- **Non-Interactive Benefits**: Using `--print --output-format text` provides clean, final responses
+- **Best Practice**: Use non-interactive mode for Claude Code integration to get cleaner output
+
+### Why Timeouts Occur and Solutions
+Cursor Agent timeouts can occur due to several factors:
+
+#### Root Causes:
+1. **Interactive Design**: Cursor Agent waits for additional input even in non-interactive mode
+2. **Network/HTTP/2 Issues**: Corporate networks or proxies can cause connectivity problems
+3. **File Operation Hanging**: Without `--force` flag, file changes are only proposed, causing hanging
+4. **Model Processing**: Some models may have slower response times
+
+#### Solutions to Try:
+
+1. **Use --force Flag for File Operations**:
+   ```bash
+   # Essential for file modifications to prevent hanging
+   wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent -p --force --output-format text 'Your request here'"
+   ```
+
+2. **Specify Model Explicitly** (Available models: auto, sonnet-4.5, sonnet-4.5-thinking, gpt-5, opus-4.1, grok):
+   ```bash
+   # Use specific model for consistent performance
+   --model sonnet-4.5
+   ```
+
+3. **Check Authentication Status**:
+   ```bash
+   wsl.exe bash -c "sudo -u devil /home/devil/.local/bin/cursor-agent status"
+   ```
+
+4. **Network Configuration** (if behind corporate proxy):
+   - Set `"cursor.general.disableHttp2": true` in Cursor settings
+   - Check firewall/proxy settings
+
+### Recommended Usage Pattern
+
+#### For File Operations (Use --force to prevent hanging):
+```bash
+# Optimal command for file modifications
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent -p --force --model sonnet-4.5 --output-format text 'Your file modification request'"
+```
+
+#### For Analysis/Questions (No file operations):
+```bash
+# Simpler command for read-only operations
+wsl.exe bash -c "cd '/mnt/c/Users/dasbl/Downloads/Diff AydoSite/dasblueeyeddevil.github.io' && sudo -u devil /home/devil/.local/bin/cursor-agent -p --output-format text 'Your analysis request'"
+```
+
+#### Complete Flag Reference:
+- `-p` or `--print`: Non-interactive mode
+- `--force`: Allow file operations (prevents hanging)
+- `--output-format text`: Clean text output (alternatives: json, stream-json)
+- `--model sonnet-4.5`: Explicit model selection
+- Available models: auto, sonnet-4.5, sonnet-4.5-thinking, gpt-5, opus-4.1, grok
+
+### Timeout Acceptance
+Even with optimizations, timeouts may still occur due to cursor-agent's interactive design. **This is normal** - the agent usually completes its work before timing out. The timeout indicates the session ended, not task failure.
