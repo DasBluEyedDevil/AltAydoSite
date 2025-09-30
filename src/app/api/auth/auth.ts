@@ -204,56 +204,49 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user, account }) {
-      // Pass user details to the token when signing in
-      if (user) {
-        console.log('AUTH: jwt callback - adding user data to token');
-        
-        if (account?.provider === 'discord') {
-          // For Discord OAuth users, get the user data from our database
-          let dbUser = await userStorage.getUserByDiscordId(user.id);
-          if (!dbUser) {
-            dbUser = await userStorage.getUserByEmail(user.email || '');
-          }
-          
-          if (dbUser) {
-            token.id = dbUser.id;
-            token.clearanceLevel = dbUser.clearanceLevel;
-            token.role = dbUser.role;
-            token.aydoHandle = dbUser.aydoHandle;
-            token.discordName = dbUser.discordName;
-            token.discordId = dbUser.discordId;
-            token.discordAvatar = dbUser.discordAvatar;
-            token.rsiAccountName = dbUser.rsiAccountName;
-          }
-        } else {
-          // For credentials users, use the data from authorize
-          token.id = user.id;
-          token.clearanceLevel = user.clearanceLevel;
-          token.role = user.role;
-          token.aydoHandle = user.aydoHandle;
-          token.discordName = user.discordName;
-          token.discordId = user.discordId;
-          token.discordAvatar = user.discordAvatar;
-          token.rsiAccountName = user.rsiAccountName;
-        }
-      } else if (token && token.id) {
-        // Refresh token data from storage to reflect any updates to clearance/role
+      const now = Date.now();
+      const tokenMaxAge = 60 * 60 * 1000; // 1 hour in milliseconds
+
+      // Initial sign-in
+      if (user && account) {
+        console.log('AUTH: jwt callback - initial sign-in');
+        token.id = user.id;
+        token.clearanceLevel = user.clearanceLevel;
+        token.role = user.role;
+        token.aydoHandle = user.aydoHandle;
+        token.discordName = user.discordName;
+        token.discordId = user.discordId;
+        token.discordAvatar = user.discordAvatar;
+        token.rsiAccountName = user.rsiAccountName;
+        token.lastUpdated = now;
+        return token;
+      }
+
+      // If token exists and is not expired, return it
+      if (token && (now < (token.lastUpdated as number) + tokenMaxAge)) {
+        return token;
+      }
+
+      // If token is expired or needs to be refreshed
+      if (token && token.id) {
+        console.log('AUTH: jwt callback - refreshing token');
         try {
           const latestUser = await userStorage.getUserById(token.id as string);
           if (latestUser) {
             token.clearanceLevel = latestUser.clearanceLevel;
             token.role = latestUser.role;
-            // Keep aydoHandle and optional fields in sync as well
             token.aydoHandle = latestUser.aydoHandle;
             token.discordName = latestUser.discordName || null;
             token.discordId = latestUser.discordId || null;
             token.discordAvatar = latestUser.discordAvatar || null;
             token.rsiAccountName = latestUser.rsiAccountName || null;
+            token.lastUpdated = now;
           }
         } catch (e) {
           console.warn('AUTH: jwt callback - failed to refresh user from storage:', e);
         }
       }
+      
       return token;
     },
     async session({ session, token }) {
