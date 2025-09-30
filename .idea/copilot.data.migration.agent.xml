@@ -16,6 +16,7 @@
       <option value="aab14154-169b-4928-aae8-ab9370938ede" />
       <option value="bc3e32e1-710b-4398-8973-e45862b434a8" />
       <option value="c32e0d16-9988-420a-8a8f-cb15851c3e95" />
+      <option value="c5e6ad55-889b-4cfe-86e2-83dce6e38f3a" />
       <option value="d1a767e4-e1c6-4597-b2a5-93bfe1fc2300" />
       <option value="e4512875-52e7-4bfb-8d8a-b7a6e511cf0f" />
       <option value="eefec0d2-ae77-4d21-bd4f-2f29e1d84f1a" />
@@ -160,11 +161,11 @@
         <entry key="e4512875-52e7-4bfb-8d8a-b7a6e511cf0f">
           <value>
             <set>
-              <option value="22e7db03-6fa6-4092-9e26-57ce5106d199" />
-              <option value="b210ee94-349f-4821-9a70-2449c042c3b6" />
-              <option value="4e9c7236-e020-4f87-9df9-c7844445c3fe" />
               <option value="19b54216-ba65-4b48-8368-b593c7d25f94" />
+              <option value="22e7db03-6fa6-4092-9e26-57ce5106d199" />
               <option value="45b03970-1058-4300-9007-0c4fa5a41638" />
+              <option value="4e9c7236-e020-4f87-9df9-c7844445c3fe" />
+              <option value="b210ee94-349f-4821-9a70-2449c042c3b6" />
             </set>
           </value>
         </entry>
@@ -196,17 +197,7 @@
       </map>
     </option>
     <pendingWorkingSetItems>
-      <entry key="e4512875-52e7-4bfb-8d8a-b7a6e511cf0f">
-        <set>
-          <option value="file://$PROJECT_DIR$/src/components/dashboard/MissionTemplateCreator.tsx" />
-          <option value="file://$PROJECT_DIR$/src/components/dashboard/OrgChart.tsx" />
-          <option value="file://$PROJECT_DIR$/src/hooks/useUserTimezone.ts" />
-          <option value="file://$PROJECT_DIR$/src/lib/mission-template-storage.ts" />
-          <option value="file://$PROJECT_DIR$/src/app/globals.css" />
-          <option value="file://$PROJECT_DIR$/src/app/api/mission-templates/route.ts" />
-          <option value="file://$PROJECT_DIR$/src/scripts/test-mission-template-storage.ts" />
-        </set>
-      </entry>
+      <entry key="e4512875-52e7-4bfb-8d8a-b7a6e511cf0f" />
       <entry key="eefec0d2-ae77-4d21-bd4f-2f29e1d84f1a" />
       <entry key="f02fcbf1-3a4d-44b5-8e21-8f0bb0eef981" />
     </pendingWorkingSetItems>
