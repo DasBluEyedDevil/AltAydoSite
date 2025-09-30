@@ -481,7 +481,7 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
         setSvgSize(p => (p.width === Math.ceil(rect.width) && p.height === Math.ceil(container.scrollHeight)) ? p : { width: Math.ceil(rect.width), height: Math.ceil(container.scrollHeight) });
       });
     }
-  }, [anchorXToId, nodeOffsets, tree, computedOffsets]);
+  }, [anchorXToId, nodeOffsets, tree]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Calculate SVG connectors with clean parent-child connections only
   const recalcConnections = useCallback(() => {
@@ -700,10 +700,12 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
       requestAnimationFrame(()=>{ recalcLockRef.current = false; });
       return newPaths;
     });
-  }, [tree, buildTreeMap, extraConnections, peerWithParentIds, isolateRowIds]);
+  }, [tree, extraConnections, peerWithParentIds, isolateRowIds]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Keep a stable reference for effects
-  recalcConnectionsRef.current = recalcConnections;
+  // Keep a stable reference for effects - but only update when dependencies actually change
+  useEffect(() => {
+    recalcConnectionsRef.current = recalcConnections;
+  }, [recalcConnections]);
 
   // Effect to handle resizing and recalculation with proper cleanup
   useEffect(() => {
@@ -823,18 +825,12 @@ const OrgChart: React.FC<OrgChartProps> = ({ tree, className = '', extraConnecti
                             }}
                           >
                             {(() => {
-                              const containerLabel = group.label.toLowerCase();
-                              const mappedLevel = containerLabel.includes('executive') ? 'executive'
-                                : containerLabel.includes('board') ? 'board'
-                                : (containerLabel.includes('upper') || containerLabel.includes('lower')) ? 'management'
-                                : containerLabel.includes('intern') ? 'intern'
-                                : 'employee';
                               return (
                               <PersonCard
                                 title={node.front.title}
                                 loreName={node.back.loreName}
                                 handle={node.back.handle}
-                                level={mappedLevel as any}
+                                level={node.level as any}
                                 onFlip={() => handleFlip(node.id)}
                                 isFlipped={flippedNodes[node.id]}
                               />

@@ -3,8 +3,8 @@
  * Run with: npx tsx src/scripts/test-mission-template-storage.ts
  */
 
-import * as missionTemplateStorage from '../lib/mission-template-storage';
-import { MissionTemplateResponse } from '../types/MissionTemplate';
+import * as missionTemplateStorage from '@/lib/mission-template-storage';
+import { MissionTemplateResponse } from '@/types/MissionTemplate';
 
 async function testMissionTemplateStorage() {
   console.log('🧪 Testing Mission Template Storage Utilities...\n');

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
+import MobiGlasButton from '@/components/ui/mobiglas/MobiGlasButton';
 
 const navItems = [
   { name: 'SERVICES', href: '/services' },
@@ -15,7 +16,6 @@ const navItems = [
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState<string | null>(null);
   const { data: session } = useSession();
 
   return (
@@ -42,111 +42,51 @@ export default function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => (
-              <motion.div
-                key={item.name}
-                onHoverStart={() => setActiveItem(item.name)}
-                onHoverEnd={() => setActiveItem(null)}
-                whileHover={{ x: 2 }}
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Link
-                  href={item.href}
-                  className="mg-nav-item text-xs tracking-wider font-quantify holo-element rounded-none relative group"
+              <Link key={item.name} href={item.href}>
+                <MobiGlasButton
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs tracking-wider font-quantify"
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  whileHover={{ x: 2 }}
                 >
-                  <span className="relative inline-block z-10">
-                    {item.name}
-                    <AnimatePresence>
-                      {activeItem === item.name && (
-                        <motion.span 
-                          className="absolute -bottom-0.5 left-0 h-[2px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent"
-                          initial={{ width: '0%', opacity: 0 }}
-                          animate={{ width: '100%', opacity: 1 }}
-                          exit={{ width: '0%', opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </span>
-                  
-                  {/* Animated corner borders */}
-                  <motion.span 
-                    className="absolute top-0 left-0 w-[6px] h-[6px] border-t border-l border-[rgba(var(--mg-primary),0)]"
-                    initial={{ borderColor: 'rgba(var(--mg-primary),0)' }}
-                    animate={activeItem === item.name ? { 
-                      borderColor: 'rgba(var(--mg-primary),0.8)',
-                      boxShadow: '0 0 5px rgba(var(--mg-primary),0.5)'
-                    } : {}}
-                    transition={{ duration: 0.2 }}
-                  />
-                  <motion.span 
-                    className="absolute top-0 right-0 w-[6px] h-[6px] border-t border-r border-[rgba(var(--mg-primary),0)]"
-                    initial={{ borderColor: 'rgba(var(--mg-primary),0)' }}
-                    animate={activeItem === item.name ? { 
-                      borderColor: 'rgba(var(--mg-primary),0.8)',
-                      boxShadow: '0 0 5px rgba(var(--mg-primary),0.5)'
-                    } : {}}
-                    transition={{ duration: 0.2 }}
-                  />
-                  <motion.span 
-                    className="absolute bottom-0 left-0 w-[6px] h-[6px] border-b border-l border-[rgba(var(--mg-primary),0)]"
-                    initial={{ borderColor: 'rgba(var(--mg-primary),0)' }}
-                    animate={activeItem === item.name ? { 
-                      borderColor: 'rgba(var(--mg-primary),0.8)',
-                      boxShadow: '0 0 5px rgba(var(--mg-primary),0.5)'
-                    } : {}}
-                    transition={{ duration: 0.2 }}
-                  />
-                  <motion.span 
-                    className="absolute bottom-0 right-0 w-[6px] h-[6px] border-b border-r border-[rgba(var(--mg-primary),0)]" 
-                    initial={{ borderColor: 'rgba(var(--mg-primary),0)' }}
-                    animate={activeItem === item.name ? { 
-                      borderColor: 'rgba(var(--mg-primary),0.8)',
-                      boxShadow: '0 0 5px rgba(var(--mg-primary),0.5)'
-                    } : {}}
-                    transition={{ duration: 0.2 }}
-                  />
-                </Link>
-              </motion.div>
+                  {item.name}
+                </MobiGlasButton>
+              </Link>
             ))}
             
             <div className="w-px h-5 bg-[rgba(var(--mg-primary),0.2)] mx-1"></div>
             
             {session ? (
               <div className="flex space-x-1 items-center">
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mg-highlight"
-                >
-                  <Link
-                    href="/dashboard"
-                    className="mg-button py-1 px-3 text-xs flex items-center justify-center group"
+                <Link href="/dashboard">
+                  <MobiGlasButton
+                    variant="primary"
+                    size="sm"
+                    className="text-xs tracking-wider font-quantify"
+                    withScanline
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <span className="relative z-10 tracking-wider font-quantify">EMPLOYEE PORTAL</span>
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="radar-sweep"></div>
-                    </div>
-                  </Link>
-                </motion.div>
+                    EMPLOYEE PORTAL
+                  </MobiGlasButton>
+                </Link>
               </div>
             ) : (
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                className="mg-highlight"
-              >
-                <Link
-                  href="/login"
-                  className="mg-button py-1 px-3 text-xs flex items-center justify-center group"
+              <Link href="/login">
+                <MobiGlasButton
+                  variant="primary"
+                  size="sm"
+                  className="text-xs tracking-wider font-quantify"
+                  withScanline
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <span className="relative z-10 tracking-wider font-quantify">LOGIN</span>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="radar-sweep"></div>
-                  </div>
-                </Link>
-              </motion.div>
+                  LOGIN
+                </MobiGlasButton>
+              </Link>
             )}
           </div>
 
@@ -199,40 +139,16 @@ export default function Navigation() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2, delay: idx * 0.05 }}
                 >
-                  <Link
-                    href={item.href}
-                    className="mg-nav-item block py-1 text-xs font-quantify tracking-wider holo-element relative group"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <span className="relative inline-block z-10">
+                  <Link href={item.href} onClick={() => setIsOpen(false)}>
+                    <MobiGlasButton
+                      variant="ghost"
+                      size="sm"
+                      fullWidth
+                      className="text-xs font-quantify tracking-wider"
+                      withCorners
+                    >
                       {item.name}
-                    </span>
-                    
-                    {/* Animated corner borders */}
-                    <motion.span 
-                      className="absolute top-0 left-0 w-[6px] h-[6px] border-t border-l border-[rgba(var(--mg-primary),0.4)]"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: idx * 0.05 + 0.1 }}
-                    />
-                    <motion.span 
-                      className="absolute top-0 right-0 w-[6px] h-[6px] border-t border-r border-[rgba(var(--mg-primary),0.4)]"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: idx * 0.05 + 0.2 }}
-                    />
-                    <motion.span 
-                      className="absolute bottom-0 left-0 w-[6px] h-[6px] border-b border-l border-[rgba(var(--mg-primary),0.4)]"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: idx * 0.05 + 0.3 }}
-                    />
-                    <motion.span 
-                      className="absolute bottom-0 right-0 w-[6px] h-[6px] border-b border-r border-[rgba(var(--mg-primary),0.4)]"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: idx * 0.05 + 0.4 }}
-                    />
+                    </MobiGlasButton>
                   </Link>
                 </motion.div>
               ))}
@@ -244,21 +160,29 @@ export default function Navigation() {
               >
                 {session ? (
                   <div className="space-y-2">
-                    <Link
-                      href="/dashboard"
-                      className="mg-button block w-full text-center py-1 text-xs font-quantify tracking-wider"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      EMPLOYEE PORTAL
+                    <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                      <MobiGlasButton
+                        variant="primary"
+                        size="sm"
+                        fullWidth
+                        className="text-xs font-quantify tracking-wider"
+                        withScanline
+                      >
+                        EMPLOYEE PORTAL
+                      </MobiGlasButton>
                     </Link>
                   </div>
                 ) : (
-                  <Link
-                    href="/login"
-                    className="mg-button block w-full text-center mt-4 text-xs font-quantify tracking-wider"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    LOGIN
+                  <Link href="/login" onClick={() => setIsOpen(false)}>
+                    <MobiGlasButton
+                      variant="primary"
+                      size="sm"
+                      fullWidth
+                      className="text-xs font-quantify tracking-wider mt-4"
+                      withScanline
+                    >
+                      LOGIN
+                    </MobiGlasButton>
                   </Link>
                 )}
               </motion.div>

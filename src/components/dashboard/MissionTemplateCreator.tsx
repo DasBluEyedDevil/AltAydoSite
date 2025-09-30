@@ -142,7 +142,9 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
         const data = await response.json();
         setTemplates(data.items || []);
       } else {
-        throw new Error(`Failed to load templates: ${response.status}`);
+        console.error(`Failed to load templates: ${response.status}`);
+        setNotification({ type: 'error', message: 'Failed to load mission templates' });
+        return;
       }
     } catch (error) {
       console.error('Error loading templates:', error);
@@ -292,8 +294,10 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
         resetForm();
         setViewMode('list'); // useEffect will handle scrolling
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save template');
+        const errorData = await response.json().catch(() => ({}));
+        const msg = (errorData as any).error || 'Failed to save template';
+        setNotification({ type: 'error', message: msg });
+        return;
       }
     } catch (error) {
       console.error('Error saving template:', error);
@@ -323,8 +327,10 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
         setNotification({ type: 'success', message: 'Template deleted successfully' });
         await loadTemplates();
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete template');
+        const errorData = await response.json().catch(() => ({}));
+        const msg = (errorData as any).error || 'Failed to delete template';
+        setNotification({ type: 'error', message: msg });
+        return;
       }
     } catch (error) {
       console.error('Error deleting template:', error);

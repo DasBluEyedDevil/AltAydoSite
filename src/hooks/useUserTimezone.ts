@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 
 export function useUserTimezone(): {
@@ -13,7 +13,7 @@ export function useUserTimezone(): {
   const [error, setError] = useState<string | null>(null);
   const hasInitialized = useRef(false);
 
-  const fetchUserTimezone = async () => {
+  const fetchUserTimezone = useCallback(async () => {
     if (status === 'loading') {
       return; // Wait for session to load
     }
@@ -36,7 +36,10 @@ export function useUserTimezone(): {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch profile: ${response.status}`);
+        console.warn(`Failed to fetch profile: ${response.status}`);
+        setTimezone('UTC');
+        setError(`Failed to fetch profile: ${response.status}`);
+        return;
       }
 
       const profileData = await response.json();
@@ -54,14 +57,14 @@ export function useUserTimezone(): {
       setLoading(false);
       hasInitialized.current = true;
     }
-  };
+  }, [status, session]);
 
   useEffect(() => {
     // Only fetch on initial load, not on every session change
     if (!hasInitialized.current && status !== 'loading') {
       fetchUserTimezone();
     }
-  }, [status]); // Only depend on status, not session object
+  }, [status, fetchUserTimezone]); // Depend on status and memoized fetch
 
   return { 
     timezone, 
@@ -69,4 +72,4 @@ export function useUserTimezone(): {
     error, 
     refetch: fetchUserTimezone 
   };
-} 
+}

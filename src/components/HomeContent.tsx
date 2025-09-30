@@ -747,7 +747,7 @@ const shipImages = [
                                         // If image fails to load, fall back to a default image
                                         console.error(`Failed to load image: ${shipImages[currentImageIndex]}`);
                                         const target = e.target as HTMLImageElement;
-                                        target.src = cdn('/spacebg.png'); // Use PNG version which is confirmed working
+                                        target.src = fallbackImage; // Use defined fallback image
                                       }}
                                     />
                                     <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.4)]"></div>
@@ -879,7 +879,7 @@ const shipImages = [
                                   >
                                     <Link 
                                       href={item.path} 
-                                      className="mg-nav-item text-xs flex items-center py-2 holo-element"
+                                      className="mg-button text-xs flex items-center py-2 w-full"
                                       onMouseEnter={() => setActivePanel(item.title)}
                                       onMouseLeave={() => setActivePanel(null)}
                                     >

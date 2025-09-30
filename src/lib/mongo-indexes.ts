@@ -61,6 +61,16 @@ export async function ensureMongoIndexes(db: Db): Promise<void> {
   } catch (err) {
     console.warn('Index setup (missions) skipped or failed:', err);
   }
+
+  try {
+    const missionTemplates = db.collection('mission-templates');
+    await Promise.all([
+      missionTemplates.createIndex({ createdBy: 1, createdAt: -1 }).catch(() => {}),
+      missionTemplates.createIndex({ operationType: 1, createdAt: -1 }).catch(() => {}),
+      missionTemplates.createIndex({ primaryActivity: 1, createdAt: -1 }).catch(() => {}),
+      missionTemplates.createIndex({ isPublic: 1, createdAt: -1 }).catch(() => {}),
+    ]);
+  } catch (err) {
+    console.warn('Index setup (mission-templates) skipped or failed:', err);
+  }
 }
-
-
