@@ -16,7 +16,20 @@
       "Bash(npx tsc:*)",
       "Bash(rg:*)",
       "Bash(npm run dev:*)",
-      "Bash(npm run kill-port:*)"
+      "Bash(npm run kill-port:*)",
+      "Bash(cursor-agent:*)",
+      "Bash(echo $PATH)",
+      "Bash(wsl cursor-agent:*)",
+      "Bash(wsl which:*)",
+      "Bash(wsl ls:*)",
+      "Bash(wsl:*)",
+      "Bash(./wsl-cursor-agent.bat --help)",
+      "Bash(chmod:*)",
+      "Bash(wsl.exe bash:*)",
+      "Bash(./wsl-cursor-agent-proper.bat --help)",
+      "Bash(./cursor-agent-simple.bat --help)",
+      "Bash(powershell:*)",
+      "Bash(ubuntu config:*)"
     ],
     "deny": [],
     "ask": []

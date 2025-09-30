@@ -174,3 +174,191 @@ Important Notes
 - No need for --yolo flag for read-only analysis
 - Gemini's context window can handle entire codebases that would overflow Claude's context
 - When checking implementations, be specific about what you're looking for to get accurate results
+
+# Three-Pronged AI Development Triumvirate
+
+This project leverages a powerful three-AI system for optimal development efficiency. Each AI has distinct strengths that, when combined strategically, create an unparalleled development environment.
+
+## AI Capabilities Matrix
+
+### Claude Code (Primary Orchestrator)
+**Strengths:**
+- Precise file operations (read/write/edit)
+- Multi-step task coordination and planning
+- Code refactoring and incremental changes
+- Real-time debugging and error resolution
+- Project-specific context retention
+- Tool integration and workflow automation
+
+**Best For:**
+- Direct code implementation and modifications
+- Bug fixes and feature implementation
+- File system operations and organization
+- Task planning and execution coordination
+- Integration testing and validation
+
+### Gemini CLI (Architectural Analyst)
+**Strengths:**
+- Massive context window (2M+ tokens)
+- Whole-codebase analysis and comprehension
+- Pattern recognition across large file sets
+- Architecture assessment and recommendations
+- Cross-file dependency analysis
+- Comprehensive code auditing
+
+**Best For:**
+- Project-wide analysis and planning
+- Architecture reviews and refactoring strategies
+- Large-scale pattern detection
+- Security audits across entire codebase
+- Impact analysis for major changes
+- Documentation generation from codebase
+
+### Cursor Agent (Interactive Development)
+**Strengths:**
+- Interactive development sessions
+- Visual code editing and exploration
+- Real-time collaboration and pair programming
+- IDE-integrated workflows
+- Advanced code completion and suggestions
+- Multi-modal development assistance
+
+**Best For:**
+- Interactive debugging sessions
+- Complex refactoring with visual feedback
+- Exploratory coding and experimentation
+- Real-time code review and suggestions
+- Collaborative development workflows
+- Learning and explanation of complex systems
+
+## Optimal Workflow Strategies
+
+### 1. Architecture-First Development
+```bash
+# Step 1: Gemini analyzes entire codebase for architecture planning
+gemini -p "@src/ @lib/ @types/ Analyze the current architecture and suggest optimal approach for [feature/change]"
+
+# Step 2: Claude implements based on Gemini's analysis
+# (Claude uses analysis to implement changes)
+
+# Step 3: Cursor Agent for interactive refinement
+./cursor-agent-simple.bat agent "Help refine the implementation based on [specific concerns]"
+```
+
+### 2. Bug Investigation & Resolution
+```bash
+# Step 1: Gemini performs comprehensive error analysis
+gemini -p "@src/ @logs/ Find all instances related to [bug description] and trace the root cause"
+
+# Step 2: Claude implements targeted fixes
+# (Claude applies specific fixes based on Gemini's findings)
+
+# Step 3: Cursor Agent for testing and validation
+./cursor-agent-simple.bat agent "Help test and validate the bug fix for [specific scenario]"
+```
+
+### 3. Feature Development Pipeline
+```bash
+# Step 1: Gemini assesses impact and dependencies
+gemini -p "@src/ @components/ @lib/ Assess the impact of adding [feature] and identify all affected files"
+
+# Step 2: Claude implements core functionality
+# (Claude builds the feature systematically)
+
+# Step 3: Cursor Agent for integration and polish
+./cursor-agent-simple.bat agent "Help integrate [feature] with the existing UI and add polish"
+```
+
+### 4. Code Quality & Refactoring
+```bash
+# Step 1: Gemini identifies refactoring opportunities
+gemini -p "@src/ Identify code smells, performance issues, and refactoring opportunities"
+
+# Step 2: Claude implements systematic refactoring
+# (Claude applies refactoring changes incrementally)
+
+# Step 3: Cursor Agent for validation and optimization
+./cursor-agent-simple.bat agent "Review the refactored code and suggest optimizations"
+```
+
+## Triumvirate Command Patterns
+
+### Quick Analysis Commands
+```bash
+# Gemini: Project-wide pattern analysis
+gemini -p "@src/ @lib/ How is [pattern/concept] implemented across the codebase?"
+
+# Claude: Targeted implementation
+# (Use Claude's tools for specific file operations)
+
+# Cursor: Interactive exploration
+./cursor-agent-simple.bat agent "Explore the implementation of [specific component]"
+```
+
+### Security & Compliance Audit
+```bash
+# Gemini: Comprehensive security analysis
+gemini -p "@src/ @api/ @lib/ Perform a security audit focusing on [specific concerns]"
+
+# Claude: Fix implementation
+# (Apply security fixes identified by Gemini)
+
+# Cursor: Interactive testing
+./cursor-agent-simple.bat agent "Help test security measures for [specific scenarios]"
+```
+
+### Performance Optimization
+```bash
+# Gemini: Performance bottleneck identification
+gemini -p "@src/ @components/ @lib/ Identify performance bottlenecks and optimization opportunities"
+
+# Claude: Performance improvements implementation
+# (Implement specific optimizations)
+
+# Cursor: Performance testing and validation
+./cursor-agent-simple.bat agent "Help profile and test performance improvements"
+```
+
+## Coordination Strategies
+
+### Task Distribution Rules
+1. **Gemini First**: Always use Gemini for initial analysis of large-scale changes or when you need to understand project-wide impact
+2. **Claude Implementation**: Use Claude for all direct code changes, file operations, and systematic implementations
+3. **Cursor Refinement**: Use Cursor Agent for interactive testing, refinement, and collaborative problem-solving
+
+### Context Passing
+1. **Gemini → Claude**: Pass architectural insights and implementation strategies
+2. **Claude → Cursor**: Share specific implementation details and testing requirements
+3. **Cursor → Claude**: Provide feedback for iterative improvements
+
+### Efficiency Maximization
+- Use Gemini's massive context for problems that would exceed Claude's limits
+- Leverage Claude's tool access for all file system operations
+- Utilize Cursor's interactivity for complex problem-solving sessions
+- Always validate implementations across all three perspectives
+
+## Integration Commands
+
+Access the triumvirate through these standardized commands:
+
+```bash
+# Gemini CLI (Large-scale analysis)
+gemini -p "@relevant/paths Specific analysis request"
+
+# Claude Code (Implementation & coordination)
+# Use directly through conversation
+
+# Cursor Agent (Interactive development)
+./cursor-agent-simple.bat agent "Interactive development request"
+./cursor-agent-simple.bat --help  # For all available options
+```
+
+## Best Practices for Triumvirate Usage
+
+1. **Start with Architecture**: Always begin complex tasks with Gemini analysis
+2. **Implement Systematically**: Use Claude for methodical, step-by-step implementation
+3. **Refine Interactively**: Use Cursor Agent for testing, validation, and refinement
+4. **Cross-validate**: Have each AI review the others' work when possible
+5. **Document Decisions**: Keep track of insights from each AI for future reference
+
+This triumvirate approach ensures maximum efficiency by leveraging each AI's unique strengths while maintaining coordination and avoiding redundant work.

@@ -6,8 +6,10 @@
       <option value="01cf109a-deb9-4e30-9f0a-877edbad563f" />
       <option value="13547674-6cca-4df0-81f4-17bb260d295d" />
       <option value="34daa806-c897-4e26-a6c4-813e410d273b" />
+      <option value="3bdfb8b3-8c36-4624-93b9-679112c13a2f" />
       <option value="4a8d8b64-a72f-418c-8c01-a73e59172ecf" />
       <option value="59027c5b-878e-4ce2-8adc-09ee93741846" />
+      <option value="5c8290e6-0a69-4c73-882e-dd2bd74abee4" />
       <option value="815c91b3-999e-4c06-8cf0-d85f4fff8783" />
       <option value="904de2d8-171a-463a-af33-4e2602c88d3b" />
       <option value="a9e55109-9ceb-4849-92d8-ea22bcf01b9a" />
@@ -41,6 +43,13 @@
           <value>
             <set>
               <option value="c2352eb7-69d0-4808-b3fd-dea38eaaba92" />
+            </set>
+          </value>
+        </entry>
+        <entry key="3bdfb8b3-8c36-4624-93b9-679112c13a2f">
+          <value>
+            <set>
+              <option value="ffd43e50-1ba3-42f6-87c2-a7cfe9616516" />
             </set>
           </value>
         </entry>
@@ -159,6 +168,7 @@
         <entry key="f02fcbf1-3a4d-44b5-8e21-8f0bb0eef981">
           <value>
             <set>
+              <option value="b5d144b6-7f90-439d-8e43-5575ec51cbe2" />
               <option value="e31a3d7e-973a-4170-96ad-6919d731eecb" />
             </set>
           </value>
@@ -175,11 +185,7 @@
     </option>
     <pendingWorkingSetItems>
       <entry key="eefec0d2-ae77-4d21-bd4f-2f29e1d84f1a" />
-      <entry key="f02fcbf1-3a4d-44b5-8e21-8f0bb0eef981">
-        <set>
-          <option value="file://$PROJECT_DIR$/.github/workflows/main_aydocorp.yml" />
-        </set>
-      </entry>
+      <entry key="f02fcbf1-3a4d-44b5-8e21-8f0bb0eef981" />
     </pendingWorkingSetItems>
   </component>
 </project>
