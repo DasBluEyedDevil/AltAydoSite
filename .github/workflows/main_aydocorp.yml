@@ -105,6 +105,11 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip -q release.zip
 
+      - name: Create deployment timestamp marker
+        run: |
+          echo "BUILD_TIMESTAMP=$(date -u +%Y%m%d_%H%M%S)" >> deployment-info.txt
+          echo "BUILD_ID=$(cat .next/BUILD_ID 2>/dev/null || echo 'unknown')" >> deployment-info.txt
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -113,4 +118,5 @@ jobs:
           slot-name: 'Production'
           package: .
           clean: true
+          restart: true
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E8F83D01518942F1B2B01381F804622F }}
