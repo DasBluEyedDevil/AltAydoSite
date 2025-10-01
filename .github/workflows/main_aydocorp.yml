@@ -62,11 +62,15 @@ jobs:
             echo "Using Next.js standalone output"
             # Copy standalone server (contains its own node_modules)
             cp -R .next/standalone/* deploy/
-            # Ensure static assets and public are present
-            mkdir -p deploy/.next
+            # Copy the entire .next directory from standalone to deploy
+            # This already exists in standalone but we need the full build
+            rm -rf deploy/.next
+            cp -R .next/standalone/.next deploy/.next
+            # Copy static assets to the correct location
             cp -R .next/static deploy/.next/static
+            # Copy public directory
             if [ -d public ]; then cp -R public deploy/public; fi
-            # package.json is optional but harmless
+            # Copy package.json
             cp package.json deploy/package.json
           else
             echo "Standalone output not found; falling back to full app (node_modules + npm start)"
