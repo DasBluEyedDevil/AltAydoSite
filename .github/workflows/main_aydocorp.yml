@@ -112,4 +112,5 @@ jobs:
           app-name: 'AydoCorp'
           slot-name: 'Production'
           package: .
+          clean: true
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E8F83D01518942F1B2B01381F804622F }}
