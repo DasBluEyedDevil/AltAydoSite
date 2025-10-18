@@ -395,24 +395,24 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
 
         {/* Slim Header Bar - Sticky */}
         <div className="sticky top-0 z-20 backdrop-blur-lg bg-[rgba(var(--mg-panel-dark),0.85)] border-b border-[rgba(var(--mg-primary),0.2)]">
-          <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
             {/* Left: Title + Description */}
-            <div className="flex items-center space-x-4">
-              <div className="text-[rgba(var(--mg-primary),0.8)]">
+            <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+              <div className="text-[rgba(var(--mg-primary),0.8)] flex-shrink-0">
                 <TemplateIcon />
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-[rgba(var(--mg-primary),0.9)]">
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg sm:text-xl font-bold text-[rgba(var(--mg-primary),0.9)] truncate">
                   Mission Template Creator
                 </h1>
-                <p className="text-sm text-[rgba(var(--mg-text),0.6)]">
+                <p className="text-xs sm:text-sm text-[rgba(var(--mg-text),0.6)] hidden sm:block">
                   Manage reusable mission templates for organization operations
                 </p>
               </div>
             </div>
 
             {/* Right: Single New Template Button */}
-            <div>
+            <div className="w-full sm:w-auto">
               <MobiGlasButton
                 onClick={() => setViewMode('create')}
                 variant="primary"
@@ -422,6 +422,7 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
                 withScanline={true}
                 withCorners={true}
                 withGlow={true}
+                className="w-full sm:w-auto"
               >
                 NEW TEMPLATE
               </MobiGlasButton>

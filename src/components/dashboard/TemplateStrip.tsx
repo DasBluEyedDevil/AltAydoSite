@@ -85,8 +85,8 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
               <div className="text-[rgba(var(--mg-primary),0.8)]">
                 <TemplateIcon />
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-[rgba(var(--mg-primary),0.9)] mb-1">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-semibold text-[rgba(var(--mg-primary),0.9)] mb-1 truncate" title={template.name}>
                   {template.name}
                 </h3>
                 <div className="text-sm text-[rgba(var(--mg-text),0.6)]">
@@ -188,9 +188,9 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
                   </h4>
                   <ul className="space-y-2">
                     {template.shipRoster.map((ship, index) => (
-                      <li key={index} className="text-sm text-[rgba(var(--mg-text),0.9)] flex items-center">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.6)] mr-3"></span>
-                        {ship.size} {ship.category} x{ship.count}
+                      <li key={index} className="text-sm text-[rgba(var(--mg-text),0.9)] flex items-center break-words">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.6)] mr-3 flex-shrink-0"></span>
+                        <span>{ship.size} {ship.category} x{ship.count}</span>
                       </li>
                     ))}
                   </ul>
@@ -205,9 +205,9 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
                   </h4>
                   <ul className="space-y-2">
                     {template.personnelRoster.map((person, index) => (
-                      <li key={index} className="text-sm text-[rgba(var(--mg-text),0.9)] flex items-center">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.6)] mr-3"></span>
-                        {person.profession} x{person.count}
+                      <li key={index} className="text-sm text-[rgba(var(--mg-text),0.9)] flex items-center break-words">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.6)] mr-3 flex-shrink-0"></span>
+                        <span>{person.profession} x{person.count}</span>
                       </li>
                     ))}
                   </ul>
