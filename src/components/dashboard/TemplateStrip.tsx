@@ -74,15 +74,23 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
           }}
           aria-expanded={isExpanded}
           aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${template.name} template details`}
-          className="h-[100px] px-6 py-4 cursor-pointer hover:bg-[rgba(var(--mg-primary),0.05)] transition-colors relative focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] focus:ring-inset"
+          className="group h-[100px] px-6 py-4 cursor-pointer hover:bg-[rgba(var(--mg-primary),0.05)] transition-colors relative focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] focus:ring-inset"
         >
           {/* Circuit pattern overlay */}
-          <div className="circuit-bg absolute inset-0 rounded-lg pointer-events-none opacity-20"></div>
+          <div className="circuit-bg absolute inset-0 rounded-lg pointer-events-none opacity-30 group-hover:opacity-40 transition-opacity duration-300"></div>
+
+          {/* Animated grid overlay */}
+          <div className="absolute inset-0 rounded-lg pointer-events-none overflow-hidden opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'linear-gradient(rgba(var(--mg-primary), 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--mg-primary), 0.3) 1px, transparent 1px)',
+              backgroundSize: '20px 20px'
+            }}></div>
+          </div>
 
           <div className="relative z-10 flex items-center justify-between h-full">
             {/* Left: Icon + Name */}
             <div className="flex items-center space-x-4 flex-1">
-              <div className="text-[rgba(var(--mg-primary),0.8)]">
+              <div className="text-[rgba(var(--mg-primary),0.9)] drop-shadow-[0_0_8px_rgba(var(--mg-primary),0.6)] group-hover:drop-shadow-[0_0_12px_rgba(var(--mg-primary),0.8)] transition-all">
                 <TemplateIcon />
               </div>
               <div className="flex-1 min-w-0">
@@ -97,10 +105,12 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
 
             {/* Center: Primary Activity Badge */}
             <div className="hidden md:flex items-center space-x-3">
-              <div className="px-3 py-1 rounded bg-[rgba(var(--mg-primary),0.2)] border border-[rgba(var(--mg-primary),0.4)]">
+              <div className="relative px-3 py-1 rounded bg-[rgba(var(--mg-primary),0.2)] border border-[rgba(var(--mg-primary),0.4)] shadow-[0_0_15px_rgba(var(--mg-primary),0.3)]">
                 <span className="text-sm text-[rgba(var(--mg-primary),0.9)] font-medium">
                   {template.primaryActivity}
                 </span>
+                {/* Subtle pulse effect */}
+                <div className="absolute inset-0 rounded border border-[rgba(var(--mg-primary),0.6)] animate-pulse opacity-50"></div>
               </div>
             </div>
 
