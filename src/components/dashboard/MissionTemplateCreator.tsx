@@ -509,14 +509,19 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              onClick={() => setShowDeleteConfirm(null)}
             >
               <motion.div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="delete-modal-title"
                 className="bg-[rgba(var(--mg-panel-dark),0.95)] border border-[rgba(var(--mg-danger),0.5)] rounded-lg p-6 max-w-md mx-4"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
               >
-                <h3 className="text-lg font-semibold text-[rgba(var(--mg-danger),0.9)] mb-4">
+                <h3 id="delete-modal-title" className="text-lg font-semibold text-[rgba(var(--mg-danger),0.9)] mb-4">
                   Confirm Deletion
                 </h3>
                 <p className="text-[rgba(var(--mg-text),0.8)] mb-6">
@@ -526,6 +531,7 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
                   <button
                     onClick={() => setShowDeleteConfirm(null)}
                     className="px-4 py-2 border border-[rgba(var(--mg-text),0.3)] rounded text-[rgba(var(--mg-text),0.8)] hover:bg-[rgba(var(--mg-text),0.1)]"
+                    autoFocus
                   >
                     Cancel
                   </button>
@@ -546,6 +552,8 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
         <AnimatePresence>
           {notification && (
             <motion.div
+              role="alert"
+              aria-live="polite"
               className="fixed top-20 right-6 z-[9999]"
               initial={{ opacity: 0, x: 100, scale: 0.8 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}

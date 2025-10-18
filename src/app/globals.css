@@ -1222,7 +1222,8 @@ img {
 .template-list-item:hover::before {
   opacity: 1;
 }
-@keyframes scan {
+
+@keyframes scan-vertical {
   0% {
     transform: translateY(-100%);
   }
@@ -1231,6 +1232,6 @@ img {
   }
 }
 
-.animate-scan {
-  animation: scan 1s ease-in-out;
+.animate-scan-vertical {
+  animation: scan-vertical 1s ease-in-out;
 }

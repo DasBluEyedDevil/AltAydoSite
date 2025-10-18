@@ -228,7 +228,7 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
                   </span>
                   {/* Scanline effect on hover */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-transparent animate-scan"></div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-transparent animate-scan-vertical"></div>
                   </div>
                 </button>
               </div>
