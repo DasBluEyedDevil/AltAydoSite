@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import MobiGlasPanel from './MobiGlasPanel';
+import { useRouter } from 'next/navigation';
 import MissionTemplateForm from './MissionTemplateForm';
-import { MobiGlasButton, CornerAccents } from '../ui/mobiglas';
+import TemplateStrip from './TemplateStrip';
+import { MobiGlasButton, CornerAccents, DataStreamBackground } from '../ui/mobiglas';
 import {
   MissionTemplate,
   MissionTemplateResponse,
@@ -14,15 +15,6 @@ import {
   ActivityType
 } from '@/types/MissionTemplate';
 
-// Holographic glow wrapper using reusable components
-const HoloWrapper = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-  <div className={`relative ${className}`}>
-    <div className="absolute inset-0 bg-[rgba(var(--mg-primary),0.03)] rounded border border-[rgba(var(--mg-primary),0.1)] pointer-events-none"></div>
-    <div className="circuit-bg absolute inset-0 rounded pointer-events-none"></div>
-    {children}
-    <CornerAccents variant="animated" color="primary" size="md" />
-  </div>
-);
 
 // Icons for the interface
 const CreateIcon = () => (
@@ -65,6 +57,9 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
   // Access control
   const hasLeadershipAccess = userClearanceLevel >= 3;
 
+  // Router for navigation
+  const router = useRouter();
+
   // State management
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [templates, setTemplates] = useState<MissionTemplateResponse[]>([]);
@@ -73,6 +68,7 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
   const [errors, setErrors] = useState<MissionTemplateValidationErrors>({});
   const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [expandedTemplateId, setExpandedTemplateId] = useState<string | null>(null);
 
   // Ref for scroll control
   const containerRef = useRef<HTMLDivElement>(null);
@@ -153,6 +149,16 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
       setIsLoading(false);
     }
   };
+
+  // Handle template expansion (only one at a time)
+  const handleToggleExpand = useCallback((templateId: string) => {
+    setExpandedTemplateId(prev => prev === templateId ? null : templateId);
+  }, []);
+
+  // Handle use template for mission
+  const handleUseForMission = useCallback((templateId: string) => {
+    router.push(`/dashboard/operations/missions?template=${templateId}`);
+  }, [router]);
 
   // Get available activities for dropdowns (excluding already selected)
   const getAvailableActivities = (excludeField?: 'primary' | 'secondary' | 'tertiary'): ActivityType[] => {
@@ -292,6 +298,7 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
         setNotification({ type: 'success', message });
         await loadTemplates();
         resetForm();
+        setExpandedTemplateId(null);
         setViewMode('list'); // useEffect will handle scrolling
       } else {
         const errorData = await response.json().catch(() => ({}));
@@ -361,69 +368,72 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
 
   const handleCancel = () => {
     resetForm();
+    setExpandedTemplateId(null);
     setViewMode('list'); // useEffect will handle scrolling
   };
 
   // Access control check
   if (!hasLeadershipAccess) {
     return (
-      <MobiGlasPanel title="Mission Template Creator" icon={<TemplateIcon />}>
-        <div className="text-center py-8">
-          <div className="text-[rgba(var(--mg-warning),0.8)] text-lg mb-4">
-            RESTRICTED ACCESS
-          </div>
-          <div className="text-[rgba(var(--mg-text),0.6)]">
-            Clearance Level 3 or higher required to access Mission Template Creator
-          </div>
+      <div className="text-center py-16">
+        <div className="text-[rgba(var(--mg-warning),0.8)] text-lg mb-4">
+          RESTRICTED ACCESS
         </div>
-      </MobiGlasPanel>
+        <div className="text-[rgba(var(--mg-text),0.6)]">
+          Clearance Level 3 or higher required to access Mission Template Creator
+        </div>
+      </div>
     );
   }
 
   // Render list view
   if (viewMode === 'list') {
     return (
-      <div ref={containerRef} className="space-y-6">
-        {/* Header Panel */}
-        <MobiGlasPanel
-          title="Mission Template Creator"
-          icon={<TemplateIcon />}
-          rightContent={
-            <MobiGlasButton
-              onClick={() => setViewMode('create')}
-              variant="primary"
-              size="sm"
-              disabled={isLoading}
-              leftIcon={<CreateIcon />}
-              withScanline={true}
-              withCorners={true}
-            >
-              Create Template
-            </MobiGlasButton>
-          }
-        >
-          <div className="text-[rgba(var(--mg-text),0.7)]">
-            Manage reusable mission templates for organization operations
-          </div>
-        </MobiGlasPanel>
+      <div ref={containerRef} className="relative min-h-screen">
+        {/* Background Effects */}
+        <DataStreamBackground opacity="low" speed="medium" />
 
-        {/* Templates List */}
-        <MobiGlasPanel
-          title="Mission Templates"
-          icon={<TemplateIcon />}
-          rightContent={
-            <MobiGlasButton
-              onClick={() => setViewMode('create')}
-              variant="primary"
-              size="sm"
-              leftIcon={<CreateIcon />}
-              withScanline={true}
-              withCorners={true}
-            >
-              New Template
-            </MobiGlasButton>
-          }
-        >
+        {/* Slim Header Bar - Sticky */}
+        <div className="sticky top-0 z-20 backdrop-blur-lg bg-[rgba(var(--mg-panel-dark),0.85)] border-b border-[rgba(var(--mg-primary),0.2)]">
+          <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            {/* Left: Title + Description */}
+            <div className="flex items-center space-x-4">
+              <div className="text-[rgba(var(--mg-primary),0.8)]">
+                <TemplateIcon />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-[rgba(var(--mg-primary),0.9)]">
+                  Mission Template Creator
+                </h1>
+                <p className="text-sm text-[rgba(var(--mg-text),0.6)]">
+                  Manage reusable mission templates for organization operations
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Single New Template Button */}
+            <div>
+              <MobiGlasButton
+                onClick={() => setViewMode('create')}
+                variant="primary"
+                size="md"
+                disabled={isLoading}
+                leftIcon={<CreateIcon />}
+                withScanline={true}
+                withCorners={true}
+                withGlow={true}
+              >
+                NEW TEMPLATE
+              </MobiGlasButton>
+            </div>
+          </div>
+
+          {/* Corner accents for header */}
+          <CornerAccents variant="animated" color="primary" size="sm" />
+        </div>
+
+        {/* Template List Container */}
+        <div className="max-w-5xl mx-auto px-6 py-8">
           {isLoading ? (
             <motion.div
               className="text-center py-12"
@@ -449,88 +459,47 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <HoloWrapper className="max-w-md mx-auto p-8">
-                <div className="relative">
-                  <div className="w-16 h-16 mx-auto mb-6 border-2 border-[rgba(var(--mg-primary),0.3)] rounded-lg flex items-center justify-center">
-                    <TemplateIcon />
-                    <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.1)] rounded-lg animate-pulse"></div>
-                  </div>
-                  <h3 className="text-lg font-semibold text-[rgba(var(--mg-text),0.9)] mb-2">
-                    No Mission Templates
-                  </h3>
-                  <p className="text-[rgba(var(--mg-text),0.6)] mb-6">
-                    Create your first mission template to standardize operations and improve efficiency.
-                  </p>
-                  <MobiGlasButton
-                    onClick={() => setViewMode('create')}
-                    variant="primary"
-                    size="lg"
-                    leftIcon={<CreateIcon />}
-                    withScanline={true}
-                    withCorners={true}
-                    withGlow={true}
-                  >
-                    Create First Template
-                  </MobiGlasButton>
+              <div className="max-w-md mx-auto p-8 relative border border-[rgba(var(--mg-primary),0.2)] rounded-lg bg-gradient-to-br from-[rgba(var(--mg-panel-dark),0.6)] to-[rgba(var(--mg-panel-dark),0.3)]">
+                <div className="w-16 h-16 mx-auto mb-6 border-2 border-[rgba(var(--mg-primary),0.3)] rounded-lg flex items-center justify-center">
+                  <TemplateIcon />
+                  <div className="absolute inset-0 border border-[rgba(var(--mg-primary),0.1)] rounded-lg animate-pulse"></div>
                 </div>
-              </HoloWrapper>
+                <h3 className="text-lg font-semibold text-[rgba(var(--mg-text),0.9)] mb-2">
+                  No Mission Templates
+                </h3>
+                <p className="text-[rgba(var(--mg-text),0.6)] mb-6">
+                  Create your first mission template to standardize operations and improve efficiency.
+                </p>
+                <MobiGlasButton
+                  onClick={() => setViewMode('create')}
+                  variant="primary"
+                  size="lg"
+                  leftIcon={<CreateIcon />}
+                  withScanline={true}
+                  withCorners={true}
+                  withGlow={true}
+                >
+                  Create First Template
+                </MobiGlasButton>
+                <CornerAccents variant="animated" color="primary" size="md" />
+              </div>
             </motion.div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {templates.map((template) => (
-                <div key={template.id}>
-                  <div className="group relative">
-                    <div className="relative border border-[rgba(var(--mg-primary),0.3)] rounded-lg bg-gradient-to-br from-[rgba(var(--mg-panel-dark),0.4)] to-[rgba(var(--mg-panel-dark),0.2)] p-6">
-                      {/* <ScanlineEffect color="primary" opacity="low" speed="slow" /> */}
-
-                      {/* Holographic flicker effect on hover (disabled for debugging) */}
-                      {/* <div className="absolute inset-0 bg-[rgba(var(--mg-primary),0.02)] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none hologram-flicker"></div> */}
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h3 className="text-[rgba(var(--mg-primary),0.9)] font-semibold mb-2">
-                            {template.name}
-                          </h3>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                            <div>
-                              <span className="text-[rgba(var(--mg-text),0.6)]">Type:</span>
-                              <span className="ml-2 text-[rgba(var(--mg-text),0.9)]">{template.operationType}</span>
-                            </div>
-                            <div>
-                              <span className="text-[rgba(var(--mg-text),0.6)]">Primary:</span>
-                              <span className="ml-2 text-[rgba(var(--mg-text),0.9)]">{template.primaryActivity}</span>
-                            </div>
-                            <div>
-                              <span className="text-[rgba(var(--mg-text),0.6)]">Created:</span>
-                              <span className="ml-2 text-[rgba(var(--mg-text),0.9)]">
-                                {new Date(template.createdAt).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex space-x-2 ml-4">
-                          <button
-                            onClick={() => handleEdit(template)}
-                            className="mg-btn-icon text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)]"
-                            title="Edit Template"
-                          >
-                            <EditIcon />
-                          </button>
-                          <button
-                            onClick={() => setShowDeleteConfirm(template.id)}
-                            className="mg-btn-icon text-[rgba(var(--mg-danger),0.8)] hover:text-[rgba(var(--mg-danger),1)]"
-                            title="Delete Template"
-                          >
-                            <TrashIcon />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <TemplateStrip
+                  key={template.id}
+                  template={template}
+                  isExpanded={expandedTemplateId === template.id}
+                  onToggleExpand={() => handleToggleExpand(template.id)}
+                  onEdit={() => handleEdit(template)}
+                  onDelete={() => setShowDeleteConfirm(template.id)}
+                  onUseForMission={() => handleUseForMission(template.id)}
+                />
               ))}
             </div>
           )}
-        </MobiGlasPanel>
+        </div>
 
         {/* Delete Confirmation Modal */}
         <AnimatePresence>
@@ -584,17 +553,12 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
               transition={{ duration: 0.3, ease: 'easeOut' }}
               style={{ position: 'fixed', willChange: 'transform' }}
             >
-              <HoloWrapper className="max-w-sm">
+              <div className="max-w-sm relative border border-[rgba(var(--mg-primary),0.2)] rounded-lg">
                 <div className={`relative px-6 py-4 rounded-lg border-2 backdrop-filter backdrop-blur-md ${
                   notification.type === 'success'
                     ? 'bg-[rgba(var(--mg-success),0.15)] border-[rgba(var(--mg-success),0.6)] text-[rgba(var(--mg-success),1)]'
                     : 'bg-[rgba(var(--mg-danger),0.15)] border-[rgba(var(--mg-danger),0.6)] text-[rgba(var(--mg-danger),1)]'
                 } shadow-[0_0_30px_rgba(var(--mg-${notification.type === 'success' ? 'success' : 'danger'}),0.3)]`}>
-                  {/* <ScanlineEffect
-                    color={notification.type === 'success' ? 'success' : 'warning'}
-                    opacity="medium"
-                    speed="medium"
-                  /> */}
                   <div className="relative z-10 flex items-center">
                     <div className={`w-2 h-2 rounded-full mr-3 animate-pulse ${
                       notification.type === 'success' ? 'bg-[rgba(var(--mg-success),1)]' : 'bg-[rgba(var(--mg-danger),1)]'
@@ -602,7 +566,7 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
                     <span className="font-medium">{notification.message}</span>
                   </div>
                 </div>
-              </HoloWrapper>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
