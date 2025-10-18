@@ -63,8 +63,18 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
       >
         {/* Header - Always Visible (Clickable to expand/collapse) */}
         <div
+          role="button"
+          tabIndex={0}
           onClick={onToggleExpand}
-          className="h-[100px] px-6 py-4 cursor-pointer hover:bg-[rgba(var(--mg-primary),0.05)] transition-colors relative"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onToggleExpand();
+            }
+          }}
+          aria-expanded={isExpanded}
+          aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${template.name} template details`}
+          className="h-[100px] px-6 py-4 cursor-pointer hover:bg-[rgba(var(--mg-primary),0.05)] transition-colors relative focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] focus:ring-inset"
         >
           {/* Circuit pattern overlay */}
           <div className="circuit-bg absolute inset-0 rounded-lg pointer-events-none opacity-20"></div>
