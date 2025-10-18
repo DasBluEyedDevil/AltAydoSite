@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MissionTemplateResponse } from '@/types/MissionTemplate';
-import { HolographicBorder, CornerAccents } from '../ui/mobiglas';
+import { HolographicBorder, CornerAccents, MobiGlasButton, MobiGlasPanel } from '../ui/mobiglas';
 
 // Icons
 const EditIcon = () => (
@@ -30,6 +30,29 @@ const TemplateIcon = () => (
   </svg>
 );
 
+const ShipIcon = () => (
+  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    {/* Pointed nose cone */}
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2L9 6L15 6L12 2Z" />
+    {/* Left side of rocket body - widens from nose to mid-body, then tapers */}
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 6Q8 9 8 10T9 14" />
+    {/* Right side of rocket body - widens from nose to mid-body, then tapers */}
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 6Q16 9 16 10T15 14" />
+    {/* Left fin */}
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14L7 18L9 14L12 14Z" />
+    {/* Right fin */}
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14L17 18L15 14L12 14Z" />
+    {/* Exhaust flames */}
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 18L10 21M12 18L12 22M14 18L14 21" />
+  </svg>
+);
+
+const PersonIcon = () => (
+  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+  </svg>
+);
+
 interface TemplateStripProps {
   template: MissionTemplateResponse;
   isExpanded: boolean;
@@ -38,6 +61,15 @@ interface TemplateStripProps {
   onDelete: () => void;
   onUseForMission: () => void;
 }
+
+/**
+ * Calculate total resource counts from template rosters
+ */
+const calculateResourceCounts = (template: MissionTemplateResponse) => {
+  const shipCount = template.shipRoster.reduce((sum, ship) => sum + ship.count, 0);
+  const personnelCount = template.personnelRoster.reduce((sum, person) => sum + person.count, 0);
+  return { shipCount, personnelCount };
+};
 
 /**
  * TemplateStrip - Expandable template card for mission template list
@@ -51,6 +83,8 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
   onDelete,
   onUseForMission
 }) => {
+  const { shipCount, personnelCount } = calculateResourceCounts(template);
+  
   return (
     <HolographicBorder isActive={isExpanded} intensity={isExpanded ? 'high' : 'medium'}>
       <motion.div
@@ -114,39 +148,64 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
               </div>
             </div>
 
-            {/* Right: Date + Actions */}
+            {/* Right: Resources + Actions */}
             <div className="flex items-center space-x-4">
-              <div className="hidden lg:block text-sm text-[rgba(var(--mg-text),0.6)]">
-                {new Date(template.createdAt).toLocaleDateString()}
-              </div>
+              {/* Resource Summary */}
+              {(shipCount > 0 || personnelCount > 0) && (
+                <div className="flex flex-col gap-1 text-xs text-[rgba(var(--mg-text),0.7)] min-w-[80px]">
+                  {shipCount > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <div className="text-[rgba(var(--mg-primary),0.8)]">
+                        <ShipIcon />
+                      </div>
+                      <span>×{shipCount}</span>
+                    </div>
+                  )}
+                  {personnelCount > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <div className="text-[rgba(var(--mg-primary),0.8)]">
+                        <PersonIcon />
+                      </div>
+                      <span>×{personnelCount}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+              {(shipCount === 0 && personnelCount === 0) && (
+                <div className="text-xs text-[rgba(var(--mg-text),0.5)] italic min-w-[80px]">
+                  No resources
+                </div>
+              )}
 
               {/* Action Buttons */}
-              <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
-                <button
+              <div className="flex space-x-1" onClick={(e) => e.stopPropagation()}>
+                <MobiGlasButton
                   onClick={onEdit}
-                  className="p-2 rounded hover:bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.8)] hover:text-[rgba(var(--mg-primary),1)] transition-colors"
-                  title="Edit Template"
+                  variant="ghost"
+                  size="sm"
                   aria-label={`Edit ${template.name}`}
                 >
                   <EditIcon />
-                </button>
-                <button
+                </MobiGlasButton>
+                <MobiGlasButton
                   onClick={onDelete}
-                  className="p-2 rounded hover:bg-[rgba(var(--mg-danger),0.2)] text-[rgba(var(--mg-danger),0.8)] hover:text-[rgba(var(--mg-danger),1)] transition-colors"
-                  title="Delete Template"
+                  variant="ghost"
+                  size="sm"
+                  className="text-[rgba(var(--mg-danger),0.8)] hover:text-[rgba(var(--mg-danger),1)] hover:bg-[rgba(var(--mg-danger),0.2)]"
                   aria-label={`Delete ${template.name}`}
                 >
                   <TrashIcon />
-                </button>
+                </MobiGlasButton>
                 {!isExpanded && (
-                  <button
+                  <MobiGlasButton
                     onClick={onUseForMission}
-                    className="p-2 rounded hover:bg-[rgba(var(--mg-success),0.2)] text-[rgba(var(--mg-success),0.8)] hover:text-[rgba(var(--mg-success),1)] transition-colors"
-                    title="Use for Mission"
+                    variant="ghost"
+                    size="sm"
+                    className="text-[rgba(var(--mg-success),0.8)] hover:text-[rgba(var(--mg-success),1)] hover:bg-[rgba(var(--mg-success),0.2)]"
                     aria-label={`Use ${template.name} for new mission`}
                   >
                     <ArrowRightIcon />
-                  </button>
+                  </MobiGlasButton>
                 )}
               </div>
             </div>
@@ -190,9 +249,39 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
                 </div>
               </div>
 
+              {/* Secondary/Tertiary Activity Badges */}
+              {(template.secondaryActivity || template.tertiaryActivity) && (
+                <div className="mt-4 p-3 rounded border border-[rgba(var(--mg-primary),0.15)] bg-[rgba(var(--mg-panel-dark),0.3)]">
+                  <h5 className="text-xs font-semibold text-[rgba(var(--mg-text),0.6)] mb-2 uppercase tracking-wide">
+                    Additional Activities
+                  </h5>
+                  <div className="flex flex-wrap gap-2">
+                    {template.secondaryActivity && (
+                      <div className="px-2 py-1 rounded bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.3)] shadow-[0_0_10px_rgba(var(--mg-primary),0.2)]">
+                        <span className="text-xs text-[rgba(var(--mg-primary),0.8)] font-medium">
+                          {template.secondaryActivity}
+                        </span>
+                      </div>
+                    )}
+                    {template.tertiaryActivity && (
+                      <div className="px-2 py-1 rounded bg-[rgba(var(--mg-primary),0.15)] border border-[rgba(var(--mg-primary),0.3)] shadow-[0_0_10px_rgba(var(--mg-primary),0.2)]">
+                        <span className="text-xs text-[rgba(var(--mg-primary),0.8)] font-medium">
+                          {template.tertiaryActivity}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Ship Roster */}
               {template.shipRoster.length > 0 && (
-                <div className="p-4 rounded border border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.4)]">
+                <MobiGlasPanel
+                  variant="transparent"
+                  padding="sm"
+                  withGridBg={true}
+                  cornerAccents={false}
+                >
                   <h4 className="text-sm font-semibold text-[rgba(var(--mg-primary),0.9)] mb-3 uppercase tracking-wide">
                     Ship Roster
                   </h4>
@@ -204,12 +293,17 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
                       </li>
                     ))}
                   </ul>
-                </div>
+                </MobiGlasPanel>
               )}
 
               {/* Personnel Roster */}
               {template.personnelRoster.length > 0 && (
-                <div className="p-4 rounded border border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.4)]">
+                <MobiGlasPanel
+                  variant="transparent"
+                  padding="sm"
+                  withGridBg={true}
+                  cornerAccents={false}
+                >
                   <h4 className="text-sm font-semibold text-[rgba(var(--mg-primary),0.9)] mb-3 uppercase tracking-wide">
                     Personnel Roster
                   </h4>
@@ -221,19 +315,24 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
                       </li>
                     ))}
                   </ul>
-                </div>
+                </MobiGlasPanel>
               )}
 
               {/* Required Equipment */}
               {template.requiredEquipment && (
-                <div className="p-4 rounded border border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.4)]">
+                <MobiGlasPanel
+                  variant="transparent"
+                  padding="sm"
+                  withGridBg={true}
+                  cornerAccents={false}
+                >
                   <h4 className="text-sm font-semibold text-[rgba(var(--mg-primary),0.9)] mb-3 uppercase tracking-wide">
                     Required Equipment
                   </h4>
                   <p className="text-sm text-[rgba(var(--mg-text),0.9)] whitespace-pre-wrap">
                     {template.requiredEquipment}
                   </p>
-                </div>
+                </MobiGlasPanel>
               )}
 
               {/* Use Template Button */}
