@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/auth';
+import { getTransactions } from '@/lib/finance';
 import { connectToDatabase } from '@/lib/mongodb';
 import { Transaction, TransactionType, TransactionCategory } from '@/types/finance';
-import { ObjectId, WithId, Document } from 'mongodb';
 import { apiRateLimiter } from '@/lib/rate-limiter';
 
 // Validate transaction type
@@ -27,60 +27,21 @@ const isValidCategory = (category: string): category is TransactionCategory => {
 };
 
 export async function GET() {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Apply rate limiting
-    if (apiRateLimiter.isRateLimited(session.user.email)) {
-      return NextResponse.json(
-        { 
-          error: 'Too many requests',
-          resetTime: apiRateLimiter.getResetTime(session.user.email),
-          remainingRequests: apiRateLimiter.getRemainingRequests(session.user.email)
-        }, 
-        { status: 429 }
-      );
-    }
-
-    const { client } = await connectToDatabase();
-    const db = client.db();
-    
-    // Get all transactions (not just current user's) sorted by date
-    const transactions = await db
-      .collection('transactions')
-      .find({}, { projection: { _id: 1, type: 1, amount: 1, category: 1, description: 1, submittedBy: 1, submittedAt: 1 } })
-      .sort({ submittedAt: -1 })
-      .toArray();
-
-    // Convert MongoDB documents to Transaction type and calculate grand total
-    const typedTransactions = transactions.map(doc => ({
-      ...doc,
-      id: doc._id.toString(),
-      _id: undefined,
-      submittedAt: new Date(doc.submittedAt)
-    })) as Transaction[];
-
-    const grandTotal = typedTransactions.reduce((total: number, transaction: Transaction) => {
-      return total + (transaction.type === 'DEPOSIT' ? transaction.amount : -transaction.amount);
-    }, 0);
-
-    const res = NextResponse.json({
-      transactions: typedTransactions,
-      grandTotal,
-      remainingRequests: apiRateLimiter.getRemainingRequests(session.user.email)
-    });
-    res.headers.set('Cache-Control', 'no-store');
-    return res;
-  } catch (error) {
-    console.error('Failed to fetch transactions:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch transactions' },
-      { status: 500 }
-    );
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const result = await getTransactions(session.user.email);
+
+  if (result.error) {
+    const status = result.error === 'Too many requests' ? 429 : 500;
+    return NextResponse.json(result, { status });
+  }
+
+  const res = NextResponse.json(result);
+  res.headers.set('Cache-Control', 'no-store');
+  return res;
 }
 
 export async function POST(request: Request) {
@@ -92,7 +53,7 @@ export async function POST(request: Request) {
 
     // Check if user has required clearance (level 3 or higher)
     const clearance = session.user.clearanceLevel;
-    if (typeof clearance !== 'number' || clearance < 3) {
+    if (clearance < 3) {
       return NextResponse.json(
         { error: 'Insufficient permissions. Only users with clearance level 3 or higher can submit transactions.' },
         { status: 403 }
@@ -174,4 +135,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} 
+}
