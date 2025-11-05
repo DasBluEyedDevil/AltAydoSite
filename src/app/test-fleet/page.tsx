@@ -1,11 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { notFound } from 'next/navigation';
 import UserFleetBuilder from '../../components/UserFleetBuilder';
 import { UserShip } from '../../types/user';
 import Link from 'next/link';
 
 export default function TestFleetPage() {
+  // Block access in production
+  if (process.env.NODE_ENV === 'production') {
+    notFound();
+  }
+
   const [isEditing, setIsEditing] = useState(true);
   const [ships, setShips] = useState<UserShip[]>([
     {

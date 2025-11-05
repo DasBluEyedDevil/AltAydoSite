@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import MobiGlasPanel from './MobiGlasPanel';
+import { MobiGlasPanel } from '@/components/ui/mobiglas';
 import MissionTemplateForm from './MissionTemplateForm';
 import { MobiGlasButton, CornerAccents } from '../ui/mobiglas';
 import {

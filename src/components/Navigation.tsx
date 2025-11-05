@@ -94,7 +94,7 @@ export default function Navigation() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="mg-button p-1 w-8 h-8 flex items-center justify-center"
+              className="mg-button p-2 w-12 h-12 flex items-center justify-center"
               aria-label="Toggle menu"
             >
               <span className="sr-only">Open main menu</span>
@@ -103,7 +103,7 @@ export default function Navigation() {
                 transition={{ duration: 0.2 }}
               >
                 <svg
-                  className="h-4 w-4 text-[rgba(var(--mg-text),1)]"
+                  className="h-6 w-6 text-[rgba(var(--mg-text),1)]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -142,7 +142,7 @@ export default function Navigation() {
                   <Link href={item.href} onClick={() => setIsOpen(false)}>
                     <MobiGlasButton
                       variant="ghost"
-                      size="sm"
+                      size="md"
                       fullWidth
                       className="text-xs font-quantify tracking-wider"
                       withCorners
@@ -163,7 +163,7 @@ export default function Navigation() {
                     <Link href="/dashboard" onClick={() => setIsOpen(false)}>
                       <MobiGlasButton
                         variant="primary"
-                        size="sm"
+                        size="md"
                         fullWidth
                         className="text-xs font-quantify tracking-wider"
                         withScanline
@@ -176,7 +176,7 @@ export default function Navigation() {
                   <Link href="/login" onClick={() => setIsOpen(false)}>
                     <MobiGlasButton
                       variant="primary"
-                      size="sm"
+                      size="md"
                       fullWidth
                       className="text-xs font-quantify tracking-wider mt-4"
                       withScanline
