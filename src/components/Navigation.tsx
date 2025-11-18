@@ -31,9 +31,11 @@ export default function Navigation() {
                 <Image
                   src="https://images.aydocorp.space/1758036690228.png"
                   alt="AydoCorp"
-                  width={48}
-                  height={48}
+                  width={144}
+                  height={144}
+                  quality={90}
                   className="h-12 w-auto"
+                  priority
                 />
               </motion.div>
             </Link>

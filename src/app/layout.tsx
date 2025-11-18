@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import Profile from '../components/Profile';
 import Navigation from '../components/Navigation';
@@ -11,26 +11,23 @@ import { Suspense } from 'react';
 import ClientErrorBoundary from '../components/ClientErrorBoundary';
 import Providers from '../components/providers';
 
-const inter = Inter({ subsets: ['latin'] });
+const quantify = localFont({
+  src: [
+    {
+      path: '../../public/fonts/Quantify.woff',
+      weight: 'normal',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/Quantify Bold.woff',
+      weight: 'bold',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-quantify',
+});
 
 export { metadata };
-
-function ErrorFallback() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <div className="text-center">
-        <h2 className="text-xl font-bold mb-4">Something went wrong</h2>
-        <p className="mb-4">We&apos;re experiencing technical difficulties. Please try again later.</p>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Reload Page
-        </button>
-      </div>
-    </div>
-  );
-}
 
 export default function RootLayout({
   children,
@@ -39,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-quantify bg-black text-white min-h-screen antialiased overflow-x-hidden text-sm">
+      <body className={`${quantify.variable} font-quantify bg-black text-white min-h-screen antialiased overflow-x-hidden text-sm`}>
         <ClientErrorBoundary>
           <Providers>
             <UserProviderWrapper>
@@ -92,4 +89,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-} 
+}

@@ -43,3 +43,8 @@ node_modules/
 amplify/node_modules/
 
 
+/.env.local.backup
+/.claude/
+/.claude-plugins
+/docs
+/docs/plans
