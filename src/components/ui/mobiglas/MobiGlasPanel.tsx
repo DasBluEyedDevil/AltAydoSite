@@ -8,6 +8,8 @@ export interface MobiGlasPanelProps extends Omit<MotionProps, 'children'> {
   className?: string;
   title?: string;
   titleClassName?: string;
+  icon?: React.ReactNode;
+  rightContent?: React.ReactNode;
   variant?: 'default' | 'dark' | 'darker' | 'transparent';
   withScanline?: boolean;
   withHologram?: boolean;
@@ -16,6 +18,7 @@ export interface MobiGlasPanelProps extends Omit<MotionProps, 'children'> {
   cornerAccents?: boolean;
   cornerSize?: 'sm' | 'md' | 'lg';
   padding?: 'sm' | 'md' | 'lg' | 'xl';
+  accentColor?: string;
 }
 
 export default function MobiGlasPanel({
@@ -23,6 +26,8 @@ export default function MobiGlasPanel({
   className = '',
   title,
   titleClassName = '',
+  icon,
+  rightContent,
   variant = 'default',
   withScanline = false,
   withHologram = false,
@@ -31,6 +36,7 @@ export default function MobiGlasPanel({
   cornerAccents = true,
   cornerSize = 'md',
   padding = 'md',
+  accentColor = 'primary',
   ...motionProps
 }: MobiGlasPanelProps) {
   const variantStyles = {
@@ -106,12 +112,22 @@ export default function MobiGlasPanel({
         </>
       )}
 
-      {/* Title */}
+      {/* Title with icon and right content */}
       {title && (
-        <div className="relative z-10 mb-6">
-          <h2 className={`mg-title text-2xl font-bold ${titleClassName}`}>
-            {title}
-          </h2>
+        <div className="relative z-10 mb-6 pb-3 border-b border-[rgba(var(--mg-primary),0.15)]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              {icon && <div className="mr-2">{icon}</div>}
+              <h2 className={`mg-title text-sm sm:text-base md:text-xl lg:text-2xl font-quantify tracking-wider text-[rgba(var(--mg-${accentColor}),0.9)] ${titleClassName}`}>
+                {title}
+              </h2>
+            </div>
+            {rightContent && (
+              <div className="flex items-center">
+                {rightContent}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
