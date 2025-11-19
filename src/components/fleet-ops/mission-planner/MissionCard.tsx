@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { MissionResponse } from '@/types/Mission';
 
 interface MissionCardProps {
@@ -11,6 +11,7 @@ interface MissionCardProps {
 
 const MissionCard: React.FC<MissionCardProps> = ({ mission, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
   
   // Format date
   const formatDate = (dateString: string) => {
@@ -65,48 +66,50 @@ const MissionCard: React.FC<MissionCardProps> = ({ mission, onClick }) => {
       {/* Holographic overlay effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(var(--mg-primary),0.03)] to-transparent pointer-events-none"></div>
       
-      {/* Scanning line effect */}
-      <motion.div
-        className="absolute inset-0 overflow-hidden pointer-events-none opacity-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isHovered ? 0.7 : 0.2 }}
-        transition={{ duration: 0.3 }}
-      >
-        <motion.div 
-          className="absolute h-[1px] w-full bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent"
-          initial={{ top: '-100%' }}
-          animate={{ top: '200%' }}
-          transition={{ 
-            duration: 1.5, 
-            repeat: Infinity, 
-            ease: "linear"
-          }}
-        />
-        
-        <motion.div 
-          className="absolute w-[1px] h-full bg-gradient-to-b from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent left-0"
-          initial={{ top: '200%' }}
-          animate={{ top: '-100%' }}
-          transition={{ 
-            duration: 1.5, 
-            repeat: Infinity, 
-            ease: "linear",
-            delay: 0.3
-          }}
-        />
-        
-        <motion.div 
-          className="absolute w-[1px] h-full bg-gradient-to-b from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent right-0"
-          initial={{ top: '-100%' }}
-          animate={{ top: '200%' }}
-          transition={{ 
-            duration: 1.5, 
-            repeat: Infinity, 
-            ease: "linear",
-            delay: 0.6
-          }}
-        />
-      </motion.div>
+      {/* Scanning line effect - Hidden on mobile and with reduced motion for performance */}
+      {!shouldReduceMotion && (
+        <motion.div
+          className="hidden md:block absolute inset-0 overflow-hidden pointer-events-none opacity-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 0.7 : 0.2 }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.div
+            className="absolute h-[1px] w-full bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent"
+            initial={{ top: '-100%' }}
+            animate={{ top: '200%' }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+
+          <motion.div
+            className="absolute w-[1px] h-full bg-gradient-to-b from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent left-0"
+            initial={{ top: '200%' }}
+            animate={{ top: '-100%' }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "linear",
+              delay: 0.3
+            }}
+          />
+
+          <motion.div
+            className="absolute w-[1px] h-full bg-gradient-to-b from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent right-0"
+            initial={{ top: '-100%' }}
+            animate={{ top: '200%' }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "linear",
+              delay: 0.6
+            }}
+          />
+        </motion.div>
+      )}
       
       {/* Grid background */}
       <div className="absolute inset-0 mg-grid-bg opacity-10 pointer-events-none"></div>
