@@ -48,3 +48,6 @@ amplify/node_modules/
 /.claude-plugins
 /docs
 /docs/plans
+
+# temp files
+temp_*.txt
