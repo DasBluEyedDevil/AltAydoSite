@@ -93,7 +93,10 @@ export async function connectToDatabase() {
       console.error('× Database index creation failed:', err);
       // In development, throw error to catch index issues early
       if (process.env.NODE_ENV !== 'production') {
-        throw new Error(`Index creation failed: ${err}`);
+        throw new Error(
+          `Index creation failed: ${err instanceof Error ? err.message : String(err)}`,
+          err instanceof Error ? { cause: err } : undefined
+        );
       }
       // In production, log but don't block startup
       console.warn('⚠️  Continuing without all indexes - performance may be degraded');
