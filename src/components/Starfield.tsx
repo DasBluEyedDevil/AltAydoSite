@@ -84,8 +84,8 @@ const MobiGlassStarfield = () => {
       const staticStars = 50;
       ctx.fillStyle = 'rgba(200, 220, 255, 0.8)';
       for (let i = 0; i < staticStars; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
+        const x = Math.random() * dimensions.width;
+        const y = Math.random() * dimensions.height;
         const size = Math.random() * 1.5 + 0.5;
         ctx.beginPath();
         ctx.arc(x, y, size, 0, Math.PI * 2);
