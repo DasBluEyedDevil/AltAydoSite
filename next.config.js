@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     poweredByHeader: false,
+    swcMinify: true, // Enable SWC minification for better performance (15-25% smaller bundles)
     typescript: {
         // TypeScript errors will now prevent production builds
         ignoreBuildErrors: false,

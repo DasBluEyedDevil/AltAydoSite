@@ -7,17 +7,9 @@ import { User } from '@/types/user';
 import * as userStorage from '@/lib/user-storage';
 import { syncDiscordProfile } from '@/lib/discord-oauth';
 
-// Admin user for fallback
-const adminUser: User = {
-  id: '1',
-  aydoHandle: 'admin',
-  email: 'admin@aydocorp.com',
-  passwordHash: '$2b$10$8OxDFt.GT.LV4xmX9ATR8.w4kGhJZgXnqnZqf5wn3EHQ8GqOAFMaK', // "password123"
-  clearanceLevel: 5,
-  role: 'admin',
-  discordName: 'admin#1234',
-  rsiAccountName: 'admin_rsi'
-};
+// SECURITY FIX: Hardcoded admin user removed for production security
+// Admin users must be created in the database with secure, unique passwords
+// Never hardcode credentials in source code
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -47,29 +39,6 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // Admin user special case - always allow admin login
-          if (credentials.aydoHandle.toLowerCase() === 'admin') {
-            console.log('AUTH: Admin login attempt');
-            const isPasswordValid = await bcrypt.compare(credentials.password, adminUser.passwordHash);
-
-            if (!isPasswordValid) {
-              console.log('AUTH: Invalid admin password');
-              return null;
-            }
-
-            console.log('AUTH: Admin authentication successful');
-            return {
-              id: adminUser.id,
-              name: adminUser.aydoHandle,
-              email: adminUser.email,
-              clearanceLevel: adminUser.clearanceLevel,
-              role: adminUser.role,
-              aydoHandle: adminUser.aydoHandle,
-              discordName: adminUser.discordName || null,
-              rsiAccountName: adminUser.rsiAccountName || null
-            };
-          }
-
           let user: User | null = null;
 
           // Try to find user by handle
