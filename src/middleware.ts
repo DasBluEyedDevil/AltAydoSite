@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
       // If not authenticated, redirect to login
       if (!token) {
         const url = new URL('/login', request.url);
-        url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
+        url.searchParams.set('callbackUrl', pathname);
         return NextResponse.redirect(url);
       }
 
@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
       console.error("Error in authentication middleware:", error);
       // On error, redirect to login as a fallback
       const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
+      url.searchParams.set('callbackUrl', pathname);
       url.searchParams.set('error', 'AuthError'); // Typo corrected
       return NextResponse.redirect(url);
     }
