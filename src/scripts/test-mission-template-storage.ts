@@ -3,12 +3,6 @@
  * Run with: npx tsx src/scripts/test-mission-template-storage.ts
  */
 
-// SECURITY: Prevent execution in production
-if (process.env.NODE_ENV === 'production') {
-  console.error('❌ Test scripts cannot be run in production environment');
-  process.exit(1);
-}
-
 import * as missionTemplateStorage from '@/lib/mission-template-storage';
 import { MissionTemplateResponse } from '@/types/MissionTemplate';
 

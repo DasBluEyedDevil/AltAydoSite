@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from 'react';
 const MobiGlassStarfield = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const animationPointsRef = useRef({
     x1: 0,
     y1: 0,
@@ -14,21 +13,6 @@ const MobiGlassStarfield = () => {
     y2: 0,
     t: 0
   });
-
-  // Check for reduced motion preference
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      setPrefersReducedMotion(mediaQuery.matches);
-
-      const handleChange = (e: MediaQueryListEvent) => {
-        setPrefersReducedMotion(e.matches);
-      };
-
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-  }, []);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -59,41 +43,6 @@ const MobiGlassStarfield = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
-    // If user prefers reduced motion, don't animate
-    if (prefersReducedMotion) {
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      // Draw a simple static starfield instead
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = dimensions.width * pixelRatio;
-      canvas.height = dimensions.height * pixelRatio;
-      canvas.style.width = dimensions.width + 'px';
-      canvas.style.height = dimensions.height + 'px';
-      ctx.scale(pixelRatio, pixelRatio);
-
-      // Static gradient background
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, '#000a1a');
-      gradient.addColorStop(1, '#001428');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Draw static stars
-      const staticStars = 50;
-      ctx.fillStyle = 'rgba(200, 220, 255, 0.8)';
-      for (let i = 0; i < staticStars; i++) {
-        const x = Math.random() * dimensions.width;
-        const y = Math.random() * dimensions.height;
-        const size = Math.random() * 1.5 + 0.5;
-        ctx.beginPath();
-        ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      return; // Don't start animation
-    }
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -575,7 +524,7 @@ const MobiGlassStarfield = () => {
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [dimensions, prefersReducedMotion]);
+  }, [dimensions]);
 
   return (
     <canvas 

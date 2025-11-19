@@ -21,25 +21,6 @@ export async function POST(request: Request) {
     // Connect to MongoDB
     const { db } = await connectToDatabase();
 
-    // BUSINESS LOGIC: Check if ship is already assigned to another active mission
-    const existingAssignment = await db.collection('missions').findOne({
-      _id: { $ne: new ObjectId(missionId) }, // Different mission
-      'participants.shipId': shipId,
-      status: { $in: ['Planning', 'Active', 'Scheduled'] } // Active statuses
-    });
-
-    if (existingAssignment) {
-      return NextResponse.json({
-        error: 'Ship conflict',
-        message: `This ship is already assigned to mission: ${existingAssignment.name}`,
-        conflictingMission: {
-          id: existingAssignment._id.toString(),
-          name: existingAssignment.name,
-          status: existingAssignment.status
-        }
-      }, { status: 409 }); // 409 Conflict
-    }
-
     // Update the mission participant's ship assignment
     const result = await db.collection('missions').updateOne(
       { 

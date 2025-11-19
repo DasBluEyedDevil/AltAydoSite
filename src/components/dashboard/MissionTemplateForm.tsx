@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import MobiGlasPanel from './MobiGlasPanel';
+import { MobiGlasPanel } from '@/components/ui/mobiglas';
 import MobiGlasButton from '../ui/mobiglas/MobiGlasButton';
 import {
   MissionTemplate,

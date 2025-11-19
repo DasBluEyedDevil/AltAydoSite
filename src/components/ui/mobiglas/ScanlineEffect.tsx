@@ -100,8 +100,7 @@ export default function ScanlineEffect({
     const baseStyle = {
       background: `linear-gradient(to right, transparent, ${baseColor}, transparent)`,
       filter: blur ? 'blur(1px)' : 'none',
-      boxShadow: glow ? `0 0 10px ${baseColor}, 0 0 20px ${baseColor}` : 'none',
-      willChange: 'transform, opacity' // Hint browser to optimize animations
+      boxShadow: glow ? `0 0 10px ${baseColor}, 0 0 20px ${baseColor}` : 'none'
     };
 
     switch (variant) {
