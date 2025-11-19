@@ -1,11 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { notFound } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import UserProfilePanel from '../../components/UserProfilePanel';
 import Link from 'next/link';
 
 export default function DebugUserProfilePage() {
+  // Block access in production
+  if (process.env.NODE_ENV === 'production') {
+    notFound();
+  }
+
   const { data: session, status } = useSession();
   const [showDebugInfo, setShowDebugInfo] = useState(true);
   const [storageItems, setStorageItems] = useState<{key: string, value: string}[]>([]);

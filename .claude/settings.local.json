@@ -1,25 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./cursor-agent-simple.bat agent \"Help me build Mission Template Creator UI components\")",
-      "Bash(./cursor-agent-simple.bat agent \"Debug the TypeError: templates.map is not a function in MissionTemplateCreator.tsx. The issue is likely that the API response from /api/mission-templates is not returning an array. Check the response structure and fix the component to handle the actual response format.\")",
-      "Bash(.\\cursor-agent-simple.bat agent \"Fix MissionTemplateCreator scroll issue by removing ALL window.scrollTo calls and using proper React patterns\")",
-      "Bash(./cursor-agent-simple.bat agent \"Debug the background gradient animation scroll issue in MissionTemplateCreator.tsx. The user reports that gradient animations moving down the screen are dragging the scroll with them. Find and fix animations that interfere with scroll behavior.\")",
-      "Bash(.cursor-agent-simple.bat agent \"Debug background gradient animation scroll issue in MissionTemplateCreator.tsx. User reports gradient animations moving down screen are dragging scroll with them. Find and fix animations interfering with scroll behavior.\")",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(./cursor-agent-simple.bat agent \"Fix the Services/About/Join/Contact button styling in src/components/Navigation.tsx. Change these buttons from ''mg-nav-item'' class to ''mg-button'' class to match the Login/Employee Portal button styling. The buttons should have consistent styling with the existing mg-button theme. Keep all the existing animations and hover effects but update the base styling class.\")",
-      "Bash(\"./cursor-agent-simple.bat\" agent \"Fix the Services/About/Join/Contact button styling in src/components/Navigation.tsx. Change these buttons from ''mg-nav-item'' class to ''mg-button'' class to match the Login/Employee Portal button styling. The buttons should have consistent styling with the existing mg-button theme. Keep all the existing animations and hover effects but update the base styling class.\")",
-      "Bash(cursor-agent-simple.bat agent \"Fix the Services/About/Join/Contact button styling in src/components/Navigation.tsx. Change these buttons from ''mg-nav-item'' class to ''mg-button'' class to match the Login/Employee Portal button styling. The buttons should have consistent styling with the existing mg-button theme. Keep all the existing animations and hover effects but update the base styling class.\")",
-      "Bash(cursor-agent-simple.bat --help)",
-      "Bash(timeout:*)",
-      "Bash(powershell:*)",
-      "Bash(npm run build:*)",
-      "Bash(npm run kill-port:*)",
-      "Bash(git push:*)",
-      "Bash(git checkout:*)",
-      "Bash(git pull:*)",
-      "Bash(git merge:*)"
+      "Bash(./copy-skills.bat)",
+      "Skill(superpowers:sharing-skills)",
+      "Bash(git reset HEAD .skills/)",
+      "Bash(git checkout HEAD -- .skills/)",
+      "Bash(git stash show stash@{0} --name-only)",
+      "Bash(git stash show stash@{1} --name-only)",
+      "Bash(git stash show stash@{2} --name-only)",
+      "Bash(git checkout stash@{1} -- .skills/)",
+      "Bash(git add .skills/)",
+      "Bash(git add .skills/ .gitignore)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat(skills): add AI Quadrumvirate coordination skills\n\nAdd comprehensive skills for token-efficient AI coordination:\n- ai-quadrumvirate-coordination.md: Core coordination philosophy and workflows\n- gemini-cli-codebase-analysis.md: Gemini as unlimited code analyst\n- cursor-agent-advanced-usage.md: Cursor CLI for UI/visual implementation\n- github-copilot-cli-usage.md: Copilot CLI for GitHub/backend operations\n\nThese skills enable 80-96% token savings through strategic delegation\nto specialized AI agents while Claude Code orchestrates.\n\nAlso update .gitignore to track .skills directory for project-specific\nAI coordination patterns.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []

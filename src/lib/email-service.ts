@@ -68,6 +68,56 @@ export async function sendPasswordResetEmail(
   }
 }
 
+// Send a contact form email
+export async function sendContactEmail(
+  name: string,
+  email: string,
+  subject: string,
+  message: string
+): Promise<boolean> {
+  try {
+    const transporter = createTransporter();
+
+    const mailOptions = {
+      from: `"AydoCorp Contact Form" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER, // Send to AydoCorp
+      replyTo: email, // Set reply-to as sender's email
+      subject: `Contact Form: ${subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #0070f3;">AYDO<span style="font-weight: 300;">CORP</span></h1>
+            <p style="color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 2px;">CONTACT FORM SUBMISSION</p>
+          </div>
+
+          <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #0070f3; margin-bottom: 20px;">
+            <p><strong>From:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Subject:</strong> ${subject}</p>
+          </div>
+
+          <div style="margin-bottom: 30px;">
+            <h3 style="color: #0070f3;">Message:</h3>
+            <p style="white-space: pre-wrap;">${message}</p>
+          </div>
+
+          <div style="font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 15px;">
+            <p>Received: ${new Date().toLocaleString()}</p>
+            <p>© ${new Date().getFullYear()} AydoCorp. All rights reserved.</p>
+          </div>
+        </div>
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Contact form email sent:', info.messageId);
+    return true;
+  } catch (error) {
+    console.error('Error sending contact form email:', error);
+    return false;
+  }
+}
+
 // Verify email service configuration
 export async function verifyEmailConfig(): Promise<boolean> {
   try {

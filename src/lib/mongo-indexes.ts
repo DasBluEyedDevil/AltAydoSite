@@ -14,7 +14,6 @@ export async function ensureMongoIndexes(db: Db): Promise<void> {
       users.createIndex({ aydoHandle: 1 }).catch(() => {}),
       users.createIndex({ emailLower: 1 }).catch(() => {}),
       users.createIndex({ aydoHandleLower: 1 }).catch(() => {}),
-      users.createIndex({ discordId: 1 }).catch(() => {}), // ADDED: For Discord sync lookups
     ]);
   } catch (err) {
     console.warn('Index setup (users) skipped or failed:', err);
@@ -58,8 +57,6 @@ export async function ensureMongoIndexes(db: Db): Promise<void> {
     await Promise.all([
       missions.createIndex({ leaderId: 1, createdAt: -1 }).catch(() => {}),
       missions.createIndex({ status: 1, plannedDateTime: -1 }).catch(() => {}),
-      missions.createIndex({ 'participants.shipId': 1, status: 1 }).catch(() => {}), // ADDED: For ship double-booking checks
-      missions.createIndex({ 'participants.userId': 1 }).catch(() => {}), // ADDED: For participant lookups
     ]);
   } catch (err) {
     console.warn('Index setup (missions) skipped or failed:', err);
