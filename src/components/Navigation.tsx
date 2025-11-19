@@ -90,11 +90,11 @@ export default function Navigation() {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - Increased to 48x48px for better touch targets */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="mg-button p-1 w-8 h-8 flex items-center justify-center"
+              className="mg-button p-2 w-12 h-12 flex items-center justify-center"
               aria-label="Toggle menu"
             >
               <span className="sr-only">Open main menu</span>
@@ -103,7 +103,7 @@ export default function Navigation() {
                 transition={{ duration: 0.2 }}
               >
                 <svg
-                  className="h-4 w-4 text-[rgba(var(--mg-text),1)]"
+                  className="h-6 w-6 text-[rgba(var(--mg-text),1)]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -111,7 +111,7 @@ export default function Navigation() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={1}
+                    strokeWidth={2}
                     d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                   />
                 </svg>
@@ -142,9 +142,9 @@ export default function Navigation() {
                   <Link href={item.href} onClick={() => setIsOpen(false)}>
                     <MobiGlasButton
                       variant="ghost"
-                      size="sm"
+                      size="md"
                       fullWidth
-                      className="text-xs font-quantify tracking-wider"
+                      className="text-sm font-quantify tracking-wider"
                       withCorners
                     >
                       {item.name}
