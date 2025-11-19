@@ -15,7 +15,8 @@ async function fetchWithRetry(url: string, options: RequestInit, maxRetries = 3)
     // Handle rate limiting
     if (response.status === 429) {
       const retryAfter = response.headers.get('Retry-After');
-      const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : Math.pow(2, attempt) * 1000;
+      let waitTime = retryAfter ? parseInt(retryAfter) * 1000 : Math.pow(2, attempt) * 1000;
+      waitTime = Math.min(waitTime, 60000); // Cap wait time to 60 seconds
 
       console.warn(
         `⚠️  Discord API rate limited. Waiting ${waitTime}ms before retry ${attempt + 1}/${maxRetries}`
