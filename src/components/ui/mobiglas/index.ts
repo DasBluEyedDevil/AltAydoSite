@@ -6,6 +6,8 @@ export { default as MobiGlasInput } from './MobiGlasInput';
 export { default as CornerAccents } from './CornerAccents';
 export { default as ScanlineEffect } from './ScanlineEffect';
 export { default as StatusIndicator } from './StatusIndicator';
+export { default as DataStreamBackground } from './DataStreamBackground';
+export { default as HolographicBorder } from './HolographicBorder';
 
 // Type exports for TypeScript users
 export type { default as MobiGlasContainerProps } from './MobiGlasContainer';

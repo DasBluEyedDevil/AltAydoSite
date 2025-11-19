@@ -1,0 +1,140 @@
+IMPLEMENTATION TASK: Mission Template UI - MobiGlas Polish (Tasks 1-4)
+
+**Context**: Visual refactoring to upgrade Mission Template UI components with MobiGlas design system for polished, consistent styling.
+
+**Available MobiGlas Components** (from src/components/ui/mobiglas/index.ts):
+- MobiGlasPanel: variants (dark, darker, transparent), cornerAccents, withGridBg, padding
+- MobiGlasButton: variants (primary, outline, ghost), sizes (sm, md, lg)
+- CornerAccents, StatusIndicator, ScanlineEffect
+
+**Files to Modify**:
+1. src/components/dashboard/MissionTemplateCreator.tsx
+2. src/components/dashboard/TemplateStrip.tsx
+
+---
+
+**TASK 1: Delete Confirmation Modal (MissionTemplateCreator.tsx, lines 506-549)**
+
+Replace the delete confirmation modal structure with MobiGlas components:
+
+Current Implementation (lines 506-549):
+- Plain motion.div with custom styling
+- Standard button elements
+
+Required Changes:
+1. Add import: MobiGlasPanel to line 8 imports
+2. Wrap modal content (lines 515-547) with MobiGlasPanel:
+   - variant="darker"
+   - cornerAccents={true}
+   - padding="lg"
+3. Replace Cancel button (lines 532-537) with MobiGlasButton:
+   - variant="outline"
+   - size="md"
+4. Replace Delete button (lines 538-544) with MobiGlasButton:
+   - variant="primary"
+   - size="md"
+   - Add custom className for red styling
+5. Maintain scale animation (0.9 to 1.0) on outer motion.div
+6. Preserve backdrop blur and all accessibility attributes (role, aria-modal, aria-labelledby)
+
+---
+
+**TASK 2: Success/Error Notifications (MissionTemplateCreator.tsx, lines 553-580)**
+
+Enhance notifications with MobiGlasPanel wrapper:
+
+Current Implementation (lines 553-580):
+- Custom styled divs with borders and backgrounds
+
+Required Changes:
+1. Wrap notification content (lines 565-577) with MobiGlasPanel:
+   - variant="dark"
+   - cornerAccents={true}
+   - padding="md"
+2. Add StatusIndicator component for status dot (replace line 571-574)
+3. Maintain slide-in animation from right (x: 100 to 0)
+4. Preserve all role and aria-live attributes
+
+---
+
+**TASK 3: Action Buttons (TemplateStrip.tsx, lines 124-151)**
+
+Replace Edit, Delete, Use buttons with MobiGlasButton:
+
+Current Implementation (lines 124-151):
+- Plain button elements with hover effects
+
+Required Changes:
+1. Add import: MobiGlasButton to line 6 imports
+2. Replace Edit button (lines 125-131) with MobiGlasButton:
+   - variant="ghost"
+   - size="sm"
+   - leftIcon with EditIcon
+   - Custom hover colors (cyan)
+   - Preserve onClick, title, aria-label
+3. Replace Delete button (lines 133-139) with MobiGlasButton:
+   - variant="ghost"
+   - size="sm"
+   - leftIcon with TrashIcon
+   - Custom hover colors (red)
+   - Preserve onClick, title, aria-label
+4. Replace Use button (lines 141-149) with MobiGlasButton:
+   - variant="ghost"
+   - size="sm"
+   - leftIcon with ArrowRightIcon
+   - Custom hover colors (green)
+   - Preserve onClick, title, aria-label, conditional rendering
+
+---
+
+**TASK 4: Detail Panels (TemplateStrip.tsx, lines 172-237)**
+
+Convert all detail sections to MobiGlasPanel components:
+
+Current Implementation (lines 172-237):
+- Custom styled divs with borders and backgrounds
+
+Required Changes:
+1. Wrap "Operation Details" section (lines 173-191) with MobiGlasPanel:
+   - variant="transparent"
+   - padding="md"
+   - withGridBg={true}
+   - cornerAccents={false}
+2. Wrap "Ship Roster" section (lines 194-208) with MobiGlasPanel (same props)
+3. Wrap "Personnel Roster" section (lines 211-225) with MobiGlasPanel (same props)
+4. Wrap "Required Equipment" section (lines 228-237) with MobiGlasPanel (same props)
+5. Preserve all existing content, conditional rendering, and list structures
+6. Maintain h4 headers, list styling, and text formatting
+
+---
+
+**Acceptance Criteria**:
+- All modals, buttons, and panels use MobiGlas components
+- Visual consistency with site-wide MobiGlas theme
+- All existing functionality preserved (click handlers, animations, state)
+- No TypeScript errors or console warnings
+- Responsive design maintained
+- Accessibility attributes intact
+
+---
+
+**After Implementation**:
+1. Run: npm run type-check (report results)
+2. Run: npm run dev (verify visually on port 3000)
+3. Take screenshots showing:
+   - Delete modal with MobiGlas styling
+   - Action buttons in collapsed/expanded states
+   - Detail panels with grid backgrounds
+   - Notifications (success and error if possible)
+4. Report back with:
+   - Summary of all changes made
+   - Files modified with line numbers changed
+   - Screenshots of visual improvements
+   - Type-check results (paste any errors)
+   - Any issues or decisions made
+
+**Notes**:
+- MobiGlasButton may need icon passed as leftIcon prop, not as children
+- Verify MobiGlasPanel accepts all specified props (check component file if needed)
+- Maintain all existing animations and transitions
+- Preserve all onClick handlers and event propagation logic

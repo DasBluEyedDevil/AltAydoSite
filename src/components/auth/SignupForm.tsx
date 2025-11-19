@@ -224,7 +224,7 @@ export default function SignupForm() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] rounded-sm px-3 py-2 text-sm focus:outline-none transition-colors font-quantify tracking-wide
+                  className={`mg-input w-full bg-[rgba(var(--mg-panel-dark),0.5)] rounded-sm px-4 py-3 text-base md:px-3 md:py-2 md:text-sm focus:outline-none transition-colors font-quantify tracking-wide
                     ${passwordMatch === 'matching' ? 'border border-[rgba(var(--mg-success),0.4)] focus:border-[rgba(var(--mg-success),0.7)]' :
                       passwordMatch === 'not-matching' ? 'border border-[rgba(var(--mg-danger),0.4)] focus:border-[rgba(var(--mg-danger),0.7)]' :
                       'border border-[rgba(var(--mg-primary),0.2)] focus:border-[rgba(var(--mg-primary),0.5)]'}`}
