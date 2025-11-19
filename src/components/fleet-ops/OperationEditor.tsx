@@ -5,6 +5,7 @@ import { Session } from 'next-auth';
 import { OperationResponse, OperationStatus, OperationParticipant } from '@/types/Operation';
 import { UserShip } from '@/types/user';
 import UserSelector from './UserSelector';
+import { MobiGlasButton } from '@/components/ui/mobiglas';
 
 interface OperationEditorProps {
   session: Session;
@@ -230,13 +231,13 @@ const OperationEditor: React.FC<OperationEditorProps> = ({
         <h2 className="mg-title text-xl">
           {isEditing ? 'Edit Operation' : 'Create New Operation'}
         </h2>
-        <button 
-          className="mg-button-secondary"
+        <MobiGlasButton
+          variant="secondary"
           onClick={onCancel}
           disabled={isSubmitting}
         >
           Cancel
-        </button>
+        </MobiGlasButton>
       </div>
       
       {error && (
@@ -369,23 +370,24 @@ const OperationEditor: React.FC<OperationEditorProps> = ({
                 onChange={(e) => handleDiagramLinkChange(index, e.target.value)}
                 placeholder="https://example.com/diagram"
               />
-              <button 
+              <MobiGlasButton
                 type="button"
-                className="mg-button-secondary"
+                variant="secondary"
                 onClick={() => removeDiagramLink(index)}
               >
                 Remove
-              </button>
+              </MobiGlasButton>
             </div>
           ))}
-          
-          <button 
+
+          <MobiGlasButton
             type="button"
-            className="mg-button-secondary mt-2"
+            variant="secondary"
+            className="mt-2"
             onClick={addDiagramLink}
           >
             Add Diagram Link
-          </button>
+          </MobiGlasButton>
         </div>
         
         {/* Participants */}
@@ -416,13 +418,14 @@ const OperationEditor: React.FC<OperationEditorProps> = ({
                       <h4 className="mg-subtitle">
                         {user?.aydoHandle || participant.userId}
                       </h4>
-                      <button 
+                      <MobiGlasButton
                         type="button"
-                        className="mg-button-danger-small"
+                        variant="danger"
+                        size="sm"
                         onClick={() => handleRemoveParticipant(index)}
                       >
                         Remove
-                      </button>
+                      </MobiGlasButton>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -494,13 +497,14 @@ const OperationEditor: React.FC<OperationEditorProps> = ({
         
         {/* Submit button */}
         <div className="flex justify-end">
-          <button 
+          <MobiGlasButton
             type="submit"
-            className="mg-button-primary"
+            variant="primary"
             disabled={isSubmitting}
+            isLoading={isSubmitting}
           >
-            {isSubmitting ? 'Saving...' : isEditing ? 'Update Operation' : 'Create Operation'}
-          </button>
+            {isEditing ? 'Update Operation' : 'Create Operation'}
+          </MobiGlasButton>
         </div>
       </form>
     </div>

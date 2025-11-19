@@ -5,7 +5,7 @@ import { motion, MotionProps } from 'framer-motion';
 
 export interface MobiGlasButtonProps extends Omit<MotionProps, 'children'> {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'outline';
+  variant?: 'primary' | 'secondary' | 'accent' | 'danger' | 'ghost' | 'outline';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   disabled?: boolean;
   isLoading?: boolean;
@@ -41,6 +41,7 @@ export default function MobiGlasButton({
     primary: 'mg-button border border-[rgba(var(--mg-primary),0.5)] text-[rgba(var(--mg-primary),1)] hover:bg-[rgba(var(--mg-primary),0.2)] hover:border-[rgba(var(--mg-primary),0.8)]',
     secondary: 'mg-button border border-[rgba(var(--mg-secondary),0.5)] text-[rgba(var(--mg-secondary),1)] hover:bg-[rgba(var(--mg-secondary),0.2)] hover:border-[rgba(var(--mg-secondary),0.8)]',
     accent: 'mg-button border border-[rgba(var(--mg-accent),0.5)] text-[rgba(var(--mg-accent),1)] hover:bg-[rgba(var(--mg-accent),0.2)] hover:border-[rgba(var(--mg-accent),0.8)]',
+    danger: 'mg-button border border-[rgba(var(--mg-danger),0.5)] text-[rgba(var(--mg-danger),1)] hover:bg-[rgba(var(--mg-danger),0.2)] hover:border-[rgba(var(--mg-danger),0.8)]',
     ghost: 'bg-transparent border-none text-[rgba(var(--mg-text),0.8)] hover:text-[rgba(var(--mg-primary),1)] hover:bg-[rgba(var(--mg-primary),0.1)]',
     outline: 'bg-transparent border border-[rgba(var(--mg-primary),0.3)] text-[rgba(var(--mg-primary),0.9)] hover:bg-[rgba(var(--mg-primary),0.1)] hover:border-[rgba(var(--mg-primary),0.6)]'
   };
