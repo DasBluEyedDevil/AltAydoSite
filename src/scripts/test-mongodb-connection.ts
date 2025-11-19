@@ -4,6 +4,12 @@ import * as path from 'path';
 import * as mongoDb from '../lib/mongodb-client';
 import { connectToDatabase } from '../lib/mongodb';
 
+// SECURITY: Prevent execution in production
+if (process.env.NODE_ENV === 'production') {
+  console.error('❌ Test scripts cannot be run in production environment');
+  process.exit(1);
+}
+
 // Make sure we load environment variables
 
 function loadEnvFile() {

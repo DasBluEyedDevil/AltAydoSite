@@ -92,7 +92,7 @@ export default function Navigation() {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - Increased to 48x48px for better touch targets */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -113,7 +113,7 @@ export default function Navigation() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={1}
+                    strokeWidth={2}
                     d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                   />
                 </svg>
@@ -146,7 +146,7 @@ export default function Navigation() {
                       variant="ghost"
                       size="md"
                       fullWidth
-                      className="text-xs font-quantify tracking-wider"
+                      className="text-sm font-quantify tracking-wider"
                       withCorners
                     >
                       {item.name}

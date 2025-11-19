@@ -1,15 +1,24 @@
 import { MongoClient } from 'mongodb';
 import { ensureMongoIndexes } from '@/lib/mongo-indexes';
 
-// Check for either MongoDB URI or CosmosDB connection string (do not throw at import time)
+// Check for either MongoDB URI or CosmosDB connection string
 const mongoUri = process.env.MONGODB_URI || process.env.COSMOSDB_CONNECTION_STRING;
-if (process.env.NODE_ENV !== 'production') {
-  console.log('MongoDB URI exists:', !!mongoUri);
+
+// Strict validation for production environments
+if (!mongoUri) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'CRITICAL: MongoDB/CosmosDB connection string is required in production. ' +
+      'Set MONGODB_URI or COSMOSDB_CONNECTION_STRING in environment variables.'
+    );
+  } else {
+    console.warn('⚠️  WARNING: No database connection string found. App will use fallback storage.');
+  }
 }
 
 const uri: string = mongoUri || '';
 if (uri && process.env.NODE_ENV !== 'production') {
-  console.log('MongoDB configuration detected');
+  console.log('✓ MongoDB configuration detected');
 }
 
 // Options optimized for vCore MongoDB
@@ -76,10 +85,19 @@ export async function connectToDatabase() {
     await db.command({ ping: 1 });
     console.log('✓ Database connection verified');
 
-    // Best-effort index setup (non-blocking)
-    ensureMongoIndexes(db).catch((err) => {
-      console.warn('Index setup skipped:', err);
-    });
+    // Ensure indexes are created (fail in dev, warn in prod)
+    try {
+      await ensureMongoIndexes(db);
+      console.log('✓ Database indexes verified');
+    } catch (err) {
+      console.error('× Database index creation failed:', err);
+      // In development, throw error to catch index issues early
+      if (process.env.NODE_ENV !== 'production') {
+        throw new Error(`Index creation failed: ${err}`);
+      }
+      // In production, log but don't block startup
+      console.warn('⚠️  Continuing without all indexes - performance may be degraded');
+    }
 
     return { client, db };
   } catch (error) {

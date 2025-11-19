@@ -1,53 +1,87 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { sendContactEmail } from '@/lib/email-service';
+import { sendContactFormEmail } from '@/lib/email-service';
+import { logInfo, logError } from '@/lib/logger';
 
-// Define validation schema for contact form
-const contactSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
+// Validation schema
+const contactFormSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name too long'),
   email: z.string().email('Invalid email address'),
-  subject: z.string().min(1, 'Subject is required').max(200, 'Subject is too long'),
-  message: z.string().min(1, 'Message is required').max(2000, 'Message is too long'),
+  subject: z.string().min(3, 'Subject must be at least 3 characters').max(200, 'Subject too long'),
+  message: z.string().min(10, 'Message must be at least 10 characters').max(5000, 'Message too long'),
 });
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+
   try {
-    console.log('Contact form API called');
+    // Parse request body
     const body = await request.json();
 
-    // Validate the request body
-    const result = contactSchema.safeParse(body);
+    // Validate input
+    const result = contactFormSchema.safeParse(body);
     if (!result.success) {
-      const errorMessage = result.error.errors[0].message;
-      console.error('Validation error:', errorMessage);
       return NextResponse.json(
-        { error: errorMessage },
+        {
+          error: 'Validation failed',
+          details: result.error.errors.map(err => ({
+            field: err.path[0],
+            message: err.message
+          }))
+        },
         { status: 400 }
       );
     }
 
     const { name, email, subject, message } = result.data;
 
-    // Send contact email
-    const emailSent = await sendContactEmail(name, email, subject, message);
+    // Check if email service is configured
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+      logError('Contact form submission failed - email not configured', undefined, {
+        name,
+        email: email.replace(/(?<=.{2}).(?=.*@)/g, '*'), // Mask email for privacy
+      });
+
+      return NextResponse.json(
+        { error: 'Email service not configured. Please contact support directly.' },
+        { status: 503 }
+      );
+    }
+
+    // Send email
+    const emailSent = await sendContactFormEmail(name, email, subject, message);
 
     if (!emailSent) {
-      console.error('Failed to send contact email');
+      logError('Contact form email failed to send', undefined, { name, email });
       return NextResponse.json(
         { error: 'Failed to send message. Please try again later.' },
         { status: 500 }
       );
     }
 
-    console.log('Contact email sent successfully');
+    // Log success
+    const duration = Date.now() - startTime;
+    logInfo('Contact form submission successful', {
+      name,
+      email: email.replace(/(?<=.{2}).(?=.*@)/g, '*'),
+      subject,
+      duration,
+    });
+
     return NextResponse.json(
-      { message: 'Message transmitted successfully!' },
+      {
+        success: true,
+        message: 'Message transmitted successfully. We will respond within 24-48 hours.'
+      },
       { status: 200 }
     );
+
   } catch (error) {
-    console.error('Error in contact API:', error);
+    const duration = Date.now() - startTime;
+    logError('Contact form API error', error as Error, { duration });
+
     return NextResponse.json(
-      { error: 'An unexpected error occurred. Please try again later.' },
+      { error: 'An unexpected error occurred. Please try again.' },
       { status: 500 }
     );
   }

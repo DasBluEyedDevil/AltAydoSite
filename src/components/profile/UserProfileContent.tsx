@@ -8,6 +8,7 @@ import Image from 'next/image';
 import UserFleetBuilderWrapper from '../UserFleetBuilderWrapper';
 import { UserShip } from '@/types/user';
 import { TIMEZONE_OPTIONS, detectUserTimezone } from '@/lib/timezone';
+import { MobiGlasButton } from '@/components/ui/mobiglas';
 
 interface UserData {
   name: string;
@@ -349,28 +350,32 @@ export default function UserProfileContent() {
           <div className="flex justify-end mb-4">
             {isEditing ? (
               <div className="flex space-x-2">
-                <button
+                <MobiGlasButton
                   onClick={handleCancelEdit}
-                  className="mg-button-secondary px-4 py-2 text-xs tracking-wider border border-[rgba(var(--mg-primary),0.3)] hover:border-[rgba(var(--mg-primary),0.5)]"
+                  variant="secondary"
+                  size="sm"
                   disabled={isSaving}
                 >
                   CANCEL
-                </button>
-                <button
+                </MobiGlasButton>
+                <MobiGlasButton
                   onClick={handleSaveProfile}
-                  className="mg-button px-4 py-2 text-xs tracking-wider hover:bg-[rgba(var(--mg-primary),0.1)]"
+                  variant="primary"
+                  size="sm"
                   disabled={isSaving}
+                  isLoading={isSaving}
                 >
-                  {isSaving ? 'SAVING...' : 'SAVE CHANGES'}
-                </button>
+                  SAVE CHANGES
+                </MobiGlasButton>
               </div>
             ) : (
-              <button
+              <MobiGlasButton
                 onClick={handleEditToggle}
-                className="mg-button px-4 py-2 text-xs tracking-wider hover:bg-[rgba(var(--mg-primary),0.1)]"
+                variant="primary"
+                size="sm"
               >
                 EDIT PROFILE
-              </button>
+              </MobiGlasButton>
             )}
           </div>
 
@@ -621,12 +626,13 @@ export default function UserProfileContent() {
               <div className="mg-subtitle text-xs mb-2 tracking-wider text-[rgba(var(--mg-warning),0.8)]">ADMIN ACCESS</div>
               <p className="text-sm text-[rgba(var(--mg-text),0.7)]">You have administrative privileges. Access the admin dashboard for system management.</p>
               <div className="mt-3">
-                <button
+                <MobiGlasButton
                   onClick={() => router.push('/admin')}
-                  className="mg-button px-4 py-2 text-xs tracking-wider hover:bg-[rgba(var(--mg-primary),0.1)]"
+                  variant="primary"
+                  size="sm"
                 >
                   ADMIN DASHBOARD
-                </button>
+                </MobiGlasButton>
               </div>
             </div>
           )}

@@ -130,4 +130,4 @@ export const logger = new Logger();
 export const logDebug = (message: string, context?: Record<string, any>) => logger.debug(message, context);
 export const logInfo = (message: string, context?: Record<string, any>) => logger.info(message, context);
 export const logWarn = (message: string, context?: Record<string, any>) => logger.warn(message, context);
-export const logError = (error: Error, message?: string, context?: Record<string, any>) => logger.error(message || error.message, error, context);
+export const logError = (message: string, error?: Error, context?: Record<string, any>) => logger.error(message, error, context);

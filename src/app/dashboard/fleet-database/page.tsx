@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSession } from 'next-auth/react';
-import { MobiGlasPanel } from '@/components/ui/mobiglas';
+import MobiGlasPanel from '@/components/ui/mobiglas/MobiGlasPanel';
 
 export default function FleetDatabasePage() {
   const { data: session, status } = useSession();

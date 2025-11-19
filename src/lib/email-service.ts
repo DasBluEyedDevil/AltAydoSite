@@ -68,8 +68,8 @@ export async function sendPasswordResetEmail(
   }
 }
 
-// Send a contact form email
-export async function sendContactEmail(
+// Send a contact form submission email
+export async function sendContactFormEmail(
   name: string,
   email: string,
   subject: string,
@@ -77,33 +77,38 @@ export async function sendContactEmail(
 ): Promise<boolean> {
   try {
     const transporter = createTransporter();
+    const recipientEmail = process.env.CONTACT_EMAIL || process.env.EMAIL_USER || 'aydocorp@gmail.com';
 
     const mailOptions = {
       from: `"AydoCorp Contact Form" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER, // Send to AydoCorp
-      replyTo: email, // Set reply-to as sender's email
+      to: recipientEmail,
+      replyTo: email,
       subject: `Contact Form: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc;">
           <div style="text-align: center; margin-bottom: 20px;">
             <h1 style="color: #0070f3;">AYDO<span style="font-weight: 300;">CORP</span></h1>
-            <p style="color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 2px;">CONTACT FORM SUBMISSION</p>
+            <p style="color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 2px;">NEW MESSAGE TRANSMISSION</p>
           </div>
 
           <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #0070f3; margin-bottom: 20px;">
+            <h2 style="margin-top: 0; color: #333;">Contact Form Submission</h2>
             <p><strong>From:</strong> ${name}</p>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Subject:</strong> ${subject}</p>
           </div>
 
           <div style="margin-bottom: 30px;">
-            <h3 style="color: #0070f3;">Message:</h3>
-            <p style="white-space: pre-wrap;">${message}</p>
+            <h3 style="color: #333;">Message:</h3>
+            <div style="background-color: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 4px; white-space: pre-wrap;">
+${message}
+            </div>
           </div>
 
           <div style="font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 15px;">
-            <p>Received: ${new Date().toLocaleString()}</p>
-            <p>© ${new Date().getFullYear()} AydoCorp. All rights reserved.</p>
+            <p>This message was sent via the AydoCorp website contact form.</p>
+            <p>Reply directly to this email to respond to ${email}</p>
+            <p style="margin-top: 15px;">© ${new Date().getFullYear()} AydoCorp. All rights reserved.</p>
           </div>
         </div>
       `,

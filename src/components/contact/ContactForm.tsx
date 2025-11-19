@@ -3,28 +3,54 @@
 import React, { useState } from 'react';
 import { MobiGlasPanel, MobiGlasButton } from '@/components/ui/mobiglas';
 
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+interface FieldErrors {
+  [key: string]: string;
+}
+
 export default function ContactForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     subject: '',
-    message: ''
+    message: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const [error, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
     setSuccessMessage('');
+    setErrorMessage('');
+    setFieldErrors({});
 
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -33,20 +59,23 @@ export default function ContactForm() {
         setSuccessMessage(data.message || 'Message transmitted successfully!');
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        setError(data.error || 'Failed to send message. Please try again.');
+        // Handle validation errors
+        if (data.details && Array.isArray(data.details)) {
+          const errors: FieldErrors = {};
+          data.details.forEach((err: { field: string; message: string }) => {
+            errors[err.field] = err.message;
+          });
+          setFieldErrors(errors);
+          setErrorMessage('Please correct the errors below.');
+        } else {
+          setErrorMessage(data.error || 'Failed to send message. Please try again.');
+        }
       }
-    } catch (err) {
-      setError('Network error. Please check your connection.');
+    } catch (error) {
+      setErrorMessage('Network error. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
   };
 
   return (
@@ -61,23 +90,32 @@ export default function ContactForm() {
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-
-        {successMessage && (
-          <div className="mb-4 p-3 bg-[rgba(var(--mg-primary),0.1)] border border-[rgba(var(--mg-primary),0.3)] rounded-sm text-[rgba(var(--mg-primary),0.9)]">
-            {successMessage}
+      {successMessage && (
+        <div className="mb-6 p-4 bg-[rgba(var(--mg-success),0.1)] border border-[rgba(var(--mg-success),0.3)] rounded-sm" role="alert" aria-live="polite">
+          <div className="flex items-center">
+            <svg className="h-5 w-5 text-[rgba(var(--mg-success),0.8)] mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <p className="text-[rgba(var(--mg-success),0.9)]">{successMessage}</p>
           </div>
-        )}
+        </div>
+      )}
 
-        {error && (
-          <div className="mb-4 p-3 bg-[rgba(var(--mg-error),0.1)] border border-[rgba(var(--mg-error),0.3)] rounded-sm text-[rgba(var(--mg-error),0.9)]">
-            {error}
+      {errorMessage && (
+        <div className="mb-6 p-4 bg-[rgba(var(--mg-error),0.1)] border border-[rgba(var(--mg-error),0.3)] rounded-sm" role="alert" aria-live="polite">
+          <div className="flex items-center">
+            <svg className="h-5 w-5 text-[rgba(var(--mg-error),0.8)] mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <p className="text-[rgba(var(--mg-error),0.9)]">{errorMessage}</p>
           </div>
-        )}
+        </div>
+      )}
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+      <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-[rgba(var(--mg-text),0.8)] mb-2 font-quantify">
-              NAME
+              NAME {fieldErrors.name && <span className="text-[rgba(var(--mg-error),0.9)] text-xs">*</span>}
             </label>
             <input
               type="text"
@@ -85,14 +123,22 @@ export default function ContactForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border border-[rgba(var(--mg-primary),0.3)] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input"
+              className={`w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border ${
+                fieldErrors.name ? 'border-[rgba(var(--mg-error),0.6)]' : 'border-[rgba(var(--mg-primary),0.3)]'
+              } rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input`}
               required
+              aria-required="true"
+              aria-invalid={fieldErrors.name ? "true" : "false"}
+              aria-describedby={fieldErrors.name ? "name-error" : undefined}
               disabled={isLoading}
             />
+            {fieldErrors.name && (
+              <p id="name-error" className="text-[rgba(var(--mg-error),0.9)] text-xs mt-1">{fieldErrors.name}</p>
+            )}
           </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-[rgba(var(--mg-text),0.8)] mb-2 font-quantify">
-              COMM RELAY ID
+              COMM RELAY ID {fieldErrors.email && <span className="text-[rgba(var(--mg-error),0.9)] text-xs">*</span>}
             </label>
             <input
               type="email"
@@ -100,14 +146,22 @@ export default function ContactForm() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border border-[rgba(var(--mg-primary),0.3)] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input"
+              className={`w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border ${
+                fieldErrors.email ? 'border-[rgba(var(--mg-error),0.6)]' : 'border-[rgba(var(--mg-primary),0.3)]'
+              } rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input`}
               required
+              aria-required="true"
+              aria-invalid={fieldErrors.email ? "true" : "false"}
+              aria-describedby={fieldErrors.email ? "email-error" : undefined}
               disabled={isLoading}
             />
+            {fieldErrors.email && (
+              <p id="email-error" className="text-[rgba(var(--mg-error),0.9)] text-xs mt-1">{fieldErrors.email}</p>
+            )}
           </div>
           <div>
             <label htmlFor="subject" className="block text-sm font-medium text-[rgba(var(--mg-text),0.8)] mb-2 font-quantify">
-              SUBJECT
+              SUBJECT {fieldErrors.subject && <span className="text-[rgba(var(--mg-error),0.9)] text-xs">*</span>}
             </label>
             <input
               type="text"
@@ -115,25 +169,41 @@ export default function ContactForm() {
               name="subject"
               value={formData.subject}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border border-[rgba(var(--mg-primary),0.3)] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input"
+              className={`w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border ${
+                fieldErrors.subject ? 'border-[rgba(var(--mg-error),0.6)]' : 'border-[rgba(var(--mg-primary),0.3)]'
+              } rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input`}
               required
+              aria-required="true"
+              aria-invalid={fieldErrors.subject ? "true" : "false"}
+              aria-describedby={fieldErrors.subject ? "subject-error" : undefined}
               disabled={isLoading}
             />
+            {fieldErrors.subject && (
+              <p id="subject-error" className="text-[rgba(var(--mg-error),0.9)] text-xs mt-1">{fieldErrors.subject}</p>
+            )}
           </div>
           <div>
             <label htmlFor="message" className="block text-sm font-medium text-[rgba(var(--mg-text),0.8)] mb-2 font-quantify">
-              MESSAGE CONTENTS
+              MESSAGE CONTENTS {fieldErrors.message && <span className="text-[rgba(var(--mg-error),0.9)] text-xs">*</span>}
             </label>
             <textarea
               id="message"
               name="message"
-              rows={4}
               value={formData.message}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border border-[rgba(var(--mg-primary),0.3)] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input"
+              rows={4}
+              className={`w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border ${
+                fieldErrors.message ? 'border-[rgba(var(--mg-error),0.6)]' : 'border-[rgba(var(--mg-primary),0.3)]'
+              } rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input`}
               required
+              aria-required="true"
+              aria-invalid={fieldErrors.message ? "true" : "false"}
+              aria-describedby={fieldErrors.message ? "message-error" : undefined}
               disabled={isLoading}
             ></textarea>
+            {fieldErrors.message && (
+              <p id="message-error" className="text-[rgba(var(--mg-error),0.9)] text-xs mt-1">{fieldErrors.message}</p>
+            )}
           </div>
           <MobiGlasButton
             type="submit"

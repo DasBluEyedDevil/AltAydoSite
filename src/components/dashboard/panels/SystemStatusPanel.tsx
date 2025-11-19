@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { MobiGlasPanel } from '@/components/ui/mobiglas';
+import MobiGlasPanel from '@/components/ui/mobiglas/MobiGlasPanel';
 
 interface SystemStat {
   name: string;
