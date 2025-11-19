@@ -1,0 +1,24 @@
+  }
+
+  // Render create/edit form view
+  return (
+    <MissionTemplateForm
+      formData={formData}
+      errors={errors}
+      isLoading={isLoading}
+      isEditing={viewMode === 'edit'}
+      onInputChange={handleInputChange}
+      onSave={handleSave}
+      onCancel={handleCancel}
+      onAddShip={addShipEntry}
+      onUpdateShip={updateShipEntry}
+      onRemoveShip={removeShipEntry}
+      onAddPersonnel={addPersonnelEntry}
+      onUpdatePersonnel={updatePersonnelEntry}
+      onRemovePersonnel={removePersonnelEntry}
+      getAvailableActivities={getAvailableActivities}
+    />
+  );
+};
+
+export default MissionTemplateCreator;
