@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { cdn } from '@/lib/cdn';
+import DashboardBreadcrumbs from '@/components/dashboard/DashboardBreadcrumbs';
 
 interface CertificationItem {
   id: string;
@@ -371,6 +372,10 @@ export default function CertificationsPage() {
       <div className="hexagon-bg absolute inset-0 opacity-5 pointer-events-none"></div>
 
       <div className="max-w-6xl mx-auto">
+        <div className="mb-6">
+          <DashboardBreadcrumbs />
+        </div>
+
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

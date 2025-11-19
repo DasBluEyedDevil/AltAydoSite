@@ -30,28 +30,16 @@ export async function GET() {
     const session = await getServerSession(authOptions);
     
     if (!session || !session.user) {
-      console.log('GET Profile - Unauthorized attempt');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
     // Get the user from storage
     const userId = session.user.id;
-    console.log(`GET Profile - Retrieving user data for ID: ${userId}`);
     
     const user = await userStorage.getUserById(userId);
     
     if (!user) {
-      console.log(`GET Profile - User not found for ID: ${userId}`);
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-    
-    console.log(`GET Profile - Ships data for user ${userId}:`, {
-      hasShips: !!user.ships,
-      shipsCount: user.ships?.length || 0
-    });
-    
-    if (user.ships && user.ships.length > 0) {
-      console.log('GET Profile - Sample ship data:', user.ships[0]);
     }
     
     // Return the profile data (excluding sensitive info)
@@ -70,7 +58,6 @@ export async function GET() {
       ships: user.ships || [],
     };
     
-    console.log(`GET Profile - Response ships count: ${response.ships.length}`);
     return NextResponse.json(response);
     
   } catch (error: any) {
@@ -87,7 +74,6 @@ export async function PUT(request: NextRequest) {
     const session = await getServerSession(authOptions);
     
     if (!session || !session.user) {
-      console.log('PUT Profile - Unauthorized attempt');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
@@ -101,20 +87,9 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
     }
     
-    console.log(`PUT Profile - Received update for user ${userId} with fields:`, Object.keys(body));
-    
-    if (body.ships) {
-      console.log(`PUT Profile - Ships data received:`, {
-        count: body.ships.length,
-        isArray: Array.isArray(body.ships),
-        sample: body.ships.length > 0 ? body.ships[0] : null
-      });
-    }
-    
     // Handle ships-only updates specially
     const isShipsOnlyUpdate = Object.keys(body).length === 1 && body.ships !== undefined;
     if (isShipsOnlyUpdate) {
-      console.log(`PUT Profile - Ships-only update detected for user ${userId}`);
       
       if (!Array.isArray(body.ships)) {
         console.error('PUT Profile - Ships data is not an array:', body.ships);
@@ -139,11 +114,8 @@ export async function PUT(request: NextRequest) {
       // Get existing user first
       const existingUser = await userStorage.getUserById(userId);
       if (!existingUser) {
-        console.log(`PUT Profile - User not found for ID: ${userId}`);
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
       }
-      
-      console.log(`PUT Profile - Existing user found, current ships count: ${existingUser.ships?.length || 0}`);
       
       // Only update ships field
       const updatedUser = await userStorage.updateUser(userId, {
@@ -154,8 +126,6 @@ export async function PUT(request: NextRequest) {
         console.error(`PUT Profile - Failed to update ships for user ${userId}`);
         return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
       }
-      
-      console.log(`PUT Profile - Ships-only update successful for user ${userId}. Updated ships count:`, updatedUser.ships?.length || 0);
       
       // Return the updated profile data
       const response = {
@@ -187,13 +157,6 @@ export async function PUT(request: NextRequest) {
     // Get validated data
     const updates = result.data;
     
-    if (updates.ships) {
-      console.log(`PUT Profile - Validated ships data for user ${userId}:`, {
-        count: updates.ships.length,
-        sample: updates.ships.length > 0 ? updates.ships[0] : null
-      });
-    }
-    
     // Update the user profile
     const updatedUser = await userStorage.updateUser(userId, updates);
     
@@ -201,8 +164,6 @@ export async function PUT(request: NextRequest) {
       console.error(`PUT Profile - Failed to update profile for user ${userId}`);
       return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
-    
-    console.log(`PUT Profile - Successfully updated user ${userId}. Ships count:`, updatedUser.ships?.length || 0);
     
     // Return the updated profile data
     const response = {
@@ -229,4 +190,4 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

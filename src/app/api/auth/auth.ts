@@ -31,10 +31,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        console.log('AUTH: Credentials authorize called with handle:', credentials?.aydoHandle);
-        
         if (!credentials?.aydoHandle || !credentials?.password) {
-          console.log('AUTH: Missing credentials');
           return null;
         }
 
@@ -42,21 +39,11 @@ export const authOptions: NextAuthOptions = {
           let user: User | null = null;
 
           // Try to find user by handle
-          console.log(`AUTH: Looking for user with handle: ${credentials.aydoHandle}`);
           user = await userStorage.getUserByHandle(credentials.aydoHandle);
 
           if (!user) {
-            console.log(`AUTH: No user found with handle: ${credentials.aydoHandle}`);
             return null;
           }
-
-          console.log(`AUTH: User found:`, {
-            id: user.id,
-            aydoHandle: user.aydoHandle,
-            email: user.email,
-            hasPasswordHash: !!user.passwordHash,
-            passwordHashLength: user.passwordHash ? user.passwordHash.length : 0
-          });
 
           // Ensure the user has a passwordHash
           if (!user.passwordHash) {
@@ -64,17 +51,11 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
-          console.log('AUTH: Comparing password...');
           const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash);
-          console.log(`AUTH: Password valid: ${isPasswordValid}`);
 
           if (!isPasswordValid) {
-            console.log(`AUTH: Invalid password for user: ${user.aydoHandle}`);
             return null;
           }
-
-          console.log(`AUTH: Authentication successful for: ${user.aydoHandle}`);
-          console.log(`AUTH: Using fallback storage: ${userStorage.isUsingFallbackStorage() ? 'Yes' : 'No'}`);
           
           return {
             id: user.id,
@@ -95,16 +76,8 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log('AUTH: signIn callback called', { 
-        provider: account?.provider,
-        userId: user.id, 
-        email: user.email 
-      });
-
       // Handle Discord OAuth sign in
       if (account?.provider === 'discord') {
-        console.log('AUTH: Discord OAuth sign in detected');
-        
         try {
           // Sync Discord profile data (roles, division, position)
           const discordProfile = profile as any;
@@ -124,7 +97,6 @@ export const authOptions: NextAuthOptions = {
 
           if (existingUser) {
             // Update existing user with Discord info including roles
-            console.log('AUTH: Updating existing user with Discord data and roles');
             await userStorage.updateUser(existingUser.id, {
               discordId: user.id,
               discordName: `${discordProfile.username}#${discordProfile.discriminator}`,
@@ -137,7 +109,6 @@ export const authOptions: NextAuthOptions = {
             });
           } else {
             // Create new user from Discord profile including roles
-            console.log('AUTH: Creating new user from Discord profile with roles');
             const newUser: User = {
               id: crypto.randomUUID(),
               aydoHandle: discordProfileData.displayName || discordProfile.username || user.name || 'discord_user',
@@ -157,12 +128,6 @@ export const authOptions: NextAuthOptions = {
             };
 
             await userStorage.createUser(newUser);
-            console.log('AUTH: New Discord user created with roles:', {
-              id: newUser.id,
-              division: newUser.division,
-              position: newUser.position,
-              payGrade: newUser.payGrade
-            });
           }
         } catch (error) {
           console.error('AUTH: Error handling Discord sign in:', error);
@@ -178,7 +143,6 @@ export const authOptions: NextAuthOptions = {
 
       // Initial sign-in
       if (user && account) {
-        console.log('AUTH: jwt callback - initial sign-in');
         token.id = user.id;
         token.clearanceLevel = user.clearanceLevel;
         token.role = user.role;
@@ -198,7 +162,6 @@ export const authOptions: NextAuthOptions = {
 
       // If token is expired or needs to be refreshed
       if (token && token.id) {
-        console.log('AUTH: jwt callback - refreshing token');
         try {
           const latestUser = await userStorage.getUserById(token.id as string);
           if (latestUser) {
@@ -221,7 +184,6 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // Pass token data to the client
       if (token && session.user) {
-        console.log('AUTH: session callback - adding token data to session');
         session.user.id = token.id as string;
         session.user.clearanceLevel = token.clearanceLevel as number;
         session.user.role = token.role as string;

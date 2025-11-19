@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MobiGlasPanel, MobiGlasButton } from '@/components/ui/mobiglas';
+import { MobiGlasInput, MobiGlasTextArea } from '@/components/ui/mobiglas/MobiGlasInput';
 
 interface FormData {
   name: string;
@@ -113,98 +114,52 @@ export default function ContactForm() {
       )}
 
       <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-[rgba(var(--mg-text),0.8)] mb-2 font-quantify">
-              NAME {fieldErrors.name && <span className="text-[rgba(var(--mg-error),0.9)] text-xs">*</span>}
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border ${
-                fieldErrors.name ? 'border-[rgba(var(--mg-error),0.6)]' : 'border-[rgba(var(--mg-primary),0.3)]'
-              } rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input`}
-              required
-              aria-required="true"
-              aria-invalid={fieldErrors.name ? "true" : "false"}
-              aria-describedby={fieldErrors.name ? "name-error" : undefined}
-              disabled={isLoading}
-            />
-            {fieldErrors.name && (
-              <p id="name-error" className="text-[rgba(var(--mg-error),0.9)] text-xs mt-1">{fieldErrors.name}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-[rgba(var(--mg-text),0.8)] mb-2 font-quantify">
-              COMM RELAY ID {fieldErrors.email && <span className="text-[rgba(var(--mg-error),0.9)] text-xs">*</span>}
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border ${
-                fieldErrors.email ? 'border-[rgba(var(--mg-error),0.6)]' : 'border-[rgba(var(--mg-primary),0.3)]'
-              } rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input`}
-              required
-              aria-required="true"
-              aria-invalid={fieldErrors.email ? "true" : "false"}
-              aria-describedby={fieldErrors.email ? "email-error" : undefined}
-              disabled={isLoading}
-            />
-            {fieldErrors.email && (
-              <p id="email-error" className="text-[rgba(var(--mg-error),0.9)] text-xs mt-1">{fieldErrors.email}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-[rgba(var(--mg-text),0.8)] mb-2 font-quantify">
-              SUBJECT {fieldErrors.subject && <span className="text-[rgba(var(--mg-error),0.9)] text-xs">*</span>}
-            </label>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border ${
-                fieldErrors.subject ? 'border-[rgba(var(--mg-error),0.6)]' : 'border-[rgba(var(--mg-primary),0.3)]'
-              } rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input`}
-              required
-              aria-required="true"
-              aria-invalid={fieldErrors.subject ? "true" : "false"}
-              aria-describedby={fieldErrors.subject ? "subject-error" : undefined}
-              disabled={isLoading}
-            />
-            {fieldErrors.subject && (
-              <p id="subject-error" className="text-[rgba(var(--mg-error),0.9)] text-xs mt-1">{fieldErrors.subject}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium text-[rgba(var(--mg-text),0.8)] mb-2 font-quantify">
-              MESSAGE CONTENTS {fieldErrors.message && <span className="text-[rgba(var(--mg-error),0.9)] text-xs">*</span>}
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              rows={4}
-              className={`w-full px-4 py-2 bg-[rgba(var(--mg-background),0.6)] border ${
-                fieldErrors.message ? 'border-[rgba(var(--mg-error),0.6)]' : 'border-[rgba(var(--mg-primary),0.3)]'
-              } rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-[rgba(var(--mg-primary),0.5)] transition-all mg-input`}
-              required
-              aria-required="true"
-              aria-invalid={fieldErrors.message ? "true" : "false"}
-              aria-describedby={fieldErrors.message ? "message-error" : undefined}
-              disabled={isLoading}
-            ></textarea>
-            {fieldErrors.message && (
-              <p id="message-error" className="text-[rgba(var(--mg-error),0.9)] text-xs mt-1">{fieldErrors.message}</p>
-            )}
-          </div>
+          <MobiGlasInput
+            label="NAME"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            error={fieldErrors.name}
+            disabled={isLoading}
+          />
+
+          <MobiGlasInput
+            label="COMM RELAY ID"
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            error={fieldErrors.email}
+            disabled={isLoading}
+          />
+
+          <MobiGlasInput
+            label="SUBJECT"
+            id="subject"
+            name="subject"
+            value={formData.subject}
+            onChange={handleChange}
+            required
+            error={fieldErrors.subject}
+            disabled={isLoading}
+          />
+
+          <MobiGlasTextArea
+            label="MESSAGE CONTENTS"
+            id="message"
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            rows={4}
+            required
+            error={fieldErrors.message}
+            disabled={isLoading}
+          />
+
           <MobiGlasButton
             type="submit"
             variant="primary"

@@ -41,25 +41,27 @@ export default function RootLayout({
           <Providers>
             <UserProviderWrapper>
               <div className="relative min-h-screen flex flex-col">
-                <StarfieldWrapper />
+                <div className="hidden md:block">
+                  <StarfieldWrapper />
+                </div>
 
                 {/* Minimal MobiGlass UI decorations */}
                 <div className="fixed inset-0 pointer-events-none">
                   {/* Subtle corner brackets */}
-                  <div className="fixed top-0 left-0 w-24 h-24 border-l border-t border-[rgba(var(--mg-primary),0.15)] z-10"></div>
-                  <div className="fixed top-0 right-0 w-24 h-24 border-r border-t border-[rgba(var(--mg-primary),0.15)] z-10"></div>
-                  <div className="fixed bottom-0 left-0 w-24 h-24 border-l border-b border-[rgba(var(--mg-primary),0.15)] z-10"></div>
-                  <div className="fixed bottom-0 right-0 w-24 h-24 border-r border-b border-[rgba(var(--mg-primary),0.15)] z-10"></div>
+                  <div className="fixed top-0 left-0 w-12 h-12 md:w-24 md:h-24 border-l border-t border-[rgba(var(--mg-primary),0.15)] z-10"></div>
+                  <div className="fixed top-0 right-0 w-12 h-12 md:w-24 md:h-24 border-r border-t border-[rgba(var(--mg-primary),0.15)] z-10"></div>
+                  <div className="fixed bottom-0 left-0 w-12 h-12 md:w-24 md:h-24 border-l border-b border-[rgba(var(--mg-primary),0.15)] z-10"></div>
+                  <div className="fixed bottom-0 right-0 w-12 h-12 md:w-24 md:h-24 border-r border-b border-[rgba(var(--mg-primary),0.15)] z-10"></div>
 
                   {/* Very subtle noise texture (moved to file URL to avoid data URI issues) */}
                   <div className="fixed inset-0 bg-[url('/assets/noise.svg')] opacity-[0.02] mix-blend-overlay z-10"></div>
 
-                  {/* Subtle scan line */}
-                  <div className="fixed top-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.4)] shadow-[0_0_8px_rgba(var(--mg-primary),0.3)] animate-scan-line z-20"></div>
+                  {/* Subtle scan line - Hidden on mobile/reduced motion via CSS media queries would be ideal, but here we use Tailwind's motion-reduce and hide on small screens */}
+                  <div className="fixed top-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.4)] shadow-[0_0_8px_rgba(var(--mg-primary),0.3)] animate-scan-line z-20 hidden md:block motion-reduce:hidden"></div>
 
                   {/* Very subtle line noise */}
-                  <div className="fixed inset-0 overflow-hidden opacity-[0.01] z-10">
-                    <div className="absolute inset-0 line-noise"></div>
+                  <div className="fixed inset-0 overflow-hidden opacity-[0.01] z-10 pointer-events-none">
+                    <div className="absolute inset-0 line-noise hidden md:block"></div>
                   </div>
                 </div>
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function ResetProfile() {
+export default function ResetProfileComponent() {
   const router = useRouter();
   const [message, setMessage] = useState('Resetting profile data...');
   
@@ -45,4 +45,4 @@ export default function ResetProfile() {
       </div>
     </div>
   );
-} 
+}

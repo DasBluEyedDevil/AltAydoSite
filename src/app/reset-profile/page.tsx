@@ -1,7 +1,7 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import ResetProfile from '@/app/reset-profile';
+import ResetProfileComponent from '@/components/profile/ResetProfileComponent';
 
 export default function ResetProfilePage() {
   // Block access in production
@@ -9,5 +9,5 @@ export default function ResetProfilePage() {
     notFound();
   }
 
-  return <ResetProfile />;
-} 
+  return <ResetProfileComponent />;
+}
