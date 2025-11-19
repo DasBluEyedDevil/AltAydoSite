@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { cdn } from '@/lib/cdn';
+import { MobiGlasButton } from '@/components/ui/mobiglas';
 
 const services = [
   {
@@ -186,13 +187,14 @@ export default function ServicesSection() {
             <h3 className="text-lg md:text-xl text-[rgba(var(--mg-text),0.9)] mb-4">
               Need a custom solution for your specific requirements?
             </h3>
-            <motion.button 
+            <MobiGlasButton
+              variant="primary"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              className="mg-button py-2.5 px-6 text-sm mx-auto"
+              className="mx-auto"
             >
               CONTACT OUR SPECIALISTS
-            </motion.button>
+            </MobiGlasButton>
           </div>
         </motion.div>
       </div>
