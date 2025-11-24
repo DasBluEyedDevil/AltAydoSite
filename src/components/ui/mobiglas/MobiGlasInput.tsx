@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-interface MobiGlasInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface MobiGlasInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   cornerAccents?: boolean;
@@ -78,7 +78,7 @@ export function MobiGlasInput({
   );
 }
 
-interface MobiGlasTextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface MobiGlasTextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   error?: string;
   cornerAccents?: boolean;
