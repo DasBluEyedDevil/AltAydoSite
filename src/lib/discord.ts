@@ -192,6 +192,9 @@ export class DiscordService {
     }
     if (!this.guild) throw new Error('Guild not available');
 
+    // Ensure fresh roles cache
+    await this.guild.roles.fetch();
+
     // Try to find existing role
     const existing = this.guild.roles.cache.find(r => r.name.toLowerCase() === roleName.toLowerCase());
     if (existing) return existing;

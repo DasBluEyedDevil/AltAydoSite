@@ -16,11 +16,6 @@ import * as userStorage from '../lib/user-storage';
  *  ROLE_ASSIGN_DELAY_MS=750 (optional pacing between assignments)
  */
 
-// Configuration
-const ROLE_NAME = process.env.DISCORD_SYNCED_ROLE_NAME || 'Synced to AydoDB';
-const DRY_RUN = process.env.DRY_RUN === 'true';
-const PER_USER_DELAY_MS = parseInt(process.env.ROLE_ASSIGN_DELAY_MS || '750', 10); // basic pacing
-
 function loadEnvFiles() {
   const envFiles = [
     path.join(process.cwd(), '.env.local'),
@@ -34,7 +29,11 @@ function loadEnvFiles() {
         if (!line || line.startsWith('#')) return;
         const [k, ...rest] = line.split('=');
         if (k && rest.length) {
-          const v = rest.join('=').trim();
+          let v = rest.join('=').trim();
+          // Strip quotes if present
+          if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'"') && v.endsWith("'"'))) {
+            v = v.slice(1, -1);
+          }
           if (!process.env[k]) process.env[k] = v;
         }
       });
@@ -45,6 +44,17 @@ function loadEnvFiles() {
 async function main() {
   console.log('=== Assign Synced Role Script Start ===');
   loadEnvFiles();
+
+  // Configuration (loaded after env files)
+  let roleName = process.env.DISCORD_SYNCED_ROLE_NAME || 'Synced to AydoDB';
+  // Extra safety: strip quotes if they somehow made it here (e.g. system env var)
+  if ((roleName.startsWith('"') && roleName.endsWith('"')) || (roleName.startsWith("'"') && roleName.endsWith("'"'))) {
+    roleName = roleName.slice(1, -1);
+  }
+  const ROLE_NAME = roleName;
+  
+  const DRY_RUN = process.env.DRY_RUN === 'true';
+  const PER_USER_DELAY_MS = parseInt(process.env.ROLE_ASSIGN_DELAY_MS || '750', 10); // basic pacing
 
   if (!process.env.DISCORD_BOT_TOKEN || !process.env.DISCORD_GUILD_ID) {
     console.error('Missing DISCORD_BOT_TOKEN or DISCORD_GUILD_ID env vars.');
