@@ -20,13 +20,19 @@ async function handler(request: NextRequest) {
   try {
     let isAuthenticated = false;
     const cronSecret = process.env.CRON_SECRET;
+    let authDebug = { reason: 'unknown', hasSecret: !!cronSecret, receivedHeader: request.headers.get('authorization') };
 
     // 1. Try Cron Secret Auth (for Logic Apps / Automation)
     if (cronSecret) {
       const authHeader = request.headers.get('authorization');
       if (authHeader === `Bearer ${cronSecret}`) {
         isAuthenticated = true;
+        authDebug.reason = 'success_cron';
+      } else {
+        authDebug.reason = authHeader ? 'token_mismatch' : 'header_missing';
       }
+    } else {
+      authDebug.reason = 'server_secret_not_configured';
     }
 
     // 2. Try Session Auth if not already authenticated (for Admin UI)
@@ -36,6 +42,7 @@ async function handler(request: NextRequest) {
         // Require elevated permissions (admin role or clearance >=3)
         if (session.user.role === 'admin' || (session.user.clearanceLevel ?? 0) >= 3) {
           isAuthenticated = true;
+          authDebug.reason = 'success_session';
         } else {
           return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
         }
@@ -43,7 +50,16 @@ async function handler(request: NextRequest) {
     }
 
     if (!isAuthenticated) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      console.warn('Assign Role Auth Failed:', authDebug);
+      return NextResponse.json({ 
+        error: 'Unauthorized', 
+        debug: {
+          reason: authDebug.reason,
+          hasSecret: authDebug.hasSecret,
+          secretPrefix: cronSecret ? cronSecret.substring(0, 3) + '...' : null,
+          receivedHeader: authDebug.receivedHeader
+        }
+      }, { status: 401 });
     }
 
     if (!process.env.DISCORD_BOT_TOKEN || !process.env.DISCORD_GUILD_ID) {
