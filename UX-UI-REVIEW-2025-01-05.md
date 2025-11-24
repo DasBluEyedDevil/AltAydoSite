@@ -388,11 +388,13 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
 
 **Current Error Display:**
 ```tsx
+{% raw %}
 {authError && (
   <div className="mb-4 p-2 bg-[rgba(var(--mg-error),0.1)]">
     {authError} {/* Generic message at top */}
   </div>
 )}
+{% endraw %}
 ```
 
 **Problems:**
@@ -518,15 +520,18 @@ if (!result.success) {
 
 **Current:**
 ```tsx
+{% raw %}
 {authError && (
   <div className="mb-4 p-2 bg-[rgba(var(--mg-error),0.1)]">
     {authError}
   </div>
 )}
+{% endraw %}
 ```
 
 **Should Be:**
 ```tsx
+{% raw %}
 {authError && (
   <div
     className="mb-4 p-2 bg-[rgba(var(--mg-error),0.1)]"
@@ -536,6 +541,7 @@ if (!result.success) {
     {authError}
   </div>
 )}
+{% endraw %}
 ```
 
 **Recommendation Checklist:**
@@ -619,6 +625,7 @@ if (!result.success) {
 **Issue A: Continuous Animations with Infinity Repeat**
 
 **Example from `/src/components/fleet-ops/mission-planner/MissionCard.tsx:76-108`:**
+{% raw %}
 ```tsx
 <motion.div
   className="absolute h-[1px] w-full bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent"
@@ -631,6 +638,7 @@ if (!result.success) {
   }}
 />
 ```
+{% endraw %}
 
 **Problem:** Multiple scanning line animations running simultaneously cause:
 - High GPU usage on mobile
@@ -641,6 +649,7 @@ if (!result.success) {
 **Issue B: Excessive Animation Elements**
 
 **Example from `/src/components/fleet-ops/mission-planner/MissionList.tsx:63-80`:**
+{% raw %}
 ```tsx
 {Array.from({ length: 20 }).map((_, i) => (
   <motion.div
@@ -655,12 +664,14 @@ if (!result.success) {
   />
 ))}
 ```
+{% endraw %}
 
 **Problem:** 20 animated floating points per list view - extremely heavy on mobile.
 
 **Issue C: Text Shadow Animations**
 
 **Example from `/src/components/HomeContent.tsx`:**
+{% raw %}
 ```tsx
 animate={{
   textShadow: isHovered
@@ -669,12 +680,14 @@ animate={{
 }}
 transition={{ duration: 2, repeat: Infinity }}
 ```
+{% endraw %}
 
 **Problem:** Text shadow arrays cause re-rendering on every frame.
 
 **Recommendations:**
 
 **Fix 1: Respect prefers-reduced-motion**
+{% raw %}
 ```tsx
 import { useReducedMotion } from 'framer-motion';
 
@@ -688,8 +701,10 @@ const shouldReduceMotion = useReducedMotion();
   }}
 />
 ```
+{% endraw %}
 
 **Fix 2: Disable Decorative Animations on Mobile**
+{% raw %}
 ```tsx
 <motion.div
   className="hidden md:block" // Hide on mobile
@@ -697,6 +712,7 @@ const shouldReduceMotion = useReducedMotion();
   transition={{ duration: 1.5, repeat: Infinity }}
 />
 ```
+{% endraw %}
 
 **Fix 3: Reduce Animation Count**
 ```tsx
