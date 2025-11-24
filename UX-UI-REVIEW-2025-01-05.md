@@ -320,6 +320,7 @@ import { MobiGlasPanel } from '@/components/ui/mobiglas';
 **Recommendation:** Implement collapsible drawer/hamburger menu for mobile.
 
 **Suggested Implementation:**
+{% raw %}
 ```tsx
 const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -360,6 +361,7 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
   <DashboardSidebar />
 </div>
 ```
+{% endraw %}
 
 ---
 

@@ -37,8 +37,10 @@ jobs:
     steps:
       - name: Trigger Discord Sync
         run: |
+{% raw %}
           curl -X GET "${{ secrets.SITE_URL }}/api/cron/discord-sync" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+{% endraw %}
 ```
 
 **Example using cron-job.org**:

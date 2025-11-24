@@ -63,13 +63,16 @@ const DataStreamBackground: React.FC<DataStreamBackgroundProps> = ({
         <div
           key={stream.id}
           className="absolute top-0 bottom-0 w-px"
+{% raw %}
           style={{
             left: stream.left,
             background: `rgba(var(--mg-primary), ${opacityValue})`
           }}
+{% endraw %}
         >
           <motion.div
             className="w-2 h-2 rounded-full absolute left-1/2 -translate-x-1/2"
+{% raw %}
             style={{
               background: `rgba(var(--mg-primary), ${opacityValue * 3})`,
               boxShadow: `0 0 8px rgba(var(--mg-primary), ${opacityValue * 2})`
@@ -77,12 +80,15 @@ const DataStreamBackground: React.FC<DataStreamBackgroundProps> = ({
             animate={{
               y: ['-10%', '110%']
             }}
+{% endraw %}
+{% raw %}
             transition={{
               duration,
               repeat: Infinity,
               delay: stream.delay,
               ease: 'linear'
             }}
+{% endraw %}
           />
         </div>
       ))}
@@ -131,6 +137,7 @@ const HolographicBorder: React.FC<HolographicBorderProps> = ({
   return (
     <div className={`relative ${className}`}>
       {/* Animated border */}
+{% raw %}
       <motion.div
         className="absolute inset-0 rounded-lg pointer-events-none"
         style={{
@@ -148,6 +155,7 @@ const HolographicBorder: React.FC<HolographicBorderProps> = ({
           ease: 'easeInOut'
         }}
       />
+{% endraw %}
 
       {/* Content */}
       <div className="relative z-10">
@@ -255,6 +263,7 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
 }) => {
   return (
     <HolographicBorder isActive={isExpanded} intensity={isExpanded ? 'high' : 'medium'}>
+{% raw %}
       <motion.div
         initial={false}
         animate={{
@@ -263,6 +272,7 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className="overflow-hidden bg-gradient-to-br from-[rgba(var(--mg-panel-dark),0.6)] to-[rgba(var(--mg-panel-dark),0.3)] rounded-lg relative"
       >
+{% endraw %}
         {/* Header - Always Visible (Clickable to expand/collapse) */}
         <div
           onClick={onToggleExpand}
@@ -341,6 +351,7 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
         {/* Expanded Content */}
         <AnimatePresence>
           {isExpanded && (
+{% raw %}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -348,6 +359,7 @@ const TemplateStrip: React.FC<TemplateStripProps> = ({
               transition={{ duration: 0.2, delay: 0.1 }}
               className="px-6 pb-6 space-y-4"
             >
+{% endraw %}
               {/* Divider */}
               <div className="border-t border-[rgba(var(--mg-primary),0.2)]"></div>
 
@@ -610,12 +622,14 @@ return (
     {/* Template List Container */}
     <div className="container mx-auto px-6 py-8">
       {isLoading ? (
+{% raw %}
         <motion.div
           className="text-center py-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
+{% endraw %}
           <div className="relative inline-block">
             <div className="w-12 h-12 border-2 border-[rgba(var(--mg-primary),0.3)] border-t-[rgba(var(--mg-primary),1)] rounded-full animate-spin mx-auto mb-4"></div>
             <div className="absolute inset-0 w-12 h-12 border border-[rgba(var(--mg-primary),0.2)] rounded-full animate-pulse mx-auto"></div>
@@ -625,12 +639,14 @@ return (
           </div>
         </motion.div>
       ) : templates.length === 0 ? (
+{% raw %}
         <motion.div
           className="text-center py-16"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
+{% endraw %}
           <div className="relative max-w-md mx-auto p-12 border-2 border-dashed border-[rgba(var(--mg-primary),0.3)] rounded-lg bg-[rgba(var(--mg-panel-dark),0.3)]">
             <div className="circuit-bg absolute inset-0 rounded-lg pointer-events-none opacity-20"></div>
             <div className="relative z-10">
@@ -678,18 +694,22 @@ return (
     {/* Delete Confirmation Modal - Keep existing */}
     <AnimatePresence>
       {showDeleteConfirm && (
+{% raw %}
         <motion.div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+{% endraw %}
+{% raw %}
           <motion.div
             className="bg-[rgba(var(--mg-panel-dark),0.95)] border border-[rgba(var(--mg-danger),0.5)] rounded-lg p-6 max-w-md mx-4"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
           >
+{% endraw %}
             <h3 className="text-lg font-semibold text-[rgba(var(--mg-danger),0.9)] mb-4">
               Confirm Deletion
             </h3>
@@ -719,6 +739,7 @@ return (
     {/* Notification - Keep existing */}
     <AnimatePresence>
       {notification && (
+{% raw %}
         <motion.div
           className="fixed top-20 right-6 z-[9999]"
           initial={{ opacity: 0, x: 100, scale: 0.8 }}
@@ -727,6 +748,7 @@ return (
           transition={{ duration: 0.3, ease: 'easeOut' }}
           style={{ position: 'fixed', willChange: 'transform' }}
         >
+{% endraw %}
           <div className={`relative px-6 py-4 rounded-lg border-2 backdrop-filter backdrop-blur-md ${
             notification.type === 'success'
               ? 'bg-[rgba(var(--mg-success),0.15)] border-[rgba(var(--mg-success),0.6)] text-[rgba(var(--mg-success),1)]'

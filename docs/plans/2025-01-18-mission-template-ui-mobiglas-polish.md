@@ -33,6 +33,7 @@ import { MobiGlasPanel, MobiGlasButton } from '@/components/ui/mobiglas';
 Replace the delete confirmation modal (lines ~603-635) with:
 
 ```tsx
+{% raw %}
 <AnimatePresence>
   {showDeleteConfirm && (
     <motion.div
@@ -54,6 +55,7 @@ Replace the delete confirmation modal (lines ~603-635) with:
         aria-modal="true"
         aria-labelledby="delete-modal-title"
       >
+{% endraw %}
         <h3
           id="delete-modal-title"
           className="text-lg font-semibold text-[rgba(var(--mg-danger),0.9)] mb-4"
@@ -135,6 +137,7 @@ If notification currently looks like:
 
 Replace with:
 ```tsx
+{% raw %}
 {successMessage && (
   <motion.div
     className="fixed top-4 right-4 z-50"
@@ -143,6 +146,7 @@ Replace with:
     exit={{ x: 400, opacity: 0 }}
   >
     <MobiGlasPanel
+{% endraw %}
       variant="dark"
       cornerAccents={true}
       className="min-w-[300px]"
