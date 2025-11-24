@@ -16,23 +16,49 @@ interface Summary {
   limited: boolean;
 }
 
-export async function POST(request: NextRequest) {
+async function handler(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    let isAuthenticated = false;
+    const cronSecret = process.env.CRON_SECRET;
+
+    // 1. Try Cron Secret Auth (for Logic Apps / Automation)
+    if (cronSecret) {
+      const authHeader = request.headers.get('authorization');
+      if (authHeader === `Bearer ${cronSecret}`) {
+        isAuthenticated = true;
+      }
     }
 
-    // Require elevated permissions (admin role or clearance >=3)
-    if (session.user.role !== 'admin' && (session.user.clearanceLevel ?? 0) < 3) {
-      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
+    // 2. Try Session Auth if not already authenticated (for Admin UI)
+    if (!isAuthenticated) {
+      const session = await getServerSession(authOptions);
+      if (session?.user) {
+        // Require elevated permissions (admin role or clearance >=3)
+        if (session.user.role === 'admin' || (session.user.clearanceLevel ?? 0) >= 3) {
+          isAuthenticated = true;
+        } else {
+          return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
+        }
+      }
+    }
+
+    if (!isAuthenticated) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     if (!process.env.DISCORD_BOT_TOKEN || !process.env.DISCORD_GUILD_ID) {
       return NextResponse.json({ error: 'Discord not configured' }, { status: 500 });
     }
 
-    const body = await request.json().catch(() => ({}));
+    let body: any = {};
+    if (request.method === 'POST') {
+      try {
+        body = await request.json().catch(() => ({}));
+      } catch (e) {
+        // ignore JSON parse errors
+      }
+    }
+
     const {
       roleName = process.env.DISCORD_SYNCED_ROLE_NAME || 'Synced to AydoDB',
       delayMs = 0,
@@ -117,4 +143,12 @@ export async function POST(request: NextRequest) {
     console.error('Error assigning synced role:', error);
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Internal error' }, { status: 500 });
   }
+}
+
+export async function GET(request: NextRequest) {
+  return handler(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handler(request);
 }
