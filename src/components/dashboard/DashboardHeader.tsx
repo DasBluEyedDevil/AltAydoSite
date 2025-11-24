@@ -5,18 +5,18 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { cdn } from '@/lib/cdn';
 import { UserSession } from '@/lib/auth';
-import { MobiGlasPanel } from '@/components/ui/mobiglas';
+import { MobiGlasPanel, MobiGlasButton } from '@/components/ui/mobiglas';
 
 interface DashboardHeaderProps {
   session: UserSession | null;
+  onMenuToggle?: () => void;
 }
 
-export default function DashboardHeader({ session }: DashboardHeaderProps) {
+export default function DashboardHeader({ session, onMenuToggle }: DashboardHeaderProps) {
   const getUserDisplayName = () => {
     if (!session?.user?.name && !session?.user?.email) return "Employee";
     return session.user.name || session.user.email?.split('@')[0] || "Employee";
   };
-
 
   return (
     <motion.header
@@ -38,57 +38,76 @@ export default function DashboardHeader({ session }: DashboardHeaderProps) {
         {/* Top edge glow */}
         <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.8)] to-transparent"></div>
 
-        <div className="p-3 sm:p-5 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 items-center">
-          {/* Logo Section */}
-          <motion.div
-            className="md:col-span-1 flex justify-center md:justify-start"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <div className="relative h-14 w-14 sm:h-16 sm:w-16">
-              <div className="absolute inset-0 rounded-full border border-[rgba(var(--mg-primary),0.5)] animate-pulse"></div>
-              <div className="absolute inset-2 rounded-full border border-[rgba(var(--mg-primary),0.3)]"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Image
-                  src={cdn('/Aydo_Corp_logo_employees.png')}
-                  alt="AydoCorp Logo"
-                  width={56}
-                  height={56}
-                  className="object-contain hologram-flicker"
+        <div className="p-3 sm:p-5 grid grid-cols-12 gap-4 items-center">
+          
+          {/* Logo Section & Menu Toggle */}
+          <div className="col-span-2 md:col-span-1 flex items-center justify-start">
+             {/* Mobile Menu Button */}
+             {onMenuToggle && (
+                <div className="lg:hidden mr-3">
+                  <MobiGlasButton 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={onMenuToggle}
+                    className="p-1 h-10 w-10 flex items-center justify-center"
+                    withCorners={false}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                  </MobiGlasButton>
+                </div>
+              )}
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <div className="relative h-12 w-12 sm:h-16 sm:w-16">
+                <div className="absolute inset-0 rounded-full border border-[rgba(var(--mg-primary),0.5)] animate-pulse"></div>
+                <div className="absolute inset-2 rounded-full border border-[rgba(var(--mg-primary),0.3)]"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Image
+                    src={cdn('/Aydo_Corp_logo_employees.png')}
+                    alt="AydoCorp Logo"
+                    width={56}
+                    height={56}
+                    className="object-contain hologram-flicker"
+                  />
+                </div>
+                {/* Orbiting dot */}
+                <motion.div
+                  className="absolute h-1.5 w-1.5 rounded-full bg-[rgba(var(--mg-primary),0.9)]"
+                  animate={{
+                    rotate: 360
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                  style={{
+                    top: '50%',
+                    left: '50%',
+                    marginLeft: '32px',
+                    marginTop: '-2px',
+                    transformOrigin: '-32px 2px'
+                  }}
                 />
               </div>
-              {/* Orbiting dot */}
-              <motion.div
-                className="absolute h-1.5 w-1.5 rounded-full bg-[rgba(var(--mg-primary),0.9)]"
-                animate={{
-                  rotate: 360
-                }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-                style={{
-                  top: '50%',
-                  left: '50%',
-                  marginLeft: '32px',
-                  marginTop: '-2px',
-                  transformOrigin: '-32px 2px'
-                }}
-              />
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
           {/* Title and Welcome */}
           <motion.div
-            className="md:col-span-7 text-center md:text-left flex flex-col justify-center"
+            className="col-span-8 md:col-span-7 text-center md:text-left flex flex-col justify-center"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <div className="relative inline-block">
-              <h1 className="mg-title text-2xl sm:text-3xl md:text-4xl mb-1 text-[rgba(var(--mg-primary),0.9)] font-quantify tracking-widest mg-glow">
+              <h1 className="mg-title text-xl sm:text-3xl md:text-4xl mb-1 text-[rgba(var(--mg-primary),0.9)] font-quantify tracking-widest mg-glow">
                 EMPLOYEE PORTAL
               </h1>
               <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-10 bg-[rgba(var(--mg-primary),0.2)] hidden md:block">
@@ -96,29 +115,39 @@ export default function DashboardHeader({ session }: DashboardHeaderProps) {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center sm:space-x-2">
-              <div className="text-sm tracking-wider text-[rgba(var(--mg-text),0.8)]">
-                WELCOME BACK, <span className="text-[rgba(var(--mg-accent),0.9)] font-quantify">{getUserDisplayName().toUpperCase()}</span>
+            <div className="flex flex-col sm:flex-row items-center sm:space-x-2 justify-center md:justify-start">
+              <div className="text-xs sm:text-sm tracking-wider text-[rgba(var(--mg-text),0.8)]">
+                WELCOME, <span className="text-[rgba(var(--mg-accent),0.9)] font-quantify">{getUserDisplayName().toUpperCase()}</span>
               </div>
               <div className="w-1.5 h-1.5 rounded-full bg-[rgba(var(--mg-primary),0.8)] animate-pulse hidden sm:block"></div>
-              <div className="text-xs text-[rgba(var(--mg-text),0.6)]">
+              <div className="text-[10px] sm:text-xs text-[rgba(var(--mg-text),0.6)] hidden sm:block">
                 LAST LOGIN: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
               </div>
             </div>
           </motion.div>
 
-          {/* Clearance Level Badge */}
+          {/* Clearance Level Badge - Hidden on small mobile */}
           <motion.div
-            className="md:col-span-4 flex justify-center md:justify-end mt-2 sm:mt-0"
+            className="col-span-2 md:col-span-4 flex justify-end"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
+             {/* Mobile: Simple Badge */}
+             <div className="md:hidden flex flex-col items-end">
+                <div className="px-2 py-1 border border-[rgba(var(--mg-primary),0.4)] rounded-sm bg-[rgba(var(--mg-primary),0.1)]">
+                  <div className="text-[10px] text-[rgba(var(--mg-text),0.7)]">LVL</div>
+                  <div className="text-lg font-quantify text-[rgba(var(--mg-primary),1)] leading-none">
+                    {session?.user?.clearanceLevel || 1}
+                  </div>
+                </div>
+             </div>
+
             <MobiGlasPanel
               variant="darker"
               cornerAccents
               cornerSize="sm"
-              className="py-2 sm:py-3 px-4 sm:px-6 rounded-sm"
+              className="py-2 sm:py-3 px-4 sm:px-6 rounded-sm hidden md:block"
               padding="sm"
             >
 

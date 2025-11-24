@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Transaction, TransactionType, TransactionCategory } from '@/types/finance';
+import { MobiGlasButton } from '@/components/ui/mobiglas';
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -144,20 +145,20 @@ export default function TransactionModal({ isOpen, onClose, onSubmit }: Transact
               </div>
 
               <div className="flex justify-end space-x-4">
-                <button
+                <MobiGlasButton
                   type="button"
+                  variant="secondary"
                   onClick={onClose}
-                  className="mg-button-secondary px-4 py-2"
                 >
                   Cancel
-                </button>
-                <button
+                </MobiGlasButton>
+                <MobiGlasButton
                   type="submit"
-                  className="mg-button px-4 py-2"
+                  variant="primary"
                   disabled={!newTransaction.amount || !newTransaction.description}
                 >
                   Submit Transaction
-                </button>
+                </MobiGlasButton>
               </div>
             </form>
           </motion.div>

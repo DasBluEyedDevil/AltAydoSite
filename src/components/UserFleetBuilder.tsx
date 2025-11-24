@@ -5,6 +5,7 @@ import { UserShip } from '@/types/user';
 import { getManufacturersList, getShipsByManufacturer } from '@/types/ShipData';
 import { resolveShipImage } from '@/lib/ships/image';
 import Image from 'next/image';
+import { MobiGlasButton } from '@/components/ui/mobiglas';
 
 interface UserFleetBuilderProps {
   isEditing: boolean;
@@ -134,13 +135,13 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
           
           {/* Add Ship Button */}
           <div>
-            <button 
+            <MobiGlasButton
               onClick={handleAddShip}
               disabled={!selectedManufacturer || !selectedShip}
-              className="mg-button-small text-xs px-5 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              size="sm"
             >
               ADD SHIP
-            </button>
+            </MobiGlasButton>
           </div>
         </div>
       )}

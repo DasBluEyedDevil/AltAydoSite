@@ -27,24 +27,18 @@ export async function middleware(request: NextRequest) {
 
       // If not authenticated, redirect to login
       if (!token) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.log("User not authenticated, redirecting to login");
-        }
         const url = new URL('/login', request.url);
-        url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
+        url.searchParams.set('callbackUrl', pathname);
         return NextResponse.redirect(url);
       }
 
       // User is authenticated, allow the request
-      if (process.env.NODE_ENV !== 'production') {
-        console.log("User authenticated, allowing access to protected route");
-      }
       return NextResponse.next();
     } catch (error) {
       console.error("Error in authentication middleware:", error);
       // On error, redirect to login as a fallback
       const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
+      url.searchParams.set('callbackUrl', pathname);
       url.searchParams.set('error', 'AuthError'); // Typo corrected
       return NextResponse.redirect(url);
     }
@@ -62,6 +56,6 @@ export const config = {
     // - Static files (_next/static/*)
     // - Image optimization (_next/image/*)
     // - Static files in the public directory (favicon.ico, images, assets, etc)
-    '/((?!api|_next/static|_next/image|favicon.ico|images|assets|fonts|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.svg|.*\\.webp|.*\\.ico|.*\\.woff|.*\\.woff2|.*\\.ttf|.*\\.otf).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|images|assets|fonts|.*\.png|.*\.jpg|.*\.jpeg|.*\.gif|.*\.svg|.*\.webp|.*\.ico|.*\.woff|.*\.woff2|.*\.ttf|.*\.otf).*)',
   ],
 };

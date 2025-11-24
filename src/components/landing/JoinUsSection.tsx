@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { MobiGlasButton } from '@/components/ui/mobiglas';
 
 const positions = [
   {
@@ -105,13 +106,14 @@ export default function JoinUsSection() {
                 
                 <div className="pt-4">
                   <Link href="/api/auth/login">
-                    <motion.button 
+                    <MobiGlasButton
+                      variant="primary"
+                      fullWidth
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.98 }}
-                      className="mg-button py-2.5 px-6 text-sm w-full"
                     >
                       ACCESS EMPLOYEE PORTAL
-                    </motion.button>
+                    </MobiGlasButton>
                   </Link>
                 </div>
               </div>

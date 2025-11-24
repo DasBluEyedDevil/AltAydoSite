@@ -1,10 +1,10 @@
 {
-    "general": {
+  "general": {
     "checkpointing": {
       "enabled": true
-    }
+    },
+    "previewFeatures": true
   },
-  
   "mcpServers": {
     "sequential-thinking": {
       "command": "npx",

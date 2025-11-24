@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Conditionally set output based on NODE_ENV.
+    // This is necessary for Azure deployments while keeping the local dev server working.
+    output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
+
     poweredByHeader: false,
+    // swcMinify: true, // This option is deprecated or no longer recognized in Next.js 15.3.3
     typescript: {
         // TypeScript errors will now prevent production builds
         ignoreBuildErrors: false,
@@ -10,11 +15,21 @@ const nextConfig = {
         ignoreDuringBuilds: false,
     },
     images: {
-        unoptimized: true,
+        unoptimized: false,
         dangerouslyAllowSVG: true,
-        remotePatterns: [],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'images.aydocorp.space',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'aydocorp.space',
+                pathname: '/images/**',
+            },
+        ],
     },
-    output: 'standalone',
     webpack: (config, { isServer }) => {
         // Handle discord.js and its dependencies safely
         if (isServer) {
@@ -74,7 +89,7 @@ const nextConfig = {
             {
                 source: '/assets/:path*',
                 headers: [
-                    { key: 'Cache-Control', value: 'public, max-age=3600, must-revalidate' },
+                    { key: 'Cache-control', value: 'public, max-age=3600, must-revalidate' },
                 ],
             },
             {
@@ -87,4 +102,14 @@ const nextConfig = {
     },
 };
 
-module.exports = nextConfig;
+let withBundleAnalyzer = (cfg) => cfg;
+if (process.env.ANALYZE === 'true') {
+    try {
+        withBundleAnalyzer = require('@next/bundle-analyzer')({
+            enabled: true,
+        });
+    } catch (err) {
+        console.warn("Bundle analyzer not installed; skipping. To enable, install '@next/bundle-analyzer' and run with ANALYZE=true.");
+    }
+}
+module.exports = withBundleAnalyzer(nextConfig);

@@ -31,9 +31,11 @@ export default function Navigation() {
                 <Image
                   src="https://images.aydocorp.space/1758036690228.png"
                   alt="AydoCorp"
-                  width={48}
-                  height={48}
+                  width={144}
+                  height={144}
+                  quality={90}
                   className="h-12 w-auto"
+                  priority
                 />
               </motion.div>
             </Link>
@@ -90,12 +92,14 @@ export default function Navigation() {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - Increased to 48x48px for better touch targets */}
           <div className="md:hidden flex items-center">
-            <button
+            <MobiGlasButton
+              variant="ghost"
               onClick={() => setIsOpen(!isOpen)}
-              className="mg-button p-1 w-8 h-8 flex items-center justify-center"
+              className="p-2 w-12 h-12 flex items-center justify-center"
               aria-label="Toggle menu"
+              withCorners={false} // Simple button for toggle
             >
               <span className="sr-only">Open main menu</span>
               <motion.div
@@ -103,7 +107,7 @@ export default function Navigation() {
                 transition={{ duration: 0.2 }}
               >
                 <svg
-                  className="h-4 w-4 text-[rgba(var(--mg-text),1)]"
+                  className="h-6 w-6 text-[rgba(var(--mg-text),1)]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -111,12 +115,12 @@ export default function Navigation() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={1}
+                    strokeWidth={2}
                     d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                   />
                 </svg>
               </motion.div>
-            </button>
+            </MobiGlasButton>
           </div>
         </div>
       </div>
@@ -139,12 +143,13 @@ export default function Navigation() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2, delay: idx * 0.05 }}
                 >
-                  <Link href={item.href} onClick={() => setIsOpen(false)}>
+                  <Link href={item.href} onClick={() => setIsOpen(false)} className="block">
+                     {/* Full width button for easier tapping */}
                     <MobiGlasButton
                       variant="ghost"
-                      size="sm"
+                      size="lg" 
                       fullWidth
-                      className="text-xs font-quantify tracking-wider"
+                      className="text-base font-quantify tracking-wider justify-start pl-4"
                       withCorners
                     >
                       {item.name}
@@ -157,15 +162,16 @@ export default function Navigation() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.2, delay: navItems.length * 0.05 }}
+                className="pt-4 pb-2"
               >
                 {session ? (
                   <div className="space-y-2">
-                    <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                    <Link href="/dashboard" onClick={() => setIsOpen(false)} className="block">
                       <MobiGlasButton
                         variant="primary"
-                        size="sm"
+                        size="lg"
                         fullWidth
-                        className="text-xs font-quantify tracking-wider"
+                        className="text-sm font-quantify tracking-wider"
                         withScanline
                       >
                         EMPLOYEE PORTAL
@@ -173,12 +179,12 @@ export default function Navigation() {
                     </Link>
                   </div>
                 ) : (
-                  <Link href="/login" onClick={() => setIsOpen(false)}>
+                  <Link href="/login" onClick={() => setIsOpen(false)} className="block">
                     <MobiGlasButton
                       variant="primary"
-                      size="sm"
+                      size="lg"
                       fullWidth
-                      className="text-xs font-quantify tracking-wider mt-4"
+                      className="text-sm font-quantify tracking-wider"
                       withScanline
                     >
                       LOGIN

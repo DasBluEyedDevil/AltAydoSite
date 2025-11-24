@@ -5,6 +5,32 @@ import * as userStorage from '@/lib/user-storage';
 import { User } from '@/types/user';
 import { parseDiscordRoles } from '@/lib/discord-oauth';
 
+/**
+ * Fetch with automatic retry on rate limit (429)
+ */
+async function fetchWithRetry(url: string, options: RequestInit, maxRetries = 3): Promise<Response> {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const response = await fetch(url, options);
+
+    // Handle rate limiting
+    if (response.status === 429) {
+      const retryAfter = response.headers.get('Retry-After');
+      const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : Math.pow(2, attempt) * 1000;
+
+      console.warn(
+        `⚠️  Discord API rate limited. Waiting ${waitTime}ms before retry ${attempt + 1}/${maxRetries}`
+      );
+
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+      continue;
+    }
+
+    return response;
+  }
+
+  throw new Error('Max retries exceeded for Discord API request');
+}
+
 interface DiscordGuildMember {
   user: {
     id: string;
@@ -62,7 +88,7 @@ async function fetchAllGuildMembers(guildId: string): Promise<DiscordGuildMember
 
   // Discord API returns max 1000 members per request, so we need to paginate
   while (hasMore) {
-    const response = await fetch(
+    const response = await fetchWithRetry(
       `https://discord.com/api/v10/guilds/${guildId}/members?limit=1000&after=${after}`,
       {
         headers: {
@@ -101,7 +127,7 @@ async function fetchGuildRoles(guildId: string): Promise<DiscordRole[]> {
     throw new Error('Discord bot token not configured');
   }
 
-  const response = await fetch(
+  const response = await fetchWithRetry(
     `https://discord.com/api/v10/guilds/${guildId}/roles`,
     {
       headers: {

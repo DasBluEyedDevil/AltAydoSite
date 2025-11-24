@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion, Variants } from 'framer-motion';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
+import MobileSidebar from '@/components/dashboard/MobileSidebar';
 import EventCarousel from '@/components/dashboard/EventCarousel';
 import UpcomingEventsPanel from '@/components/dashboard/panels/UpcomingEventsPanel';
 import DashboardFooter from '@/components/dashboard/DashboardFooter';
@@ -12,6 +13,7 @@ import LoadingScreen from '@/components/dashboard/LoadingScreen';
 import AuthError from '@/components/dashboard/AuthError';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import SystemStatusBar from '@/components/dashboard/SystemStatusBar';
+import DashboardBreadcrumbs from '@/components/dashboard/DashboardBreadcrumbs';
 import { UserSession } from '@/lib/auth';
 import { bgUrl } from '@/lib/cdn';
  
@@ -20,6 +22,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Check authentication status
   useEffect(() => {
@@ -29,29 +32,17 @@ export default function DashboardPage() {
     }
 
     // Add a small delay to ensure session is fully established
-    // This helps prevent authentication loops due to race conditions
     const timer = setTimeout(() => {
-      console.log("Dashboard auth check - status:", status, "session exists:", !!session, 
-        "user:", session?.user?.name, "clearance:", session?.user?.clearanceLevel);
-
       // Session check completed
       setIsLoading(false);
 
       if (status === 'unauthenticated' || !session || !session.user) {
-        console.log("User is not authenticated or session is invalid, redirecting to login");
-
-        // Clear any stale session data by forcing a hard reload of the login page
-        // This ensures we don't get stuck in a loop with invalid session data
+        // Clear any stale session data
         window.location.href = '/login?reset=true';
       } else if (status === 'authenticated' && session && session.user) {
-        console.log("User is authenticated with valid session data:", session.user);
         setIsAuthenticated(true);
-
-        // Store authentication timestamp in localStorage to help debug potential issues
-        localStorage.setItem('last_auth_time', new Date().toISOString());
-        localStorage.setItem('last_auth_user', session.user.name || 'unknown');
       }
-    }, 800); // 800ms delay to ensure session is fully established
+    }, 800); 
 
     // Clean up timer on unmount
     return () => clearTimeout(timer);
@@ -122,19 +113,31 @@ export default function DashboardPage() {
       </div>
       
       {/* Header Bar */}
-      <DashboardHeader session={session} />
+      <DashboardHeader 
+        session={session} 
+        onMenuToggle={() => setIsMobileMenuOpen(true)}
+      />
+      
+      {/* Mobile Sidebar Drawer */}
+      <MobileSidebar 
+        isOpen={isMobileMenuOpen} 
+        onClose={() => setIsMobileMenuOpen(false)} 
+      />
 
       {/* Main Dashboard Container */}
       <div className="flex-grow relative z-10 px-4 sm:px-6 pb-4 sm:pb-6 overflow-hidden">
         {/* System status bar */}
         <SystemStatusBar />
+        
+        <DashboardBreadcrumbs />
 
         <div className="flex flex-col h-full space-y-4 sm:space-y-6">
           {/* Main Dashboard Layout - with angled borders and glowing edges */}
           <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-            {/* Navigation Panel - Sidebar */}
+            
+            {/* Navigation Panel - Sidebar (Hidden on mobile, shown on large screens) */}
             <motion.div
-              className="lg:col-span-3 xl:col-span-2 relative"
+              className="hidden lg:block lg:col-span-3 xl:col-span-2 relative"
               variants={fadeInLeftVariants}
               initial="hidden"
               animate="visible"
@@ -220,4 +223,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-} 
+}

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import DashboardBreadcrumbs from '@/components/dashboard/DashboardBreadcrumbs';
 
 export default function TrainingPage() {
   return (
@@ -10,6 +11,10 @@ export default function TrainingPage() {
       <div className="hexagon-bg absolute inset-0 opacity-5 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto">
+        <div className="mb-6">
+          <DashboardBreadcrumbs />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import Profile from '../components/Profile';
 import Navigation from '../components/Navigation';
@@ -11,26 +11,23 @@ import { Suspense } from 'react';
 import ClientErrorBoundary from '../components/ClientErrorBoundary';
 import Providers from '../components/providers';
 
-const inter = Inter({ subsets: ['latin'] });
+const quantify = localFont({
+  src: [
+    {
+      path: '../../public/fonts/Quantify.woff',
+      weight: 'normal',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/Quantify Bold.woff',
+      weight: 'bold',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-quantify',
+});
 
 export { metadata };
-
-function ErrorFallback() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <div className="text-center">
-        <h2 className="text-xl font-bold mb-4">Something went wrong</h2>
-        <p className="mb-4">We&apos;re experiencing technical difficulties. Please try again later.</p>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Reload Page
-        </button>
-      </div>
-    </div>
-  );
-}
 
 export default function RootLayout({
   children,
@@ -39,30 +36,32 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-quantify bg-black text-white min-h-screen antialiased overflow-x-hidden text-sm">
+      <body className={`${quantify.variable} font-quantify bg-black text-white min-h-screen antialiased overflow-x-hidden text-sm`}>
         <ClientErrorBoundary>
           <Providers>
             <UserProviderWrapper>
               <div className="relative min-h-screen flex flex-col">
-                <StarfieldWrapper />
+                <div className="hidden md:block">
+                  <StarfieldWrapper />
+                </div>
 
                 {/* Minimal MobiGlass UI decorations */}
                 <div className="fixed inset-0 pointer-events-none">
                   {/* Subtle corner brackets */}
-                  <div className="fixed top-0 left-0 w-24 h-24 border-l border-t border-[rgba(var(--mg-primary),0.15)] z-10"></div>
-                  <div className="fixed top-0 right-0 w-24 h-24 border-r border-t border-[rgba(var(--mg-primary),0.15)] z-10"></div>
-                  <div className="fixed bottom-0 left-0 w-24 h-24 border-l border-b border-[rgba(var(--mg-primary),0.15)] z-10"></div>
-                  <div className="fixed bottom-0 right-0 w-24 h-24 border-r border-b border-[rgba(var(--mg-primary),0.15)] z-10"></div>
+                  <div className="fixed top-0 left-0 w-12 h-12 md:w-24 md:h-24 border-l border-t border-[rgba(var(--mg-primary),0.15)] z-10"></div>
+                  <div className="fixed top-0 right-0 w-12 h-12 md:w-24 md:h-24 border-r border-t border-[rgba(var(--mg-primary),0.15)] z-10"></div>
+                  <div className="fixed bottom-0 left-0 w-12 h-12 md:w-24 md:h-24 border-l border-b border-[rgba(var(--mg-primary),0.15)] z-10"></div>
+                  <div className="fixed bottom-0 right-0 w-12 h-12 md:w-24 md:h-24 border-r border-b border-[rgba(var(--mg-primary),0.15)] z-10"></div>
 
                   {/* Very subtle noise texture (moved to file URL to avoid data URI issues) */}
                   <div className="fixed inset-0 bg-[url('/assets/noise.svg')] opacity-[0.02] mix-blend-overlay z-10"></div>
 
-                  {/* Subtle scan line */}
-                  <div className="fixed top-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.4)] shadow-[0_0_8px_rgba(var(--mg-primary),0.3)] animate-scan-line z-20"></div>
+                  {/* Subtle scan line - Hidden on mobile/reduced motion via CSS media queries would be ideal, but here we use Tailwind's motion-reduce and hide on small screens */}
+                  <div className="fixed top-0 left-0 w-full h-[1px] bg-[rgba(var(--mg-primary),0.4)] shadow-[0_0_8px_rgba(var(--mg-primary),0.3)] animate-scan-line z-20 hidden md:block motion-reduce:hidden"></div>
 
                   {/* Very subtle line noise */}
-                  <div className="fixed inset-0 overflow-hidden opacity-[0.01] z-10">
-                    <div className="absolute inset-0 line-noise"></div>
+                  <div className="fixed inset-0 overflow-hidden opacity-[0.01] z-10 pointer-events-none">
+                    <div className="absolute inset-0 line-noise hidden md:block"></div>
                   </div>
                 </div>
 
@@ -92,4 +91,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-} 
+}

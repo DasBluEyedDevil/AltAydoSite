@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import MobiGlasPanel from '../MobiGlasPanel';
+import MobiGlasPanel from '@/components/ui/mobiglas/MobiGlasPanel';
 import { useEvents } from '@/hooks/useEvents';
 import { EventData, EventType } from '@/lib/eventMapper';
 

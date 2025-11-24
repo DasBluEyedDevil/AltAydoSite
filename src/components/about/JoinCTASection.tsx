@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { MobiGlasButton } from '@/components/ui/mobiglas';
 
 interface JoinCTASectionProps {
   connectionComplete: boolean;
@@ -34,13 +35,13 @@ export default function JoinCTASection({ connectionComplete }: JoinCTASectionPro
               Explore career opportunities with AydoCorp and become part of our interstellar logistics family. We&apos;re always looking for talented individuals who share our passion for excellence.
             </p>
             <Link href="/join">
-              <motion.button
+              <MobiGlasButton
+                variant="primary"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
-                className="mg-button py-2.5 px-8 text-sm"
               >
                 VIEW AVAILABLE POSITIONS
-              </motion.button>
+              </MobiGlasButton>
             </Link>
           </div>
 

@@ -3,19 +3,26 @@
 import React from 'react';
 import { motion, MotionProps } from 'framer-motion';
 
+type CornerAccentPosition = 'tl' | 'tr' | 'bl' | 'br';
+
 export interface MobiGlasPanelProps extends Omit<MotionProps, 'children'> {
   children: React.ReactNode;
   className?: string;
   title?: string;
   titleClassName?: string;
+  icon?: React.ReactNode;
+  rightContent?: React.ReactNode;
   variant?: 'default' | 'dark' | 'darker' | 'transparent';
   withScanline?: boolean;
   withHologram?: boolean;
   withCircuitBg?: boolean;
   withGridBg?: boolean;
   cornerAccents?: boolean;
+  corners?: CornerAccentPosition[]; // Selective corner rendering (overrides cornerAccents)
   cornerSize?: 'sm' | 'md' | 'lg';
   padding?: 'sm' | 'md' | 'lg' | 'xl';
+  accentColor?: string;
+  animationDelay?: number; // For staggered animations
 }
 
 export default function MobiGlasPanel({
@@ -23,14 +30,19 @@ export default function MobiGlasPanel({
   className = '',
   title,
   titleClassName = '',
+  icon,
+  rightContent,
   variant = 'default',
   withScanline = false,
   withHologram = false,
   withCircuitBg = false,
   withGridBg = false,
   cornerAccents = true,
+  corners,
   cornerSize = 'md',
   padding = 'md',
+  accentColor = 'primary',
+  animationDelay = 0,
   ...motionProps
 }: MobiGlasPanelProps) {
   const variantStyles = {
@@ -53,6 +65,15 @@ export default function MobiGlasPanel({
     lg: 'w-8 h-8'
   };
 
+  // Merge animationDelay into transition
+  const mergedMotionProps = {
+    ...motionProps,
+    transition: {
+      ...(typeof motionProps.transition === 'object' ? motionProps.transition : {}),
+      delay: animationDelay
+    }
+  };
+
   return (
     <motion.div
       className={`
@@ -61,7 +82,7 @@ export default function MobiGlasPanel({
         ${paddingMap[padding]}
         ${className}
       `.trim()}
-      {...motionProps}
+      {...mergedMotionProps}
     >
       {/* Background effects */}
       {withHologram && (
@@ -97,21 +118,37 @@ export default function MobiGlasPanel({
       )}
 
       {/* Corner accents */}
-      {cornerAccents && (
+      {(corners || cornerAccents) && (
         <>
-          <div className={`absolute top-0 left-0 ${cornerSizeMap[cornerSize]} border-t border-l border-[rgba(var(--mg-primary),0.6)]`}></div>
-          <div className={`absolute top-0 right-0 ${cornerSizeMap[cornerSize]} border-t border-r border-[rgba(var(--mg-primary),0.6)]`}></div>
-          <div className={`absolute bottom-0 left-0 ${cornerSizeMap[cornerSize]} border-b border-l border-[rgba(var(--mg-primary),0.6)]`}></div>
-          <div className={`absolute bottom-0 right-0 ${cornerSizeMap[cornerSize]} border-b border-r border-[rgba(var(--mg-primary),0.6)]`}></div>
+          {(!corners || corners.includes('tl')) && (
+            <div className={`absolute top-0 left-0 ${cornerSizeMap[cornerSize]} border-t border-l border-[rgba(var(--mg-${accentColor}),0.6)]`}></div>
+          )}
+          {(!corners || corners.includes('tr')) && (
+            <div className={`absolute top-0 right-0 ${cornerSizeMap[cornerSize]} border-t border-r border-[rgba(var(--mg-${accentColor}),0.6)]`}></div>
+          )}
+          {(!corners || corners.includes('bl')) && (
+            <div className={`absolute bottom-0 left-0 ${cornerSizeMap[cornerSize]} border-b border-l border-[rgba(var(--mg-${accentColor}),0.6)]`}></div>
+          )}
+          {(!corners || corners.includes('br')) && (
+            <div className={`absolute bottom-0 right-0 ${cornerSizeMap[cornerSize]} border-b border-r border-[rgba(var(--mg-${accentColor}),0.6)]`}></div>
+          )}
         </>
       )}
 
-      {/* Title */}
+      {/* Title Header */}
       {title && (
-        <div className="relative z-10 mb-6">
-          <h2 className={`mg-title text-2xl font-bold ${titleClassName}`}>
-            {title}
-          </h2>
+        <div className={`relative z-10 flex items-center justify-between ${(icon || rightContent) ? 'px-4 py-3 mb-0 border-b border-[rgba(var(--mg-primary),0.15)]' : 'mb-6'}`}>
+          <div className="flex items-center">
+            {icon && <div className="mr-2">{icon}</div>}
+            <h2 className={`mg-title ${(icon || rightContent) ? 'text-sm sm:text-base font-quantify tracking-wider' : 'text-2xl font-bold'} ${titleClassName || `text-[rgba(var(--mg-${accentColor}),0.9)]`}`}>
+              {title}
+            </h2>
+          </div>
+          {rightContent && (
+            <div className="flex items-center">
+              {rightContent}
+            </div>
+          )}
         </div>
       )}
 
