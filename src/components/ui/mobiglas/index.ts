@@ -2,7 +2,7 @@
 export { default as MobiGlasContainer } from './MobiGlasContainer';
 export { default as MobiGlasPanel } from './MobiGlasPanel';
 export { default as MobiGlasButton } from './MobiGlasButton';
-export { default as MobiGlasInput } from './MobiGlasInput';
+export { MobiGlasInput, MobiGlasTextArea } from './MobiGlasInput';
 export { default as CornerAccents } from './CornerAccents';
 export { default as ScanlineEffect } from './ScanlineEffect';
 export { default as StatusIndicator } from './StatusIndicator';
