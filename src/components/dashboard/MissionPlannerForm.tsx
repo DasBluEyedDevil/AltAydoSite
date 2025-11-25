@@ -133,6 +133,24 @@ interface MissionPlannerFormProps {
   onPublishToDiscord?: () => void;
 }
 
+// Helper to format ISO date string to datetime-local input format (in local timezone)
+function formatDateTimeForInput(isoString: string): string {
+  if (!isoString) return '';
+  try {
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return '';
+    // Format as YYYY-MM-DDTHH:mm in local timezone
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  } catch {
+    return '';
+  }
+}
+
 // Ship Selection Dropdown Portal Component
 const ShipDropdownPortal: React.FC<{
   isOpen: boolean;
@@ -622,8 +640,18 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
             <label className="mg-subtitle block mb-2">SCHEDULED DATE & TIME *</label>
             <input
               type="datetime-local"
-              value={formData.scheduledDateTime ? formData.scheduledDateTime.slice(0, 16) : ''}
-              onChange={(e) => onInputChange('scheduledDateTime', new Date(e.target.value).toISOString())}
+              value={formData.scheduledDateTime ? formatDateTimeForInput(formData.scheduledDateTime) : ''}
+              onChange={(e) => {
+                // Store the datetime-local value directly, converting to ISO only when needed
+                // This prevents timezone shifting during editing
+                if (e.target.value) {
+                  // Create date from local input and convert to ISO
+                  const localDate = new Date(e.target.value);
+                  onInputChange('scheduledDateTime', localDate.toISOString());
+                } else {
+                  onInputChange('scheduledDateTime', '');
+                }
+              }}
               className={`mg-input w-full ${errors.scheduledDateTime ? 'border-[rgba(var(--mg-danger),0.5)]' : ''}`}
             />
             {errors.scheduledDateTime && (
