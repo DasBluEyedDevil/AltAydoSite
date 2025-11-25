@@ -698,7 +698,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
                     <EyeIcon />
                     View
                   </button>
-                  {(mission.createdBy === session?.user?.id || userClearance >= 4) && (
+                  {(mission.createdBy === session?.user?.id || userClearance >= 4) && mission.status !== 'COMPLETED' && mission.status !== 'CANCELLED' && (
                     <>
                       {(mission.status === 'ACTIVE' || mission.status === 'DEBRIEFING') && (
                         <button
@@ -929,8 +929,9 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
           </div>
         </div>
 
-        {/* Action Buttons */}
-        {(selectedMission.createdBy === session?.user?.id || userClearance >= 4) && (
+        {/* Action Buttons - Hidden for COMPLETED/CANCELLED missions */}
+        {(selectedMission.createdBy === session?.user?.id || userClearance >= 4) &&
+         selectedMission.status !== 'COMPLETED' && selectedMission.status !== 'CANCELLED' && (
           <div className="flex justify-end gap-3">
             {(selectedMission.status === 'ACTIVE' || selectedMission.status === 'DEBRIEFING') && (
               <MobiGlasButton
@@ -950,6 +951,15 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
             >
               Edit Mission
             </MobiGlasButton>
+          </div>
+        )}
+
+        {/* Read-only notice for completed/cancelled missions */}
+        {(selectedMission.status === 'COMPLETED' || selectedMission.status === 'CANCELLED') && (
+          <div className="flex justify-center">
+            <div className="px-4 py-2 rounded bg-[rgba(var(--mg-panel-dark),0.5)] text-[rgba(var(--mg-text),0.5)] text-sm">
+              This mission is {selectedMission.status.toLowerCase()} and cannot be edited.
+            </div>
           </div>
         )}
       </div>
