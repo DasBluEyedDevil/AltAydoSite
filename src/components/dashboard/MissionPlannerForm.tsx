@@ -230,14 +230,14 @@ const ShipDropdownPortal: React.FC<{
         <div className="p-3 border-b border-[rgba(var(--mg-primary),0.2)] space-y-2">
           {/* Search */}
           <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(var(--mg-text),0.5)]">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[rgba(var(--mg-text),0.5)] pointer-events-none">
               <SearchIcon />
             </div>
             <input
               type="text"
               value={shipSearch}
               onChange={(e) => setShipSearch(e.target.value)}
-              className="mg-input w-full pl-10 text-sm"
+              className="mg-input w-full !pl-12 text-sm"
               placeholder="Search ships..."
               autoFocus
             />
