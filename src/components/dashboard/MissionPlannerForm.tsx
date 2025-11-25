@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { MobiGlasPanel } from '@/components/ui/mobiglas';
@@ -14,7 +15,7 @@ import {
   shipDetailsToMissionShip
 } from '@/types/PlannedMission';
 import { MissionTemplate, ActivityType, OperationType } from '@/types/MissionTemplate';
-import { shipDatabase, ShipDetails, getShipImagePath } from '@/types/ShipData';
+import { shipDatabase, ShipDetails } from '@/types/ShipData';
 
 // Icons
 const SpaceIcon = () => (
@@ -64,6 +65,12 @@ const RocketIcon = () => (
 const ShipIcon = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+  </svg>
+);
+
+const XIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
   </svg>
 );
 
@@ -126,6 +133,192 @@ interface MissionPlannerFormProps {
   onPublishToDiscord?: () => void;
 }
 
+// Ship Selection Dropdown Portal Component
+const ShipDropdownPortal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  anchorRef: React.RefObject<HTMLDivElement | null>;
+  onSelectShip: (ship: ShipDetails) => void;
+}> = ({ isOpen, onClose, anchorRef, onSelectShip }) => {
+  const [shipSearch, setShipSearch] = useState('');
+  const [selectedManufacturer, setSelectedManufacturer] = useState<string>('all');
+  const [selectedSize, setSelectedSize] = useState<string>('all');
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+
+  const manufacturers = useMemo(() => {
+    const unique = [...new Set(shipDatabase.map(s => s.manufacturer))];
+    return unique.sort();
+  }, []);
+
+  const sizes = useMemo(() => {
+    const unique = [...new Set(shipDatabase.map(s => s.size).filter(Boolean))] as string[];
+    return unique;
+  }, []);
+
+  const filteredShips = useMemo(() => {
+    let filtered = shipDatabase;
+
+    if (selectedManufacturer !== 'all') {
+      filtered = filtered.filter(ship => ship.manufacturer === selectedManufacturer);
+    }
+
+    if (selectedSize !== 'all') {
+      filtered = filtered.filter(ship => ship.size === selectedSize);
+    }
+
+    if (shipSearch) {
+      const search = shipSearch.toLowerCase();
+      filtered = filtered.filter(ship =>
+        ship.name.toLowerCase().includes(search) ||
+        ship.manufacturer.toLowerCase().includes(search) ||
+        ship.role?.some(r => r.toLowerCase().includes(search))
+      );
+    }
+
+    return filtered.slice(0, 30);
+  }, [shipSearch, selectedManufacturer, selectedSize]);
+
+  // Update position when opening
+  useEffect(() => {
+    if (isOpen && anchorRef.current) {
+      const rect = anchorRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + 8,
+        left: Math.max(16, rect.right - 384) // 384px = w-96
+      });
+    }
+  }, [isOpen, anchorRef]);
+
+  // Reset filters when closing
+  useEffect(() => {
+    if (!isOpen) {
+      setShipSearch('');
+      setSelectedManufacturer('all');
+      setSelectedSize('all');
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return createPortal(
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-[9998]"
+        onClick={onClose}
+      />
+      {/* Dropdown */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        className="fixed w-96 max-h-[70vh] overflow-hidden bg-[rgba(var(--mg-panel-dark),0.98)] border border-[rgba(var(--mg-primary),0.3)] rounded-lg shadow-2xl z-[9999] flex flex-col"
+        style={{ top: position.top, left: position.left }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-3 border-b border-[rgba(var(--mg-primary),0.2)]">
+          <span className="text-sm font-medium text-[rgba(var(--mg-text),0.9)]">Select Ship</span>
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-[rgba(var(--mg-primary),0.2)] rounded transition-colors"
+          >
+            <XIcon />
+          </button>
+        </div>
+
+        {/* Filters */}
+        <div className="p-3 border-b border-[rgba(var(--mg-primary),0.2)] space-y-2">
+          {/* Search */}
+          <div className="relative">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(var(--mg-text),0.5)]">
+              <SearchIcon />
+            </div>
+            <input
+              type="text"
+              value={shipSearch}
+              onChange={(e) => setShipSearch(e.target.value)}
+              className="mg-input w-full pl-10 text-sm"
+              placeholder="Search ships..."
+              autoFocus
+            />
+          </div>
+
+          {/* Manufacturer & Size Filters */}
+          <div className="grid grid-cols-2 gap-2">
+            <select
+              value={selectedManufacturer}
+              onChange={(e) => setSelectedManufacturer(e.target.value)}
+              className="mg-input text-xs"
+            >
+              <option value="all">All Manufacturers</option>
+              {manufacturers.map(m => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+            <select
+              value={selectedSize}
+              onChange={(e) => setSelectedSize(e.target.value)}
+              className="mg-input text-xs"
+            >
+              <option value="all">All Sizes</option>
+              {sizes.map(s => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Ship List */}
+        <div className="flex-1 overflow-auto p-2 space-y-1">
+          {filteredShips.length > 0 ? (
+            filteredShips.map(ship => (
+              <button
+                key={ship.name}
+                onClick={() => {
+                  onSelectShip(ship);
+                  onClose();
+                }}
+                className="w-full flex items-center gap-3 p-2 rounded hover:bg-[rgba(var(--mg-primary),0.1)] transition-colors text-left"
+              >
+                <div className="w-20 h-12 relative rounded overflow-hidden bg-[rgba(var(--mg-panel-dark),0.5)] flex-shrink-0">
+                  <Image
+                    src={ship.image}
+                    alt={ship.name}
+                    fill
+                    className="object-cover"
+                    sizes="80px"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
+                    {ship.name}
+                  </div>
+                  <div className="text-xs text-[rgba(var(--mg-text),0.5)]">
+                    {ship.manufacturer} {ship.size ? `• ${ship.size}` : ''}
+                  </div>
+                  {ship.role && (
+                    <div className="text-xs text-[rgba(var(--mg-primary),0.7)] truncate">
+                      {ship.role.join(', ')}
+                    </div>
+                  )}
+                </div>
+                <div className="text-xs text-[rgba(var(--mg-text),0.5)] flex-shrink-0">
+                  {ship.crewRequirement || 1} crew
+                </div>
+              </button>
+            ))
+          ) : (
+            <div className="text-center py-8 text-[rgba(var(--mg-text),0.5)]">
+              No ships found matching your criteria
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </>,
+    document.body
+  );
+};
+
 const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
   formData,
   errors,
@@ -137,24 +330,13 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
   onCancel,
   onPublishToDiscord
 }) => {
-  // State for ship search
-  const [shipSearch, setShipSearch] = useState('');
   const [showShipDropdown, setShowShipDropdown] = useState(false);
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [loadingLeaders, setLoadingLeaders] = useState(true);
-  const [selectedManufacturer, setSelectedManufacturer] = useState<string>('all');
-  const [selectedSize, setSelectedSize] = useState<string>('all');
+  const shipButtonRef = useRef<HTMLDivElement>(null);
 
-  // Get unique manufacturers and sizes from ship database
-  const manufacturers = useMemo(() => {
-    const unique = [...new Set(shipDatabase.map(s => s.manufacturer))];
-    return unique.sort();
-  }, []);
-
-  const sizes = useMemo(() => {
-    const unique = [...new Set(shipDatabase.map(s => s.size).filter(Boolean))] as string[];
-    return unique;
-  }, []);
+  // Check if a template is selected
+  const hasTemplate = Boolean(formData.templateId);
 
   // Fetch leaders on mount
   useEffect(() => {
@@ -173,33 +355,6 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
     }
     fetchLeaders();
   }, []);
-
-  // Filter ships based on search and filters
-  const filteredShips = useMemo(() => {
-    let filtered = shipDatabase;
-
-    // Filter by manufacturer
-    if (selectedManufacturer !== 'all') {
-      filtered = filtered.filter(ship => ship.manufacturer === selectedManufacturer);
-    }
-
-    // Filter by size
-    if (selectedSize !== 'all') {
-      filtered = filtered.filter(ship => ship.size === selectedSize);
-    }
-
-    // Filter by search
-    if (shipSearch) {
-      const search = shipSearch.toLowerCase();
-      filtered = filtered.filter(ship =>
-        ship.name.toLowerCase().includes(search) ||
-        ship.manufacturer.toLowerCase().includes(search) ||
-        ship.role?.some(r => r.toLowerCase().includes(search))
-      );
-    }
-
-    return filtered.slice(0, 30);
-  }, [shipSearch, selectedManufacturer, selectedSize]);
 
   // Initialize ships array if empty
   useEffect(() => {
@@ -222,25 +377,27 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
     }
   };
 
+  // Clear template selection
+  const clearTemplate = () => {
+    onInputChange('templateId', undefined);
+    onInputChange('templateName', undefined);
+  };
+
   // Add ship to roster
   const addShip = (ship: ShipDetails) => {
     const ships = [...(formData.ships || [])];
     const existingIndex = ships.findIndex(s => s.shipName === ship.name);
 
     if (existingIndex >= 0) {
-      // Increment quantity
       ships[existingIndex] = {
         ...ships[existingIndex],
         quantity: ships[existingIndex].quantity + 1
       };
     } else {
-      // Add new ship
       ships.push(shipDetailsToMissionShip(ship));
     }
 
     onInputChange('ships', ships);
-    setShowShipDropdown(false);
-    setShipSearch('');
   };
 
   // Remove ship from roster
@@ -288,7 +445,6 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
     const newLeaders = [...(formData.leaders || [])];
 
     if (field === 'userId') {
-      // Find the leader data
       const leader = leaders.find(l => l.id === value);
       if (leader) {
         newLeaders[index] = {
@@ -329,33 +485,118 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
         </div>
       </MobiGlasPanel>
 
-      {/* Template Selection (Optional) */}
-      {templates.length > 0 && (
-        <MobiGlasPanel title="Start from Template (Optional)">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {templates.slice(0, 8).map(template => (
-              <motion.button
-                key={template.id}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleTemplateSelect(template.id)}
-                className={`p-3 rounded border text-left transition-all ${
-                  formData.templateId === template.id
-                    ? 'border-[rgba(var(--mg-primary),0.8)] bg-[rgba(var(--mg-primary),0.1)]'
-                    : 'border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.3)] hover:border-[rgba(var(--mg-primary),0.4)]'
-                }`}
-              >
-                <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
-                  {template.name}
+      {/* Template Selection - REQUIRED */}
+      <MobiGlasPanel
+        title="Mission Template *"
+        rightContent={
+          hasTemplate && (
+            <button
+              onClick={clearTemplate}
+              className="text-xs text-[rgba(var(--mg-text),0.5)] hover:text-[rgba(var(--mg-danger),0.8)] transition-colors"
+            >
+              Change Template
+            </button>
+          )
+        }
+      >
+        {!hasTemplate ? (
+          <>
+            <div className="text-[rgba(var(--mg-text),0.6)] text-sm mb-4">
+              Select a template to define the operation type and activities for this mission.
+            </div>
+            {templates.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {templates.map(template => (
+                  <motion.button
+                    key={template.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleTemplateSelect(template.id)}
+                    className="p-4 rounded border text-left transition-all border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.3)] hover:border-[rgba(var(--mg-primary),0.5)] hover:bg-[rgba(var(--mg-primary),0.05)]"
+                  >
+                    <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
+                      {template.name}
+                    </div>
+                    <div className="text-xs text-[rgba(var(--mg-primary),0.8)] mt-1">
+                      {template.operationType}
+                    </div>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)]">
+                        {template.primaryActivity}
+                      </span>
+                      {template.secondaryActivity && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(var(--mg-secondary),0.2)] text-[rgba(var(--mg-secondary),0.9)]">
+                          {template.secondaryActivity}
+                        </span>
+                      )}
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-[rgba(var(--mg-text),0.5)] border border-dashed border-[rgba(var(--mg-primary),0.2)] rounded-lg">
+                <div>No templates available.</div>
+                <div className="text-xs mt-2">Create a mission template first to define operation types and activities.</div>
+              </div>
+            )}
+          </>
+        ) : (
+          // Show selected template info
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-4 rounded bg-[rgba(var(--mg-primary),0.1)] border border-[rgba(var(--mg-primary),0.3)]">
+              <div className="flex-1">
+                <div className="text-base font-medium text-[rgba(var(--mg-primary),1)]">
+                  {formData.templateName}
                 </div>
-                <div className="text-xs text-[rgba(var(--mg-text),0.5)] mt-1">
-                  {template.primaryActivity}
+              </div>
+            </div>
+
+            {/* Show operation type and activities as read-only info */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-3 rounded bg-[rgba(var(--mg-panel-dark),0.3)]">
+                <div className="text-xs text-[rgba(var(--mg-text),0.5)] mb-1">OPERATION TYPE</div>
+                <div className="flex items-center gap-2 text-sm text-[rgba(var(--mg-text),0.9)]">
+                  {formData.operationType === 'Space Operations' ? (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12h18" />
+                    </svg>
+                  )}
+                  <span>{formData.operationType}</span>
                 </div>
-              </motion.button>
-            ))}
+              </div>
+              <div className="p-3 rounded bg-[rgba(var(--mg-panel-dark),0.3)]">
+                <div className="text-xs text-[rgba(var(--mg-text),0.5)] mb-1">PRIMARY</div>
+                <div className="flex items-center gap-2 text-sm text-[rgba(var(--mg-primary),0.9)]">
+                  {formData.primaryActivity && ACTIVITY_ICONS[formData.primaryActivity]}
+                  <span>{formData.primaryActivity}</span>
+                </div>
+              </div>
+              {formData.secondaryActivity && (
+                <div className="p-3 rounded bg-[rgba(var(--mg-panel-dark),0.3)]">
+                  <div className="text-xs text-[rgba(var(--mg-text),0.5)] mb-1">SECONDARY</div>
+                  <div className="flex items-center gap-2 text-sm text-[rgba(var(--mg-secondary),0.9)]">
+                    {ACTIVITY_ICONS[formData.secondaryActivity]}
+                    <span>{formData.secondaryActivity}</span>
+                  </div>
+                </div>
+              )}
+              {formData.tertiaryActivity && (
+                <div className="p-3 rounded bg-[rgba(var(--mg-panel-dark),0.3)]">
+                  <div className="text-xs text-[rgba(var(--mg-text),0.5)] mb-1">TERTIARY</div>
+                  <div className="flex items-center gap-2 text-sm text-[rgba(var(--mg-text),0.7)]">
+                    {ACTIVITY_ICONS[formData.tertiaryActivity]}
+                    <span>{formData.tertiaryActivity}</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </MobiGlasPanel>
-      )}
+        )}
+      </MobiGlasPanel>
 
       {/* Basic Info */}
       <MobiGlasPanel title="Mission Details">
@@ -420,100 +661,6 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
               placeholder="e.g., Stanton System - Hurston"
               maxLength={100}
             />
-          </div>
-        </div>
-      </MobiGlasPanel>
-
-      {/* Operation Type - Visual Selection */}
-      <MobiGlasPanel title="Operation Type">
-        <div className="grid grid-cols-2 gap-4">
-          {(['Space Operations', 'Ground Operations'] as OperationType[]).map((type) => (
-            <motion.button
-              key={type}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onInputChange('operationType', type)}
-              className={`p-6 rounded-lg border-2 flex flex-col items-center gap-3 transition-all ${
-                formData.operationType === type
-                  ? 'border-[rgba(var(--mg-primary),0.8)] bg-[rgba(var(--mg-primary),0.15)]'
-                  : 'border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.3)] hover:border-[rgba(var(--mg-primary),0.4)]'
-              }`}
-            >
-              <div className={`${formData.operationType === type ? 'text-[rgba(var(--mg-primary),1)]' : 'text-[rgba(var(--mg-text),0.6)]'}`}>
-                {type === 'Space Operations' ? <SpaceIcon /> : <GroundIcon />}
-              </div>
-              <span className={`font-medium ${formData.operationType === type ? 'text-[rgba(var(--mg-primary),1)]' : 'text-[rgba(var(--mg-text),0.8)]'}`}>
-                {type}
-              </span>
-            </motion.button>
-          ))}
-        </div>
-      </MobiGlasPanel>
-
-      {/* Activities - Visual Badge Selection */}
-      <MobiGlasPanel title="Mission Activities">
-        <div className="space-y-4">
-          <div className="text-[rgba(var(--mg-text),0.6)] text-sm">
-            Select primary and optional secondary/tertiary activities
-          </div>
-
-          {/* Primary Activity */}
-          <div>
-            <label className="mg-subtitle block mb-3">PRIMARY ACTIVITY *</label>
-            <div className="flex flex-wrap gap-2">
-              {ACTIVITIES.map((activity) => (
-                <motion.button
-                  key={activity}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => onInputChange('primaryActivity', activity)}
-                  className={`px-4 py-2 rounded-full border flex items-center gap-2 transition-all ${
-                    formData.primaryActivity === activity
-                      ? 'border-[rgba(var(--mg-primary),0.8)] bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),1)]'
-                      : 'border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.3)] text-[rgba(var(--mg-text),0.7)] hover:border-[rgba(var(--mg-primary),0.4)]'
-                  }`}
-                  disabled={activity === formData.secondaryActivity || activity === formData.tertiaryActivity}
-                >
-                  {ACTIVITY_ICONS[activity]}
-                  <span>{activity}</span>
-                </motion.button>
-              ))}
-            </div>
-          </div>
-
-          {/* Secondary Activity */}
-          <div>
-            <label className="mg-subtitle block mb-3">SECONDARY ACTIVITY</label>
-            <div className="flex flex-wrap gap-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => onInputChange('secondaryActivity', undefined)}
-                className={`px-4 py-2 rounded-full border transition-all ${
-                  !formData.secondaryActivity
-                    ? 'border-[rgba(var(--mg-text),0.4)] bg-[rgba(var(--mg-panel-dark),0.4)] text-[rgba(var(--mg-text),0.7)]'
-                    : 'border-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-text),0.5)]'
-                }`}
-              >
-                None
-              </motion.button>
-              {ACTIVITIES.filter(a => a !== formData.primaryActivity && a !== formData.tertiaryActivity).map((activity) => (
-                <motion.button
-                  key={activity}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => onInputChange('secondaryActivity', activity)}
-                  className={`px-4 py-2 rounded-full border flex items-center gap-2 transition-all ${
-                    formData.secondaryActivity === activity
-                      ? 'border-[rgba(var(--mg-secondary),0.8)] bg-[rgba(var(--mg-secondary),0.2)] text-[rgba(var(--mg-secondary),1)]'
-                      : 'border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.3)] text-[rgba(var(--mg-text),0.7)] hover:border-[rgba(var(--mg-primary),0.4)]'
-                  }`}
-                >
-                  {ACTIVITY_ICONS[activity]}
-                  <span>{activity}</span>
-                </motion.button>
-              ))}
-            </div>
           </div>
         </div>
       </MobiGlasPanel>
@@ -605,7 +752,7 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
               <ShipIcon />
               <span>Est. Crew: <strong className="text-[rgba(var(--mg-primary),1)]">{estimatedCrew}</strong></span>
             </div>
-            <div className="relative">
+            <div ref={shipButtonRef}>
               <MobiGlasButton
                 onClick={() => setShowShipDropdown(!showShipDropdown)}
                 variant="primary"
@@ -615,113 +762,6 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
               >
                 Add Ship
               </MobiGlasButton>
-
-              {/* Ship Selection Dropdown */}
-              <AnimatePresence>
-                {showShipDropdown && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 top-full mt-2 w-96 max-h-[500px] overflow-hidden bg-[rgba(var(--mg-panel-dark),0.98)] border border-[rgba(var(--mg-primary),0.3)] rounded-lg shadow-xl z-50 flex flex-col"
-                  >
-                    {/* Filters */}
-                    <div className="p-3 border-b border-[rgba(var(--mg-primary),0.2)] space-y-2">
-                      {/* Search */}
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(var(--mg-text),0.5)]">
-                          <SearchIcon />
-                        </div>
-                        <input
-                          type="text"
-                          value={shipSearch}
-                          onChange={(e) => setShipSearch(e.target.value)}
-                          className="mg-input w-full pl-10 text-sm"
-                          placeholder="Search ships..."
-                          autoFocus
-                        />
-                      </div>
-
-                      {/* Manufacturer & Size Filters */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <select
-                          value={selectedManufacturer}
-                          onChange={(e) => setSelectedManufacturer(e.target.value)}
-                          className="mg-input text-xs"
-                        >
-                          <option value="all">All Manufacturers</option>
-                          {manufacturers.map(m => (
-                            <option key={m} value={m}>{m}</option>
-                          ))}
-                        </select>
-                        <select
-                          value={selectedSize}
-                          onChange={(e) => setSelectedSize(e.target.value)}
-                          className="mg-input text-xs"
-                        >
-                          <option value="all">All Sizes</option>
-                          {sizes.map(s => (
-                            <option key={s} value={s}>{s}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Ship List */}
-                    <div className="flex-1 overflow-auto p-2 space-y-1">
-                      {filteredShips.length > 0 ? (
-                        filteredShips.map(ship => (
-                          <button
-                            key={ship.name}
-                            onClick={() => addShip(ship)}
-                            className="w-full flex items-center gap-3 p-2 rounded hover:bg-[rgba(var(--mg-primary),0.1)] transition-colors text-left"
-                          >
-                            <div className="w-20 h-12 relative rounded overflow-hidden bg-[rgba(var(--mg-panel-dark),0.5)] flex-shrink-0">
-                              <Image
-                                src={ship.image}
-                                alt={ship.name}
-                                fill
-                                className="object-cover"
-                                sizes="80px"
-                              />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
-                                {ship.name}
-                              </div>
-                              <div className="text-xs text-[rgba(var(--mg-text),0.5)]">
-                                {ship.manufacturer} • {ship.size || 'Unknown'}
-                              </div>
-                              {ship.role && (
-                                <div className="text-xs text-[rgba(var(--mg-primary),0.7)] truncate">
-                                  {ship.role.join(', ')}
-                                </div>
-                              )}
-                            </div>
-                            <div className="text-xs text-[rgba(var(--mg-text),0.5)] flex-shrink-0">
-                              {ship.crewRequirement || 1} crew
-                            </div>
-                          </button>
-                        ))
-                      ) : (
-                        <div className="text-center py-8 text-[rgba(var(--mg-text),0.5)]">
-                          No ships found matching your criteria
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Close button */}
-                    <div className="p-2 border-t border-[rgba(var(--mg-primary),0.2)]">
-                      <button
-                        onClick={() => setShowShipDropdown(false)}
-                        className="w-full mg-btn-sm text-center"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
           </div>
         }
@@ -776,9 +816,11 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
                       <TrashIcon />
                     </button>
                     {/* Size Badge */}
-                    <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-[rgba(0,0,0,0.8)] rounded text-xs">
-                      {ship.size}
-                    </div>
+                    {ship.size && (
+                      <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-[rgba(0,0,0,0.8)] rounded text-xs">
+                        {ship.size}
+                      </div>
+                    )}
                   </div>
                   {/* Ship Info */}
                   <div className="p-3">
@@ -814,6 +856,18 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
           )}
         </div>
       </MobiGlasPanel>
+
+      {/* Ship Dropdown Portal */}
+      <AnimatePresence>
+        {showShipDropdown && (
+          <ShipDropdownPortal
+            isOpen={showShipDropdown}
+            onClose={() => setShowShipDropdown(false)}
+            anchorRef={shipButtonRef}
+            onSelectShip={addShip}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Mission Briefing */}
       <MobiGlasPanel title="Mission Briefing">
