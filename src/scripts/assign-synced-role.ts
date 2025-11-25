@@ -31,7 +31,7 @@ function loadEnvFiles() {
         if (k && rest.length) {
           let v = rest.join('=').trim();
           // Strip quotes if present
-          if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'"') && v.endsWith("'"'))) {
+          if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
             v = v.slice(1, -1);
           }
           if (!process.env[k]) process.env[k] = v;
@@ -48,7 +48,7 @@ async function main() {
   // Configuration (loaded after env files)
   let roleName = process.env.DISCORD_SYNCED_ROLE_NAME || 'Synced to AydoDB';
   // Extra safety: strip quotes if they somehow made it here (e.g. system env var)
-  if ((roleName.startsWith('"') && roleName.endsWith('"')) || (roleName.startsWith("'"') && roleName.endsWith("'"'))) {
+  if ((roleName.startsWith('"') && roleName.endsWith('"')) || (roleName.startsWith("'") && roleName.endsWith("'"))) {
     roleName = roleName.slice(1, -1);
   }
   const ROLE_NAME = roleName;

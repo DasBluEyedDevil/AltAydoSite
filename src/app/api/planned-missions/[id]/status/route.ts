@@ -4,9 +4,83 @@ import { authOptions } from '@/app/api/auth/auth';
 import {
   getPlannedMissionById,
   updatePlannedMissionStatus,
+  updatePlannedMission,
   canUserModifyMission
 } from '@/lib/planned-mission-storage';
 import { PlannedMissionStatus } from '@/types/PlannedMission';
+import { getDiscordService } from '@/lib/discord';
+
+// Helper to build Discord event description from mission
+function buildEventDescription(mission: any, baseUrl?: string): string {
+  const parts: string[] = [];
+
+  if (mission.objectives) {
+    parts.push(`**Objectives:**\n${mission.objectives}`);
+  }
+
+  const activities = [mission.primaryActivity];
+  if (mission.secondaryActivity) activities.push(mission.secondaryActivity);
+  if (mission.tertiaryActivity) activities.push(mission.tertiaryActivity);
+  parts.push(`**Type:** ${mission.operationType}`);
+  parts.push(`**Activities:** ${activities.join(', ')}`);
+
+  if (mission.leaders && mission.leaders.length > 0) {
+    const leaderList = mission.leaders
+      .map((l: any) => `${l.role}: ${l.aydoHandle}`)
+      .join('\n');
+    parts.push(`**Leadership:**\n${leaderList}`);
+  }
+
+  if (baseUrl) {
+    parts.push(`\n📋 **Full Briefing:** ${baseUrl}/dashboard/missions/${mission.id}`);
+  }
+
+  return parts.join('\n\n');
+}
+
+// Auto-publish mission to Discord
+async function autoPublishToDiscord(mission: any, baseUrl?: string): Promise<{ success: boolean; discordEvent?: any; error?: string }> {
+  try {
+    const discord = getDiscordService();
+    if (!discord.isConfigured()) {
+      console.log('Discord not configured, skipping auto-publish');
+      return { success: false, error: 'Discord not configured' };
+    }
+
+    const description = buildEventDescription(mission, baseUrl);
+
+    let endTime: string | undefined;
+    if (mission.duration) {
+      const startDate = new Date(mission.scheduledDateTime);
+      const endDate = new Date(startDate.getTime() + mission.duration * 60 * 1000);
+      endTime = endDate.toISOString();
+    }
+
+    const discordEvent = await discord.createScheduledEvent({
+      name: mission.name,
+      description,
+      scheduledStartTime: mission.scheduledDateTime,
+      scheduledEndTime: endTime,
+      location: mission.location || 'Star Citizen'
+    });
+
+    // Update mission with Discord event reference
+    await updatePlannedMission(mission.id, {
+      discordEvent: {
+        eventId: discordEvent.id,
+        guildId: discordEvent.guild_id,
+        createdAt: new Date().toISOString(),
+        status: 'SCHEDULED'
+      }
+    });
+
+    console.log('Auto-published mission to Discord:', mission.id, '-> Event:', discordEvent.id);
+    return { success: true, discordEvent };
+  } catch (error: any) {
+    console.error('Failed to auto-publish to Discord:', error);
+    return { success: false, error: error.message };
+  }
+}
 
 const VALID_STATUSES: PlannedMissionStatus[] = [
   'DRAFT',
@@ -93,11 +167,20 @@ export async function PATCH(
       );
     }
 
+    // Auto-publish to Discord when transitioning to SCHEDULED
+    let discordPublishResult: { success: boolean; discordEvent?: any; error?: string } | null = null;
+    if (status === 'SCHEDULED' && !mission.discordEvent) {
+      const baseUrl = request.headers.get('origin') || process.env.NEXTAUTH_URL || '';
+      discordPublishResult = await autoPublishToDiscord(updatedMission, baseUrl);
+    }
+
     return NextResponse.json({
       success: true,
       mission: updatedMission,
       previousStatus: mission.status,
-      newStatus: status
+      newStatus: status,
+      discordPublished: discordPublishResult?.success || false,
+      discordError: discordPublishResult?.error
     });
   } catch (error) {
     console.error('Error updating mission status:', error);

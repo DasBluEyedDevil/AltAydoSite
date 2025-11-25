@@ -737,7 +737,7 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
             </div>
           ) : (
             <div className="text-center py-6 text-[rgba(var(--mg-text),0.5)]">
-              No leaders assigned. Click "Add Leader" to assign mission leadership.
+              No leaders assigned. Click &quot;Add Leader&quot; to assign mission leadership.
             </div>
           )}
         </div>
@@ -846,7 +846,7 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
             <div className="text-center py-12 border border-dashed border-[rgba(var(--mg-primary),0.2)] rounded-lg">
               <ShipIcon />
               <div className="text-[rgba(var(--mg-text),0.5)] mt-2">
-                No ships assigned. Click "Add Ship" to select vessels from the compendium.
+                No ships assigned. Click &quot;Add Ship&quot; to select vessels from the compendium.
               </div>
             </div>
           )}

@@ -559,7 +559,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
             <CalendarIcon />
             <p className="mt-4">No missions found.</p>
             {canCreateMission && (
-              <p className="mt-2">Click "Plan New Mission" to create your first mission.</p>
+              <p className="mt-2">Click &quot;Plan New Mission&quot; to create your first mission.</p>
             )}
           </div>
         </MobiGlasPanel>
