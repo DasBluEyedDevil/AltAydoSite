@@ -3,6 +3,33 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/auth';
 import * as plannedMissionStorage from '@/lib/planned-mission-storage';
 import { getDiscordService, DiscordEventUser } from '@/lib/discord';
+import { DiscordEventStatus } from '@/types/DiscordEvent';
+import { PlannedMissionStatus } from '@/types/PlannedMission';
+
+// Map Discord event status to mission status
+function mapDiscordStatusToMissionStatus(discordStatus: number, currentMissionStatus: PlannedMissionStatus): PlannedMissionStatus | null {
+  switch (discordStatus) {
+    case DiscordEventStatus.ACTIVE:
+      // Discord event is live -> Mission should be ACTIVE
+      if (currentMissionStatus === 'SCHEDULED') {
+        return 'ACTIVE';
+      }
+      break;
+    case DiscordEventStatus.COMPLETED:
+      // Discord event ended -> Mission should go to DEBRIEFING
+      if (currentMissionStatus === 'SCHEDULED' || currentMissionStatus === 'ACTIVE') {
+        return 'DEBRIEFING';
+      }
+      break;
+    case DiscordEventStatus.CANCELED:
+      // Discord event cancelled -> Mission should be CANCELLED
+      if (currentMissionStatus !== 'COMPLETED' && currentMissionStatus !== 'CANCELLED') {
+        return 'CANCELLED';
+      }
+      break;
+  }
+  return null; // No status change needed
+}
 
 // Helper to build Discord event description from mission
 function buildEventDescription(mission: any, baseUrl?: string): string {
@@ -30,7 +57,7 @@ function buildEventDescription(mission: any, baseUrl?: string): string {
 
   // Add link to full mission briefing
   if (baseUrl) {
-    parts.push(`\n📋 **Full Briefing:** ${baseUrl}/dashboard/missions/${mission.id}`);
+    parts.push(`\n📋 **Full Briefing:** ${baseUrl}/dashboard/mission-planner?missionId=${mission.id}`);
   }
 
   return parts.join('\n\n');
@@ -187,6 +214,18 @@ export async function GET(
     // Also get updated event info
     const discordEvent = await discord.getScheduledEvent(mission.discordEvent.eventId);
 
+    // Sync mission status with Discord event status
+    let updatedMission = mission;
+    let statusSynced = false;
+    if (discordEvent?.status) {
+      const newStatus = mapDiscordStatusToMissionStatus(discordEvent.status, mission.status);
+      if (newStatus && newStatus !== mission.status) {
+        console.log(`Syncing mission ${id} status: ${mission.status} -> ${newStatus} (Discord event status: ${discordEvent.status})`);
+        updatedMission = await plannedMissionStorage.updatePlannedMission(id, { status: newStatus }) || mission;
+        statusSynced = true;
+      }
+    }
+
     // Transform to a simpler format
     const rsvps = rsvpUsers.map(u => ({
       discordId: u.user.id,
@@ -200,7 +239,9 @@ export async function GET(
       rsvps,
       count: rsvps.length,
       discordUserCount: discordEvent?.user_count || rsvps.length,
-      eventStatus: discordEvent?.status
+      eventStatus: discordEvent?.status,
+      missionStatus: updatedMission.status,
+      statusSynced
     });
     res.headers.set('Cache-Control', 'no-store, max-age=0');
     return res;
