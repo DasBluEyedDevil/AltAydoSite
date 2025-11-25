@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { MobiGlasPanel } from '@/components/ui/mobiglas';
@@ -99,6 +100,8 @@ interface MissionPlannerProps {
 
 const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [missions, setMissions] = useState<PlannedMissionResponse[]>([]);
   const [templates, setTemplates] = useState<MissionTemplate[]>([]);
@@ -108,6 +111,9 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
   const [errors, setErrors] = useState<PlannedMissionValidationErrors>({});
   const [statusFilter, setStatusFilter] = useState<PlannedMissionStatus | 'all'>('all');
   const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
+
+  // Track if we've already processed the URL template param
+  const templateParamProcessed = useRef(false);
 
   // Debrief state
   const [debriefParticipants, setDebriefParticipants] = useState<Record<string, boolean>>({});
@@ -188,6 +194,37 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
       }
     }
   }, [initialMissionId, missions]);
+
+  // Handle templateId from URL params (when navigating from template creator)
+  useEffect(() => {
+    if (templateParamProcessed.current) return;
+
+    const templateId = searchParams.get('templateId');
+    if (!templateId || templates.length === 0) return;
+
+    const template = templates.find(t => t.id === templateId);
+    if (template) {
+      templateParamProcessed.current = true;
+
+      // Pre-populate form with template data
+      setFormData({
+        ...createEmptyMission(),
+        templateId: template.id,
+        templateName: template.name,
+        operationType: template.operationType,
+        primaryActivity: template.primaryActivity,
+        secondaryActivity: template.secondaryActivity,
+        tertiaryActivity: template.tertiaryActivity,
+        equipmentNotes: template.requiredEquipment
+      });
+
+      // Switch to create mode
+      setViewMode('create');
+
+      // Clear the URL param to prevent re-triggering on navigation
+      router.replace('/dashboard/mission-planner', { scroll: false });
+    }
+  }, [searchParams, templates, router]);
 
   // Reset form
   const resetForm = () => {

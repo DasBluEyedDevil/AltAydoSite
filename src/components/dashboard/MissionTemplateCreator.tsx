@@ -157,7 +157,7 @@ const MissionTemplateCreator: React.FC<MissionTemplateCreatorProps> = ({
 
   // Handle use template for mission
   const handleUseForMission = useCallback((templateId: string) => {
-    router.push(`/dashboard/operations/missions?template=${templateId}`);
+    router.push(`/dashboard/mission-planner?templateId=${templateId}`);
   }, [router]);
 
   // Get available activities for dropdowns (excluding already selected)
