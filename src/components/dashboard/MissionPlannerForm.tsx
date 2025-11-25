@@ -491,15 +491,28 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
       <MobiGlasPanel
         title={isEditing ? 'Edit Mission' : 'Plan New Mission'}
         rightContent={
-          <div className="flex items-center gap-2">
-            <RocketIcon />
-            <span className="text-sm text-[rgba(var(--mg-text),0.7)]">Mission Planner</span>
-          </div>
+          <MobiGlasButton
+            onClick={onCancel}
+            variant="secondary"
+            size="sm"
+          >
+            Back to List
+          </MobiGlasButton>
         }
       >
+        {isEditing && formData.name && (
+          <div className="flex items-center gap-3 mb-3 pb-3 border-b border-[rgba(var(--mg-primary),0.2)]">
+            <span className="px-2 py-1 rounded text-xs font-medium bg-[rgba(var(--mg-secondary),0.2)] text-[rgba(var(--mg-secondary),1)]">
+              EDITING
+            </span>
+            <span className="text-[rgba(var(--mg-text),0.9)] font-medium">{formData.name}</span>
+          </div>
+        )}
         <div className="text-[rgba(var(--mg-text),0.7)]">
-          Create a detailed mission plan by selecting specific ships from the compendium,
-          assigning leaders, and setting the mission details. Publish to Discord when ready.
+          {isEditing
+            ? 'Update the mission details below. Changes will be saved when you click "Update Mission".'
+            : 'Create a detailed mission plan by selecting specific ships from the compendium, assigning leaders, and setting the mission details. Publish to Discord when ready.'
+          }
         </div>
       </MobiGlasPanel>
 
@@ -968,7 +981,7 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
               size="md"
               disabled={isLoading}
             >
-              Cancel
+              {isEditing ? 'Discard Changes' : 'Cancel'}
             </MobiGlasButton>
             <MobiGlasButton
               onClick={onSave}
@@ -978,7 +991,7 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
               isLoading={isLoading}
               withGlow={!isLoading}
             >
-              {isEditing ? 'Update Mission' : 'Save Draft'}
+              {isEditing ? 'Save Changes' : 'Create Mission'}
             </MobiGlasButton>
           </div>
         </div>

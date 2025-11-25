@@ -28,7 +28,7 @@ function buildEventDescription(mission: any, baseUrl?: string): string {
   }
 
   if (baseUrl) {
-    parts.push(`\n📋 **Full Briefing:** ${baseUrl}/dashboard/missions/${mission.id}`);
+    parts.push(`\n📋 **Full Briefing:** ${baseUrl}/dashboard/mission-planner?missionId=${mission.id}`);
   }
 
   return parts.join('\n\n');

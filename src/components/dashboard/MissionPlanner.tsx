@@ -110,10 +110,11 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
   const [isLoadingList, setIsLoadingList] = useState(true);
   const [errors, setErrors] = useState<PlannedMissionValidationErrors>({});
   const [statusFilter, setStatusFilter] = useState<PlannedMissionStatus | 'all'>('all');
-  const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
+  const [rsvpData, setRsvpData] = useState<Record<string, { count: number; users: Array<{ username: string; globalName?: string; nickname?: string }> }>>({});
 
-  // Track if we've already processed the URL template param
+  // Track if we've already processed URL params
   const templateParamProcessed = useRef(false);
+  const missionIdParamProcessed = useRef(false);
 
   // Debrief state
   const [debriefParticipants, setDebriefParticipants] = useState<Record<string, boolean>>({});
@@ -140,10 +141,10 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
         const data = await res.json();
         setMissions(data.items || []);
 
-        // Fetch RSVP counts for published missions
+        // Fetch RSVP data for published missions
         const published = (data.items || []).filter((m: PlannedMissionResponse) => m.discordEvent);
         for (const mission of published) {
-          fetchRsvpCount(mission.id);
+          fetchRsvpData(mission.id);
         }
       }
     } catch (error) {
@@ -166,13 +167,19 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
     }
   }, []);
 
-  // Fetch RSVP count for a mission
-  const fetchRsvpCount = async (missionId: string) => {
+  // Fetch RSVP data for a mission
+  const fetchRsvpData = async (missionId: string) => {
     try {
       const res = await fetch(`/api/planned-missions/${missionId}/discord`);
       if (res.ok) {
         const data = await res.json();
-        setRsvpCounts(prev => ({ ...prev, [missionId]: data.count || 0 }));
+        setRsvpData(prev => ({
+          ...prev,
+          [missionId]: {
+            count: data.count || 0,
+            users: data.rsvps || []
+          }
+        }));
       }
     } catch (error) {
       console.error('Error fetching RSVPs:', error);
@@ -225,6 +232,26 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
       router.replace('/dashboard/mission-planner', { scroll: false });
     }
   }, [searchParams, templates, router]);
+
+  // Handle missionId from URL params (when navigating from Discord event or calendar)
+  useEffect(() => {
+    if (missionIdParamProcessed.current) return;
+
+    const missionId = searchParams.get('missionId');
+    if (!missionId || missions.length === 0) return;
+
+    const mission = missions.find(m => m.id === missionId);
+    if (mission) {
+      missionIdParamProcessed.current = true;
+
+      // Open the mission in view mode
+      setSelectedMission(mission);
+      setViewMode('view');
+
+      // Clear the URL param to prevent re-triggering on navigation
+      router.replace('/dashboard/mission-planner', { scroll: false });
+    }
+  }, [searchParams, missions, router]);
 
   // Reset form
   const resetForm = () => {
@@ -612,10 +639,24 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
                     <UsersIcon />
                     <span>~{getEstimatedCrew(mission)} crew</span>
                   </div>
-                  {mission.discordEvent && rsvpCounts[mission.id] !== undefined && (
-                    <div className="flex items-center gap-1 text-[rgba(var(--mg-primary),0.8)]">
+                  {mission.discordEvent && rsvpData[mission.id] && (
+                    <div className="flex items-center gap-1 text-[rgba(var(--mg-primary),0.8)] relative group cursor-help">
                       <DiscordIcon />
-                      <span>{rsvpCounts[mission.id]} interested</span>
+                      <span>{rsvpData[mission.id].count} interested</span>
+                      {rsvpData[mission.id].users.length > 0 && (
+                        <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block z-50">
+                          <div className="bg-[rgba(var(--mg-panel-dark),0.95)] border border-[rgba(var(--mg-primary),0.3)] rounded-lg p-3 shadow-lg min-w-[180px]">
+                            <div className="text-xs font-medium text-[rgba(var(--mg-primary),1)] mb-2">Interested:</div>
+                            <div className="space-y-1 max-h-[150px] overflow-y-auto">
+                              {rsvpData[mission.id].users.map((user, idx) => (
+                                <div key={idx} className="text-xs text-[rgba(var(--mg-text),0.8)]">
+                                  {user.nickname || user.globalName || user.username}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -699,7 +740,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
       <div className="space-y-6">
         {/* Header */}
         <MobiGlasPanel
-          title={selectedMission.name}
+          title="Mission Details"
           rightContent={
             <MobiGlasButton
               onClick={() => { setViewMode('list'); setSelectedMission(null); }}
@@ -710,6 +751,12 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
             </MobiGlasButton>
           }
         >
+          <div className="flex items-center gap-3 mb-3 pb-3 border-b border-[rgba(var(--mg-primary),0.2)]">
+            <span className="px-2 py-1 rounded text-xs font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),1)]">
+              VIEWING
+            </span>
+            <span className="text-[rgba(var(--mg-text),0.9)] font-medium text-lg">{selectedMission.name}</span>
+          </div>
           <div className="flex flex-wrap items-center gap-4">
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${STATUS_COLORS[selectedMission.status]}`}>
               {selectedMission.status}
