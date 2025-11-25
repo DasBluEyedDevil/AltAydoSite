@@ -4,6 +4,79 @@ import { authOptions } from '@/app/api/auth/auth';
 import { ActivityType, OperationType } from '@/types/MissionTemplate';
 import { PlannedMissionStatus } from '@/types/PlannedMission';
 import * as plannedMissionStorage from '@/lib/planned-mission-storage';
+import { getDiscordService } from '@/lib/discord';
+
+// Helper to build Discord event description from mission
+function buildEventDescription(mission: any, baseUrl?: string): string {
+  const parts: string[] = [];
+
+  if (mission.objectives) {
+    parts.push(`**Objectives:**\n${mission.objectives}`);
+  }
+
+  const activities = [mission.primaryActivity];
+  if (mission.secondaryActivity) activities.push(mission.secondaryActivity);
+  if (mission.tertiaryActivity) activities.push(mission.tertiaryActivity);
+  parts.push(`**Type:** ${mission.operationType}`);
+  parts.push(`**Activities:** ${activities.join(', ')}`);
+
+  if (mission.leaders && mission.leaders.length > 0) {
+    const leaderList = mission.leaders
+      .map((l: any) => `${l.role}: ${l.aydoHandle}`)
+      .join('\n');
+    parts.push(`**Leadership:**\n${leaderList}`);
+  }
+
+  if (baseUrl) {
+    parts.push(`\n📋 **Full Briefing:** ${baseUrl}/dashboard/missions/${mission.id}`);
+  }
+
+  return parts.join('\n\n');
+}
+
+// Auto-publish mission to Discord
+async function autoPublishToDiscord(mission: any, baseUrl?: string): Promise<{ success: boolean; discordEvent?: any; error?: string }> {
+  try {
+    const discord = getDiscordService();
+    if (!discord.isConfigured()) {
+      console.log('Discord not configured, skipping auto-publish');
+      return { success: false, error: 'Discord not configured' };
+    }
+
+    const description = buildEventDescription(mission, baseUrl);
+
+    let endTime: string | undefined;
+    if (mission.duration) {
+      const startDate = new Date(mission.scheduledDateTime);
+      const endDate = new Date(startDate.getTime() + mission.duration * 60 * 1000);
+      endTime = endDate.toISOString();
+    }
+
+    const discordEvent = await discord.createScheduledEvent({
+      name: mission.name,
+      description,
+      scheduledStartTime: mission.scheduledDateTime,
+      scheduledEndTime: endTime,
+      location: mission.location || 'Star Citizen'
+    });
+
+    // Update mission with Discord event reference
+    await plannedMissionStorage.updatePlannedMission(mission.id, {
+      discordEvent: {
+        eventId: discordEvent.id,
+        guildId: discordEvent.guild_id,
+        createdAt: new Date().toISOString(),
+        status: 'SCHEDULED'
+      }
+    });
+
+    console.log('Auto-published mission to Discord:', mission.id, '-> Event:', discordEvent.id);
+    return { success: true, discordEvent };
+  } catch (error: any) {
+    console.error('Failed to auto-publish to Discord:', error);
+    return { success: false, error: error.message };
+  }
+}
 
 // Validation for mission ships (actual ships from compendium)
 const validateMissionShips = (ships: any[]) => {
@@ -220,7 +293,24 @@ export async function POST(request: NextRequest) {
     try {
       const mission = await plannedMissionStorage.createPlannedMission(missionToCreate);
       console.log('Planned mission created successfully:', mission.id);
-      return NextResponse.json(mission, { status: 201 });
+
+      // Auto-publish to Discord if status is SCHEDULED
+      let discordPublishResult: { success: boolean; discordEvent?: any; error?: string } | null = null;
+      if (mission.status === 'SCHEDULED' && !mission.discordEvent) {
+        const baseUrl = request.headers.get('origin') || process.env.NEXTAUTH_URL || '';
+        discordPublishResult = await autoPublishToDiscord(mission, baseUrl);
+      }
+
+      // Re-fetch mission if Discord event was added
+      const finalMission = discordPublishResult?.success
+        ? await plannedMissionStorage.getPlannedMissionById(mission.id) || mission
+        : mission;
+
+      return NextResponse.json({
+        ...finalMission,
+        discordPublished: discordPublishResult?.success || false,
+        discordError: discordPublishResult?.error
+      }, { status: 201 });
     } catch (storageError: any) {
       console.error('Error in planned mission storage layer:', storageError);
       return NextResponse.json(
@@ -267,6 +357,9 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // Get existing mission to check for status change
+    const existingMission = await plannedMissionStorage.getPlannedMissionById(missionData.id);
+
     // Validate if updating core fields
     if (missionData.name || missionData.scheduledDateTime || missionData.operationType || missionData.primaryActivity) {
       const validation = validatePlannedMissionData(missionData);
@@ -288,8 +381,28 @@ export async function PUT(request: NextRequest) {
         );
       }
 
+      // Auto-publish to Discord if status changed to SCHEDULED and no Discord event yet
+      let discordPublishResult: { success: boolean; discordEvent?: any; error?: string } | null = null;
+      const statusChangedToScheduled = missionData.status === 'SCHEDULED' &&
+        existingMission?.status !== 'SCHEDULED' &&
+        !existingMission?.discordEvent;
+
+      if (statusChangedToScheduled) {
+        const baseUrl = request.headers.get('origin') || process.env.NEXTAUTH_URL || '';
+        discordPublishResult = await autoPublishToDiscord(mission, baseUrl);
+      }
+
+      // Re-fetch mission if Discord event was added
+      const finalMission = discordPublishResult?.success
+        ? await plannedMissionStorage.getPlannedMissionById(mission.id) || mission
+        : mission;
+
       console.log('Planned mission updated successfully:', mission.id);
-      return NextResponse.json(mission, { status: 200 });
+      return NextResponse.json({
+        ...finalMission,
+        discordPublished: discordPublishResult?.success || false,
+        discordError: discordPublishResult?.error
+      }, { status: 200 });
     } catch (storageError: any) {
       console.error('Error in planned mission storage layer:', storageError);
       return NextResponse.json(
