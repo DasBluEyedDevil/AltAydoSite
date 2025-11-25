@@ -8,12 +8,10 @@ import MobiGlasButton from '../ui/mobiglas/MobiGlasButton';
 import {
   PlannedMission,
   PlannedMissionValidationErrors,
-  MissionScenario,
   MissionLeader,
-  ScenarioShip,
+  MissionShip,
   LEADERSHIP_ROLES,
-  createDefaultScenarios,
-  shipDetailsToScenarioShip
+  shipDetailsToMissionShip
 } from '@/types/PlannedMission';
 import { MissionTemplate, ActivityType, OperationType } from '@/types/MissionTemplate';
 import { shipDatabase, ShipDetails, getShipImagePath } from '@/types/ShipData';
@@ -60,6 +58,12 @@ const ChevronDownIcon = () => (
 const RocketIcon = () => (
   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+  </svg>
+);
+
+const ShipIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
   </svg>
 );
 
@@ -135,9 +139,22 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
 }) => {
   // State for ship search
   const [shipSearch, setShipSearch] = useState('');
-  const [showShipDropdown, setShowShipDropdown] = useState<string | null>(null); // scenario ID
+  const [showShipDropdown, setShowShipDropdown] = useState(false);
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [loadingLeaders, setLoadingLeaders] = useState(true);
+  const [selectedManufacturer, setSelectedManufacturer] = useState<string>('all');
+  const [selectedSize, setSelectedSize] = useState<string>('all');
+
+  // Get unique manufacturers and sizes from ship database
+  const manufacturers = useMemo(() => {
+    const unique = [...new Set(shipDatabase.map(s => s.manufacturer))];
+    return unique.sort();
+  }, []);
+
+  const sizes = useMemo(() => {
+    const unique = [...new Set(shipDatabase.map(s => s.size).filter(Boolean))] as string[];
+    return unique;
+  }, []);
 
   // Fetch leaders on mount
   useEffect(() => {
@@ -157,21 +174,37 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
     fetchLeaders();
   }, []);
 
-  // Filter ships based on search
+  // Filter ships based on search and filters
   const filteredShips = useMemo(() => {
-    if (!shipSearch) return shipDatabase.slice(0, 20);
-    const search = shipSearch.toLowerCase();
-    return shipDatabase.filter(ship =>
-      ship.name.toLowerCase().includes(search) ||
-      ship.manufacturer.toLowerCase().includes(search) ||
-      ship.role?.some(r => r.toLowerCase().includes(search))
-    ).slice(0, 20);
-  }, [shipSearch]);
+    let filtered = shipDatabase;
 
-  // Initialize scenarios if empty
+    // Filter by manufacturer
+    if (selectedManufacturer !== 'all') {
+      filtered = filtered.filter(ship => ship.manufacturer === selectedManufacturer);
+    }
+
+    // Filter by size
+    if (selectedSize !== 'all') {
+      filtered = filtered.filter(ship => ship.size === selectedSize);
+    }
+
+    // Filter by search
+    if (shipSearch) {
+      const search = shipSearch.toLowerCase();
+      filtered = filtered.filter(ship =>
+        ship.name.toLowerCase().includes(search) ||
+        ship.manufacturer.toLowerCase().includes(search) ||
+        ship.role?.some(r => r.toLowerCase().includes(search))
+      );
+    }
+
+    return filtered.slice(0, 30);
+  }, [shipSearch, selectedManufacturer, selectedSize]);
+
+  // Initialize ships array if empty
   useEffect(() => {
-    if (!formData.scenarios || formData.scenarios.length === 0) {
-      onInputChange('scenarios', createDefaultScenarios());
+    if (!formData.ships) {
+      onInputChange('ships', []);
     }
   }, []);
 
@@ -189,72 +222,55 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
     }
   };
 
-  // Add ship to scenario
-  const addShipToScenario = (scenarioId: string, ship: ShipDetails) => {
-    const scenarios = [...(formData.scenarios || [])];
-    const scenarioIndex = scenarios.findIndex(s => s.id === scenarioId);
-    if (scenarioIndex >= 0) {
-      const scenario = { ...scenarios[scenarioIndex] };
-      const existingShipIndex = scenario.ships.findIndex(s => s.shipName === ship.name);
+  // Add ship to roster
+  const addShip = (ship: ShipDetails) => {
+    const ships = [...(formData.ships || [])];
+    const existingIndex = ships.findIndex(s => s.shipName === ship.name);
 
-      if (existingShipIndex >= 0) {
-        // Increment quantity
-        scenario.ships = [...scenario.ships];
-        scenario.ships[existingShipIndex] = {
-          ...scenario.ships[existingShipIndex],
-          quantity: scenario.ships[existingShipIndex].quantity + 1
-        };
-      } else {
-        // Add new ship
-        scenario.ships = [...scenario.ships, shipDetailsToScenarioShip(ship)];
-      }
-
-      // Update estimated crew
-      scenario.estimatedCrew = scenario.ships.reduce((total, s) => {
-        const shipData = shipDatabase.find(sd => sd.name === s.shipName);
-        return total + (shipData?.crewRequirement || 1) * s.quantity;
-      }, 0);
-
-      scenarios[scenarioIndex] = scenario;
-      onInputChange('scenarios', scenarios);
+    if (existingIndex >= 0) {
+      // Increment quantity
+      ships[existingIndex] = {
+        ...ships[existingIndex],
+        quantity: ships[existingIndex].quantity + 1
+      };
+    } else {
+      // Add new ship
+      ships.push(shipDetailsToMissionShip(ship));
     }
-    setShowShipDropdown(null);
+
+    onInputChange('ships', ships);
+    setShowShipDropdown(false);
     setShipSearch('');
   };
 
-  // Remove ship from scenario
-  const removeShipFromScenario = (scenarioId: string, shipIndex: number) => {
-    const scenarios = [...(formData.scenarios || [])];
-    const scenarioIndex = scenarios.findIndex(s => s.id === scenarioId);
-    if (scenarioIndex >= 0) {
-      const scenario = { ...scenarios[scenarioIndex] };
-      scenario.ships = scenario.ships.filter((_, i) => i !== shipIndex);
-      scenario.estimatedCrew = scenario.ships.reduce((total, s) => {
-        const shipData = shipDatabase.find(sd => sd.name === s.shipName);
-        return total + (shipData?.crewRequirement || 1) * s.quantity;
-      }, 0);
-      scenarios[scenarioIndex] = scenario;
-      onInputChange('scenarios', scenarios);
-    }
+  // Remove ship from roster
+  const removeShip = (shipIndex: number) => {
+    const ships = (formData.ships || []).filter((_, i) => i !== shipIndex);
+    onInputChange('ships', ships);
   };
 
-  // Update ship quantity in scenario
-  const updateShipQuantity = (scenarioId: string, shipIndex: number, quantity: number) => {
+  // Update ship quantity
+  const updateShipQuantity = (shipIndex: number, quantity: number) => {
     if (quantity < 1) return;
-    const scenarios = [...(formData.scenarios || [])];
-    const scenarioIndex = scenarios.findIndex(s => s.id === scenarioId);
-    if (scenarioIndex >= 0) {
-      const scenario = { ...scenarios[scenarioIndex] };
-      scenario.ships = [...scenario.ships];
-      scenario.ships[shipIndex] = { ...scenario.ships[shipIndex], quantity };
-      scenario.estimatedCrew = scenario.ships.reduce((total, s) => {
-        const shipData = shipDatabase.find(sd => sd.name === s.shipName);
-        return total + (shipData?.crewRequirement || 1) * s.quantity;
-      }, 0);
-      scenarios[scenarioIndex] = scenario;
-      onInputChange('scenarios', scenarios);
-    }
+    const ships = [...(formData.ships || [])];
+    ships[shipIndex] = { ...ships[shipIndex], quantity };
+    onInputChange('ships', ships);
   };
+
+  // Update ship notes
+  const updateShipNotes = (shipIndex: number, notes: string) => {
+    const ships = [...(formData.ships || [])];
+    ships[shipIndex] = { ...ships[shipIndex], notes };
+    onInputChange('ships', ships);
+  };
+
+  // Calculate total estimated crew
+  const estimatedCrew = useMemo(() => {
+    return (formData.ships || []).reduce((total, ship) => {
+      const shipData = shipDatabase.find(sd => sd.name === ship.shipName);
+      return total + (shipData?.crewRequirement || 1) * ship.quantity;
+    }, 0);
+  }, [formData.ships]);
 
   // Add leader
   const addLeader = () => {
@@ -308,8 +324,8 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
         }
       >
         <div className="text-[rgba(var(--mg-text),0.7)]">
-          Create a detailed mission plan with scenarios for different crew sizes.
-          Publish to Discord when ready to gather interest.
+          Create a detailed mission plan by selecting specific ships from the compendium,
+          assigning leaders, and setting the mission details. Publish to Discord when ready.
         </div>
       </MobiGlasPanel>
 
@@ -580,202 +596,222 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
         </div>
       </MobiGlasPanel>
 
-      {/* Scenarios */}
-      <MobiGlasPanel title="Scenario Planning">
-        <div className="space-y-6">
-          <div className="text-[rgba(var(--mg-text),0.6)] text-sm">
-            Plan for different turnout scenarios. Add ships from the compendium for each scenario.
-          </div>
+      {/* Ship Roster */}
+      <MobiGlasPanel
+        title="Ship Roster"
+        rightContent={
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-[rgba(var(--mg-text),0.7)]">
+              <ShipIcon />
+              <span>Est. Crew: <strong className="text-[rgba(var(--mg-primary),1)]">{estimatedCrew}</strong></span>
+            </div>
+            <div className="relative">
+              <MobiGlasButton
+                onClick={() => setShowShipDropdown(!showShipDropdown)}
+                variant="primary"
+                size="sm"
+                leftIcon={<PlusIcon />}
+                rightIcon={<ChevronDownIcon />}
+              >
+                Add Ship
+              </MobiGlasButton>
 
-          {formData.scenarios?.map((scenario, scenarioIndex) => (
-            <div
-              key={scenario.id}
-              className={`border rounded-lg p-4 ${
-                scenarioIndex === 0
-                  ? 'border-[rgba(var(--mg-primary),0.4)] bg-[rgba(var(--mg-primary),0.05)]'
-                  : 'border-[rgba(var(--mg-secondary),0.4)] bg-[rgba(var(--mg-secondary),0.05)]'
-              }`}
-            >
-              {/* Scenario Header */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${
-                    scenarioIndex === 0 ? 'bg-[rgba(var(--mg-primary),0.8)]' : 'bg-[rgba(var(--mg-secondary),0.8)]'
-                  }`} />
-                  <h4 className="text-lg font-medium text-[rgba(var(--mg-text),0.9)]">
-                    {scenario.name}
-                  </h4>
-                  <span className="text-sm text-[rgba(var(--mg-text),0.5)]">
-                    Est. {scenario.estimatedCrew} crew
-                  </span>
-                </div>
-              </div>
+              {/* Ship Selection Dropdown */}
+              <AnimatePresence>
+                {showShipDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 top-full mt-2 w-96 max-h-[500px] overflow-hidden bg-[rgba(var(--mg-panel-dark),0.98)] border border-[rgba(var(--mg-primary),0.3)] rounded-lg shadow-xl z-50 flex flex-col"
+                  >
+                    {/* Filters */}
+                    <div className="p-3 border-b border-[rgba(var(--mg-primary),0.2)] space-y-2">
+                      {/* Search */}
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(var(--mg-text),0.5)]">
+                          <SearchIcon />
+                        </div>
+                        <input
+                          type="text"
+                          value={shipSearch}
+                          onChange={(e) => setShipSearch(e.target.value)}
+                          className="mg-input w-full pl-10 text-sm"
+                          placeholder="Search ships..."
+                          autoFocus
+                        />
+                      </div>
 
-              {/* Scenario Description */}
-              <div className="mb-4">
-                <input
-                  type="text"
-                  value={scenario.description || ''}
-                  onChange={(e) => {
-                    const scenarios = [...(formData.scenarios || [])];
-                    scenarios[scenarioIndex] = { ...scenario, description: e.target.value };
-                    onInputChange('scenarios', scenarios);
-                  }}
-                  className="mg-input w-full text-sm"
-                  placeholder="Describe this scenario..."
-                />
-              </div>
-
-              {/* Ship Grid */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="mg-subtitle text-xs">ASSIGNED SHIPS</label>
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowShipDropdown(showShipDropdown === scenario.id ? null : scenario.id)}
-                      className="mg-btn-sm flex items-center gap-1 text-xs"
-                    >
-                      <PlusIcon />
-                      Add Ship
-                      <ChevronDownIcon />
-                    </button>
-
-                    {/* Ship Dropdown */}
-                    <AnimatePresence>
-                      {showShipDropdown === scenario.id && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="absolute right-0 top-full mt-1 w-80 max-h-96 overflow-auto bg-[rgba(var(--mg-panel-dark),0.98)] border border-[rgba(var(--mg-primary),0.3)] rounded-lg shadow-xl z-50"
+                      {/* Manufacturer & Size Filters */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <select
+                          value={selectedManufacturer}
+                          onChange={(e) => setSelectedManufacturer(e.target.value)}
+                          className="mg-input text-xs"
                         >
-                          {/* Search */}
-                          <div className="p-2 border-b border-[rgba(var(--mg-primary),0.2)]">
-                            <div className="relative">
-                              <SearchIcon />
-                              <input
-                                type="text"
-                                value={shipSearch}
-                                onChange={(e) => setShipSearch(e.target.value)}
-                                className="mg-input w-full pl-8 text-sm"
-                                placeholder="Search ships..."
-                                autoFocus
+                          <option value="all">All Manufacturers</option>
+                          {manufacturers.map(m => (
+                            <option key={m} value={m}>{m}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={selectedSize}
+                          onChange={(e) => setSelectedSize(e.target.value)}
+                          className="mg-input text-xs"
+                        >
+                          <option value="all">All Sizes</option>
+                          {sizes.map(s => (
+                            <option key={s} value={s}>{s}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Ship List */}
+                    <div className="flex-1 overflow-auto p-2 space-y-1">
+                      {filteredShips.length > 0 ? (
+                        filteredShips.map(ship => (
+                          <button
+                            key={ship.name}
+                            onClick={() => addShip(ship)}
+                            className="w-full flex items-center gap-3 p-2 rounded hover:bg-[rgba(var(--mg-primary),0.1)] transition-colors text-left"
+                          >
+                            <div className="w-20 h-12 relative rounded overflow-hidden bg-[rgba(var(--mg-panel-dark),0.5)] flex-shrink-0">
+                              <Image
+                                src={ship.image}
+                                alt={ship.name}
+                                fill
+                                className="object-cover"
+                                sizes="80px"
                               />
                             </div>
-                          </div>
-
-                          {/* Ship List */}
-                          <div className="p-2 space-y-1">
-                            {filteredShips.map(ship => (
-                              <button
-                                key={ship.name}
-                                onClick={() => addShipToScenario(scenario.id, ship)}
-                                className="w-full flex items-center gap-3 p-2 rounded hover:bg-[rgba(var(--mg-primary),0.1)] transition-colors text-left"
-                              >
-                                <div className="w-16 h-10 relative rounded overflow-hidden bg-[rgba(var(--mg-panel-dark),0.5)]">
-                                  <Image
-                                    src={ship.image}
-                                    alt={ship.name}
-                                    fill
-                                    className="object-cover"
-                                    sizes="64px"
-                                  />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
+                                {ship.name}
+                              </div>
+                              <div className="text-xs text-[rgba(var(--mg-text),0.5)]">
+                                {ship.manufacturer} • {ship.size || 'Unknown'}
+                              </div>
+                              {ship.role && (
+                                <div className="text-xs text-[rgba(var(--mg-primary),0.7)] truncate">
+                                  {ship.role.join(', ')}
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
-                                    {ship.name}
-                                  </div>
-                                  <div className="text-xs text-[rgba(var(--mg-text),0.5)]">
-                                    {ship.manufacturer} • {ship.size}
-                                  </div>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-
-                {/* Ship Cards */}
-                {scenario.ships.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {scenario.ships.map((ship, shipIndex) => (
-                      <motion.div
-                        key={`${ship.shipName}-${shipIndex}`}
-                        className="relative rounded-lg border border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.4)] overflow-hidden"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                      >
-                        {/* Ship Image */}
-                        <div className="aspect-video relative">
-                          <Image
-                            src={ship.image}
-                            alt={ship.shipName}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, 25vw"
-                          />
-                          {/* Quantity Badge */}
-                          <div className="absolute top-2 right-2 flex items-center gap-1 bg-[rgba(0,0,0,0.7)] rounded px-2 py-1">
-                            <button
-                              onClick={() => updateShipQuantity(scenario.id, shipIndex, ship.quantity - 1)}
-                              className="text-xs hover:text-[rgba(var(--mg-primary),1)]"
-                            >
-                              -
-                            </button>
-                            <span className="text-sm font-bold">x{ship.quantity}</span>
-                            <button
-                              onClick={() => updateShipQuantity(scenario.id, shipIndex, ship.quantity + 1)}
-                              className="text-xs hover:text-[rgba(var(--mg-primary),1)]"
-                            >
-                              +
-                            </button>
-                          </div>
-                          {/* Remove Button */}
-                          <button
-                            onClick={() => removeShipFromScenario(scenario.id, shipIndex)}
-                            className="absolute top-2 left-2 p-1 bg-[rgba(var(--mg-danger),0.8)] rounded hover:bg-[rgba(var(--mg-danger),1)] transition-colors"
-                          >
-                            <TrashIcon />
+                              )}
+                            </div>
+                            <div className="text-xs text-[rgba(var(--mg-text),0.5)] flex-shrink-0">
+                              {ship.crewRequirement || 1} crew
+                            </div>
                           </button>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-[rgba(var(--mg-text),0.5)]">
+                          No ships found matching your criteria
                         </div>
-                        {/* Ship Info */}
-                        <div className="p-2">
-                          <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
-                            {ship.shipName}
-                          </div>
-                          <div className="text-xs text-[rgba(var(--mg-text),0.5)]">
-                            {ship.manufacturer}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-[rgba(var(--mg-text),0.4)] border border-dashed border-[rgba(var(--mg-primary),0.2)] rounded-lg">
-                    No ships assigned. Click "Add Ship" to add vessels to this scenario.
-                  </div>
-                )}
-              </div>
+                      )}
+                    </div>
 
-              {/* Scenario Notes */}
-              <div>
-                <label className="mg-subtitle block mb-1 text-xs">NOTES</label>
-                <textarea
-                  value={scenario.notes || ''}
-                  onChange={(e) => {
-                    const scenarios = [...(formData.scenarios || [])];
-                    scenarios[scenarioIndex] = { ...scenario, notes: e.target.value };
-                    onInputChange('scenarios', scenarios);
-                  }}
-                  className="mg-input w-full h-20 text-sm resize-none"
-                  placeholder="Additional notes for this scenario..."
-                />
+                    {/* Close button */}
+                    <div className="p-2 border-t border-[rgba(var(--mg-primary),0.2)]">
+                      <button
+                        onClick={() => setShowShipDropdown(false)}
+                        className="w-full mg-btn-sm text-center"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div className="text-[rgba(var(--mg-text),0.6)] text-sm">
+            Select the specific ships for this mission from the compendium
+          </div>
+
+          {/* Ship Cards Grid */}
+          {formData.ships && formData.ships.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {formData.ships.map((ship, shipIndex) => (
+                <motion.div
+                  key={`${ship.shipName}-${shipIndex}`}
+                  className="relative rounded-lg border border-[rgba(var(--mg-primary),0.3)] bg-[rgba(var(--mg-panel-dark),0.4)] overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  layout
+                >
+                  {/* Ship Image */}
+                  <div className="aspect-video relative">
+                    <Image
+                      src={ship.image}
+                      alt={ship.shipName}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                    {/* Quantity Controls */}
+                    <div className="absolute top-2 right-2 flex items-center gap-1 bg-[rgba(0,0,0,0.8)] rounded px-2 py-1">
+                      <button
+                        onClick={() => updateShipQuantity(shipIndex, ship.quantity - 1)}
+                        className="text-sm hover:text-[rgba(var(--mg-primary),1)] px-1"
+                        disabled={ship.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="text-sm font-bold min-w-[20px] text-center">x{ship.quantity}</span>
+                      <button
+                        onClick={() => updateShipQuantity(shipIndex, ship.quantity + 1)}
+                        className="text-sm hover:text-[rgba(var(--mg-primary),1)] px-1"
+                      >
+                        +
+                      </button>
+                    </div>
+                    {/* Remove Button */}
+                    <button
+                      onClick={() => removeShip(shipIndex)}
+                      className="absolute top-2 left-2 p-1.5 bg-[rgba(var(--mg-danger),0.8)] rounded hover:bg-[rgba(var(--mg-danger),1)] transition-colors"
+                    >
+                      <TrashIcon />
+                    </button>
+                    {/* Size Badge */}
+                    <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-[rgba(0,0,0,0.8)] rounded text-xs">
+                      {ship.size}
+                    </div>
+                  </div>
+                  {/* Ship Info */}
+                  <div className="p-3">
+                    <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
+                      {ship.shipName}
+                    </div>
+                    <div className="text-xs text-[rgba(var(--mg-text),0.5)] mb-2">
+                      {ship.manufacturer}
+                    </div>
+                    {/* Notes Input */}
+                    <input
+                      type="text"
+                      value={ship.notes || ''}
+                      onChange={(e) => updateShipNotes(shipIndex, e.target.value)}
+                      className="mg-input w-full text-xs"
+                      placeholder="Notes (e.g., Lead ship)"
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 border border-dashed border-[rgba(var(--mg-primary),0.2)] rounded-lg">
+              <ShipIcon />
+              <div className="text-[rgba(var(--mg-text),0.5)] mt-2">
+                No ships assigned. Click "Add Ship" to select vessels from the compendium.
               </div>
             </div>
-          ))}
+          )}
+
+          {errors.ships && (
+            <div className="text-[rgba(var(--mg-danger),0.8)] text-sm">{errors.ships}</div>
+          )}
         </div>
       </MobiGlasPanel>
 

@@ -1,37 +1,62 @@
 // Planned Mission types for the Mission Planner system
-// This system allows leaders to plan missions with scenarios (Full Ops / Skeleton Crew)
-// and creates Discord events for RSVP tracking
+//
+// WORKFLOW:
+// 1. User creates reusable templates (ship sizes/counts, activities, equipment)
+// 2. User creates mission plan by selecting a template, then specifying:
+//    - Actual specific ships (Carrack, Pisces, etc.)
+//    - Leader assignments
+//    - Date/time and mission details
+// 3. Mission is published to Discord as an event
+// 4. Expected participants auto-sync from Discord RSVPs
+// 5. Post-mission: Leaders mark confirmed participants (attendance tracking)
 
 import { ActivityType, OperationType } from './MissionTemplate';
 import { ShipDetails } from './ShipData';
 
-// Ship assignment for a scenario (references ship compendium)
-export interface ScenarioShip {
-  shipName: string;           // Ship name from compendium
+// Actual ship assignment (specific ship from compendium)
+export interface MissionShip {
+  shipName: string;           // Specific ship name (e.g., "Carrack", "Pisces C8X")
   manufacturer: string;       // Ship manufacturer
   size: string;               // Ship size category
   role?: string[];            // Ship roles
   image: string;              // Ship image URL
-  quantity: number;           // How many of this ship
-  notes?: string;             // Optional notes (e.g., "Lead ship", "Backup")
-}
-
-// Mission scenario (Full Ops or Skeleton Crew)
-export interface MissionScenario {
-  id: string;                 // Unique ID for the scenario
-  name: string;               // e.g., "Full Ops", "Skeleton Crew", "Minimum Viable"
-  description?: string;       // Description of this scenario
-  ships: ScenarioShip[];      // Ships assigned to this scenario
-  estimatedCrew: number;      // Estimated number of crew needed
-  notes?: string;             // Additional notes for this scenario
+  quantity: number;           // How many of this ship type
+  assignedTo?: string;        // Optional: User ID of who's bringing this ship
+  assignedToName?: string;    // Optional: Display name of assignee
+  notes?: string;             // Optional notes (e.g., "Lead ship", "Medical support")
 }
 
 // Leader assignment for a mission
 export interface MissionLeader {
   userId: string;             // User ID from the system
   aydoHandle: string;         // Display name
-  role: string;               // Leadership role (e.g., "Mission Commander", "Ground Lead", "Air Lead")
+  role: string;               // Leadership role (e.g., "Mission Commander", "Ground Lead")
   discordId?: string;         // Discord ID for mentions
+}
+
+// Participant from Discord RSVP (expected to attend)
+export interface ExpectedParticipant {
+  discordId: string;          // Discord user ID
+  discordUsername: string;    // Discord username
+  discordGlobalName?: string; // Discord display name
+  discordNickname?: string;   // Server nickname
+  discordAvatar?: string;     // Avatar URL
+  userId?: string;            // Linked AydoDB user ID (if matched)
+  aydoHandle?: string;        // Linked AydoDB handle (if matched)
+  rsvpAt?: string;            // When they RSVP'd (ISO date)
+}
+
+// Confirmed participant (actually showed up)
+export interface ConfirmedParticipant {
+  odId: string;            // Discord or User ID
+  displayName: string;        // Display name used
+  discordId?: string;         // Discord ID if from Discord
+  userId?: string;            // AydoDB user ID if linked
+  aydoHandle?: string;        // AydoDB handle if linked
+  role?: string;              // Role they played in the mission
+  confirmedBy: string;        // User ID of leader who confirmed
+  confirmedAt: string;        // When they were confirmed (ISO date)
+  notes?: string;             // Optional notes
 }
 
 // Reference image for mission briefing
@@ -61,11 +86,11 @@ export interface PlannedMission {
   duration?: number;          // Duration in minutes (optional)
   location?: string;          // In-game location/system
 
-  // Template Reference (optional)
+  // Template Reference (pre-fills operation details)
   templateId?: string;        // If created from a template
   templateName?: string;      // Cached template name
 
-  // Operation Details
+  // Operation Details (from template or manually set)
   operationType: OperationType;
   primaryActivity: ActivityType;
   secondaryActivity?: ActivityType;
@@ -74,18 +99,21 @@ export interface PlannedMission {
   // Leadership
   leaders: MissionLeader[];
 
-  // Scenario Planning
-  scenarios: MissionScenario[];
-  activeScenarioId?: string;  // Currently active scenario (set based on turnout)
+  // Ship Roster (actual specific ships)
+  ships: MissionShip[];
 
   // Mission Brief
   objectives: string;         // Mission objectives
   briefing: string;           // Full mission briefing/strategy
-  equipmentNotes?: string;    // Equipment recommendations
+  equipmentNotes?: string;    // Equipment recommendations (from template)
   images: MissionImage[];     // Reference images/diagrams
 
   // Discord Integration
   discordEvent?: DiscordEventReference;
+
+  // Participants
+  expectedParticipants: ExpectedParticipant[];   // From Discord RSVPs
+  confirmedParticipants: ConfirmedParticipant[]; // Marked by leaders post-mission
 
   // Status
   status: PlannedMissionStatus;
@@ -99,9 +127,10 @@ export interface PlannedMission {
 // Mission status lifecycle
 export type PlannedMissionStatus =
   | 'DRAFT'           // Being created/edited
-  | 'SCHEDULED'       // Published, waiting for event
+  | 'SCHEDULED'       // Published to Discord, awaiting event
   | 'ACTIVE'          // Mission in progress
-  | 'COMPLETED'       // Mission finished successfully
+  | 'DEBRIEFING'      // Mission ended, marking attendance
+  | 'COMPLETED'       // Mission finished, attendance confirmed
   | 'CANCELLED';      // Mission cancelled
 
 // Response interface with populated data
@@ -116,7 +145,7 @@ export interface PlannedMissionValidationErrors {
   operationType?: string;
   primaryActivity?: string;
   leaders?: string;
-  scenarios?: string;
+  ships?: string;
   objectives?: string;
   briefing?: string;
   general?: string;
@@ -138,48 +167,8 @@ export const LEADERSHIP_ROLES = [
 
 export type LeadershipRole = typeof LEADERSHIP_ROLES[number];
 
-// Default scenario templates
-export const DEFAULT_SCENARIO_NAMES = [
-  'Full Ops',
-  'Skeleton Crew',
-  'Minimum Viable'
-] as const;
-
-// Helper to create a new empty scenario
-export function createEmptyScenario(name: string = 'New Scenario'): MissionScenario {
-  return {
-    id: crypto.randomUUID ? crypto.randomUUID() : `scenario-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    name,
-    ships: [],
-    estimatedCrew: 0,
-    notes: ''
-  };
-}
-
-// Helper to create default scenarios
-export function createDefaultScenarios(): MissionScenario[] {
-  return [
-    {
-      id: crypto.randomUUID ? crypto.randomUUID() : `scenario-fullops-${Date.now()}`,
-      name: 'Full Ops',
-      description: 'Ideal scenario with full crew and optimal ship complement',
-      ships: [],
-      estimatedCrew: 0,
-      notes: ''
-    },
-    {
-      id: crypto.randomUUID ? crypto.randomUUID() : `scenario-skeleton-${Date.now()}`,
-      name: 'Skeleton Crew',
-      description: 'Minimum viable scenario for low turnout',
-      ships: [],
-      estimatedCrew: 0,
-      notes: ''
-    }
-  ];
-}
-
-// Helper to convert ShipDetails to ScenarioShip
-export function shipDetailsToScenarioShip(ship: ShipDetails, quantity: number = 1): ScenarioShip {
+// Helper to convert ShipDetails to MissionShip
+export function shipDetailsToMissionShip(ship: ShipDetails, quantity: number = 1): MissionShip {
   return {
     shipName: ship.name,
     manufacturer: ship.manufacturer,
@@ -188,5 +177,23 @@ export function shipDetailsToScenarioShip(ship: ShipDetails, quantity: number = 
     image: ship.image,
     quantity,
     notes: ''
+  };
+}
+
+// Helper to create empty mission with defaults
+export function createEmptyMission(): Partial<PlannedMission> {
+  return {
+    name: '',
+    scheduledDateTime: '',
+    operationType: 'Space Operations',
+    primaryActivity: 'Mining',
+    leaders: [],
+    ships: [],
+    objectives: '',
+    briefing: '',
+    images: [],
+    expectedParticipants: [],
+    confirmedParticipants: [],
+    status: 'DRAFT'
   };
 }

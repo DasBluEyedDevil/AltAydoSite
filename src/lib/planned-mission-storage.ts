@@ -1,4 +1,4 @@
-import { PlannedMissionResponse, PlannedMissionStatus } from '@/types/PlannedMission';
+import { PlannedMissionResponse, PlannedMissionStatus, ExpectedParticipant, ConfirmedParticipant } from '@/types/PlannedMission';
 import fs from 'fs';
 import path from 'path';
 import { connectToDatabase } from './mongodb';
@@ -95,13 +95,14 @@ function transformDbToResponse(dbMission: any): PlannedMissionResponse {
     secondaryActivity: dbMission.secondaryActivity,
     tertiaryActivity: dbMission.tertiaryActivity,
     leaders: dbMission.leaders || [],
-    scenarios: dbMission.scenarios || [],
-    activeScenarioId: dbMission.activeScenarioId,
+    ships: dbMission.ships || [],
     objectives: dbMission.objectives || '',
     briefing: dbMission.briefing || '',
     equipmentNotes: dbMission.equipmentNotes,
     images: dbMission.images || [],
     discordEvent: dbMission.discordEvent,
+    expectedParticipants: dbMission.expectedParticipants || [],
+    confirmedParticipants: dbMission.confirmedParticipants || [],
     status: dbMission.status,
     createdBy: dbMission.createdBy,
     createdAt: dbMission.createdAt,
@@ -430,4 +431,95 @@ export async function canUserDeleteMission(userId: string, missionId: string): P
 
 export function isUsingFallbackStorage(): boolean {
   return usingFallbackStorage;
+}
+
+// Attendance tracking functions
+
+// Update expected participants (from Discord RSVPs)
+export async function updateExpectedParticipants(id: string, participants: ExpectedParticipant[]): Promise<PlannedMissionResponse | null> {
+  console.log(`STORAGE: Updating expected participants for mission: ${id}`);
+  return updatePlannedMission(id, { expectedParticipants: participants });
+}
+
+// Add a confirmed participant (leader confirms attendance)
+export async function addConfirmedParticipant(id: string, participant: ConfirmedParticipant): Promise<PlannedMissionResponse | null> {
+  console.log(`STORAGE: Adding confirmed participant to mission: ${id}`);
+
+  const mission = await getPlannedMissionById(id);
+  if (!mission) {
+    return null;
+  }
+
+  // Check if already confirmed
+  const existingIndex = mission.confirmedParticipants.findIndex(
+    p => p.odId === participant.odId
+  );
+
+  let updatedParticipants: ConfirmedParticipant[];
+  if (existingIndex >= 0) {
+    // Update existing
+    updatedParticipants = [...mission.confirmedParticipants];
+    updatedParticipants[existingIndex] = participant;
+  } else {
+    // Add new
+    updatedParticipants = [...mission.confirmedParticipants, participant];
+  }
+
+  return updatePlannedMission(id, { confirmedParticipants: updatedParticipants });
+}
+
+// Remove a confirmed participant
+export async function removeConfirmedParticipant(id: string, odId: string): Promise<PlannedMissionResponse | null> {
+  console.log(`STORAGE: Removing confirmed participant from mission: ${id}`);
+
+  const mission = await getPlannedMissionById(id);
+  if (!mission) {
+    return null;
+  }
+
+  const updatedParticipants = mission.confirmedParticipants.filter(
+    p => p.odId !== odId
+  );
+
+  return updatePlannedMission(id, { confirmedParticipants: updatedParticipants });
+}
+
+// Bulk update confirmed participants (for debriefing)
+export async function updateConfirmedParticipants(id: string, participants: ConfirmedParticipant[]): Promise<PlannedMissionResponse | null> {
+  console.log(`STORAGE: Updating confirmed participants for mission: ${id}`);
+  return updatePlannedMission(id, { confirmedParticipants: participants });
+}
+
+// Get missions in debriefing status (for leaders to mark attendance)
+export async function getMissionsAwaitingDebrief(leaderId?: string): Promise<PlannedMissionResponse[]> {
+  console.log('STORAGE: Getting missions awaiting debrief');
+
+  try {
+    const { db } = await connectToDatabase();
+
+    let query: any = { status: 'DEBRIEFING' };
+
+    // If leaderId provided, only get missions where they are a leader
+    if (leaderId) {
+      query['leaders.userId'] = leaderId;
+    }
+
+    const missions = await db.collection('planned-missions')
+      .find(query)
+      .sort({ scheduledDateTime: -1 })
+      .toArray();
+
+    return missions.map(mission => transformDbToResponse(mission));
+  } catch (error) {
+    console.error('STORAGE: MongoDB getMissionsAwaitingDebrief failed, falling back to local:', error);
+    usingFallbackStorage = true;
+
+    let locals = getLocalPlannedMissions().filter(m => m.status === 'DEBRIEFING');
+    if (leaderId) {
+      locals = locals.filter(m => m.leaders.some(l => l.userId === leaderId));
+    }
+    return locals.sort((a, b) =>
+      new Date(b.scheduledDateTime).getTime() - new Date(a.scheduledDateTime).getTime()
+    );
+  }
 }

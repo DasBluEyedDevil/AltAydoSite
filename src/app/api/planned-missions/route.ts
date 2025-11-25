@@ -5,29 +5,15 @@ import { ActivityType, OperationType } from '@/types/MissionTemplate';
 import { PlannedMissionStatus } from '@/types/PlannedMission';
 import * as plannedMissionStorage from '@/lib/planned-mission-storage';
 
-// Validation for scenario ships
-const validateScenarioShips = (ships: any[]) => {
+// Validation for mission ships (actual ships from compendium)
+const validateMissionShips = (ships: any[]) => {
   if (!Array.isArray(ships)) return false;
 
   for (const ship of ships) {
     if (!ship.shipName || typeof ship.shipName !== 'string') return false;
     if (!ship.manufacturer || typeof ship.manufacturer !== 'string') return false;
     if (typeof ship.quantity !== 'number' || ship.quantity < 1) return false;
-  }
-
-  return true;
-};
-
-// Validation for scenarios
-const validateScenarios = (scenarios: any[]) => {
-  if (!Array.isArray(scenarios)) return false;
-
-  for (const scenario of scenarios) {
-    if (!scenario.id || typeof scenario.id !== 'string') return false;
-    if (!scenario.name || typeof scenario.name !== 'string') return false;
-    if (!Array.isArray(scenario.ships)) return false;
-    if (!validateScenarioShips(scenario.ships)) return false;
-    if (typeof scenario.estimatedCrew !== 'number' || scenario.estimatedCrew < 0) return false;
+    if (!ship.image || typeof ship.image !== 'string') return false;
   }
 
   return true;
@@ -93,13 +79,13 @@ const validatePlannedMissionData = (data: any) => {
     return { valid: false, error: 'Invalid leaders data' };
   }
 
-  // Validate scenarios if provided
-  if (data.scenarios && !validateScenarios(data.scenarios)) {
-    return { valid: false, error: 'Invalid scenarios data' };
+  // Validate ships if provided
+  if (data.ships && !validateMissionShips(data.ships)) {
+    return { valid: false, error: 'Invalid ships data' };
   }
 
   // Validate status if provided
-  const validStatuses: PlannedMissionStatus[] = ['DRAFT', 'SCHEDULED', 'ACTIVE', 'COMPLETED', 'CANCELLED'];
+  const validStatuses: PlannedMissionStatus[] = ['DRAFT', 'SCHEDULED', 'ACTIVE', 'DEBRIEFING', 'COMPLETED', 'CANCELLED'];
   if (data.status && !validStatuses.includes(data.status)) {
     return { valid: false, error: 'Invalid status' };
   }
@@ -223,10 +209,12 @@ export async function POST(request: NextRequest) {
       createdBy: userId,
       status: missionData.status || 'DRAFT',
       leaders: missionData.leaders || [],
-      scenarios: missionData.scenarios || [],
+      ships: missionData.ships || [],
       images: missionData.images || [],
       objectives: missionData.objectives || '',
-      briefing: missionData.briefing || ''
+      briefing: missionData.briefing || '',
+      expectedParticipants: missionData.expectedParticipants || [],
+      confirmedParticipants: missionData.confirmedParticipants || []
     };
 
     try {
