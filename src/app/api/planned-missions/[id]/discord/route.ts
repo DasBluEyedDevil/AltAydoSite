@@ -1,0 +1,382 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/auth';
+import * as plannedMissionStorage from '@/lib/planned-mission-storage';
+import { getDiscordService, DiscordEventUser } from '@/lib/discord';
+
+// Helper to build Discord event description from mission
+function buildEventDescription(mission: any, baseUrl?: string): string {
+  const parts: string[] = [];
+
+  // Add objectives
+  if (mission.objectives) {
+    parts.push(`**Objectives:**\n${mission.objectives}`);
+  }
+
+  // Add operation type and activities
+  const activities = [mission.primaryActivity];
+  if (mission.secondaryActivity) activities.push(mission.secondaryActivity);
+  if (mission.tertiaryActivity) activities.push(mission.tertiaryActivity);
+  parts.push(`**Type:** ${mission.operationType}`);
+  parts.push(`**Activities:** ${activities.join(', ')}`);
+
+  // Add leaders
+  if (mission.leaders && mission.leaders.length > 0) {
+    const leaderList = mission.leaders
+      .map((l: any) => `${l.role}: ${l.aydoHandle}`)
+      .join('\n');
+    parts.push(`**Leadership:**\n${leaderList}`);
+  }
+
+  // Add link to full mission briefing
+  if (baseUrl) {
+    parts.push(`\n📋 **Full Briefing:** ${baseUrl}/dashboard/missions/${mission.id}`);
+  }
+
+  return parts.join('\n\n');
+}
+
+// POST - Publish mission to Discord (create event)
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Mission ID is required' }, { status: 400 });
+    }
+
+    // Get the mission
+    const mission = await plannedMissionStorage.getPlannedMissionById(id);
+    if (!mission) {
+      return NextResponse.json({ error: 'Mission not found' }, { status: 404 });
+    }
+
+    // Check permissions
+    const canModify = await plannedMissionStorage.canUserModifyMission(userId, id);
+    if (!canModify) {
+      return NextResponse.json(
+        { error: 'You do not have permission to publish this mission' },
+        { status: 403 }
+      );
+    }
+
+    // Check if already published
+    if (mission.discordEvent) {
+      return NextResponse.json(
+        { error: 'Mission is already published to Discord', discordEvent: mission.discordEvent },
+        { status: 400 }
+      );
+    }
+
+    // Get Discord service
+    const discord = getDiscordService();
+    if (!discord.isConfigured()) {
+      return NextResponse.json(
+        { error: 'Discord is not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Get base URL from request
+    const baseUrl = request.headers.get('origin') || process.env.NEXTAUTH_URL || '';
+
+    // Build description
+    const description = buildEventDescription(mission, baseUrl);
+
+    // Calculate end time (duration or default 2 hours)
+    let endTime: string | undefined;
+    if (mission.duration) {
+      const startDate = new Date(mission.scheduledDateTime);
+      const endDate = new Date(startDate.getTime() + mission.duration * 60 * 1000);
+      endTime = endDate.toISOString();
+    }
+
+    // Create Discord event
+    const discordEvent = await discord.createScheduledEvent({
+      name: mission.name,
+      description,
+      scheduledStartTime: mission.scheduledDateTime,
+      scheduledEndTime: endTime,
+      location: mission.location || 'Star Citizen'
+    });
+
+    // Update mission with Discord event reference
+    const updatedMission = await plannedMissionStorage.updatePlannedMission(id, {
+      discordEvent: {
+        eventId: discordEvent.id,
+        guildId: discordEvent.guild_id,
+        createdAt: new Date().toISOString(),
+        status: 'SCHEDULED'
+      },
+      status: 'SCHEDULED'
+    });
+
+    console.log('Mission published to Discord:', id, '-> Event:', discordEvent.id);
+
+    return NextResponse.json({
+      success: true,
+      discordEvent: {
+        id: discordEvent.id,
+        guild_id: discordEvent.guild_id,
+        name: discordEvent.name
+      },
+      mission: updatedMission
+    });
+
+  } catch (error: any) {
+    console.error('Error publishing mission to Discord:', error);
+    return NextResponse.json(
+      { error: `Failed to publish to Discord: ${error.message}` },
+      { status: 500 }
+    );
+  }
+}
+
+// GET - Get Discord event RSVPs (interested users)
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Mission ID is required' }, { status: 400 });
+    }
+
+    // Get the mission
+    const mission = await plannedMissionStorage.getPlannedMissionById(id);
+    if (!mission) {
+      return NextResponse.json({ error: 'Mission not found' }, { status: 404 });
+    }
+
+    // Check if published to Discord
+    if (!mission.discordEvent) {
+      return NextResponse.json(
+        { error: 'Mission is not published to Discord', rsvps: [] },
+        { status: 200 }
+      );
+    }
+
+    // Get Discord service
+    const discord = getDiscordService();
+    if (!discord.isConfigured()) {
+      return NextResponse.json(
+        { error: 'Discord is not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Fetch RSVPs from Discord
+    const rsvpUsers: DiscordEventUser[] = await discord.getEventUsers(mission.discordEvent.eventId);
+
+    // Also get updated event info
+    const discordEvent = await discord.getScheduledEvent(mission.discordEvent.eventId);
+
+    // Transform to a simpler format
+    const rsvps = rsvpUsers.map(u => ({
+      discordId: u.user.id,
+      username: u.user.username,
+      globalName: u.user.global_name,
+      nickname: u.member?.nick,
+      avatar: u.user.avatar
+    }));
+
+    const res = NextResponse.json({
+      rsvps,
+      count: rsvps.length,
+      discordUserCount: discordEvent?.user_count || rsvps.length,
+      eventStatus: discordEvent?.status
+    });
+    res.headers.set('Cache-Control', 'no-store, max-age=0');
+    return res;
+
+  } catch (error: any) {
+    console.error('Error fetching Discord RSVPs:', error);
+    return NextResponse.json(
+      { error: `Failed to fetch RSVPs: ${error.message}` },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE - Unpublish mission from Discord (delete event)
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Mission ID is required' }, { status: 400 });
+    }
+
+    // Get the mission
+    const mission = await plannedMissionStorage.getPlannedMissionById(id);
+    if (!mission) {
+      return NextResponse.json({ error: 'Mission not found' }, { status: 404 });
+    }
+
+    // Check permissions
+    const canModify = await plannedMissionStorage.canUserModifyMission(userId, id);
+    if (!canModify) {
+      return NextResponse.json(
+        { error: 'You do not have permission to unpublish this mission' },
+        { status: 403 }
+      );
+    }
+
+    // Check if published
+    if (!mission.discordEvent) {
+      return NextResponse.json(
+        { error: 'Mission is not published to Discord' },
+        { status: 400 }
+      );
+    }
+
+    // Get Discord service
+    const discord = getDiscordService();
+    if (!discord.isConfigured()) {
+      return NextResponse.json(
+        { error: 'Discord is not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Delete Discord event
+    await discord.deleteScheduledEvent(mission.discordEvent.eventId);
+
+    // Update mission to remove Discord reference
+    const updatedMission = await plannedMissionStorage.updatePlannedMission(id, {
+      discordEvent: undefined,
+      status: 'DRAFT'
+    });
+
+    console.log('Mission unpublished from Discord:', id);
+
+    return NextResponse.json({
+      success: true,
+      mission: updatedMission
+    });
+
+  } catch (error: any) {
+    console.error('Error unpublishing mission from Discord:', error);
+    return NextResponse.json(
+      { error: `Failed to unpublish from Discord: ${error.message}` },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH - Update Discord event (sync changes)
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Mission ID is required' }, { status: 400 });
+    }
+
+    // Get the mission
+    const mission = await plannedMissionStorage.getPlannedMissionById(id);
+    if (!mission) {
+      return NextResponse.json({ error: 'Mission not found' }, { status: 404 });
+    }
+
+    // Check permissions
+    const canModify = await plannedMissionStorage.canUserModifyMission(userId, id);
+    if (!canModify) {
+      return NextResponse.json(
+        { error: 'You do not have permission to update this mission' },
+        { status: 403 }
+      );
+    }
+
+    // Check if published
+    if (!mission.discordEvent) {
+      return NextResponse.json(
+        { error: 'Mission is not published to Discord' },
+        { status: 400 }
+      );
+    }
+
+    // Get Discord service
+    const discord = getDiscordService();
+    if (!discord.isConfigured()) {
+      return NextResponse.json(
+        { error: 'Discord is not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Get base URL from request
+    const baseUrl = request.headers.get('origin') || process.env.NEXTAUTH_URL || '';
+
+    // Build updated description
+    const description = buildEventDescription(mission, baseUrl);
+
+    // Calculate end time
+    let endTime: string | undefined;
+    if (mission.duration) {
+      const startDate = new Date(mission.scheduledDateTime);
+      const endDate = new Date(startDate.getTime() + mission.duration * 60 * 1000);
+      endTime = endDate.toISOString();
+    }
+
+    // Update Discord event
+    const updatedEvent = await discord.updateScheduledEvent(mission.discordEvent.eventId, {
+      name: mission.name,
+      description,
+      scheduledStartTime: mission.scheduledDateTime,
+      scheduledEndTime: endTime,
+      location: mission.location || 'Star Citizen'
+    });
+
+    console.log('Discord event updated for mission:', id);
+
+    return NextResponse.json({
+      success: true,
+      discordEvent: {
+        id: updatedEvent.id,
+        name: updatedEvent.name
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Error updating Discord event:', error);
+    return NextResponse.json(
+      { error: `Failed to update Discord event: ${error.message}` },
+      { status: 500 }
+    );
+  }
+}

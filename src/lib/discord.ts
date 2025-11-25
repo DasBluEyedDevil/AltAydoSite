@@ -1,8 +1,34 @@
-import { DiscordScheduledEvent, DiscordEventStatus } from '@/types/DiscordEvent';
+import { DiscordScheduledEvent, DiscordEventStatus, DiscordEntityType, DiscordPrivacyLevel } from '@/types/DiscordEvent';
 import { Client, GatewayIntentBits, Guild, GuildMember, Role } from 'discord.js';
 
 // Discord API configuration
 const DISCORD_API_BASE = 'https://discord.com/api/v10';
+
+// Interface for creating Discord events
+export interface CreateDiscordEventParams {
+  name: string;
+  description?: string;
+  scheduledStartTime: string; // ISO 8601 timestamp
+  scheduledEndTime?: string;  // ISO 8601 timestamp (optional)
+  location?: string;          // For external events
+  image?: string;             // Base64 encoded image data (optional)
+}
+
+// Interface for Discord event RSVP user
+export interface DiscordEventUser {
+  user_id: string;
+  user: {
+    id: string;
+    username: string;
+    discriminator?: string;
+    avatar?: string;
+    global_name?: string;
+  };
+  member?: {
+    nick?: string;
+    avatar?: string;
+  };
+}
 
 export class DiscordService {
   private botToken: string;
@@ -163,6 +189,192 @@ export class DiscordService {
    */
   async getMemberRoles(member: GuildMember): Promise<Role[]> {
     return Array.from(member.roles.cache.values()).filter(role => role.name !== '@everyone');
+  }
+
+  /**
+   * Create a scheduled event in Discord
+   */
+  async createScheduledEvent(params: CreateDiscordEventParams): Promise<DiscordScheduledEvent> {
+    if (!this.botToken || !this.guildId) {
+      throw new Error('Discord configuration missing');
+    }
+
+    // Build the event payload for an EXTERNAL event type
+    const payload: any = {
+      name: params.name,
+      privacy_level: DiscordPrivacyLevel.GUILD_ONLY,
+      scheduled_start_time: params.scheduledStartTime,
+      entity_type: DiscordEntityType.EXTERNAL, // External event (no voice channel)
+      entity_metadata: {
+        location: params.location || 'Star Citizen'
+      }
+    };
+
+    // Add optional fields
+    if (params.description) {
+      payload.description = params.description;
+    }
+
+    if (params.scheduledEndTime) {
+      payload.scheduled_end_time = params.scheduledEndTime;
+    } else {
+      // Default to 2 hours after start if no end time specified
+      const startDate = new Date(params.scheduledStartTime);
+      const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
+      payload.scheduled_end_time = endDate.toISOString();
+    }
+
+    if (params.image) {
+      payload.image = params.image;
+    }
+
+    console.log('Creating Discord scheduled event:', payload.name);
+
+    const response = await fetch(
+      `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bot ${this.botToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Discord API error creating event:', response.status, errorText);
+      throw new Error(`Discord API error: ${response.status} - ${errorText}`);
+    }
+
+    const event: DiscordScheduledEvent = await response.json();
+    console.log('Discord event created successfully:', event.id);
+    return event;
+  }
+
+  /**
+   * Update a scheduled event in Discord
+   */
+  async updateScheduledEvent(eventId: string, params: Partial<CreateDiscordEventParams>): Promise<DiscordScheduledEvent> {
+    if (!this.botToken || !this.guildId) {
+      throw new Error('Discord configuration missing');
+    }
+
+    const payload: any = {};
+
+    if (params.name) payload.name = params.name;
+    if (params.description !== undefined) payload.description = params.description;
+    if (params.scheduledStartTime) payload.scheduled_start_time = params.scheduledStartTime;
+    if (params.scheduledEndTime) payload.scheduled_end_time = params.scheduledEndTime;
+    if (params.location) {
+      payload.entity_metadata = { location: params.location };
+    }
+    if (params.image) payload.image = params.image;
+
+    console.log('Updating Discord scheduled event:', eventId);
+
+    const response = await fetch(
+      `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events/${eventId}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bot ${this.botToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Discord API error updating event:', response.status, errorText);
+      throw new Error(`Discord API error: ${response.status} - ${errorText}`);
+    }
+
+    const event: DiscordScheduledEvent = await response.json();
+    console.log('Discord event updated successfully:', event.id);
+    return event;
+  }
+
+  /**
+   * Delete a scheduled event from Discord
+   */
+  async deleteScheduledEvent(eventId: string): Promise<void> {
+    if (!this.botToken || !this.guildId) {
+      throw new Error('Discord configuration missing');
+    }
+
+    console.log('Deleting Discord scheduled event:', eventId);
+
+    const response = await fetch(
+      `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events/${eventId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bot ${this.botToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok && response.status !== 404) {
+      const errorText = await response.text();
+      console.error('Discord API error deleting event:', response.status, errorText);
+      throw new Error(`Discord API error: ${response.status} - ${errorText}`);
+    }
+
+    console.log('Discord event deleted successfully:', eventId);
+  }
+
+  /**
+   * Get users who have RSVP'd to a scheduled event (interested users)
+   */
+  async getEventUsers(eventId: string): Promise<DiscordEventUser[]> {
+    if (!this.botToken || !this.guildId) {
+      throw new Error('Discord configuration missing');
+    }
+
+    const users: DiscordEventUser[] = [];
+    let after: string | undefined = undefined;
+    const limit = 100;
+
+    // Paginate through all users
+    while (true) {
+      let url = `${DISCORD_API_BASE}/guilds/${this.guildId}/scheduled-events/${eventId}/users?limit=${limit}&with_member=true`;
+      if (after) {
+        url += `&after=${after}`;
+      }
+
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bot ${this.botToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          // Event not found, return empty array
+          return [];
+        }
+        const errorText = await response.text();
+        throw new Error(`Discord API error: ${response.status} - ${errorText}`);
+      }
+
+      const batch: DiscordEventUser[] = await response.json();
+      users.push(...batch);
+
+      // If we got fewer than the limit, we've reached the end
+      if (batch.length < limit) {
+        break;
+      }
+
+      // Set the 'after' cursor for next page
+      after = batch[batch.length - 1].user_id;
+    }
+
+    return users;
   }
 
   /**
