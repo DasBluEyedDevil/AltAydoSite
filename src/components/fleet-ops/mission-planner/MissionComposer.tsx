@@ -2,7 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { MissionParticipant, MissionResponse } from '@/types/Mission';
-import { getShipByName, getDirectImagePath } from '@/types/ShipData';
+import { getShipByName, getDirectImagePath, shipDatabase } from '@/types/ShipData';
+import { LOCATION_OPTIONS } from '@/data/StarCitizenLocations';
 import { motion, AnimatePresence } from 'framer-motion';
 import ShipImage from '@/components/mission/ShipImage';
 import AccordionSection from '@/components/mission/AccordionSection';
@@ -66,6 +67,10 @@ const MissionComposer: React.FC<MissionComposerProps> = ({ mission, onSave, onCa
   const [,setLoading]=useState(false);
   const [crewAssignments,setCrewAssignments]=useState<CrewAssignment[]>([]);
   const [selectedShips,setSelectedShips]=useState<UserShip[]>([]);
+  // Ship multi-select state
+  const [shipManufacturerFilter,setShipManufacturerFilter]=useState<string>('');
+  const [shipSearchFilter,setShipSearchFilter]=useState<string>('');
+  const [pendingShipSelections,setPendingShipSelections]=useState<Set<string>>(new Set());
 
   // Initialize from mission
   useEffect(()=>{
@@ -153,6 +158,48 @@ const MissionComposer: React.FC<MissionComposerProps> = ({ mission, onSave, onCa
   // Aggregate all ships for selection in Vessels
   const allShips: UserShip[] = useMemo(()=> users.flatMap(u=>u.ships),[users]);
 
+  // Get unique manufacturers for filter dropdown
+  const manufacturers: string[] = useMemo(() => {
+    const mfrs = new Set(allShips.map(s => s.manufacturer).filter(Boolean));
+    return Array.from(mfrs).sort();
+  }, [allShips]);
+
+  // Filter available ships based on manufacturer and search
+  const filteredShips: UserShip[] = useMemo(() => {
+    return allShips.filter(s => {
+      const matchesMfr = !shipManufacturerFilter || s.manufacturer === shipManufacturerFilter;
+      const matchesSearch = !shipSearchFilter ||
+        s.name.toLowerCase().includes(shipSearchFilter.toLowerCase()) ||
+        s.type.toLowerCase().includes(shipSearchFilter.toLowerCase());
+      return matchesMfr && matchesSearch;
+    });
+  }, [allShips, shipManufacturerFilter, shipSearchFilter]);
+
+  // Toggle ship selection for multi-select
+  const toggleShipSelection = (shipId: string) => {
+    setPendingShipSelections(prev => {
+      const next = new Set(prev);
+      if (next.has(shipId)) {
+        next.delete(shipId);
+      } else {
+        next.add(shipId);
+      }
+      return next;
+    });
+  };
+
+  // Add all pending selections to mission
+  const addSelectedShips = () => {
+    const shipsToAdd = allShips.filter(s => pendingShipSelections.has(s.shipId) && !selectedShips.some(ss => ss.shipId === s.shipId));
+    if (shipsToAdd.length > 0) {
+      setSelectedShips([...selectedShips, ...shipsToAdd]);
+    }
+    setPendingShipSelections(new Set());
+  };
+
+  // Check if a ship is already in mission
+  const isShipInMission = (shipId: string) => selectedShips.some(s => s.shipId === shipId);
+
   return (
     <div className="space-y-4">
       {/* Overview */}
@@ -185,7 +232,14 @@ const MissionComposer: React.FC<MissionComposerProps> = ({ mission, onSave, onCa
                 </div>
                 <div>
                   <label htmlFor="mission-location" className="block text-sm mg-text-secondary mb-1">Location</label>
-                  <input id="mission-location" value={formData.location||''} onChange={e=>updateFormData('location', e.target.value)} className="w-full bg-transparent border border-[rgba(var(--mg-primary),0.3)] p-2 outline-none" />
+                  <select id="mission-location" value={formData.location||''} onChange={e=>updateFormData('location', e.target.value)} className="w-full bg-transparent border border-[rgba(var(--mg-primary),0.3)] p-2 outline-none">
+                    <option value="" className="bg-black">Select location...</option>
+                    {LOCATION_OPTIONS.map(loc => (
+                      <option key={loc.value} value={loc.value} className="bg-black">
+                        {loc.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="md:col-span-2">
                   <label htmlFor="mission-brief" className="block text-sm mg-text-secondary mb-1">Brief Summary</label>
@@ -260,20 +314,72 @@ const MissionComposer: React.FC<MissionComposerProps> = ({ mission, onSave, onCa
               <div className="text-base md:text-lg font-semibold mg-text-secondary">Add vessels to this mission, then assign crew to each ship below.</div>
               <div>
                 <h4 className="text-lg md:text-xl font-semibold mg-text-secondary mb-3">Available Ships</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-56 overflow-y-auto">
-                  {allShips.map(s=> (
-                    <div key={`${s.shipId}-${s.ownerId}`} className="flex items-center justify-between border border-[rgba(var(--mg-primary),0.2)] p-2">
-                      <div className="flex items-center gap-3">
-                        <ShipImage model={s.name || s.type} size="sm" />
-                        <div>
-                          <div className="text-sm">{nameWithType(s.name, s.type)}</div>
-                          <div className="text-[10px] opacity-70">Crew Req: {s.crewRequirement||0}</div>
-                        </div>
-                      </div>
-                      <button className="text-xs underline" onClick={()=>addShip(s)}>Add</button>
-                    </div>
-                  ))}
+                {/* Filters - Persistent across selections */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <select
+                    value={shipManufacturerFilter}
+                    onChange={e => setShipManufacturerFilter(e.target.value)}
+                    className="bg-transparent border border-[rgba(var(--mg-primary),0.3)] p-2 text-sm outline-none min-w-[160px]"
+                  >
+                    <option value="" className="bg-black">All Manufacturers</option>
+                    {manufacturers.map(mfr => (
+                      <option key={mfr} value={mfr} className="bg-black">{mfr}</option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    value={shipSearchFilter}
+                    onChange={e => setShipSearchFilter(e.target.value)}
+                    placeholder="Search ships..."
+                    className="bg-transparent border border-[rgba(var(--mg-primary),0.3)] p-2 text-sm outline-none flex-1 min-w-[150px]"
+                  />
+                  {pendingShipSelections.size > 0 && (
+                    <button
+                      className="mg-button text-xs px-3 py-2"
+                      onClick={addSelectedShips}
+                    >
+                      Add Selected ({pendingShipSelections.size})
+                    </button>
+                  )}
                 </div>
+                {/* Ship list with checkboxes for multi-select */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-56 overflow-y-auto">
+                  {filteredShips.map(s => {
+                    const inMission = isShipInMission(s.shipId);
+                    const isPending = pendingShipSelections.has(s.shipId);
+                    return (
+                      <div
+                        key={`${s.shipId}-${s.ownerId}`}
+                        className={`flex items-center gap-2 border p-2 cursor-pointer transition-colors ${
+                          inMission
+                            ? 'border-[rgba(var(--mg-success),0.4)] bg-[rgba(var(--mg-success),0.1)] opacity-60'
+                            : isPending
+                              ? 'border-[rgba(var(--mg-primary),0.6)] bg-[rgba(var(--mg-primary),0.15)]'
+                              : 'border-[rgba(var(--mg-primary),0.2)] hover:border-[rgba(var(--mg-primary),0.4)]'
+                        }`}
+                        onClick={() => !inMission && toggleShipSelection(s.shipId)}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isPending || inMission}
+                          disabled={inMission}
+                          onChange={() => !inMission && toggleShipSelection(s.shipId)}
+                          className="w-4 h-4 accent-[rgba(var(--mg-primary),1)]"
+                          onClick={e => e.stopPropagation()}
+                        />
+                        <ShipImage model={s.name || s.type} size="sm" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm truncate">{nameWithType(s.name, s.type)}</div>
+                          <div className="text-[10px] opacity-70">{s.manufacturer} | Crew: {s.crewRequirement||0}</div>
+                        </div>
+                        {inMission && <span className="text-[10px] text-[rgba(var(--mg-success),0.8)]">Added</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+                {filteredShips.length === 0 && (
+                  <div className="text-sm opacity-70 text-center py-4">No ships match your filters</div>
+                )}
               </div>
               <div>
                 <h4 className="text-lg md:text-xl font-semibold mg-text-secondary mb-3">Mission Vessels</h4>

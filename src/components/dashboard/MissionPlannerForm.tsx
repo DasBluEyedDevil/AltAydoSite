@@ -16,6 +16,7 @@ import {
 } from '@/types/PlannedMission';
 import { MissionTemplate, ActivityType, OperationType } from '@/types/MissionTemplate';
 import { shipDatabase, ShipDetails } from '@/types/ShipData';
+import { LOCATION_OPTIONS } from '@/data/StarCitizenLocations';
 
 // Icons
 const SpaceIcon = () => (
@@ -151,17 +152,19 @@ function formatDateTimeForInput(isoString: string): string {
   }
 }
 
-// Ship Selection Dropdown Portal Component
+// Ship Selection Dropdown Portal Component - Multi-select with persistent filters
 const ShipDropdownPortal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   anchorRef: React.RefObject<HTMLDivElement | null>;
-  onSelectShip: (ship: ShipDetails) => void;
-}> = ({ isOpen, onClose, anchorRef, onSelectShip }) => {
+  onSelectShips: (ships: ShipDetails[]) => void;
+  existingShipNames: string[];
+}> = ({ isOpen, onClose, anchorRef, onSelectShips, existingShipNames }) => {
   const [shipSearch, setShipSearch] = useState('');
   const [selectedManufacturer, setSelectedManufacturer] = useState<string>('all');
   const [selectedSize, setSelectedSize] = useState<string>('all');
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [pendingSelections, setPendingSelections] = useState<Set<string>>(new Set());
 
   const manufacturers = useMemo(() => {
     const unique = [...new Set(shipDatabase.map(s => s.manufacturer))];
@@ -193,7 +196,7 @@ const ShipDropdownPortal: React.FC<{
       );
     }
 
-    return filtered.slice(0, 30);
+    return filtered.slice(0, 50); // Increased limit for better browsing
   }, [shipSearch, selectedManufacturer, selectedSize]);
 
   // Update position when opening
@@ -207,14 +210,35 @@ const ShipDropdownPortal: React.FC<{
     }
   }, [isOpen, anchorRef]);
 
-  // Reset filters when closing
+  // Clear pending selections when closing (but keep filters!)
   useEffect(() => {
     if (!isOpen) {
-      setShipSearch('');
-      setSelectedManufacturer('all');
-      setSelectedSize('all');
+      setPendingSelections(new Set());
     }
   }, [isOpen]);
+
+  const toggleShipSelection = (shipName: string) => {
+    setPendingSelections(prev => {
+      const next = new Set(prev);
+      if (next.has(shipName)) {
+        next.delete(shipName);
+      } else {
+        next.add(shipName);
+      }
+      return next;
+    });
+  };
+
+  const handleAddSelected = () => {
+    const selectedShips = shipDatabase.filter(s => pendingSelections.has(s.name));
+    if (selectedShips.length > 0) {
+      onSelectShips(selectedShips);
+    }
+    setPendingSelections(new Set());
+    onClose();
+  };
+
+  const isShipAlreadyAdded = (shipName: string) => existingShipNames.includes(shipName);
 
   if (!isOpen) return null;
 
@@ -235,16 +259,26 @@ const ShipDropdownPortal: React.FC<{
       >
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b border-[rgba(var(--mg-primary),0.2)]">
-          <span className="text-sm font-medium text-[rgba(var(--mg-text),0.9)]">Select Ship</span>
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-[rgba(var(--mg-primary),0.2)] rounded transition-colors"
-          >
-            <XIcon />
-          </button>
+          <span className="text-sm font-medium text-[rgba(var(--mg-text),0.9)]">Select Ships</span>
+          <div className="flex items-center gap-2">
+            {pendingSelections.size > 0 && (
+              <button
+                onClick={handleAddSelected}
+                className="px-3 py-1 text-xs font-medium rounded bg-[rgba(var(--mg-primary),0.3)] text-[rgba(var(--mg-primary),1)] hover:bg-[rgba(var(--mg-primary),0.4)] transition-colors"
+              >
+                Add Selected ({pendingSelections.size})
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-1 hover:bg-[rgba(var(--mg-primary),0.2)] rounded transition-colors"
+            >
+              <XIcon />
+            </button>
+          </div>
         </div>
 
-        {/* Filters */}
+        {/* Filters - These persist between selections */}
         <div className="p-3 border-b border-[rgba(var(--mg-primary),0.2)] space-y-2">
           {/* Search */}
           <div className="relative">
@@ -286,51 +320,77 @@ const ShipDropdownPortal: React.FC<{
           </div>
         </div>
 
-        {/* Ship List */}
+        {/* Ship List with checkboxes */}
         <div className="flex-1 overflow-auto p-2 space-y-1">
           {filteredShips.length > 0 ? (
-            filteredShips.map(ship => (
-              <button
-                key={ship.name}
-                onClick={() => {
-                  onSelectShip(ship);
-                  onClose();
-                }}
-                className="w-full flex items-center gap-3 p-2 rounded hover:bg-[rgba(var(--mg-primary),0.1)] transition-colors text-left"
-              >
-                <div className="w-20 h-12 relative rounded overflow-hidden bg-[rgba(var(--mg-panel-dark),0.5)] flex-shrink-0">
-                  <Image
-                    src={ship.image}
-                    alt={ship.name}
-                    fill
-                    className="object-cover"
-                    sizes="80px"
+            filteredShips.map(ship => {
+              const isAdded = isShipAlreadyAdded(ship.name);
+              const isPending = pendingSelections.has(ship.name);
+              return (
+                <div
+                  key={ship.name}
+                  onClick={() => !isAdded && toggleShipSelection(ship.name)}
+                  className={`w-full flex items-center gap-3 p-2 rounded transition-colors text-left cursor-pointer ${
+                    isAdded
+                      ? 'opacity-50 bg-[rgba(var(--mg-success),0.1)] cursor-not-allowed'
+                      : isPending
+                        ? 'bg-[rgba(var(--mg-primary),0.2)] border border-[rgba(var(--mg-primary),0.4)]'
+                        : 'hover:bg-[rgba(var(--mg-primary),0.1)]'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isPending || isAdded}
+                    disabled={isAdded}
+                    onChange={() => !isAdded && toggleShipSelection(ship.name)}
+                    className="w-4 h-4 accent-[rgba(var(--mg-primary),1)] flex-shrink-0"
+                    onClick={(e) => e.stopPropagation()}
                   />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
-                    {ship.name}
+                  <div className="w-16 h-10 relative rounded overflow-hidden bg-[rgba(var(--mg-panel-dark),0.5)] flex-shrink-0">
+                    <Image
+                      src={ship.image}
+                      alt={ship.name}
+                      fill
+                      className="object-cover"
+                      sizes="64px"
+                    />
                   </div>
-                  <div className="text-xs text-[rgba(var(--mg-text),0.5)]">
-                    {ship.manufacturer} {ship.size ? `• ${ship.size}` : ''}
-                  </div>
-                  {ship.role && (
-                    <div className="text-xs text-[rgba(var(--mg-primary),0.7)] truncate">
-                      {ship.role.join(', ')}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-[rgba(var(--mg-text),0.9)] truncate">
+                      {ship.name}
                     </div>
-                  )}
+                    <div className="text-xs text-[rgba(var(--mg-text),0.5)]">
+                      {ship.manufacturer} {ship.size ? `• ${ship.size}` : ''}
+                    </div>
+                  </div>
+                  <div className="text-xs text-[rgba(var(--mg-text),0.5)] flex-shrink-0">
+                    {isAdded ? (
+                      <span className="text-[rgba(var(--mg-success),0.8)]">Added</span>
+                    ) : (
+                      `${ship.crewRequirement || 1} crew`
+                    )}
+                  </div>
                 </div>
-                <div className="text-xs text-[rgba(var(--mg-text),0.5)] flex-shrink-0">
-                  {ship.crewRequirement || 1} crew
-                </div>
-              </button>
-            ))
+              );
+            })
           ) : (
             <div className="text-center py-8 text-[rgba(var(--mg-text),0.5)]">
               No ships found matching your criteria
             </div>
           )}
         </div>
+
+        {/* Footer with Add button when selections exist */}
+        {pendingSelections.size > 0 && (
+          <div className="p-3 border-t border-[rgba(var(--mg-primary),0.2)] bg-[rgba(var(--mg-panel-dark),0.5)]">
+            <button
+              onClick={handleAddSelected}
+              className="w-full py-2 text-sm font-medium rounded bg-[rgba(var(--mg-primary),0.3)] text-[rgba(var(--mg-primary),1)] hover:bg-[rgba(var(--mg-primary),0.4)] transition-colors"
+            >
+              Add {pendingSelections.size} Ship{pendingSelections.size > 1 ? 's' : ''} to Roster
+            </button>
+          </div>
+        )}
       </motion.div>
     </>,
     document.body
@@ -401,22 +461,31 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
     onInputChange('templateName', undefined);
   };
 
-  // Add ship to roster
-  const addShip = (ship: ShipDetails) => {
+  // Add ships to roster (supports multiple ships)
+  const addShips = (newShips: ShipDetails[]) => {
     const ships = [...(formData.ships || [])];
-    const existingIndex = ships.findIndex(s => s.shipName === ship.name);
 
-    if (existingIndex >= 0) {
-      ships[existingIndex] = {
-        ...ships[existingIndex],
-        quantity: ships[existingIndex].quantity + 1
-      };
-    } else {
-      ships.push(shipDetailsToMissionShip(ship));
+    for (const ship of newShips) {
+      const existingIndex = ships.findIndex(s => s.shipName === ship.name);
+
+      if (existingIndex >= 0) {
+        ships[existingIndex] = {
+          ...ships[existingIndex],
+          quantity: ships[existingIndex].quantity + 1
+        };
+      } else {
+        ships.push(shipDetailsToMissionShip(ship));
+      }
     }
 
     onInputChange('ships', ships);
   };
+
+  // Get existing ship names for the dropdown
+  const existingShipNames = useMemo(() =>
+    (formData.ships || []).map(s => s.shipName),
+    [formData.ships]
+  );
 
   // Remove ship from roster
   const removeShip = (shipIndex: number) => {
@@ -694,14 +763,16 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
           {/* Location */}
           <div className="md:col-span-2">
             <label className="mg-subtitle block mb-2">LOCATION / SYSTEM</label>
-            <input
-              type="text"
+            <select
               value={formData.location || ''}
               onChange={(e) => onInputChange('location', e.target.value)}
               className="mg-input w-full"
-              placeholder="e.g., Stanton System - Hurston"
-              maxLength={100}
-            />
+            >
+              <option value="">Select location...</option>
+              {LOCATION_OPTIONS.map(loc => (
+                <option key={loc.value} value={loc.value}>{loc.label}</option>
+              ))}
+            </select>
           </div>
         </div>
       </MobiGlasPanel>
@@ -905,7 +976,8 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
             isOpen={showShipDropdown}
             onClose={() => setShowShipDropdown(false)}
             anchorRef={shipButtonRef}
-            onSelectShip={addShip}
+            onSelectShips={addShips}
+            existingShipNames={existingShipNames}
           />
         )}
       </AnimatePresence>
