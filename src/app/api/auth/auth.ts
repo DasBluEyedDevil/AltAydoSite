@@ -143,6 +143,41 @@ export const authOptions: NextAuthOptions = {
 
       // Initial sign-in
       if (user && account) {
+        // For Discord OAuth, fetch the user from storage since the OAuth user object
+        // doesn't have our custom properties (clearanceLevel, role, aydoHandle, etc.)
+        if (account.provider === 'discord') {
+          // User was created/updated in signIn callback, now fetch from storage
+          let storedUser = await userStorage.getUserByDiscordId(user.id);
+          if (!storedUser && user.email) {
+            storedUser = await userStorage.getUserByEmail(user.email);
+          }
+
+          if (storedUser) {
+            token.id = storedUser.id;
+            token.clearanceLevel = storedUser.clearanceLevel;
+            token.role = storedUser.role;
+            token.aydoHandle = storedUser.aydoHandle;
+            token.discordName = storedUser.discordName || null;
+            token.discordId = storedUser.discordId || user.id;
+            token.discordAvatar = storedUser.discordAvatar || user.image || null;
+            token.rsiAccountName = storedUser.rsiAccountName || null;
+            token.lastUpdated = now;
+            return token;
+          }
+          // Fallback if storage lookup fails - use Discord profile data
+          token.id = user.id;
+          token.clearanceLevel = 1;
+          token.role = 'user';
+          token.aydoHandle = user.name || 'discord_user';
+          token.discordName = user.name || null;
+          token.discordId = user.id;
+          token.discordAvatar = user.image || null;
+          token.rsiAccountName = null;
+          token.lastUpdated = now;
+          return token;
+        }
+
+        // For credentials provider, use the user object directly (it has all properties)
         token.id = user.id;
         token.clearanceLevel = user.clearanceLevel;
         token.role = user.role;
