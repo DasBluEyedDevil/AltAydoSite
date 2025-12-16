@@ -14,7 +14,7 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf .next",
-    "kill-port": "node kill-port.js",
+    "kill-port": "node scripts/kill-port.js",
     "migrate-users": "tsx src/scripts/migrate-users.ts",
     "migrate-timezone": "tsx src/scripts/migrate-timezone.ts",
     "test-cosmos": "tsx src/scripts/test-cosmos-connection.ts",

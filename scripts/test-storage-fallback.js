@@ -1,4 +1,4 @@
-const userStorage = require('./src/lib/user-storage');
+const userStorage = require('../src/lib/user-storage');
 
 async function testStorage() {
   console.log('Testing user storage fallback...');
