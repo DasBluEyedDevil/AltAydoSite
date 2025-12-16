@@ -310,6 +310,23 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
       });
 
       if (res.ok) {
+        const savedMission = await res.json();
+
+        // If editing a mission with a Discord event, sync the changes to Discord
+        if (selectedMission?.discordEvent && savedMission?.id) {
+          try {
+            const discordRes = await fetch(`/api/planned-missions/${savedMission.id}/discord`, {
+              method: 'PATCH'
+            });
+            if (!discordRes.ok) {
+              console.warn('Failed to sync changes to Discord event');
+            }
+          } catch (discordError) {
+            console.warn('Failed to sync changes to Discord:', discordError);
+            // Don't fail the save operation if Discord sync fails
+          }
+        }
+
         await fetchMissions();
         setViewMode('list');
         resetForm();
@@ -511,7 +528,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
     }
   };
 
-  // Format date
+  // Format date with timezone
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -519,8 +536,53 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZoneName: 'short'
     });
+  };
+
+  // Get countdown string for upcoming missions
+  const getCountdown = (dateString: string): { text: string; isUrgent: boolean; isPast: boolean } => {
+    const now = new Date();
+    const target = new Date(dateString);
+    const diffMs = target.getTime() - now.getTime();
+
+    // Mission is in the past
+    if (diffMs < 0) {
+      return { text: 'Started', isUrgent: false, isPast: true };
+    }
+
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    // Less than 1 hour - urgent
+    if (diffMins < 60) {
+      return { text: `T-${diffMins}m`, isUrgent: true, isPast: false };
+    }
+
+    // Less than 24 hours
+    if (diffHours < 24) {
+      const remainingMins = diffMins % 60;
+      return {
+        text: `T-${diffHours}h ${remainingMins}m`,
+        isUrgent: diffHours < 2,
+        isPast: false
+      };
+    }
+
+    // More than a day
+    const remainingHours = diffHours % 24;
+    return {
+      text: `T-${diffDays}d ${remainingHours}h`,
+      isUrgent: false,
+      isPast: false
+    };
+  };
+
+  // Get user's timezone for display
+  const getUserTimezone = () => {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
   };
 
   // Calculate estimated crew for a mission
@@ -552,8 +614,17 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
         }
       >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="text-[rgba(var(--mg-text),0.7)]">
-            Create and manage mission plans. Publish to Discord to gather interest.
+          <div>
+            <div className="text-[rgba(var(--mg-text),0.7)]">
+              Create and manage mission plans. Publish to Discord to gather interest.
+            </div>
+            {/* Timezone indicator */}
+            <div className="flex items-center gap-1 mt-1 text-xs text-[rgba(var(--mg-text),0.4)]">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Times shown in your local timezone: {getUserTimezone()}</span>
+            </div>
           </div>
 
           {/* Status Filter */}
@@ -623,11 +694,32 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
                   {mission.name}
                 </h3>
 
-                <div className="flex items-center gap-4 text-sm text-[rgba(var(--mg-text),0.6)] mb-3">
+                <div className="flex items-center justify-between gap-2 text-sm text-[rgba(var(--mg-text),0.6)] mb-3">
                   <div className="flex items-center gap-1">
                     <CalendarIcon />
-                    <span>{formatDate(mission.scheduledDateTime)}</span>
+                    <span className="text-xs">{formatDate(mission.scheduledDateTime)}</span>
                   </div>
+                  {/* Countdown Display */}
+                  {mission.status === 'SCHEDULED' && (() => {
+                    const countdown = getCountdown(mission.scheduledDateTime);
+                    return (
+                      <div
+                        className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${
+                          countdown.isPast
+                            ? 'bg-[rgba(var(--mg-success),0.2)] text-[rgba(var(--mg-success),1)]'
+                            : countdown.isUrgent
+                            ? 'bg-[rgba(var(--mg-danger),0.2)] text-[rgba(var(--mg-danger),1)] animate-pulse'
+                            : 'bg-[rgba(var(--mg-primary),0.15)] text-[rgba(var(--mg-primary),0.9)]'
+                        }`}
+                        title="Time until mission start"
+                      >
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{countdown.text}</span>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 <div className="flex items-center gap-4 text-xs text-[rgba(var(--mg-text),0.5)] mb-4">
