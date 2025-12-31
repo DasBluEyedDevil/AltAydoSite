@@ -2,7 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { MissionParticipant, MissionResponse } from '@/types/Mission';
-import { getShipByName, getDirectImagePath, shipDatabase } from '@/types/ShipData';
+import { getShipByName, getDirectImagePath, ShipDetails } from '@/types/ShipData';
+import { loadShipDatabase } from '@/lib/ship-data';
 import { LOCATION_OPTIONS } from '@/data/StarCitizenLocations';
 import { motion, AnimatePresence } from 'framer-motion';
 import ShipImage from '@/components/mission/ShipImage';
@@ -72,6 +73,10 @@ const MissionComposer: React.FC<MissionComposerProps> = ({ mission, onSave, onCa
   const [shipSearchFilter,setShipSearchFilter]=useState<string>('');
   const [pendingShipSelections,setPendingShipSelections]=useState<Set<string>>(new Set());
 
+  // Ship database state
+  const [shipDatabase, setShipDatabase] = useState<ShipDetails[]>([]);
+  const [shipsLoading, setShipsLoading] = useState(true);
+
   // Initialize from mission
   useEffect(()=>{
     if(mission){
@@ -89,6 +94,14 @@ const MissionComposer: React.FC<MissionComposerProps> = ({ mission, onSave, onCa
       setOpenSection('overview');
     }
   },[mission]);
+
+  // Load ship database
+  useEffect(() => {
+    loadShipDatabase()
+      .then(setShipDatabase)
+      .catch(console.error)
+      .finally(() => setShipsLoading(false));
+  }, []);
 
   // Fetch users (ported)
   useEffect(()=>{ const fetchUsers=async()=>{ try{ setLoading(true); const res=await fetch('/api/users'); if(!res.ok){ console.error('Users fetch failed'); setLoading(false);return;} const raw=await res.json(); const apiUsers=Array.isArray(raw)?raw:(raw?.items??[]); const transformed:User[]=apiUsers.map((u:any)=>({ userId:u.id, name:u.aydoHandle, ships:(u.ships||[]).map((ship:any)=>{ const shipName=ship.name||'Unnamed Ship'; const shipType=ship.type||shipName; const details=getShipByName(shipName)|| (shipType!==shipName?getShipByName(shipType):null); const img=getDirectImagePath(shipName); if(details){ return { shipId:ship.id||`ship-${Date.now()}-${Math.random().toString(36).slice(2)}`, name:shipName, type:shipType, manufacturer:ship.manufacturer||details.manufacturer, image:ship.image||img, crewRequirement:ship.crewRequirement||details.crewRequirement, ownerId:u.id, ownerName:u.aydoHandle, size:details.size, role:details.role?.join(', '), cargoCapacity:details.cargoCapacity, length:details.length, beam:details.beam, height:details.height, speedSCM:details.speedSCM, speedBoost:details.speedBoost, status:details.status } as UserShip; } return { shipId:ship.id||`ship-${Date.now()}-${Math.random().toString(36).slice(2)}`, name:shipName, type:shipType, manufacturer:ship.manufacturer||'Unknown Manufacturer', image:ship.image||img, crewRequirement:ship.crewRequirement||1, ownerId:u.id, ownerName:u.aydoHandle, size:ship.size||'Medium', role:ship.role||'Multipurpose', cargoCapacity:ship.cargoCapacity||0, length:ship.length||0, beam:ship.beam||0, height:ship.height||0, speedSCM:ship.speedSCM||0, status:'Flight Ready' } as UserShip; }) })); setUsers(transformed);}catch(e){console.error(e);}finally{setLoading(false);} }; fetchUsers(); },[]);

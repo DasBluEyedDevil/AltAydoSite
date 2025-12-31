@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { shipDatabase } from '@/types/ShipData';
+import { ShipDetails } from '@/types/ShipData';
+import { loadShipDatabase } from '@/lib/ship-data';
 
 // Direct image path formatting function
 const formatDirectImagePath = (shipName: string): string => {
@@ -21,8 +22,23 @@ const formatDirectImagePath = (shipName: string): string => {
 };
 
 const TestShipImages: React.FC = () => {
-  const [selectedShip, setSelectedShip] = useState(shipDatabase[0]);
+  const [shipDatabase, setShipDatabase] = useState<ShipDetails[]>([]);
+  const [shipsLoading, setShipsLoading] = useState(true);
+  const [selectedShip, setSelectedShip] = useState<ShipDetails | null>(null);
   const [testResults, setTestResults] = useState<Array<{ship: string, path: string, exists: boolean}>>([]);
+
+  // Load ship database
+  useEffect(() => {
+    loadShipDatabase()
+      .then((ships) => {
+        setShipDatabase(ships);
+        if (ships.length > 0) {
+          setSelectedShip(ships[0]);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setShipsLoading(false));
+  }, []);
   
   const testShipImages = () => {
     // Test the first 10 ships for simplicity
@@ -40,24 +56,35 @@ const TestShipImages: React.FC = () => {
   };
   
   // Get direct image path for selected ship
-  const selectedShipImagePath = formatDirectImagePath(selectedShip.name);
-  
+  const selectedShipImagePath = selectedShip ? formatDirectImagePath(selectedShip.name) : '';
+
+  // Show loading state
+  if (shipsLoading) {
+    return (
+      <div className="p-4 bg-gray-900 text-white">
+        <h2 className="text-xl mb-4">Ship Image Path Test</h2>
+        <p>Loading ship database...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 bg-gray-900 text-white">
       <h2 className="text-xl mb-4">Ship Image Path Test</h2>
-      
-      <button 
+
+      <button
         className="px-4 py-2 bg-blue-600 rounded mb-4"
         onClick={testShipImages}
+        disabled={shipDatabase.length === 0}
       >
         Test Ship Images
       </button>
-      
+
       <div className="mb-4">
         <h3 className="text-lg mb-2">Sample Ship</h3>
-        <select 
+        <select
           className="bg-gray-800 p-2 w-full max-w-md mb-2"
-          value={selectedShip.name}
+          value={selectedShip?.name || ''}
           onChange={(e) => {
             const ship = shipDatabase.find(s => s.name === e.target.value);
             if (ship) setSelectedShip(ship);
@@ -67,37 +94,39 @@ const TestShipImages: React.FC = () => {
             <option key={ship.name} value={ship.name}>{ship.name}</option>
           ))}
         </select>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h4 className="text-sm mb-1">Ship Details</h4>
-            <pre className="bg-gray-800 p-2 text-xs">
-              {JSON.stringify(selectedShip, null, 2)}
-            </pre>
-          </div>
-          
-          <div>
-            <h4 className="text-sm mb-1">Image Path</h4>
-            <div className="bg-gray-800 p-2">
-              <p className="text-xs mb-1">Raw name: {selectedShip.name}</p>
-              <p className="text-xs mb-1">Formatted name: {selectedShip.name.toLowerCase().replace(/\s+/g, '_')}</p>
-              <p className="text-xs mb-1">Full path: {selectedShipImagePath}</p>
+
+        {selectedShip && (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm mb-1">Ship Details</h4>
+              <pre className="bg-gray-800 p-2 text-xs">
+                {JSON.stringify(selectedShip, null, 2)}
+              </pre>
             </div>
-            
-            <div className="mt-2 p-2 bg-gray-800">
-              <h4 className="text-sm mb-1">Image Preview</h4>
-              <div className="h-32 bg-gray-700 relative">
-                <Image
-                  src={selectedShipImagePath}
-                  alt={selectedShip.name}
-                  fill
-                  sizes="128px"
-                  className="object-contain mx-auto"
-                />
+
+            <div>
+              <h4 className="text-sm mb-1">Image Path</h4>
+              <div className="bg-gray-800 p-2">
+                <p className="text-xs mb-1">Raw name: {selectedShip.name}</p>
+                <p className="text-xs mb-1">Formatted name: {selectedShip.name.toLowerCase().replace(/\s+/g, '_')}</p>
+                <p className="text-xs mb-1">Full path: {selectedShipImagePath}</p>
+              </div>
+
+              <div className="mt-2 p-2 bg-gray-800">
+                <h4 className="text-sm mb-1">Image Preview</h4>
+                <div className="h-32 bg-gray-700 relative">
+                  <Image
+                    src={selectedShipImagePath}
+                    alt={selectedShip.name}
+                    fill
+                    sizes="128px"
+                    className="object-contain mx-auto"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       
       {testResults.length > 0 && (

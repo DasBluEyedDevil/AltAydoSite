@@ -15,7 +15,8 @@ import {
   shipDetailsToMissionShip
 } from '@/types/PlannedMission';
 import { MissionTemplate, ActivityType, OperationType } from '@/types/MissionTemplate';
-import { shipDatabase, ShipDetails } from '@/types/ShipData';
+import { ShipDetails } from '@/types/ShipData';
+import { loadShipDatabase } from '@/lib/ship-data';
 import { LOCATION_OPTIONS } from '@/data/StarCitizenLocations';
 
 // Icons
@@ -159,7 +160,8 @@ const ShipDropdownPortal: React.FC<{
   anchorRef: React.RefObject<HTMLDivElement | null>;
   onSelectShips: (ships: ShipDetails[]) => void;
   existingShipNames: string[];
-}> = ({ isOpen, onClose, anchorRef, onSelectShips, existingShipNames }) => {
+  shipDatabase: ShipDetails[];
+}> = ({ isOpen, onClose, anchorRef, onSelectShips, existingShipNames, shipDatabase }) => {
   const [shipSearch, setShipSearch] = useState('');
   const [selectedManufacturer, setSelectedManufacturer] = useState<string>('all');
   const [selectedSize, setSelectedSize] = useState<string>('all');
@@ -413,6 +415,10 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
   const [loadingLeaders, setLoadingLeaders] = useState(true);
   const shipButtonRef = useRef<HTMLDivElement>(null);
 
+  // Ship database state
+  const [ships, setShips] = useState<ShipDetails[]>([]);
+  const [shipsLoading, setShipsLoading] = useState(true);
+
   // Check if a template is selected
   const hasTemplate = Boolean(formData.templateId);
 
@@ -432,6 +438,14 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
       }
     }
     fetchLeaders();
+  }, []);
+
+  // Load ship database
+  useEffect(() => {
+    loadShipDatabase()
+      .then(setShips)
+      .catch(console.error)
+      .finally(() => setShipsLoading(false));
   }, []);
 
   // Initialize ships array if empty
@@ -511,10 +525,10 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
   // Calculate total estimated crew
   const estimatedCrew = useMemo(() => {
     return (formData.ships || []).reduce((total, ship) => {
-      const shipData = shipDatabase.find(sd => sd.name === ship.shipName);
+      const shipData = ships.find(sd => sd.name === ship.shipName);
       return total + (shipData?.crewRequirement || 1) * ship.quantity;
     }, 0);
-  }, [formData.ships]);
+  }, [formData.ships, ships]);
 
   // Add leader
   const addLeader = () => {
@@ -978,6 +992,7 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
             anchorRef={shipButtonRef}
             onSelectShips={addShips}
             existingShipNames={existingShipNames}
+            shipDatabase={ships}
           />
         )}
       </AnimatePresence>

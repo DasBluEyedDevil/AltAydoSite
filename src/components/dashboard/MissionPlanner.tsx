@@ -18,7 +18,8 @@ import {
   createEmptyMission
 } from '@/types/PlannedMission';
 import { MissionTemplate } from '@/types/MissionTemplate';
-import { shipDatabase } from '@/types/ShipData';
+import { ShipDetails } from '@/types/ShipData';
+import { loadShipDatabase } from '@/lib/ship-data';
 
 // Icons
 const PlusIcon = () => (
@@ -112,6 +113,10 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
   const [statusFilter, setStatusFilter] = useState<PlannedMissionStatus | 'all'>('all');
   const [rsvpData, setRsvpData] = useState<Record<string, { count: number; users: Array<{ username: string; globalName?: string; nickname?: string }> }>>({});
 
+  // Ship database state
+  const [ships, setShips] = useState<ShipDetails[]>([]);
+  const [shipsLoading, setShipsLoading] = useState(true);
+
   // Track if we've already processed URL params
   const templateParamProcessed = useRef(false);
   const missionIdParamProcessed = useRef(false);
@@ -191,6 +196,14 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
     fetchMissions();
     fetchTemplates();
   }, [fetchMissions, fetchTemplates]);
+
+  // Load ship database
+  useEffect(() => {
+    loadShipDatabase()
+      .then(setShips)
+      .catch(console.error)
+      .finally(() => setShipsLoading(false));
+  }, []);
 
   // Handle initial mission ID
   useEffect(() => {
@@ -588,7 +601,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
   // Calculate estimated crew for a mission
   const getEstimatedCrew = (mission: PlannedMissionResponse) => {
     return (mission.ships || []).reduce((total, ship) => {
-      const shipData = shipDatabase.find(sd => sd.name === ship.shipName);
+      const shipData = ships.find(sd => sd.name === ship.shipName);
       return total + (shipData?.crewRequirement || 1) * ship.quantity;
     }, 0);
   };
