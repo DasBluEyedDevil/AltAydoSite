@@ -132,6 +132,7 @@ body {
   position: relative;
   overflow: hidden;
   letter-spacing: 0.5px;
+  will-change: transform, box-shadow;
 }
 
 .mg-button:hover, .mg-button:focus {
@@ -324,6 +325,7 @@ body {
 
 .hologram-flicker {
   animation: hologram-flicker 5s infinite;
+  will-change: opacity;
 }
 
 @keyframes hologram-flicker {
@@ -535,6 +537,7 @@ html {
   animation: radar-rotate 6s linear infinite;
   pointer-events: none;
   opacity: 0.07;
+  will-change: transform;
 }
 
 @keyframes radar-rotate {
@@ -661,6 +664,7 @@ html {
 /* New subtle glow effect for elements */
 .mg-glow {
   animation: glow-pulse 5s ease-in-out infinite;
+  will-change: opacity, box-shadow;
 }
 
 @keyframes glow-pulse {
@@ -763,6 +767,7 @@ html {
 
 .scan-glow {
   animation: scan-glow 3s infinite;
+  will-change: opacity;
 }
 
 @keyframes hologram-rotate {
@@ -772,6 +777,7 @@ html {
 
 .hologram-rotate {
   animation: hologram-rotate 20s linear infinite;
+  will-change: transform;
 }
 
 .animation-delay-150 {
@@ -1225,4 +1231,30 @@ img {
 
 .animate-scan-vertical {
   animation: scan-vertical 1s ease-in-out;
+}
+
+/* Accessibility: Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .holo-scan,
+  .radar-sweep,
+  .data-stream,
+  .hologram-flicker,
+  .mg-glow,
+  .float-element,
+  .hologram-rotate {
+    animation: none !important;
+  }
+
+  .starfield-canvas {
+    display: none;
+  }
 }
