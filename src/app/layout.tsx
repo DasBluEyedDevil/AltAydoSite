@@ -1,19 +1,11 @@
 import localFont from 'next/font/local';
-import dynamic from 'next/dynamic';
 import './globals.css';
 import Profile from '../components/Profile';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { metadata } from './metadata';
 import UserProviderWrapper from '../components/UserProviderWrapper';
-
-const StarfieldWrapper = dynamic(
-  () => import('@/components/StarfieldWrapper'),
-  {
-    ssr: false,
-    loading: () => null
-  }
-);
+import StarfieldWrapper from '../components/StarfieldWrapper';
 import SecureConnectionIndicator from '../components/SecureConnectionIndicator';
 import { Suspense } from 'react';
 import ClientErrorBoundary from '../components/ClientErrorBoundary';
