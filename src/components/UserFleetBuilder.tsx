@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { UserShip } from '@/types/user';
 import { getManufacturersList, getShipsByManufacturer } from '@/types/ShipData';
 import { resolveShipImage } from '@/lib/ships/image';
@@ -62,14 +62,16 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
     setLoadedImages(prev => ({ ...prev, [shipId]: true }));
   };
 
-  // Group ships by manufacturer for display
-  const shipsByManufacturer = (userShips || []).reduce<Record<string, UserShip[]>>((acc, ship) => {
-    if (!acc[ship.manufacturer]) {
-      acc[ship.manufacturer] = [];
-    }
-    acc[ship.manufacturer].push(ship);
-    return acc;
-  }, {});
+  // Group ships by manufacturer for display (memoized to prevent recalculation on every render)
+  const shipsByManufacturer = useMemo(() => {
+    return (userShips || []).reduce<Record<string, UserShip[]>>((acc, ship) => {
+      if (!acc[ship.manufacturer]) {
+        acc[ship.manufacturer] = [];
+      }
+      acc[ship.manufacturer].push(ship);
+      return acc;
+    }, {});
+  }, [userShips]);
 
   // CSS styles for select elements to ensure dark background
   const selectStyles = {
