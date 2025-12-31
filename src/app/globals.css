@@ -458,10 +458,10 @@ html {
 /* Animations - smoother and more subtle */
 @keyframes holo-shine {
   0% {
-    left: -150%;
+    transform: translateX(-150%);
   }
   100% {
-    left: 150%; 
+    transform: translateX(150%);
   }
 }
 
@@ -618,12 +618,13 @@ html {
   background: rgba(var(--mg-primary), 0.2);
   animation: data-stream 12s linear infinite;
   opacity: 0;
+  will-change: transform, opacity;
 }
 
 @keyframes data-stream {
   0% {
+    transform: translateX(0);
     opacity: 0;
-    left: 0;
   }
   5% {
     opacity: 0.7;
@@ -632,8 +633,8 @@ html {
     opacity: 0.7;
   }
   100% {
+    transform: translateX(100vw);
     opacity: 0;
-    left: 100%;
   }
 }
 
@@ -721,10 +722,15 @@ html {
 
 @keyframes progress-pulse {
   0% {
-    left: -50%;
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
   }
   100% {
-    left: 100%;
+    transform: translateX(200%);
+    opacity: 0;
   }
 }
 
