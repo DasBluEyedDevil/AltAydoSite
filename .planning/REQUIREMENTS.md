@@ -118,61 +118,61 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ## Traceability
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| SYNC-01 | Phase 1 | Pending |
-| SYNC-02 | Phase 1 | Pending |
-| SYNC-03 | Phase 1 | Pending |
-| SYNC-04 | Phase 1 | Pending |
-| SYNC-05 | Phase 1 | Pending |
-| SYNC-06 | Phase 1 | Pending |
-| SYNC-07 | Phase 1 | Pending |
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
-| DATA-03 | Phase 1 | Pending |
-| DATA-04 | Phase 1 | Pending |
-| DATA-05 | Phase 1 | Pending |
-| DATA-06 | Phase 1 | Pending |
-| API-01 | Phase 2 | Pending |
-| API-02 | Phase 2 | Pending |
-| API-03 | Phase 2 | Pending |
-| API-04 | Phase 2 | Pending |
-| MIG-01 | Phase 3 | Pending |
-| MIG-02 | Phase 3 | Pending |
-| MIG-03 | Phase 3 | Pending |
-| MIG-04 | Phase 3 | Pending |
-| MIG-05 | Phase 3 | Pending |
-| MIG-06 | Phase 3 | Pending |
-| TYPE-01 | Phase 4 | Pending |
-| TYPE-02 | Phase 4 | Pending |
-| TYPE-03 | Phase 4 | Pending |
-| TYPE-04 | Phase 4 | Pending |
-| TYPE-05 | Phase 4 | Pending |
-| TYPE-06 | Phase 4 | Pending |
-| UI-01 | Phase 5 | Pending |
-| UI-02 | Phase 5 | Pending |
-| UI-03 | Phase 5 | Pending |
-| UI-04 | Phase 5 | Pending |
-| UI-05 | Phase 5 | Pending |
-| UI-06 | Phase 5 | Pending |
-| UI-07 | Phase 5 | Pending |
-| UI-08 | Phase 5 | Pending |
-| INT-01 | Phase 6 | Pending |
-| INT-02 | Phase 6 | Pending |
-| INT-03 | Phase 6 | Pending |
-| INT-04 | Phase 6 | Pending |
-| INT-05 | Phase 6 | Pending |
-| INT-06 | Phase 6 | Pending |
-| CLN-01 | Phase 7 | Pending |
-| CLN-02 | Phase 7 | Pending |
-| CLN-03 | Phase 7 | Pending |
-| CLN-04 | Phase 7 | Pending |
+| Requirement | Phase | Phase Name | Status |
+|-------------|-------|------------|--------|
+| SYNC-01 | Phase 1 | Sync Engine & Data Model | Pending |
+| SYNC-02 | Phase 1 | Sync Engine & Data Model | Pending |
+| SYNC-03 | Phase 1 | Sync Engine & Data Model | Pending |
+| SYNC-04 | Phase 1 | Sync Engine & Data Model | Pending |
+| SYNC-05 | Phase 1 | Sync Engine & Data Model | Pending |
+| SYNC-06 | Phase 1 | Sync Engine & Data Model | Pending |
+| SYNC-07 | Phase 1 | Sync Engine & Data Model | Pending |
+| DATA-01 | Phase 1 | Sync Engine & Data Model | Pending |
+| DATA-02 | Phase 1 | Sync Engine & Data Model | Pending |
+| DATA-03 | Phase 1 | Sync Engine & Data Model | Pending |
+| DATA-04 | Phase 1 | Sync Engine & Data Model | Pending |
+| DATA-05 | Phase 1 | Sync Engine & Data Model | Pending |
+| DATA-06 | Phase 1 | Sync Engine & Data Model | Pending |
+| API-01 | Phase 2 | Ship API Routes | Pending |
+| API-02 | Phase 2 | Ship API Routes | Pending |
+| API-03 | Phase 2 | Ship API Routes | Pending |
+| API-04 | Phase 2 | Ship API Routes | Pending |
+| MIG-01 | Phase 3 | Data Migration | Pending |
+| MIG-02 | Phase 3 | Data Migration | Pending |
+| MIG-03 | Phase 3 | Data Migration | Pending |
+| MIG-04 | Phase 3 | Data Migration | Pending |
+| MIG-05 | Phase 3 | Data Migration | Pending |
+| MIG-06 | Phase 3 | Data Migration | Pending |
+| TYPE-01 | Phase 4 | Type System & Image Resolution | Pending |
+| TYPE-02 | Phase 4 | Type System & Image Resolution | Pending |
+| TYPE-03 | Phase 4 | Type System & Image Resolution | Pending |
+| TYPE-04 | Phase 4 | Type System & Image Resolution | Pending |
+| TYPE-05 | Phase 4 | Type System & Image Resolution | Pending |
+| TYPE-06 | Phase 4 | Type System & Image Resolution | Pending |
+| UI-01 | Phase 5 | Ship Browse & Display | Pending |
+| UI-02 | Phase 5 | Ship Browse & Display | Pending |
+| UI-03 | Phase 5 | Ship Browse & Display | Pending |
+| UI-04 | Phase 5 | Ship Browse & Display | Pending |
+| UI-05 | Phase 5 | Ship Browse & Display | Pending |
+| UI-06 | Phase 5 | Ship Browse & Display | Pending |
+| UI-07 | Phase 5 | Ship Browse & Display | Pending |
+| UI-08 | Phase 5 | Ship Browse & Display | Pending |
+| INT-01 | Phase 6 | Frontend Integration | Pending |
+| INT-02 | Phase 6 | Frontend Integration | Pending |
+| INT-03 | Phase 6 | Frontend Integration | Pending |
+| INT-04 | Phase 6 | Frontend Integration | Pending |
+| INT-05 | Phase 6 | Frontend Integration | Pending |
+| INT-06 | Phase 6 | Frontend Integration | Pending |
+| CLN-01 | Phase 7 | Cleanup & Decommission | Pending |
+| CLN-02 | Phase 7 | Cleanup & Decommission | Pending |
+| CLN-03 | Phase 7 | Cleanup & Decommission | Pending |
+| CLN-04 | Phase 7 | Cleanup & Decommission | Pending |
 
 **Coverage:**
 - v1 requirements: 47 total
 - Mapped to phases: 47
-- Unmapped: 0 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after initial definition*
+*Last updated: 2026-02-03 after roadmap creation*
