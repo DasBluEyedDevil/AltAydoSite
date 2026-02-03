@@ -386,35 +386,311 @@ async function migratePlannedMissions(
 }
 
 // ---------------------------------------------------------------------------
-// Operations Migration (stub -- Task 2)
+// Operations Migration
 // ---------------------------------------------------------------------------
 
 async function migrateOperations(
-  _index: ShipsIndex,
-  _report: MigrationReport,
-  _dryRun: boolean
+  index: ShipsIndex,
+  report: MigrationReport,
+  dryRun: boolean
 ): Promise<void> {
-  console.log('\nMIGRATION: [operations] -- handler pending (Task 2)');
+  console.log('\nMIGRATION: [operations] Starting operations migration...');
+
+  const collectionReport: CollectionReport = {
+    total: 0,
+    updated: 0,
+    skipped: 0,
+    failed: 0,
+  };
+
+  const filePath = path.resolve(process.cwd(), 'data', 'operations.json');
+
+  try {
+    if (!fs.existsSync(filePath)) {
+      console.log('MIGRATION: [operations] data/operations.json not found -- skipping');
+      report.collections.operations = collectionReport;
+      return;
+    }
+
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const operations = JSON.parse(raw) as Array<Record<string, unknown>>;
+
+    if (!Array.isArray(operations) || operations.length === 0) {
+      console.log('MIGRATION: [operations] No operations found -- skipping');
+      report.collections.operations = collectionReport;
+      return;
+    }
+
+    console.log(`MIGRATION: [operations] Found ${operations.length} operations`);
+
+    let anyFileUpdated = false;
+
+    for (const operation of operations) {
+      collectionReport.total++;
+
+      const participants = operation.participants as Array<Record<string, unknown>> | undefined;
+      if (!participants || participants.length === 0) {
+        collectionReport.skipped++;
+        continue;
+      }
+
+      let anyUpdated = false;
+
+      for (let idx = 0; idx < participants.length; idx++) {
+        const participant = participants[idx];
+        const shipName = participant.shipName as string | undefined;
+        if (!shipName) {
+          continue;
+        }
+
+        // Idempotency check
+        if (
+          participant.fleetyardsId &&
+          typeof participant.fleetyardsId === 'string' &&
+          UUID_REGEX.test(participant.fleetyardsId as string)
+        ) {
+          collectionReport.skipped++;
+          continue;
+        }
+
+        const match = resolveShipName(shipName, index);
+        const fieldPath = `participants[${idx}].shipName`;
+
+        if (match) {
+          report.mappings.push({
+            collection: 'operations',
+            documentId: operation.id as string,
+            fieldPath,
+            originalName: shipName,
+            resolvedName: match.matchedName,
+            fleetyardsId: match.fleetyardsId,
+            strategy: match.strategy,
+          });
+          participant.fleetyardsId = match.fleetyardsId;
+          anyUpdated = true;
+        } else {
+          report.unmatchedNames.push({
+            collection: 'operations',
+            documentId: operation.id as string,
+            fieldPath,
+            name: shipName,
+          });
+        }
+      }
+
+      if (anyUpdated) {
+        collectionReport.updated++;
+        anyFileUpdated = true;
+      } else {
+        collectionReport.skipped++;
+      }
+    }
+
+    if (anyFileUpdated && !dryRun) {
+      try {
+        fs.writeFileSync(filePath, JSON.stringify(operations, null, 2), 'utf8');
+      } catch (err) {
+        console.error('MIGRATION: [operations] Failed to write operations.json:', err);
+        collectionReport.failed++;
+      }
+    }
+  } catch (err) {
+    console.error('MIGRATION: [operations] Error:', err);
+    collectionReport.failed++;
+  }
+
+  report.collections.operations = collectionReport;
+  console.log(
+    `MIGRATION: [operations] Done -- ${collectionReport.total} total, ` +
+    `${collectionReport.updated} updated, ${collectionReport.skipped} skipped, ` +
+    `${collectionReport.failed} failed`
+  );
 }
 
 // ---------------------------------------------------------------------------
-// Resources Migration (stub -- Task 2)
+// Resources Migration
 // ---------------------------------------------------------------------------
 
 async function migrateResources(
-  _index: ShipsIndex,
-  _report: MigrationReport,
-  _dryRun: boolean
+  index: ShipsIndex,
+  report: MigrationReport,
+  dryRun: boolean
 ): Promise<void> {
-  console.log('\nMIGRATION: [resources] -- handler pending (Task 2)');
+  console.log('\nMIGRATION: [resources] Starting resources migration...');
+
+  const collectionReport: CollectionReport = {
+    total: 0,
+    updated: 0,
+    skipped: 0,
+    failed: 0,
+  };
+
+  const filePath = path.resolve(process.cwd(), 'data', 'resources.json');
+
+  try {
+    if (!fs.existsSync(filePath)) {
+      console.log('MIGRATION: [resources] data/resources.json not found -- skipping');
+      report.collections.resources = collectionReport;
+      return;
+    }
+
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const resources = JSON.parse(raw) as Array<Record<string, unknown>>;
+
+    if (!Array.isArray(resources) || resources.length === 0) {
+      console.log('MIGRATION: [resources] No resources found -- skipping');
+      report.collections.resources = collectionReport;
+      return;
+    }
+
+    console.log(`MIGRATION: [resources] Found ${resources.length} resources`);
+
+    let anyFileUpdated = false;
+
+    for (const resource of resources) {
+      // Only migrate resources of type 'Ship'
+      if (resource.type !== 'Ship') {
+        continue;
+      }
+
+      collectionReport.total++;
+
+      const name = resource.name as string | undefined;
+      if (!name) {
+        collectionReport.skipped++;
+        continue;
+      }
+
+      // Idempotency check
+      if (
+        resource.fleetyardsId &&
+        typeof resource.fleetyardsId === 'string' &&
+        UUID_REGEX.test(resource.fleetyardsId as string)
+      ) {
+        collectionReport.skipped++;
+        continue;
+      }
+
+      const match = resolveShipName(name, index);
+      const fieldPath = 'name';
+
+      if (match) {
+        report.mappings.push({
+          collection: 'resources',
+          documentId: resource.id as string,
+          fieldPath,
+          originalName: name,
+          resolvedName: match.matchedName,
+          fleetyardsId: match.fleetyardsId,
+          strategy: match.strategy,
+        });
+        resource.fleetyardsId = match.fleetyardsId;
+        collectionReport.updated++;
+        anyFileUpdated = true;
+      } else {
+        report.unmatchedNames.push({
+          collection: 'resources',
+          documentId: resource.id as string,
+          fieldPath,
+          name,
+        });
+        collectionReport.skipped++;
+      }
+    }
+
+    if (anyFileUpdated && !dryRun) {
+      try {
+        fs.writeFileSync(filePath, JSON.stringify(resources, null, 2), 'utf8');
+      } catch (err) {
+        console.error('MIGRATION: [resources] Failed to write resources.json:', err);
+        collectionReport.failed++;
+      }
+    }
+  } catch (err) {
+    console.error('MIGRATION: [resources] Error:', err);
+    collectionReport.failed++;
+  }
+
+  report.collections.resources = collectionReport;
+  console.log(
+    `MIGRATION: [resources] Done -- ${collectionReport.total} total, ` +
+    `${collectionReport.updated} updated, ${collectionReport.skipped} skipped, ` +
+    `${collectionReport.failed} failed`
+  );
 }
 
 // ---------------------------------------------------------------------------
-// Report Printer (stub -- Task 2)
+// Report Printer
 // ---------------------------------------------------------------------------
 
-function printReport(_report: MigrationReport): void {
-  console.log('\nMIGRATION: Report printing pending (Task 2)');
+function printReport(report: MigrationReport): void {
+  const startTime = new Date(report.startedAt).getTime();
+  const endTime = report.completedAt ? new Date(report.completedAt).getTime() : Date.now();
+  const durationSec = ((endTime - startTime) / 1000).toFixed(1);
+
+  const line = '========================================';
+
+  console.log(`\n${line}`);
+  console.log('SHIP REFERENCE MIGRATION REPORT');
+  console.log(line);
+  console.log(`Mode: ${report.dryRun ? 'DRY-RUN' : 'LIVE'}`);
+  console.log(`Started: ${report.startedAt}`);
+  console.log(`Completed: ${report.completedAt || 'N/A'}`);
+  console.log(`Duration: ${durationSec}s`);
+
+  console.log('\n--- Collection Summary ---');
+
+  const colNames: Array<[string, string]> = [
+    ['users', 'Users'],
+    ['missions', 'Missions'],
+    ['plannedMissions', 'Planned Missions'],
+    ['operations', 'Operations'],
+    ['resources', 'Resources'],
+  ];
+
+  for (const [key, label] of colNames) {
+    const col = report.collections[key];
+    if (col) {
+      const padded = (label + ':').padEnd(18);
+      console.log(
+        `${padded} ${col.total} total, ${col.updated} updated, ` +
+        `${col.skipped} skipped, ${col.failed} failed`
+      );
+    } else {
+      const padded = (label + ':').padEnd(18);
+      console.log(`${padded} (not processed)`);
+    }
+  }
+
+  console.log('\n--- Totals ---');
+  console.log(`Total documents: ${report.totalProcessed}`);
+  console.log(`Total updated:   ${report.totalUpdated}`);
+  console.log(`Total skipped:   ${report.totalSkipped}`);
+  console.log(`Total failed:    ${report.totalFailed}`);
+
+  console.log(`\n--- Name Mappings (${report.mappings.length} total) ---`);
+  for (const m of report.mappings) {
+    console.log(
+      `[${m.collection}] doc:${m.documentId} ${m.fieldPath}: ` +
+      `"${m.originalName}" -> "${m.resolvedName}" (${m.strategy})`
+    );
+  }
+
+  console.log(`\n--- Unmatched Names (${report.unmatchedNames.length} total) ---`);
+  for (const u of report.unmatchedNames) {
+    console.log(
+      `[${u.collection}] doc:${u.documentId} ${u.fieldPath}: ` +
+      `"${u.name}" -- NO MATCH FOUND`
+    );
+  }
+
+  const result = report.unmatchedNames.length === 0
+    ? 'SUCCESS (0 unmatched)'
+    : `PARTIAL (${report.unmatchedNames.length} unmatched names)`;
+
+  console.log(`\n${line}`);
+  console.log(`RESULT: ${result}`);
+  console.log(line);
 }
 
 // ---------------------------------------------------------------------------
