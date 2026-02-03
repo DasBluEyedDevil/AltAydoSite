@@ -81,10 +81,11 @@ Plans:
   2. `resolveShipImage()` takes a ship document and view angle (angled/side/top/store) and returns a FleetYards CDN URL
   3. `next.config.js` includes `cdn.fleetyards.net` in `remotePatterns` so Next.js Image component loads FleetYards images without errors
   4. Ship images render correctly from FleetYards CDN with graceful fallback (placeholder) when an image URL is missing or fails to load
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md -- Type definitions (UserShip, MissionShip, MissionParticipant, OperationParticipant, MissionParticipantDraft) and next.config.js restoration
+- [ ] 04-02-PLAN.md -- Image resolution rewrite (resolveShipImage with ShipImages) and API validation updates (profile, planned-missions)
 
 ### Phase 5: Ship Browse & Display
 **Goal**: Users can browse, search, and inspect the full ship database through a rich, filterable UI
@@ -143,7 +144,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 1. Sync Engine & Data Model | 4/4 | Complete | 2026-02-03 |
 | 2. Ship API Routes | 3/3 | Complete | 2026-02-03 |
 | 3. Data Migration | 2/2 | Complete | 2026-02-03 |
-| 4. Type System & Image Resolution | 0/TBD | Not started | - |
+| 4. Type System & Image Resolution | 0/2 | Not started | - |
 | 5. Ship Browse & Display | 0/TBD | Not started | - |
 | 6. Frontend Integration | 0/TBD | Not started | - |
 | 7. Cleanup & Decommission | 0/TBD | Not started | - |
