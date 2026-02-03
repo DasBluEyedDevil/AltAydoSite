@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 2 (Ship API Routes) -- in progress
+**Current focus:** Phase 2 (Ship API Routes) -- COMPLETE. Ready for Phase 3.
 
 ## Current Position
 
 Phase: 2 of 7 (Ship API Routes)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-03 -- Completed 02-02-PLAN.md (ship list & single ship API routes)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-03 -- Completed 02-03-PLAN.md (batch resolution & manufacturers routes)
 
-Progress: [██████░░░░] ~25% (6 of ~24 total plans estimated)
+Progress: [███████░░░] ~29% (7 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: ~2.2 min
-- Total execution time: ~13 min
+- Total plans completed: 7
+- Average duration: ~2.1 min
+- Total execution time: ~15 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 - Sync Engine | 4 | ~10 min | ~2.5 min |
-| 2 - Ship API Routes | 2 | ~3 min | ~1.5 min |
+| 2 - Ship API Routes | 3 | ~5 min | ~1.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (~2 min), 01-04 (~3 min), 02-01 (~2 min), 02-02 (~1 min)
-- Trend: stable, accelerating
+- Last 5 plans: 01-04 (~3 min), 02-01 (~2 min), 02-02 (~1 min), 02-03 (~2 min)
+- Trend: stable, consistently fast
 
 *Updated after each plan completion*
 
@@ -59,6 +59,9 @@ Recent decisions affecting current work:
 - [02-01]: warn-level logging on text index creation failure (not silently swallowed)
 - [02-02]: Zod with z.coerce for query param validation instead of manual parseInt
 - [02-02]: public, max-age=300, stale-while-revalidate=60 for both ship endpoints
+- [02-03]: POST instead of GET for batch endpoint (array of 50 UUIDs exceeds URL length limits)
+- [02-03]: 1-hour cache on manufacturers (rarely changing), no-store on batch (POST)
+- [02-03]: No pagination on manufacturers endpoint (~33 entries, bounded dataset)
 
 ### Pending Todos
 
@@ -74,8 +77,8 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 02-02-PLAN.md. Ready for 02-03.
-Resume file: .planning/phases/02-ship-api-routes/02-02-SUMMARY.md
+Stopped at: Completed 02-03-PLAN.md. Phase 2 complete. Ready for Phase 3.
+Resume file: .planning/phases/02-ship-api-routes/02-03-SUMMARY.md
 
 IMPORTANT CONTEXT:
 - commit_docs is true (commit planning artifacts)
