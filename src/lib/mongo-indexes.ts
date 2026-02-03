@@ -76,4 +76,34 @@ export async function ensureMongoIndexes(db: Db): Promise<void> {
   } catch (err) {
     console.warn('Index setup (mission-templates) skipped or failed:', err);
   }
+
+  try {
+    const ships = db.collection('ships');
+    await Promise.all([
+      // Primary lookup by FleetYards UUID (unique)
+      ships.createIndex({ fleetyardsId: 1 }, { unique: true }).catch(() => {}),
+      // Slug lookup for URL-based routes (unique)
+      ships.createIndex({ slug: 1 }, { unique: true }).catch(() => {}),
+      // Manufacturer filter queries
+      ships.createIndex({ 'manufacturer.code': 1 }).catch(() => {}),
+      // Production status filter
+      ships.createIndex({ productionStatus: 1 }).catch(() => {}),
+      // Sync housekeeping (find stale records)
+      ships.createIndex({ syncVersion: 1 }).catch(() => {}),
+      // Combined filter: manufacturer + size (common filter combo)
+      ships.createIndex({ 'manufacturer.code': 1, size: 1 }).catch(() => {}),
+    ]);
+  } catch (err) {
+    console.warn('Index setup (ships) skipped or failed:', err);
+  }
+
+  try {
+    const syncStatus = db.collection('sync-status');
+    await Promise.all([
+      // Find latest sync by type
+      syncStatus.createIndex({ type: 1, lastSyncAt: -1 }).catch(() => {}),
+    ]);
+  } catch (err) {
+    console.warn('Index setup (sync-status) skipped or failed:', err);
+  }
 }
