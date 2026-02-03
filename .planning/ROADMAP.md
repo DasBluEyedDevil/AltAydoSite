@@ -13,7 +13,7 @@ Replace AydoCorp's static ship database with a dynamic system powered by the Fle
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Sync Engine & Data Model** - Build FleetYards sync infrastructure and ship storage layer
-- [ ] **Phase 2: Ship API Routes** - Expose ship data through filtered, paginated REST endpoints
+- [x] **Phase 2: Ship API Routes** - Expose ship data through filtered, paginated REST endpoints
 - [ ] **Phase 3: Data Migration** - Convert all existing ship references from names to FleetYards UUIDs
 - [ ] **Phase 4: Type System & Image Resolution** - Update TypeScript types and image pipeline for UUID-based references
 - [ ] **Phase 5: Ship Browse & Display** - Build new ship browsing UI with multi-axis filtering and detail views
@@ -52,9 +52,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Storage layer query functions and text search index
-- [ ] 02-02-PLAN.md -- Ship list and single ship lookup API routes (API-01, API-02)
-- [ ] 02-03-PLAN.md -- Batch resolution and manufacturers API routes (API-03, API-04)
+- [x] 02-01-PLAN.md -- Storage layer query functions and text search index
+- [x] 02-02-PLAN.md -- Ship list and single ship lookup API routes (API-01, API-02)
+- [x] 02-03-PLAN.md -- Batch resolution and manufacturers API routes (API-03, API-04)
 
 ### Phase 3: Data Migration
 **Goal**: All existing ship references across the application are converted from name strings to FleetYards UUIDs
@@ -140,7 +140,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
 | 1. Sync Engine & Data Model | 4/4 | ✓ Complete | 2026-02-03 |
-| 2. Ship API Routes | 0/3 | Not started | - |
+| 2. Ship API Routes | 3/3 | ✓ Complete | 2026-02-03 |
 | 3. Data Migration | 0/TBD | Not started | - |
 | 4. Type System & Image Resolution | 0/TBD | Not started | - |
 | 5. Ship Browse & Display | 0/TBD | Not started | - |

@@ -28,10 +28,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Ship API
 
-- [ ] **API-01**: `GET /api/ships` returns paginated ship list with filter params: manufacturer, size, role, status, search text
-- [ ] **API-02**: `GET /api/ships/[id]` returns single ship by UUID or slug
-- [ ] **API-03**: `GET /api/ships/batch` resolves multiple ships by UUID array (for mission rosters, user fleets)
-- [ ] **API-04**: `GET /api/ships/manufacturers` returns manufacturer list with logos
+- [x] **API-01**: `GET /api/ships` returns paginated ship list with filter params: manufacturer, size, role, status, search text
+- [x] **API-02**: `GET /api/ships/[id]` returns single ship by UUID or slug
+- [x] **API-03**: `POST /api/ships/batch` resolves multiple ships by UUID array (for mission rosters, user fleets)
+- [x] **API-04**: `GET /api/ships/manufacturers` returns manufacturer list with ship counts
 
 ### Migration
 
