@@ -12,7 +12,7 @@ Replace AydoCorp's static ship database with a dynamic system powered by the Fle
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Sync Engine & Data Model** - Build FleetYards sync infrastructure and ship storage layer
+- [x] **Phase 1: Sync Engine & Data Model** - Build FleetYards sync infrastructure and ship storage layer
 - [ ] **Phase 2: Ship API Routes** - Expose ship data through filtered, paginated REST endpoints
 - [ ] **Phase 3: Data Migration** - Convert all existing ship references from names to FleetYards UUIDs
 - [ ] **Phase 4: Type System & Image Resolution** - Update TypeScript types and image pipeline for UUID-based references
@@ -35,10 +35,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Types, Zod schemas, node-cron dependency, env vars
-- [ ] 01-02-PLAN.md -- FleetYards API client with paginated fetch and response transform
-- [ ] 01-03-PLAN.md -- Ship storage module and MongoDB indexes
-- [ ] 01-04-PLAN.md -- Sync orchestrator, cron HTTP endpoint, instrumentation hook
+- [x] 01-01-PLAN.md -- Types, Zod schemas, node-cron dependency, env vars
+- [x] 01-02-PLAN.md -- FleetYards API client with paginated fetch and response transform
+- [x] 01-03-PLAN.md -- Ship storage module and MongoDB indexes
+- [x] 01-04-PLAN.md -- Sync orchestrator, cron HTTP endpoint, instrumentation hook
 
 ### Phase 2: Ship API Routes
 **Goal**: Ship data is queryable through REST endpoints with filtering, search, and batch resolution
@@ -137,7 +137,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Sync Engine & Data Model | 0/4 | Planned | - |
+| 1. Sync Engine & Data Model | 4/4 | ✓ Complete | 2026-02-03 |
 | 2. Ship API Routes | 0/TBD | Not started | - |
 | 3. Data Migration | 0/TBD | Not started | - |
 | 4. Type System & Image Resolution | 0/TBD | Not started | - |

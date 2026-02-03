@@ -9,22 +9,22 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Sync Engine
 
-- [ ] **SYNC-01**: FleetYards API client fetches all ships via paginated GET requests to `/v1/models`
-- [ ] **SYNC-02**: Sync service transforms FleetYards response into internal ship schema via explicit field mapping
-- [ ] **SYNC-03**: Ships are upserted to MongoDB `ships` collection keyed on FleetYards UUID
-- [ ] **SYNC-04**: Sync is triggered via Azure scheduled job (matching existing Discord sync pattern)
-- [ ] **SYNC-05**: If FleetYards API is unavailable, existing ship data is preserved (never wiped)
-- [ ] **SYNC-06**: Each ship record is Zod-validated before writing; malformed records are logged and skipped
-- [ ] **SYNC-07**: Sync audit log records each run: timestamp, ships processed, errors, duration
+- [x] **SYNC-01**: FleetYards API client fetches all ships via paginated GET requests to `/v1/models`
+- [x] **SYNC-02**: Sync service transforms FleetYards response into internal ship schema via explicit field mapping
+- [x] **SYNC-03**: Ships are upserted to MongoDB `ships` collection keyed on FleetYards UUID
+- [x] **SYNC-04**: Sync is triggered via Azure scheduled job (matching existing Discord sync pattern)
+- [x] **SYNC-05**: If FleetYards API is unavailable, existing ship data is preserved (never wiped)
+- [x] **SYNC-06**: Each ship record is Zod-validated before writing; malformed records are logged and skipped
+- [x] **SYNC-07**: Sync audit log records each run: timestamp, ships processed, errors, duration
 
 ### Ship Data Model
 
-- [ ] **DATA-01**: Ship documents store FleetYards UUID as canonical identifier
-- [ ] **DATA-02**: Ship documents include: name, slug, manufacturer (name/code/logo), classification, focus, crew min/max, cargo, dimensions, mass, speeds, production status
-- [ ] **DATA-03**: Ship documents include multiple image URLs: store, angled, side, top views in multiple resolutions
-- [ ] **DATA-04**: Ship documents include description and external links (RSI store URL)
-- [ ] **DATA-05**: MongoDB indexes created for: UUID (unique), slug (unique), manufacturer code, production status, text search (name + manufacturer)
-- [ ] **DATA-06**: `lastSyncedAt` and `syncVersion` tracked per ship for staleness detection
+- [x] **DATA-01**: Ship documents store FleetYards UUID as canonical identifier
+- [x] **DATA-02**: Ship documents include: name, slug, manufacturer (name/code/logo), classification, focus, crew min/max, cargo, dimensions, mass, speeds, production status
+- [x] **DATA-03**: Ship documents include multiple image URLs: store, angled, side, top views in multiple resolutions
+- [x] **DATA-04**: Ship documents include description and external links (RSI store URL)
+- [x] **DATA-05**: MongoDB indexes created for: UUID (unique), slug (unique), manufacturer code, production status, text search (name + manufacturer)
+- [x] **DATA-06**: `lastSyncedAt` and `syncVersion` tracked per ship for staleness detection
 
 ### Ship API
 
@@ -120,19 +120,19 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Phase Name | Status |
 |-------------|-------|------------|--------|
-| SYNC-01 | Phase 1 | Sync Engine & Data Model | Pending |
-| SYNC-02 | Phase 1 | Sync Engine & Data Model | Pending |
-| SYNC-03 | Phase 1 | Sync Engine & Data Model | Pending |
-| SYNC-04 | Phase 1 | Sync Engine & Data Model | Pending |
-| SYNC-05 | Phase 1 | Sync Engine & Data Model | Pending |
-| SYNC-06 | Phase 1 | Sync Engine & Data Model | Pending |
-| SYNC-07 | Phase 1 | Sync Engine & Data Model | Pending |
-| DATA-01 | Phase 1 | Sync Engine & Data Model | Pending |
-| DATA-02 | Phase 1 | Sync Engine & Data Model | Pending |
-| DATA-03 | Phase 1 | Sync Engine & Data Model | Pending |
-| DATA-04 | Phase 1 | Sync Engine & Data Model | Pending |
-| DATA-05 | Phase 1 | Sync Engine & Data Model | Pending |
-| DATA-06 | Phase 1 | Sync Engine & Data Model | Pending |
+| SYNC-01 | Phase 1 | Sync Engine & Data Model | Complete |
+| SYNC-02 | Phase 1 | Sync Engine & Data Model | Complete |
+| SYNC-03 | Phase 1 | Sync Engine & Data Model | Complete |
+| SYNC-04 | Phase 1 | Sync Engine & Data Model | Complete |
+| SYNC-05 | Phase 1 | Sync Engine & Data Model | Complete |
+| SYNC-06 | Phase 1 | Sync Engine & Data Model | Complete |
+| SYNC-07 | Phase 1 | Sync Engine & Data Model | Complete |
+| DATA-01 | Phase 1 | Sync Engine & Data Model | Complete |
+| DATA-02 | Phase 1 | Sync Engine & Data Model | Complete |
+| DATA-03 | Phase 1 | Sync Engine & Data Model | Complete |
+| DATA-04 | Phase 1 | Sync Engine & Data Model | Complete |
+| DATA-05 | Phase 1 | Sync Engine & Data Model | Complete |
+| DATA-06 | Phase 1 | Sync Engine & Data Model | Complete |
 | API-01 | Phase 2 | Ship API Routes | Pending |
 | API-02 | Phase 2 | Ship API Routes | Pending |
 | API-03 | Phase 2 | Ship API Routes | Pending |
