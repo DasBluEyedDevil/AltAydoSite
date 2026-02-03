@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 2 of 7 (Ship API Routes)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-03 -- Completed 02-01-PLAN.md (ship query functions & text index)
+Last activity: 2026-02-03 -- Completed 02-02-PLAN.md (ship list & single ship API routes)
 
-Progress: [█████░░░░░] ~21% (5 of ~24 total plans estimated)
+Progress: [██████░░░░] ~25% (6 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: ~2.4 min
-- Total execution time: ~12 min
+- Total plans completed: 6
+- Average duration: ~2.2 min
+- Total execution time: ~13 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 - Sync Engine | 4 | ~10 min | ~2.5 min |
-| 2 - Ship API Routes | 1 | ~2 min | ~2 min |
+| 2 - Ship API Routes | 2 | ~3 min | ~1.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (~2 min), 01-03 (~2 min), 01-04 (~3 min), 02-01 (~2 min)
-- Trend: stable, consistently fast
+- Last 5 plans: 01-03 (~2 min), 01-04 (~3 min), 02-01 (~2 min), 02-02 (~1 min)
+- Trend: stable, accelerating
 
 *Updated after each plan completion*
 
@@ -57,6 +57,8 @@ Recent decisions affecting current work:
 - [02-01]: Import Sort type from mongodb to avoid TypeScript union type error in conditional sort
 - [02-01]: $regex fallback in findShips mitigates Cosmos DB text index compatibility concern
 - [02-01]: warn-level logging on text index creation failure (not silently swallowed)
+- [02-02]: Zod with z.coerce for query param validation instead of manual parseInt
+- [02-02]: public, max-age=300, stale-while-revalidate=60 for both ship endpoints
 
 ### Pending Todos
 
@@ -72,8 +74,8 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 02-01-PLAN.md. Ready for 02-02.
-Resume file: .planning/phases/02-ship-api-routes/02-01-SUMMARY.md
+Stopped at: Completed 02-02-PLAN.md. Ready for 02-03.
+Resume file: .planning/phases/02-ship-api-routes/02-02-SUMMARY.md
 
 IMPORTANT CONTEXT:
 - commit_docs is true (commit planning artifacts)
