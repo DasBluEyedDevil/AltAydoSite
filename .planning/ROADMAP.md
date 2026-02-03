@@ -32,11 +32,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. If the FleetYards API is unreachable during a sync attempt, existing ship data in the database is preserved unchanged
   4. Malformed ship records from the API are logged and skipped without blocking the rest of the sync
   5. A sync audit log records every sync run with timestamp, ship count processed, errors encountered, and duration
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- Types, Zod schemas, node-cron dependency, env vars
+- [ ] 01-02-PLAN.md -- FleetYards API client with paginated fetch and response transform
+- [ ] 01-03-PLAN.md -- Ship storage module and MongoDB indexes
+- [ ] 01-04-PLAN.md -- Sync orchestrator, cron HTTP endpoint, instrumentation hook
 
 ### Phase 2: Ship API Routes
 **Goal**: Ship data is queryable through REST endpoints with filtering, search, and batch resolution
@@ -135,7 +137,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Sync Engine & Data Model | 0/TBD | Not started | - |
+| 1. Sync Engine & Data Model | 0/4 | Planned | - |
 | 2. Ship API Routes | 0/TBD | Not started | - |
 | 3. Data Migration | 0/TBD | Not started | - |
 | 4. Type System & Image Resolution | 0/TBD | Not started | - |
