@@ -15,9 +15,13 @@
  */
 
 import { connectToDatabase } from '@/lib/mongodb-client';
+import type { Sort } from 'mongodb';
 import type { ShipDocument, SyncStatusDocument } from '@/types/ship';
 
 const DATABASE_ID = process.env.COSMOS_DATABASE_ID || 'aydocorp-database';
+
+/** UUID v4 pattern for distinguishing FleetYards UUIDs from slugs */
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * Get the ships collection from the database.
@@ -229,5 +233,222 @@ export async function getLatestSyncStatus(): Promise<SyncStatusDocument | null> 
   } catch (error) {
     console.error('[ship-storage] Error in getLatestSyncStatus:', error);
     return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Ship Query Operations
+// ---------------------------------------------------------------------------
+
+/** Options for the paginated ship search/filter query */
+export interface ShipQueryOptions {
+  page: number;
+  pageSize: number;
+  /** Filter by manufacturer.slug */
+  manufacturer?: string;
+  /** Filter by size field */
+  size?: string;
+  /** Filter by classification field */
+  classification?: string;
+  /** Filter by productionStatus field */
+  productionStatus?: string;
+  /** $text search on name + manufacturer.name */
+  search?: string;
+}
+
+/** Paginated result set returned by findShips */
+export interface ShipQueryResult {
+  items: ShipDocument[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+/** Manufacturer summary with ship count */
+export interface ManufacturerInfo {
+  name: string;
+  code: string;
+  slug: string;
+  shipCount: number;
+}
+
+/**
+ * Find ships with optional text search, field filters, and pagination.
+ *
+ * When `search` is provided the query uses the $text index for relevance-ranked
+ * results. If the $text index is unavailable (e.g. index creation failed), the
+ * function falls back to a case-insensitive $regex match on the name field.
+ *
+ * Filtering and pagination are pushed to MongoDB -- no in-memory filtering.
+ */
+export async function findShips(options: ShipQueryOptions): Promise<ShipQueryResult> {
+  const { page, pageSize, manufacturer, size, classification, productionStatus, search } = options;
+
+  const shipsCollection = await getShipsCollection();
+
+  // Build filter object
+  const filter: Record<string, unknown> = {};
+  if (search) {
+    filter.$text = { $search: search };
+  }
+  if (manufacturer) {
+    filter['manufacturer.slug'] = manufacturer;
+  }
+  if (size) {
+    filter.size = size;
+  }
+  if (classification) {
+    filter.classification = classification;
+  }
+  if (productionStatus) {
+    filter.productionStatus = productionStatus;
+  }
+
+  // Sort and projection depend on whether we are doing a text search
+  const sort: Sort = search
+    ? { score: { $meta: 'textScore' } }
+    : { name: 1 };
+  const projection: Record<string, unknown> = { _id: 0 };
+  if (search) {
+    projection.score = { $meta: 'textScore' };
+  }
+
+  const skip = (page - 1) * pageSize;
+
+  try {
+    const [items, total] = await Promise.all([
+      shipsCollection
+        .find(filter, { projection })
+        .sort(sort)
+        .skip(skip)
+        .limit(pageSize)
+        .toArray() as Promise<ShipDocument[]>,
+      shipsCollection.countDocuments(filter),
+    ]);
+
+    return {
+      items,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize) || 1,
+    };
+  } catch (error) {
+    // If the $text index is missing, the $text query will fail.
+    // Fall back to a $regex search on the name field.
+    if (search) {
+      console.error(
+        '[ship-storage] $text query failed, falling back to $regex:',
+        error
+      );
+
+      // Rebuild filter replacing $text with $regex on name
+      delete filter.$text;
+      filter.name = { $regex: search, $options: 'i' };
+
+      const fallbackSort = { name: 1 as const };
+      const fallbackProjection: Record<string, unknown> = { _id: 0 };
+
+      const [items, total] = await Promise.all([
+        shipsCollection
+          .find(filter, { projection: fallbackProjection })
+          .sort(fallbackSort)
+          .skip(skip)
+          .limit(pageSize)
+          .toArray() as Promise<ShipDocument[]>,
+        shipsCollection.countDocuments(filter),
+      ]);
+
+      return {
+        items,
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize) || 1,
+      };
+    }
+
+    // Non-search query failure -- rethrow
+    console.error('[ship-storage] Error in findShips:', error);
+    throw error;
+  }
+}
+
+/**
+ * Look up a ship by either its FleetYards UUID or its URL slug.
+ *
+ * If the input matches UUID v4 format, delegates to getShipByFleetyardsId.
+ * Otherwise, delegates to getShipBySlug.
+ */
+export async function getShipByIdOrSlug(idOrSlug: string): Promise<ShipDocument | null> {
+  if (UUID_REGEX.test(idOrSlug)) {
+    return getShipByFleetyardsId(idOrSlug);
+  }
+  return getShipBySlug(idOrSlug);
+}
+
+/**
+ * Retrieve multiple ships by an array of FleetYards UUIDs in a single
+ * database round-trip using $in.
+ *
+ * Returns an empty array if the input is empty or on failure.
+ */
+export async function getShipsByFleetyardsIds(ids: string[]): Promise<ShipDocument[]> {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  try {
+    const shipsCollection = await getShipsCollection();
+    const docs = await shipsCollection
+      .find(
+        { fleetyardsId: { $in: ids } },
+        { projection: { _id: 0 } }
+      )
+      .toArray();
+    return docs as ShipDocument[];
+  } catch (error) {
+    console.error('[ship-storage] Error in getShipsByFleetyardsIds:', error);
+    return [];
+  }
+}
+
+/**
+ * Aggregate distinct manufacturers from the ships collection with ship counts.
+ *
+ * Returns an alphabetically sorted list of manufacturers, each with their
+ * name, code, slug, and the number of ships they produce.
+ */
+export async function getManufacturers(): Promise<ManufacturerInfo[]> {
+  try {
+    const shipsCollection = await getShipsCollection();
+    const results = await shipsCollection
+      .aggregate([
+        {
+          $group: {
+            _id: '$manufacturer.slug',
+            name: { $first: '$manufacturer.name' },
+            code: { $first: '$manufacturer.code' },
+            slug: { $first: '$manufacturer.slug' },
+            shipCount: { $sum: 1 },
+          },
+        },
+        { $sort: { name: 1 } },
+        {
+          $project: {
+            _id: 0,
+            name: 1,
+            code: 1,
+            slug: 1,
+            shipCount: 1,
+          },
+        },
+      ])
+      .toArray();
+    return results as ManufacturerInfo[];
+  } catch (error) {
+    console.error('[ship-storage] Error in getManufacturers:', error);
+    return [];
   }
 }
