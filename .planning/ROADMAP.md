@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Sync Engine & Data Model** - Build FleetYards sync infrastructure and ship storage layer
 - [x] **Phase 2: Ship API Routes** - Expose ship data through filtered, paginated REST endpoints
-- [ ] **Phase 3: Data Migration** - Convert all existing ship references from names to FleetYards UUIDs
+- [x] **Phase 3: Data Migration** - Convert all existing ship references from names to FleetYards UUIDs
 - [ ] **Phase 4: Type System & Image Resolution** - Update TypeScript types and image pipeline for UUID-based references
 - [ ] **Phase 5: Ship Browse & Display** - Build new ship browsing UI with multi-axis filtering and detail views
 - [ ] **Phase 6: Frontend Integration** - Rewire existing components (fleet builder, mission planner, profiles) to use new API
@@ -69,8 +69,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- Ship name matching engine with multi-pass resolution and manual override map
-- [ ] 03-02-PLAN.md -- Migration script for all five collections (users, missions, planned missions, operations, resources) with dry-run support
+- [x] 03-01-PLAN.md -- Ship name matching engine with multi-pass resolution and manual override map
+- [x] 03-02-PLAN.md -- Migration script for all five collections (users, missions, planned missions, operations, resources) with dry-run support
 
 ### Phase 4: Type System & Image Resolution
 **Goal**: The TypeScript type system and image pipeline expect UUID-based ship references and serve FleetYards CDN images
@@ -142,7 +142,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 |-------|---------------|--------|-----------|
 | 1. Sync Engine & Data Model | 4/4 | Complete | 2026-02-03 |
 | 2. Ship API Routes | 3/3 | Complete | 2026-02-03 |
-| 3. Data Migration | 0/2 | Planned | - |
+| 3. Data Migration | 2/2 | Complete | 2026-02-03 |
 | 4. Type System & Image Resolution | 0/TBD | Not started | - |
 | 5. Ship Browse & Display | 0/TBD | Not started | - |
 | 6. Frontend Integration | 0/TBD | Not started | - |

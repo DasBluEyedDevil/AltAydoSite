@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 3 (Data Migration) -- Complete. Phase 4 (Type System Pivot) next.
+**Current focus:** Phase 3 (Data Migration) -- Complete, verified against live data. Phase 4 (Type System Pivot) next.
 
 ## Current Position
 
-Phase: 3 of 7 (Data Migration)
+Phase: 3 of 7 (Data Migration) -- COMPLETE
 Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 03-02-PLAN.md (migration script)
+Status: Phase complete -- migration executed against production Cosmos DB
+Last activity: 2026-02-03 -- Migration executed: 116 ship refs converted, 0 unmatched, 0 failed
 
 Progress: [█████████░] ~38% (9 of ~24 total plans estimated)
 
@@ -79,14 +79,17 @@ None yet.
 
 - [Research]: Cosmos DB text search indexes may not be supported -- MITIGATED by $regex fallback in findShips (02-01)
 - [Research]: FleetYards API rate limits undocumented -- monitor for 429 responses during Phase 1 sync testing
-- [Research]: Ship name matching accuracy unknown until dry-run against production data -- recommend running `npm run migrate-ships -- --dry-run` before live migration
+- [RESOLVED]: Ship name matching accuracy verified -- 116/116 references matched (100% match rate) against production data
 - [01-04]: Pre-existing build failure from discord.js/zlib-sync webpack issue in planned-missions route -- unrelated to ship sync but may affect Phase 2 build verification
+- [03-exec]: FleetYards API changed response format -- view fields now flat strings at top level, objects under media. Schema updated in 8a8b72a.
+- [03-exec]: COSMOS_DATABASE_ID must be `aydocorp-database` (not `aydocorpdb-vcore`) -- actual app data lives there
+- [03-exec]: Planned mission idempotency partial (3/4 re-updated on second run) -- fleetyardsId may not persist on MissionShip subdocuments. Phase 4 type updates should address.
 
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 03-02-PLAN.md. Phase 3 complete. Phase 4 (Type System Pivot) next.
-Resume file: .planning/phases/03-data-migration/03-02-SUMMARY.md
+Stopped at: Phase 3 fully executed and verified against production Cosmos DB. Phase 4 (Type System Pivot) next.
+Resume file: .planning/ROADMAP.md (Phase 4)
 
 IMPORTANT CONTEXT:
 - commit_docs is true (commit planning artifacts)
