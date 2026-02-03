@@ -5,32 +5,32 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 1 - Sync Engine & Data Model
+**Current focus:** Phase 1 complete -- ready for Phase 2 (Ship API & Search)
 
 ## Current Position
 
-Phase: 1 of 7 (Sync Engine & Data Model)
-Plan: 3 of 4 in current phase
-Status: In progress
-Last activity: 2026-02-03 -- Completed 01-03-PLAN.md (Ship Storage & MongoDB Indexes)
+Phase: 1 of 7 (Sync Engine & Data Model) -- COMPLETE
+Plan: 4 of 4 in current phase (all done)
+Status: Phase 1 complete
+Last activity: 2026-02-03 -- Completed 01-04-PLAN.md (Sync Orchestrator & Cron)
 
-Progress: [███░░░░░░░] ~12% (3 of ~24 total plans estimated)
+Progress: [████░░░░░░] ~17% (4 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: ~2.3 min
-- Total execution time: ~7 min
+- Total plans completed: 4
+- Average duration: ~2.5 min
+- Total execution time: ~10 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 - Sync Engine | 3 | ~7 min | ~2.3 min |
+| 1 - Sync Engine | 4 | ~10 min | ~2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~3 min), 01-02 (~2 min), 01-03 (~2 min)
+- Last 5 plans: 01-01 (~3 min), 01-02 (~2 min), 01-03 (~2 min), 01-04 (~3 min)
 - Trend: stable, consistently fast
 
 *Updated after each plan completion*
@@ -50,6 +50,9 @@ Recent decisions affecting current work:
 - [01-03]: No local JSON fallback for ships -- cached reference data, unavailable if MongoDB is down
 - [01-03]: bulkWrite with individual upsert fallback for Cosmos DB compatibility
 - [01-03]: Unique indexes on fleetyardsId and slug enforce data integrity at DB level
+- [01-04]: require() for node-cron instead of ESM import to avoid Next.js Edge bundling issues
+- [01-04]: 80% count-drop threshold aborts sync to prevent data loss from partial API responses
+- [01-04]: Overdue sync check on startup runs immediately if >24h since last sync
 
 ### Pending Todos
 
@@ -60,9 +63,10 @@ None yet.
 - [Research]: Cosmos DB text search indexes may not be supported -- validate during Phase 2 API development
 - [Research]: FleetYards API rate limits undocumented -- monitor for 429 responses during Phase 1 sync testing
 - [Research]: Ship name matching accuracy unknown until dry-run against production data -- critical for Phase 3
+- [01-04]: Pre-existing build failure from discord.js/zlib-sync webpack issue in planned-missions route -- unrelated to ship sync but may affect Phase 2 build verification
 
 ## Session Continuity
 
-Last session: 2026-02-03T19:50Z
-Stopped at: Completed 01-03-PLAN.md, ready for 01-04-PLAN.md
-Resume file: .planning/phases/01-sync-engine-and-data-model/01-03-SUMMARY.md
+Last session: 2026-02-03T14:57Z
+Stopped at: Completed 01-04-PLAN.md, Phase 1 complete. Ready for Phase 2.
+Resume file: .planning/phases/01-sync-engine-and-data-model/01-04-SUMMARY.md
