@@ -51,6 +51,7 @@
     "mongodb": "^6.16.0",
     "next": "15.3.3",
     "next-auth": "^4.24.11",
+    "node-cron": "^4.2.1",
     "nodemailer": "^7.0.10",
     "openid-client": "^6.5.0",
     "react": "^18",
@@ -63,6 +64,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^15.3.3",
     "@types/node": "^20",
+    "@types/node-cron": "^3.0.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
