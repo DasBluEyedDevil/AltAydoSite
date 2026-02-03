@@ -66,10 +66,11 @@ Plans:
   3. The migration achieves 100% match rate -- zero orphaned references remain after execution
   4. Running the migration script a second time produces no changes (idempotent)
   5. A migration report lists every name-to-UUID mapping applied, including which matching strategy was used (exact, slug, contains, manual override)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md -- Ship name matching engine with multi-pass resolution and manual override map
+- [ ] 03-02-PLAN.md -- Migration script for all five collections (users, missions, planned missions, operations, resources) with dry-run support
 
 ### Phase 4: Type System & Image Resolution
 **Goal**: The TypeScript type system and image pipeline expect UUID-based ship references and serve FleetYards CDN images
@@ -139,9 +140,9 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Sync Engine & Data Model | 4/4 | ✓ Complete | 2026-02-03 |
-| 2. Ship API Routes | 3/3 | ✓ Complete | 2026-02-03 |
-| 3. Data Migration | 0/TBD | Not started | - |
+| 1. Sync Engine & Data Model | 4/4 | Complete | 2026-02-03 |
+| 2. Ship API Routes | 3/3 | Complete | 2026-02-03 |
+| 3. Data Migration | 0/2 | Planned | - |
 | 4. Type System & Image Resolution | 0/TBD | Not started | - |
 | 5. Ship Browse & Display | 0/TBD | Not started | - |
 | 6. Frontend Integration | 0/TBD | Not started | - |
