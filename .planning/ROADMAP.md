@@ -49,10 +49,12 @@ Plans:
   2. GET /api/ships/[id] returns a single ship by either FleetYards UUID or slug
   3. GET /api/ships/batch resolves multiple ships from an array of UUIDs in a single request (for fleet/mission roster display)
   4. GET /api/ships/manufacturers returns a list of all manufacturers with their logos
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
+- [ ] 02-01-PLAN.md -- Storage layer query functions and text search index
+- [ ] 02-02-PLAN.md -- Ship list and single ship lookup API routes (API-01, API-02)
+- [ ] 02-03-PLAN.md -- Batch resolution and manufacturers API routes (API-03, API-04)
 
 ### Phase 3: Data Migration
 **Goal**: All existing ship references across the application are converted from name strings to FleetYards UUIDs
@@ -138,7 +140,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
 | 1. Sync Engine & Data Model | 4/4 | ✓ Complete | 2026-02-03 |
-| 2. Ship API Routes | 0/TBD | Not started | - |
+| 2. Ship API Routes | 0/3 | Not started | - |
 | 3. Data Migration | 0/TBD | Not started | - |
 | 4. Type System & Image Resolution | 0/TBD | Not started | - |
 | 5. Ship Browse & Display | 0/TBD | Not started | - |
