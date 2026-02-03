@@ -97,16 +97,25 @@ export interface FleetYardsShipResponse {
   storeImage: string | null;
   /** RSI store URL */
   storeUrl: string | null;
-  /** Angled view images at multiple resolutions */
-  angledView: FleetYardsImageView | null;
-  /** Side view images at multiple resolutions */
-  sideView: FleetYardsImageView | null;
-  /** Top view images at multiple resolutions */
-  topView: FleetYardsImageView | null;
-  /** Front view images at multiple resolutions */
-  frontView: FleetYardsImageView | null;
+  /** Angled view image URL (flat string in current API format) */
+  angledView: FleetYardsImageView | string | null;
+  /** Side view image URL (flat string in current API format) */
+  sideView: FleetYardsImageView | string | null;
+  /** Top view image URL (flat string in current API format) */
+  topView: FleetYardsImageView | string | null;
+  /** Front view image URL (flat string in current API format) */
+  frontView: FleetYardsImageView | string | null;
   /** Fleet chart comparison image URL */
   fleetchartImage: string | null;
+  /** Nested media object with full resolution image views (current API format) */
+  media?: {
+    angledView?: FleetYardsImageView | null;
+    sideView?: FleetYardsImageView | null;
+    topView?: FleetYardsImageView | null;
+    frontView?: FleetYardsImageView | null;
+    storeImage?: FleetYardsImageView | string | null;
+    fleetchartImage?: string | null;
+  };
   /** Whether the ship is currently on sale */
   onSale: boolean;
   /** Whether the ship has gallery images */

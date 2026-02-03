@@ -90,6 +90,9 @@ export const MANUAL_OVERRIDES: Record<string, string> = {
 
   // Heartseeker Mk II -> closest match
   'F7C-M Hornet Heartseeker Mk II': 'f7c-m-super-hornet-heartseeker',
+
+  // Kit variants (not in FleetYards, map to base hull)
+  'Idris-K': 'idris-p',
 };
 
 // ---------------------------------------------------------------------------

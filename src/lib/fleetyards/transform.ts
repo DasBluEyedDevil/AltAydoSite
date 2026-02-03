@@ -16,20 +16,22 @@ import type { ValidatedFleetYardsShip, ShipDocument } from '@/types/ship';
 // ---------------------------------------------------------------------------
 
 /**
- * Safely extracts an image URL from a view object at the requested resolution.
+ * Safely extracts an image URL from a view field.
  *
- * FleetYards view objects contain multiple resolutions (source, small, medium, large).
- * This helper handles null/undefined views gracefully.
+ * Handles both API formats:
+ * - Object format (from media.*View): { source, small, medium, large }
+ * - String format (top-level flat field): just the URL string
  *
- * @param view - The image view object (may be null or undefined)
- * @param size - The resolution to extract: 'source' or 'medium'
+ * @param view - The image view (object with resolutions, string URL, null, or undefined)
+ * @param size - The resolution to extract when view is an object: 'source' or 'medium'
  * @returns The URL string, or null if not available
  */
 export function extractImageUrl(
-  view: { source?: string; medium?: string } | null | undefined,
+  view: { source?: string; medium?: string } | string | null | undefined,
   size: 'source' | 'medium' = 'source',
 ): string | null {
   if (!view) return null;
+  if (typeof view === 'string') return view.length > 0 ? view : null;
   const url = view[size];
   return url && url.length > 0 ? url : null;
 }
@@ -104,18 +106,18 @@ export function transformFleetYardsShip(
     description: raw.description ?? null,
     storeUrl: raw.storeUrl ?? null,
 
-    // Images -- extracted from view objects at source and medium resolutions
+    // Images -- prefer media.*View objects (full resolutions) over flat string URLs
     images: {
       store: raw.storeImage ?? null,
-      angledView: extractImageUrl(raw.angledView, 'source'),
-      angledViewMedium: extractImageUrl(raw.angledView, 'medium'),
-      sideView: extractImageUrl(raw.sideView, 'source'),
-      sideViewMedium: extractImageUrl(raw.sideView, 'medium'),
-      topView: extractImageUrl(raw.topView, 'source'),
-      topViewMedium: extractImageUrl(raw.topView, 'medium'),
-      frontView: extractImageUrl(raw.frontView, 'source'),
-      frontViewMedium: extractImageUrl(raw.frontView, 'medium'),
-      fleetchartImage: raw.fleetchartImage ?? null,
+      angledView: extractImageUrl(raw.media?.angledView ?? raw.angledView, 'source'),
+      angledViewMedium: extractImageUrl(raw.media?.angledView ?? raw.angledView, 'medium'),
+      sideView: extractImageUrl(raw.media?.sideView ?? raw.sideView, 'source'),
+      sideViewMedium: extractImageUrl(raw.media?.sideView ?? raw.sideView, 'medium'),
+      topView: extractImageUrl(raw.media?.topView ?? raw.topView, 'source'),
+      topViewMedium: extractImageUrl(raw.media?.topView ?? raw.topView, 'medium'),
+      frontView: extractImageUrl(raw.media?.frontView ?? raw.frontView, 'source'),
+      frontViewMedium: extractImageUrl(raw.media?.frontView ?? raw.frontView, 'medium'),
+      fleetchartImage: raw.media?.fleetchartImage ?? raw.fleetchartImage ?? null,
     },
 
     // Sync metadata

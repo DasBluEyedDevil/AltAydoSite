@@ -150,6 +150,20 @@ export interface SyncStatusDocument {
  * non-critical data are not rejected. Uses .passthrough() to allow unknown
  * fields through without validation failures.
  */
+/** Reusable schema for a FleetYards image view object (multiple resolutions). */
+const ImageViewSchema = z.object({
+  source: z.string(),
+  small: z.string().optional(),
+  medium: z.string().optional(),
+  large: z.string().optional(),
+}).passthrough();
+
+/**
+ * A view field can be either a full resolution object (old API / nested media)
+ * or a flat URL string (current API top-level format).
+ */
+const ViewFieldSchema = z.union([ImageViewSchema, z.string()]).nullable().optional();
+
 export const FleetYardsShipSchema = z.object({
   // Required fields -- sync fails for this ship if these are missing
   id: z.string().uuid(),
@@ -157,7 +171,7 @@ export const FleetYardsShipSchema = z.object({
   slug: z.string().min(1),
   manufacturer: z.object({
     name: z.string(),
-    code: z.string(),
+    code: z.string().optional().default(''),
     slug: z.string(),
   }).passthrough(),
 
@@ -172,8 +186,8 @@ export const FleetYardsShipSchema = z.object({
   productionStatus: z.string().optional().default(''),
   size: z.string().optional().default(''),
   crew: z.object({
-    min: z.number(),
-    max: z.number(),
+    min: z.number().nullable().optional().default(0),
+    max: z.number().nullable().optional().default(0),
     minLabel: z.string().optional(),
     maxLabel: z.string().optional(),
   }).optional().default({ min: 0, max: 0 }),
@@ -190,30 +204,23 @@ export const FleetYardsShipSchema = z.object({
   description: z.string().nullable().optional(),
   storeImage: z.string().nullable().optional(),
   storeUrl: z.string().nullable().optional(),
-  angledView: z.object({
-    source: z.string(),
-    small: z.string(),
-    medium: z.string(),
-    large: z.string(),
-  }).nullable().optional(),
-  sideView: z.object({
-    source: z.string(),
-    small: z.string(),
-    medium: z.string(),
-    large: z.string(),
-  }).nullable().optional(),
-  topView: z.object({
-    source: z.string(),
-    small: z.string(),
-    medium: z.string(),
-    large: z.string(),
-  }).nullable().optional(),
-  frontView: z.object({
-    source: z.string(),
-    small: z.string(),
-    medium: z.string(),
-    large: z.string(),
-  }).nullable().optional(),
+
+  // View fields: current API returns flat strings at top level, objects under media
+  angledView: ViewFieldSchema,
+  sideView: ViewFieldSchema,
+  topView: ViewFieldSchema,
+  frontView: ViewFieldSchema,
+
+  // Nested media object with full resolution image views (current API format)
+  media: z.object({
+    angledView: ImageViewSchema.nullable().optional(),
+    sideView: ImageViewSchema.nullable().optional(),
+    topView: ImageViewSchema.nullable().optional(),
+    frontView: ImageViewSchema.nullable().optional(),
+    storeImage: z.union([ImageViewSchema, z.string()]).nullable().optional(),
+    fleetchartImage: z.string().nullable().optional(),
+  }).passthrough().optional(),
+
   fleetchartImage: z.string().nullable().optional(),
   onSale: z.boolean().optional().default(false),
   hasImages: z.boolean().optional().default(false),
