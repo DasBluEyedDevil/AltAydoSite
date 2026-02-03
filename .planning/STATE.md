@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 3 (Data Migration) -- In progress.
+**Current focus:** Phase 3 (Data Migration) -- Complete. Phase 4 (Type System Pivot) next.
 
 ## Current Position
 
 Phase: 3 of 7 (Data Migration)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-03 -- Completed 03-01-PLAN.md (ship name matcher)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-03 -- Completed 03-02-PLAN.md (migration script)
 
-Progress: [████████░░] ~33% (8 of ~24 total plans estimated)
+Progress: [█████████░] ~38% (9 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: ~2.1 min
-- Total execution time: ~17 min
+- Total plans completed: 9
+- Average duration: ~2.3 min
+- Total execution time: ~21 min
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [████████░░] ~33% (8 of ~24 total plans estimated)
 |-------|-------|-------|----------|
 | 1 - Sync Engine | 4 | ~10 min | ~2.5 min |
 | 2 - Ship API Routes | 3 | ~5 min | ~1.7 min |
-| 3 - Data Migration | 1 | ~1.5 min | ~1.5 min |
+| 3 - Data Migration | 2 | ~5 min | ~2.6 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (~2 min), 02-02 (~1 min), 02-03 (~2 min), 03-01 (~1.5 min)
-- Trend: stable, consistently fast
+- Last 5 plans: 02-02 (~1 min), 02-03 (~2 min), 03-01 (~1.5 min), 03-02 (~3.7 min)
+- Trend: stable, 03-02 slightly longer due to 765-line migration script with 5 collection handlers
 
 *Updated after each plan completion*
 
@@ -67,6 +67,9 @@ Recent decisions affecting current work:
 - [03-01]: Override map values are slugs (human-readable, stable), resolved to UUID via index at runtime
 - [03-01]: Contains match uses first-match semantics for deterministic behavior
 - [03-01]: Import from @/lib/mongodb not mongodb-client (consistent with mission-storage pattern)
+- [03-02]: Use user-storage API for users (handles MongoDB/local fallback), direct fs for operations/resources JSON
+- [03-02]: Mutate JSON files in-place for operations/resources (small files, atomic read/write)
+- [03-02]: Skip counting at ship/participant level for granular reporting accuracy
 
 ### Pending Todos
 
@@ -76,14 +79,14 @@ None yet.
 
 - [Research]: Cosmos DB text search indexes may not be supported -- MITIGATED by $regex fallback in findShips (02-01)
 - [Research]: FleetYards API rate limits undocumented -- monitor for 429 responses during Phase 1 sync testing
-- [Research]: Ship name matching accuracy unknown until dry-run against production data -- critical for Phase 3
+- [Research]: Ship name matching accuracy unknown until dry-run against production data -- recommend running `npm run migrate-ships -- --dry-run` before live migration
 - [01-04]: Pre-existing build failure from discord.js/zlib-sync webpack issue in planned-missions route -- unrelated to ship sync but may affect Phase 2 build verification
 
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 03-01-PLAN.md. Plan 03-02 (migration script) next.
-Resume file: .planning/phases/03-data-migration/03-01-SUMMARY.md
+Stopped at: Completed 03-02-PLAN.md. Phase 3 complete. Phase 4 (Type System Pivot) next.
+Resume file: .planning/phases/03-data-migration/03-02-SUMMARY.md
 
 IMPORTANT CONTEXT:
 - commit_docs is true (commit planning artifacts)
