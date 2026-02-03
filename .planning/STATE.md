@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 1 complete -- ready for Phase 2 (Ship API Routes)
+**Current focus:** Phase 2 (Ship API Routes) -- in progress
 
 ## Current Position
 
-Phase: 1 of 7 (Sync Engine & Data Model) -- COMPLETE
-Plan: 4 of 4 in current phase (all done)
-Status: Phase 1 verified, ready for Phase 2
-Last activity: 2026-02-03 -- Phase 1 execution complete, verification passed (human_needed for runtime tests)
+Phase: 2 of 7 (Ship API Routes)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-03 -- Completed 02-01-PLAN.md (ship query functions & text index)
 
-Progress: [████░░░░░░] ~17% (4 of ~24 total plans estimated)
+Progress: [█████░░░░░] ~21% (5 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: ~2.5 min
-- Total execution time: ~10 min
+- Total plans completed: 5
+- Average duration: ~2.4 min
+- Total execution time: ~12 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 - Sync Engine | 4 | ~10 min | ~2.5 min |
+| 2 - Ship API Routes | 1 | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~3 min), 01-02 (~2 min), 01-03 (~2 min), 01-04 (~3 min)
+- Last 5 plans: 01-02 (~2 min), 01-03 (~2 min), 01-04 (~3 min), 02-01 (~2 min)
 - Trend: stable, consistently fast
 
 *Updated after each plan completion*
@@ -53,6 +54,9 @@ Recent decisions affecting current work:
 - [01-04]: require() for node-cron instead of ESM import to avoid Next.js Edge bundling issues
 - [01-04]: 80% count-drop threshold aborts sync to prevent data loss from partial API responses
 - [01-04]: Overdue sync check on startup runs immediately if >24h since last sync
+- [02-01]: Import Sort type from mongodb to avoid TypeScript union type error in conditional sort
+- [02-01]: $regex fallback in findShips mitigates Cosmos DB text index compatibility concern
+- [02-01]: warn-level logging on text index creation failure (not silently swallowed)
 
 ### Pending Todos
 
@@ -60,7 +64,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Research]: Cosmos DB text search indexes may not be supported -- validate during Phase 2 API development
+- [Research]: Cosmos DB text search indexes may not be supported -- MITIGATED by $regex fallback in findShips (02-01)
 - [Research]: FleetYards API rate limits undocumented -- monitor for 429 responses during Phase 1 sync testing
 - [Research]: Ship name matching accuracy unknown until dry-run against production data -- critical for Phase 3
 - [01-04]: Pre-existing build failure from discord.js/zlib-sync webpack issue in planned-missions route -- unrelated to ship sync but may affect Phase 2 build verification
@@ -68,5 +72,11 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Phase 1 execution complete. Verification passed (human_needed for 4 runtime tests). Ready for Phase 2.
-Resume file: .planning/phases/01-sync-engine-and-data-model/01-04-SUMMARY.md
+Stopped at: Completed 02-01-PLAN.md. Ready for 02-02.
+Resume file: .planning/phases/02-ship-api-routes/02-01-SUMMARY.md
+
+IMPORTANT CONTEXT:
+- commit_docs is true (commit planning artifacts)
+- Model profile is "quality"
+- The project uses Cosmos DB for MongoDB vCore (confirmed by research) which DOES support $text indexes
+- Pre-existing build failure from discord.js/zlib-sync is unrelated -- use `npm run type-check` for verification instead of `npm run build`
