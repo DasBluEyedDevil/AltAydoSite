@@ -302,7 +302,7 @@ export default function SignupForm() {
               <AnimatePresence>
                 {passwordMatch && (
                   <motion.div
-                    className={`text-[10px] mt-1 font-quantify tracking-wider ${
+                    className={`text-xs mt-1 font-quantify tracking-wider ${
                       passwordMatch === 'matching' ? 'text-[rgba(var(--mg-success),0.8)]' :
                       passwordMatch === 'not-matching' ? 'text-[rgba(var(--mg-danger),0.8)]' :
                       'text-[rgba(var(--mg-warning),0.8)]'

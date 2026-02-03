@@ -169,7 +169,7 @@ export default function Footer() {
           <div className="mt-8 pt-4 border-t border-[rgba(var(--mg-primary),0.1)]">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <motion.div 
-                className="mb-3 md:mb-0 text-[rgba(var(--mg-text),0.4)] text-[10px]"
+                className="mb-3 md:mb-0 text-[rgba(var(--mg-text),0.4)] text-xs"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -184,7 +184,7 @@ export default function Footer() {
               </motion.div>
               
               <motion.div 
-                className="text-center text-[rgba(var(--mg-text),0.5)] text-[10px]"
+                className="text-center text-[rgba(var(--mg-text),0.5)] text-xs"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}

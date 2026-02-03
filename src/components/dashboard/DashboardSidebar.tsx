@@ -195,7 +195,7 @@ const DashboardSidebar = () => {
                       </div>
                       <span>{item.name}</span>
                       {item.badge && (
-                        <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
+                        <span className="ml-2 px-1.5 py-0.5 text-[11px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
                           {item.badge}
                         </span>
                       )}
@@ -239,7 +239,7 @@ const DashboardSidebar = () => {
                               </div>
                               <span>{child.name}</span>
                               {child.badge && (
-                                <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
+                                <span className="ml-2 px-1.5 py-0.5 text-[11px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
                                   {child.badge}
                                 </span>
                               )}
@@ -264,7 +264,7 @@ const DashboardSidebar = () => {
                     </svg>
                     <span>{item.name}</span>
                     {item.badge && (
-                      <span className="ml-2 px-1.5 py-0.5 text-[9px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
+                      <span className="ml-2 px-1.5 py-0.5 text-[11px] font-medium bg-[rgba(var(--mg-primary),0.2)] text-[rgba(var(--mg-primary),0.9)] rounded-sm">
                         {item.badge}
                       </span>
                     )}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useEvents } from '@/hooks/useEvents';
 import { useUserTimezone } from '@/hooks/useUserTimezone';
@@ -76,19 +76,21 @@ const EventsCalendar = () => {
   // Day names for display
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  // Filter events for the current month view using user timezone
-  const monthEvents = eventsData.filter(event => {
-    const localDate = (!timezoneLoading && userTimezone) ? convertToUserTimezone(event.date, userTimezone) : event.date;
-    return localDate.getMonth() === viewMonth && localDate.getFullYear() === viewYear;
-  });
+  // Filter events for the current month view using user timezone (memoized)
+  const monthEvents = useMemo(() => {
+    return eventsData.filter(event => {
+      const localDate = (!timezoneLoading && userTimezone) ? convertToUserTimezone(event.date, userTimezone) : event.date;
+      return localDate.getMonth() === viewMonth && localDate.getFullYear() === viewYear;
+    });
+  }, [eventsData, viewMonth, viewYear, timezoneLoading, userTimezone]);
 
-  // Get events for a specific day using user timezone
-  const getEventsForDay = (day: number) => {
+  // Get events for a specific day using user timezone (memoized callback)
+  const getEventsForDay = useCallback((day: number) => {
     return monthEvents.filter(event => {
       const localDate = (!timezoneLoading && userTimezone) ? convertToUserTimezone(event.date, userTimezone) : event.date;
       return localDate.getDate() === day;
     });
-  };
+  }, [monthEvents, timezoneLoading, userTimezone]);
 
   // Open event details modal
   const openEventDetails = (event: EventData) => {

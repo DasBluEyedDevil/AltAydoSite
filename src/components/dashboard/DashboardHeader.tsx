@@ -49,7 +49,7 @@ export default function DashboardHeader({ session, onMenuToggle }: DashboardHead
                     variant="ghost" 
                     size="sm" 
                     onClick={onMenuToggle}
-                    className="p-1 h-10 w-10 flex items-center justify-center"
+                    className="p-2 h-11 w-11 min-h-[44px] min-w-[44px] flex items-center justify-center"
                     withCorners={false}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
