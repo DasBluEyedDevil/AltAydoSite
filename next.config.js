@@ -15,7 +15,7 @@ const nextConfig = {
     },
     images: {
         dangerouslyAllowSVG: true,
-        minimumCacheTTL: 86400, // Cache optimized images for 24 hours (ship images rarely change)
+        minimumCacheTTL: 604800, // Cache optimized images for 7 days (ship images rarely change)
         remotePatterns: [
             {
                 protocol: 'https',
@@ -100,6 +100,12 @@ const nextConfig = {
                 source: '/fonts/:path*',
                 headers: [
                     { key: 'Cache-Control', value: 'public, max-age=3600, must-revalidate' },
+                ],
+            },
+            {
+                source: '/_next/image',
+                headers: [
+                    { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' },
                 ],
             },
         ];

@@ -57,7 +57,7 @@ export async function connectToDatabase() {
   try {
     if (client) {
       try {
-        await client.db().admin().serverInfo();
+        await client.db().command({ ping: 1 });
         return {
           client,
           userCollection: userCollection as Collection,
@@ -76,7 +76,16 @@ export async function connectToDatabase() {
       return Promise.reject(new Error(msg));
     }
 
-    client = new MongoClient(mongoUri);
+    client = new MongoClient(mongoUri, {
+      maxPoolSize: 100,
+      minPoolSize: 0,
+      maxIdleTimeMS: 120000,
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 30000,
+      waitQueueTimeoutMS: 30000,
+      retryWrites: false,
+    });
     await client.connect();
     console.log('Connected to MongoDB');
 
