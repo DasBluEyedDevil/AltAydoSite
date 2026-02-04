@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 6 of 7 (Frontend Integration)
-Plan: 1 of 5 in current phase
+Plan: 2 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-01-PLAN.md (foundation hooks and mapping utilities)
+Last activity: 2026-02-04 -- Completed 06-02-PLAN.md (fleet builder rewire)
 
-Progress: [███████████████████░] ~76% (19 of ~25 total plans estimated)
+Progress: [████████████████████░] ~80% (20 of ~25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: ~2.3 min
-- Total execution time: ~43 min
+- Total plans completed: 20
+- Average duration: ~2.4 min
+- Total execution time: ~47 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Progress: [███████████████████░] ~76% (1
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
 | 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
 | 5.1 - Ship Browse Gaps | 2 | ~4 min | ~2 min |
-| 6 - Frontend Integration | 1 | ~2 min | ~2 min |
+| 6 - Frontend Integration | 2 | ~6 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-04 (~2 min), 05-05 (~2 min), 05.1-01 (~2 min), 05.1-02 (~2 min), 06-01 (~2 min)
-- Trend: stable
+- Last 5 plans: 05-05 (~2 min), 05.1-01 (~2 min), 05.1-02 (~2 min), 06-01 (~2 min), 06-02 (~4 min)
+- Trend: stable (06-02 slightly longer due to additional caller fix)
 
 *Updated after each plan completion*
 
@@ -110,6 +110,10 @@ Recent decisions affecting current work:
 - [06-01]: FleetAggregation types defined locally in useOrgFleet.ts (co-located with the only consumer)
 - [06-01]: USER_PAGE_SIZE set to 200 (maximum allowed by /api/users endpoint)
 - [06-01]: Classification uses classificationLabel (human-readable) not classification key for aggregation display
+- [06-02]: FleetShipPickerModal uses pageSize 12 (smaller grid than browse page's 24 to fit modal viewport)
+- [06-02]: Modal state resets on close via RESET action (clean filter state each time modal opens)
+- [06-02]: Angled view image preferred for fleet display (larger cards benefit from angled perspective)
+- [06-02]: Unresolved ships show "No image available" placeholder div instead of placeholder image
 
 ### Roadmap Evolution
 
@@ -128,7 +132,7 @@ None yet.
 - [03-exec]: FleetYards API changed response format -- view fields now flat strings at top level, objects under media. Schema updated in 8a8b72a.
 - [03-exec]: COSMOS_DATABASE_ID must be `aydocorp-database` (not `aydocorpdb-vcore`) -- actual app data lives there
 - [RESOLVED]: Planned mission idempotency partial -- Phase 4 type updates now include fleetyardsId in MissionShip type, addressing the persistence concern from 03-exec.
-- [04-01]: UserFleetBuilder uses placeholder fleetyardsId ('') -- Phase 6 must wire to ship API lookup
+- [RESOLVED]: UserFleetBuilder now uses FleetShipPickerModal with real fleetyardsId from ship API (06-02)
 - [04-01]: /images/placeholder-ship.png fallback used in MissionPlanner/Form but asset may not exist -- Phase 5 should create or use alternative
 - [RESOLVED]: UI-04 gap -- manufacturer logo URLs captured in data model (05.1-01) and rendered in UI (05.1-02). Gap closed.
 - [RESOLVED]: UI-05 gap -- ship specs (crew, cargo, speed) now displayed on ShipCard and ShipCardList using format utilities (05.1-02). Gap closed.
@@ -137,7 +141,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-01-PLAN.md. Phase 6 plan 1 of 5 complete. Next: 06-02 through 06-05.
+Stopped at: Completed 06-02-PLAN.md. Phase 6 plan 2 of 5 complete. Next: 06-03 through 06-05.
 Resume file: None
 
 IMPORTANT CONTEXT:
