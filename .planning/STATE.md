@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 7 of 7 (Cleanup & Decommission)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 07-01-PLAN.md (legacy import cleanup)
+Last activity: 2026-02-04 -- Completed 07-02-PLAN.md (legacy file deletion)
 
-Progress: [████████████████████████] ~96% (24 of ~25 total plans estimated)
+Progress: [█████████████████████████] ~97% (25 of ~26 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
+- Total plans completed: 25
 - Average duration: ~2.5 min
-- Total execution time: ~61 min
+- Total execution time: ~63 min
 
 **By Phase:**
 
@@ -34,11 +34,11 @@ Progress: [███████████████████████
 | 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
 | 5.1 - Ship Browse Gaps | 2 | ~4 min | ~2 min |
 | 6 - Frontend Integration | 5 | ~15 min | ~3 min |
-| 7 - Cleanup & Decommission | 1 | ~5 min | ~5 min |
+| 7 - Cleanup & Decommission | 2 | ~7 min | ~3.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-03 (~2 min), 06-04 (~4 min), 06-05 (~3 min), 07-01 (~5 min)
-- Trend: slightly longer for cleanup (more verification overhead, cross-file grepping)
+- Last 5 plans: 06-04 (~4 min), 06-05 (~3 min), 07-01 (~5 min), 07-02 (~2 min)
+- Trend: 07-02 fast (pure deletion, no code changes needed)
 
 *Updated after each plan completion*
 
@@ -128,6 +128,8 @@ Recent decisions affecting current work:
 - [07-01]: getShipPlaceholder returns empty string -- components handle empty/falsy URLs via CSS empty states
 - [07-01]: getTotalShips replaces getEstimatedCrew -- crew data unavailable without static DB, count ships instead
 - [07-01]: ShipImage.tsx updated to CSS empty state since resolveShipImageLegacy was removed (deviation Rule 3)
+- [07-02]: Pre-cleanup git tag (pre-phase7-cleanup) created before bulk deletions for rollback safety
+- [07-02]: Safety grep confirmed all dead components have zero live importers before deletion
 
 ### Roadmap Evolution
 
@@ -152,11 +154,12 @@ None yet.
 - [RESOLVED]: UI-05 gap -- ship specs (crew, cargo, speed) now displayed on ShipCard and ShipCardList using format utilities (05.1-02). Gap closed.
 - [RESOLVED]: postcss.config.js was missing from project root (moved to scripts/ in Dec 2025 refactor). Restored in 4900314.
 - [RESOLVED]: All placeholder PNG references eliminated from live source files (07-01). CSS-only empty states used instead.
+- [RESOLVED]: Legacy fleet-ops/mission-planner components deleted in 07-02. No dead code remains.
 
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 07-01-PLAN.md. Phase 7 plan 1/3 complete. Next: 07-02 (legacy file deletion).
+Stopped at: Completed 07-02-PLAN.md. Phase 7 plan 2/3 complete. Next: 07-03 (final verification).
 Resume file: None
 
 IMPORTANT CONTEXT:
@@ -167,4 +170,5 @@ IMPORTANT CONTEXT:
 - next.config.js now exists at project root (restored from scripts/) with FleetYards CDN support
 - postcss.config.js now exists at project root (restored from scripts/) -- required for Tailwind CSS processing
 - Image from next/image is imported in ShipCard.tsx, ShipCardList.tsx, and ShipDetailPanel.tsx
-- Legacy fleet-ops/mission-planner components still reference ShipData.ts but are scheduled for deletion in Plan 02
+- All 10 legacy files deleted in 07-02. Pre-cleanup tag: pre-phase7-cleanup
+- 6,279 lines of dead code removed (4,239 legacy core + 2,040 dead components)
