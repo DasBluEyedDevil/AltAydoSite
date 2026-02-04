@@ -911,7 +911,7 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
                   {/* Ship Image */}
                   <div className="aspect-video relative">
                     <Image
-                      src={ship.image}
+                      src={ship.image || '/images/placeholder-ship.png'}
                       alt={ship.shipName}
                       fill
                       className="object-cover"

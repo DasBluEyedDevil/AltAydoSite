@@ -19,7 +19,8 @@ export interface MissionShip {
   manufacturer: string;       // Ship manufacturer
   size: string;               // Ship size category
   role?: string[];            // Ship roles
-  image: string;              // Ship image URL
+  fleetyardsId: string;       // FleetYards UUID
+  image?: string;             // Ship image URL -- Kept optional for transition; removed in Phase 7
   quantity: number;           // How many of this ship type
   assignedTo?: string;        // Optional: User ID of who's bringing this ship
   assignedToName?: string;    // Optional: Display name of assignee
@@ -174,6 +175,7 @@ export function shipDetailsToMissionShip(ship: ShipDetails, quantity: number = 1
     manufacturer: ship.manufacturer,
     size: ship.size || 'Medium',
     role: ship.role,
+    fleetyardsId: '',          // Empty placeholder -- callers must set fleetyardsId from ship lookup
     image: ship.image,
     quantity,
     notes: ''

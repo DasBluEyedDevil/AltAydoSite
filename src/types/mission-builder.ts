@@ -47,6 +47,7 @@ export interface MissionParticipantDraft {
   shipName?: string;
   shipType?: string;
   manufacturer?: string;
+  fleetyardsId?: string;      // FleetYards UUID (optional during drafting)
   image?: string;
   crewRequirement?: number;
   isGroundSupport?: boolean;

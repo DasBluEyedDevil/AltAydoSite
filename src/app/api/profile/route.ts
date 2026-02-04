@@ -9,7 +9,8 @@ import { UserShip } from '@/types/user';
 const userShipSchema = z.object({
   manufacturer: z.string(),
   name: z.string(),
-  image: z.string()
+  fleetyardsId: z.string(),
+  image: z.string().optional(),
 });
 
 // Profile update validation schema

@@ -44,6 +44,7 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
         onAddShip({
           manufacturer: selectedManufacturer,
           name: ship.name,
+          fleetyardsId: '',  // TODO(Phase 5): resolve from ship lookup
           image: ship.image,
         });
         // Reset selections after adding

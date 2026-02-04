@@ -637,7 +637,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
               {mission.ships?.[0] && (
                 <div className="h-32 relative">
                   <Image
-                    src={mission.ships[0].image}
+                    src={mission.ships[0].image || '/images/placeholder-ship.png'}
                     alt={mission.ships[0].shipName}
                     fill
                     className="object-cover"
@@ -954,7 +954,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
                     >
                       <div className="aspect-video relative">
                         <Image
-                          src={ship.image}
+                          src={ship.image || '/images/placeholder-ship.png'}
                           alt={ship.shipName}
                           fill
                           className="object-cover"

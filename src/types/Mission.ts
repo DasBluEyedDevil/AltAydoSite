@@ -10,6 +10,7 @@ export interface MissionParticipant {
   shipName?: string;
   shipType?: string;
   manufacturer?: string;
+  fleetyardsId?: string;      // FleetYards UUID (optional -- not all participants have ships)
   image?: string;
   crewRequirement?: number;
   isGroundSupport?: boolean;
