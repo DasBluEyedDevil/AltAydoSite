@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 5.1 inserted to close verification gaps (UI-04, UI-05). Plan and execute next.
+**Current focus:** Phase 5.1 -- closing verification gaps (UI-04 logos, UI-05 card specs). Plan 01 complete, plan 02 next.
 
 ## Current Position
 
-Phase: 5 of 7 (Ship Browse & Display)
-Plan: 5 of 5 in current phase
-Status: Phase complete (verified 6/8, gaps: UI-04 logos, UI-05 card specs)
-Last activity: 2026-02-03 -- Phase 5 verified. Checkpoint approved.
+Phase: 5.1 of 7 (Ship Browse Gap Closure)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-03 -- Completed 05.1-01-PLAN.md (manufacturer logo pipeline)
 
-Progress: [████████████████░] ~67% (16 of ~24 total plans estimated)
+Progress: [█████████████████░] ~68% (17 of ~25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
+- Total plans completed: 17
 - Average duration: ~2.3 min
-- Total execution time: ~37 min
+- Total execution time: ~39 min
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [████████████████░] ~67% (16 of ~24 
 | 3 - Data Migration | 2 | ~5 min | ~2.6 min |
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
 | 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
+| 5.1 - Ship Browse Gaps | 1 | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (~2 min), 05-02 (~2 min), 05-03 (~3 min), 05-04 (~2 min), 05-05 (~2 min)
+- Last 5 plans: 05-02 (~2 min), 05-03 (~3 min), 05-04 (~2 min), 05-05 (~2 min), 05.1-01 (~2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -98,6 +99,8 @@ Recent decisions affecting current work:
 - [05-05]: ShipBrowsePage owns ALL state and passes it down to child components
 - [05-05]: SyncStatusIndicator is self-contained (uses useSyncStatus hook internally, renders nothing on error)
 - [05-05]: FleetDatabaseClient is a thin 'use client' wrapper for the server-rendered page.tsx
+- [05.1-01]: logo field is string | null (not optional) -- null means no logo, not 'unknown'
+- [05.1-01]: FleetYardsShipSchema uses .nullable().optional().default(null) for backward compat with existing data
 
 ### Roadmap Evolution
 
@@ -118,14 +121,14 @@ None yet.
 - [RESOLVED]: Planned mission idempotency partial -- Phase 4 type updates now include fleetyardsId in MissionShip type, addressing the persistence concern from 03-exec.
 - [04-01]: UserFleetBuilder uses placeholder fleetyardsId ('') -- Phase 6 must wire to ship API lookup
 - [04-01]: /images/placeholder-ship.png fallback used in MissionPlanner/Form but asset may not exist -- Phase 5 should create or use alternative
-- [05-VERIFY]: UI-04 gap -- manufacturer logo URLs not captured in data model (name/code shown instead). Needs logo field in ShipDocument + sync transform.
+- [RESOLVED]: UI-04 gap -- manufacturer logo URLs now captured in data model (05.1-01). Logo field added to ShipDocument, transform, and aggregation pipeline.
 - [05-VERIFY]: UI-05 gap -- ship specs (crew, cargo, dimensions, speed) shown in detail panel but not on ShipCard/ShipCardList. Format utilities exist but aren't used on cards.
 - [RESOLVED]: postcss.config.js was missing from project root (moved to scripts/ in Dec 2025 refactor). Restored in 4900314.
 
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Phase 5.1 inserted. Plan and execute Phase 5.1 next.
+Stopped at: Completed 05.1-01-PLAN.md. Execute 05.1-02-PLAN.md next.
 Resume file: None
 
 IMPORTANT CONTEXT:
