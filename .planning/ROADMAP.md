@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Type System & Image Resolution** - Update TypeScript types and image pipeline for UUID-based references
 - [x] **Phase 5: Ship Browse & Display** - Build new ship browsing UI with multi-axis filtering and detail views
 - [x] **Phase 5.1: Ship Browse Gaps** (INSERTED) - Add manufacturer logos to data model and key specs to ship cards
-- [ ] **Phase 6: Frontend Integration** - Rewire existing components (fleet builder, mission planner, profiles) to use new API
+- [x] **Phase 6: Frontend Integration** - Rewire existing components (fleet builder, mission planner, profiles) to use new API
 - [ ] **Phase 7: Cleanup & Decommission** - Remove legacy static ship data, old loaders, and R2 image helpers
 
 ## Phase Details
@@ -133,11 +133,11 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 06-01-PLAN.md -- Foundation hooks (useShipBatch, useOrgFleet) and mapping utilities plus recharts install
-- [ ] 06-02-PLAN.md -- Fleet builder rewire: FleetShipPickerModal + UserFleetBuilder/Wrapper using /api/ships (INT-01)
-- [ ] 06-03-PLAN.md -- Mission planner rewire: MissionShipPickerModal replacing ShipDropdownPortal (INT-02)
-- [ ] 06-04-PLAN.md -- Profile ship display and mission detail participant ships (INT-03, INT-04, INT-05)
-- [ ] 06-05-PLAN.md -- Org fleet composition dashboard with Recharts at /dashboard/fleet-composition (INT-06)
+- [x] 06-01-PLAN.md -- Foundation hooks (useShipBatch, useOrgFleet) and mapping utilities plus recharts install
+- [x] 06-02-PLAN.md -- Fleet builder rewire: FleetShipPickerModal + UserFleetBuilder/Wrapper using /api/ships (INT-01)
+- [x] 06-03-PLAN.md -- Mission planner rewire: MissionShipPickerModal replacing ShipDropdownPortal (INT-02)
+- [x] 06-04-PLAN.md -- Profile ship display and mission detail participant ships (INT-03, INT-04, INT-05)
+- [x] 06-05-PLAN.md -- Org fleet composition dashboard with Recharts at /dashboard/fleet-composition (INT-06)
 
 ### Phase 7: Cleanup & Decommission
 **Goal**: All legacy static ship data and old image resolution code is removed from the codebase
@@ -167,5 +167,5 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 4. Type System & Image Resolution | 2/2 | Complete | 2026-02-04 |
 | 5. Ship Browse & Display | 5/5 | Complete | 2026-02-03 |
 | 5.1 Ship Browse Gaps | 2/2 | Complete | 2026-02-03 |
-| 6. Frontend Integration | 0/5 | Not started | - |
+| 6. Frontend Integration | 5/5 | Complete | 2026-02-04 |
 | 7. Cleanup & Decommission | 0/TBD | Not started | - |

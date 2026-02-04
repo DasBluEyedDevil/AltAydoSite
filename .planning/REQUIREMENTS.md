@@ -64,12 +64,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Frontend Integration
 
-- [ ] **INT-01**: Fleet builder (`UserFleetBuilder`) uses `/api/ships` instead of static `getShipsByManufacturer()`
-- [ ] **INT-02**: Mission planner ship picker uses `/api/ships` with search and filtering
-- [ ] **INT-03**: Mission detail views resolve ship images from ship documents via FleetYards CDN
-- [ ] **INT-04**: User profile displays ships with FleetYards images and specs
-- [ ] **INT-05**: Mission-aware ship cards show relevant specs for mission type (cargo for haul, crew for multi-crew)
-- [ ] **INT-06**: Org fleet composition dashboard: aggregate view of org fleet by role, size, manufacturer
+- [x] **INT-01**: Fleet builder (`UserFleetBuilder`) uses `/api/ships` instead of static `getShipsByManufacturer()`
+- [x] **INT-02**: Mission planner ship picker uses `/api/ships` with search and filtering
+- [x] **INT-03**: Mission detail views resolve ship images from ship documents via FleetYards CDN
+- [x] **INT-04**: User profile displays ships with FleetYards images and specs
+- [x] **INT-05**: Mission-aware ship cards show relevant specs for mission type (cargo for haul, crew for multi-crew)
+- [x] **INT-06**: Org fleet composition dashboard: aggregate view of org fleet by role, size, manufacturer
 
 ### Cleanup
 
@@ -157,12 +157,12 @@ Deferred to future release. Tracked but not in current roadmap.
 | UI-06 | Phase 5 | Ship Browse & Display | Complete |
 | UI-07 | Phase 5 | Ship Browse & Display | Complete |
 | UI-08 | Phase 5 | Ship Browse & Display | Complete |
-| INT-01 | Phase 6 | Frontend Integration | Pending |
-| INT-02 | Phase 6 | Frontend Integration | Pending |
-| INT-03 | Phase 6 | Frontend Integration | Pending |
-| INT-04 | Phase 6 | Frontend Integration | Pending |
-| INT-05 | Phase 6 | Frontend Integration | Pending |
-| INT-06 | Phase 6 | Frontend Integration | Pending |
+| INT-01 | Phase 6 | Frontend Integration | Complete |
+| INT-02 | Phase 6 | Frontend Integration | Complete |
+| INT-03 | Phase 6 | Frontend Integration | Complete |
+| INT-04 | Phase 6 | Frontend Integration | Complete |
+| INT-05 | Phase 6 | Frontend Integration | Complete |
+| INT-06 | Phase 6 | Frontend Integration | Complete |
 | CLN-01 | Phase 7 | Cleanup & Decommission | Pending |
 | CLN-02 | Phase 7 | Cleanup & Decommission | Pending |
 | CLN-03 | Phase 7 | Cleanup & Decommission | Pending |
