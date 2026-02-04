@@ -17,6 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Data Migration** - Convert all existing ship references from names to FleetYards UUIDs
 - [x] **Phase 4: Type System & Image Resolution** - Update TypeScript types and image pipeline for UUID-based references
 - [x] **Phase 5: Ship Browse & Display** - Build new ship browsing UI with multi-axis filtering and detail views (6/8 reqs verified; UI-04 logos + UI-05 card specs deferred)
+- [ ] **Phase 5.1: Ship Browse Gaps** (INSERTED) - Add manufacturer logos to data model and key specs to ship cards
 - [ ] **Phase 6: Frontend Integration** - Rewire existing components (fleet builder, mission planner, profiles) to use new API
 - [ ] **Phase 7: Cleanup & Decommission** - Remove legacy static ship data, old loaders, and R2 image helpers
 
@@ -106,6 +107,18 @@ Plans:
 - [x] 05-04-PLAN.md -- Ship detail panel (ShipDetailPanel) with image gallery (ShipImageGallery) and specs display (ShipSpecs)
 - [x] 05-05-PLAN.md -- Page assembly: pagination, sync indicator, ShipBrowsePage orchestrator, and page.tsx replacement
 
+### Phase 5.1: Ship Browse Gaps (INSERTED)
+**Goal**: Close the 2 verification gaps from Phase 5: manufacturer logos in UI and key specs on ship cards
+**Depends on**: Phase 5
+**Requirements**: UI-04, UI-05
+**Success Criteria** (what must be TRUE):
+  1. Manufacturer logo URLs are captured in the ship data model and displayed in ship cards, detail panel, and filter dropdown
+  2. Ship cards (grid and list views) display key specs (crew, cargo, speed) at a glance using existing format utilities
+**Plans**: TBD (run /gsd:plan-phase 5.1 to break down)
+
+Plans:
+- [ ] 05.1-01: TBD
+
 ### Phase 6: Frontend Integration
 **Goal**: All existing application features (fleet builder, mission planner, profiles) use the new dynamic ship data
 **Depends on**: Phase 2, Phase 4
@@ -149,5 +162,6 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 3. Data Migration | 2/2 | Complete | 2026-02-03 |
 | 4. Type System & Image Resolution | 2/2 | Complete | 2026-02-04 |
 | 5. Ship Browse & Display | 5/5 | Complete (2 gaps) | 2026-02-03 |
+| 5.1 Ship Browse Gaps | 0/TBD | Not started | - |
 | 6. Frontend Integration | 0/TBD | Not started | - |
 | 7. Cleanup & Decommission | 0/TBD | Not started | - |

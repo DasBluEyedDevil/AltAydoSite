@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 5 complete (6/8 verified, 2 gaps deferred). Ready for Phase 6.
+**Current focus:** Phase 5.1 inserted to close verification gaps (UI-04, UI-05). Plan and execute next.
 
 ## Current Position
 
@@ -99,6 +99,10 @@ Recent decisions affecting current work:
 - [05-05]: SyncStatusIndicator is self-contained (uses useSyncStatus hook internally, renders nothing on error)
 - [05-05]: FleetDatabaseClient is a thin 'use client' wrapper for the server-rendered page.tsx
 
+### Roadmap Evolution
+
+- Phase 5.1 inserted after Phase 5: Fix verification gaps (UI-04 manufacturer logos, UI-05 card specs) (URGENT)
+
 ### Pending Todos
 
 None yet.
@@ -121,7 +125,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Phase 5 verified (6/8 pass, 2 gaps deferred). Continue with Phase 6 next.
+Stopped at: Phase 5.1 inserted. Plan and execute Phase 5.1 next.
 Resume file: None
 
 IMPORTANT CONTEXT:
