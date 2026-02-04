@@ -97,11 +97,14 @@ Plans:
   3. Ship detail view displays multiple image angles (angled, side, top, store) with a view switcher or gallery thumbnail strip
   4. A data freshness indicator is visible showing when ships were last synced (e.g., "Last synced: 2 hours ago")
   5. Ship cards display classification/role labels and key specs (crew, cargo, dimensions) at a glance without opening the detail view
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01-PLAN.md -- Data foundation: sync status API endpoint, format utilities, and custom hooks (useShips, useShipDetail, useSyncStatus)
+- [ ] 05-02-PLAN.md -- Ship card components (ShipCard, ShipCardList) and grid/list container (ShipGrid) with view toggle
+- [ ] 05-03-PLAN.md -- Filter and search components (ShipFilterPanel, ShipFilterChips, ShipSearchBar) with debounced search
+- [ ] 05-04-PLAN.md -- Ship detail panel (ShipDetailPanel) with image gallery (ShipImageGallery) and specs display (ShipSpecs)
+- [ ] 05-05-PLAN.md -- Page assembly: pagination, sync indicator, ShipBrowsePage orchestrator, and page.tsx replacement
 
 ### Phase 6: Frontend Integration
 **Goal**: All existing application features (fleet builder, mission planner, profiles) use the new dynamic ship data
@@ -145,6 +148,6 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 2. Ship API Routes | 3/3 | Complete | 2026-02-03 |
 | 3. Data Migration | 2/2 | Complete | 2026-02-03 |
 | 4. Type System & Image Resolution | 2/2 | Complete | 2026-02-04 |
-| 5. Ship Browse & Display | 0/TBD | Not started | - |
+| 5. Ship Browse & Display | 0/5 | Planning complete | - |
 | 6. Frontend Integration | 0/TBD | Not started | - |
 | 7. Cleanup & Decommission | 0/TBD | Not started | - |
