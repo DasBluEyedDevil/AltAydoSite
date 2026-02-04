@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 5.1 complete -- both verification gaps (UI-04 logos, UI-05 card specs) closed. Ready for Phase 6 or 7.
+**Current focus:** Phase 6 in progress -- frontend integration of ship database into existing pages.
 
 ## Current Position
 
-Phase: 5.1 of 7 (Ship Browse Gap Closure)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 05.1-02-PLAN.md (ship card specs and manufacturer logo UI)
+Phase: 6 of 7 (Frontend Integration)
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-02-04 -- Completed 06-01-PLAN.md (foundation hooks and mapping utilities)
 
-Progress: [██████████████████░] ~72% (18 of ~25 total plans estimated)
+Progress: [███████████████████░] ~76% (19 of ~25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
+- Total plans completed: 19
 - Average duration: ~2.3 min
-- Total execution time: ~41 min
+- Total execution time: ~43 min
 
 **By Phase:**
 
@@ -33,9 +33,10 @@ Progress: [██████████████████░] ~72% (18 o
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
 | 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
 | 5.1 - Ship Browse Gaps | 2 | ~4 min | ~2 min |
+| 6 - Frontend Integration | 1 | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-03 (~3 min), 05-04 (~2 min), 05-05 (~2 min), 05.1-01 (~2 min), 05.1-02 (~2 min)
+- Last 5 plans: 05-04 (~2 min), 05-05 (~2 min), 05.1-01 (~2 min), 05.1-02 (~2 min), 06-01 (~2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -104,6 +105,11 @@ Recent decisions affecting current work:
 - [05.1-02]: Logo sizes: 16px grid cards, 14px list rows, 20px detail panel -- proportional to context
 - [05.1-02]: List spec columns responsive: crew at md+, cargo/speed at lg+ to prevent overflow
 - [05.1-02]: ManufacturerOption logo field added for type correctness only -- native select cannot render images
+- [06-01]: ids.join(',') as useEffect dependency for stable array comparison in useShipBatch
+- [06-01]: Sequential chunk fetching (not parallel) to avoid overwhelming the API
+- [06-01]: FleetAggregation types defined locally in useOrgFleet.ts (co-located with the only consumer)
+- [06-01]: USER_PAGE_SIZE set to 200 (maximum allowed by /api/users endpoint)
+- [06-01]: Classification uses classificationLabel (human-readable) not classification key for aggregation display
 
 ### Roadmap Evolution
 
@@ -130,8 +136,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-03
-Stopped at: Completed 05.1-02-PLAN.md. Phase 5.1 complete. Next: Phase 6 or 7.
+Last session: 2026-02-04
+Stopped at: Completed 06-01-PLAN.md. Phase 6 plan 1 of 5 complete. Next: 06-02 through 06-05.
 Resume file: None
 
 IMPORTANT CONTEXT:
