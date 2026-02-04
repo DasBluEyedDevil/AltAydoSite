@@ -270,6 +270,7 @@ export interface ManufacturerInfo {
   name: string;
   code: string;
   slug: string;
+  logo: string | null;
   shipCount: number;
 }
 
@@ -431,6 +432,7 @@ export async function getManufacturers(): Promise<ManufacturerInfo[]> {
             name: { $first: '$manufacturer.name' },
             code: { $first: '$manufacturer.code' },
             slug: { $first: '$manufacturer.slug' },
+            logo: { $first: '$manufacturer.logo' },
             shipCount: { $sum: 1 },
           },
         },
@@ -441,6 +443,7 @@ export async function getManufacturers(): Promise<ManufacturerInfo[]> {
             name: 1,
             code: 1,
             slug: 1,
+            logo: 1,
             shipCount: 1,
           },
         },
