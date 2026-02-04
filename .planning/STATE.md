@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 4 complete. Ready for Phase 5 (Ship Browse UI) and/or Phase 6 (Frontend Integration).
+**Current focus:** Phase 5 in progress. Building Ship Browse & Display UI layer.
 
 ## Current Position
 
-Phase: 4 of 7 (Type System & Image Resolution)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-04 -- Completed 04-02-PLAN.md (image resolution + API validation)
+Phase: 5 of 7 (Ship Browse & Display)
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-02-04 -- Completed 05-01-PLAN.md (data hooks & format utilities)
 
-Progress: [███████████░] ~46% (11 of ~24 total plans estimated)
+Progress: [████████████░] ~50% (12 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: ~2.2 min
-- Total execution time: ~26 min
+- Total execution time: ~28 min
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: [███████████░] ~46% (11 of ~24 total plans est
 | 2 - Ship API Routes | 3 | ~5 min | ~1.7 min |
 | 3 - Data Migration | 2 | ~5 min | ~2.6 min |
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
+| 5 - Ship Browse UI | 1 | ~2 min | ~2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (~1.5 min), 03-02 (~3.7 min), 04-01 (~3 min), 04-02 (~2 min)
+- Last 5 plans: 03-02 (~3.7 min), 04-01 (~3 min), 04-02 (~2 min), 05-01 (~2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -77,6 +78,10 @@ Recent decisions affecting current work:
 - [04-02]: resolveShipImage fallback chain: requested view -> angled -> store -> placeholder
 - [04-02]: Legacy function renamed to resolveShipImageLegacy (not overloaded) for clean separation
 - [04-02]: Profile route fleetyardsId validated as UUID (stricter than plain string from 04-01)
+- [05-01]: Cache-Control 60s+30s stale for sync-status (shorter than ship data 300s because it shows recency)
+- [05-01]: No error state exposed from useSyncStatus (freshness is non-critical UI)
+- [05-01]: AbortController in all hooks to prevent race conditions on filter/param changes
+- [05-01]: ShipQueryResult defined locally in useShips (avoids server module import in client code)
 
 ### Pending Todos
 
@@ -97,8 +102,8 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 04-02-PLAN.md. Phase 4 complete. Phase 5 (Ship Browse UI) or Phase 6 (Frontend Integration) next.
-Resume file: None (phase complete)
+Stopped at: Completed 05-01-PLAN.md. Phase 5 plan 1 of 5 complete. Continue with 05-02-PLAN.md next.
+Resume file: None
 
 IMPORTANT CONTEXT:
 - commit_docs is true (commit planning artifacts)
