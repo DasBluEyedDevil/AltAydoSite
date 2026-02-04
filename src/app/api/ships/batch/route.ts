@@ -54,7 +54,10 @@ export async function POST(request: NextRequest) {
     const ships = await shipStorage.getShipsByFleetyardsIds(parseResult.data.ids);
 
     const response = NextResponse.json({ items: ships });
-    response.headers.set('Cache-Control', 'no-store');
+    response.headers.set(
+      'Cache-Control',
+      'public, max-age=300, stale-while-revalidate=60'
+    );
     return response;
   } catch (error: unknown) {
     const message =

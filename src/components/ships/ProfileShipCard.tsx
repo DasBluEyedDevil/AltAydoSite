@@ -45,6 +45,7 @@ export default function ProfileShipCard({ ship, resolved }: ProfileShipCardProps
               alt={displayName}
               width={80}
               height={60}
+              loading="lazy"
               className="object-cover w-full h-full"
               onError={() => setImgError(true)}
             />
