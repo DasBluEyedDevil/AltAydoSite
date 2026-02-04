@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 6 of 7 (Frontend Integration)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-04-PLAN.md (profile ship display and mission participant ships)
+Last activity: 2026-02-04 -- Completed 06-03-PLAN.md (mission planner ship picker rewire)
 
-Progress: [█████████████████████░] ~84% (21 of ~25 total plans estimated)
+Progress: [██████████████████████░] ~88% (22 of ~25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21
+- Total plans completed: 22
 - Average duration: ~2.4 min
-- Total execution time: ~51 min
+- Total execution time: ~53 min
 
 **By Phase:**
 
@@ -33,10 +33,10 @@ Progress: [█████████████████████░] ~
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
 | 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
 | 5.1 - Ship Browse Gaps | 2 | ~4 min | ~2 min |
-| 6 - Frontend Integration | 3 | ~10 min | ~3.3 min |
+| 6 - Frontend Integration | 4 | ~12 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 05.1-01 (~2 min), 05.1-02 (~2 min), 06-01 (~2 min), 06-02 (~4 min), 06-04 (~4 min)
+- Last 5 plans: 05.1-02 (~2 min), 06-01 (~2 min), 06-02 (~4 min), 06-04 (~4 min), 06-03 (~2 min)
 - Trend: stable (Phase 6 plans slightly longer due to cross-component wiring)
 
 *Updated after each plan completion*
@@ -114,6 +114,10 @@ Recent decisions affecting current work:
 - [06-02]: Modal state resets on close via RESET action (clean filter state each time modal opens)
 - [06-02]: Angled view image preferred for fleet display (larger cards benefit from angled perspective)
 - [06-02]: Unresolved ships show "No image available" placeholder div instead of placeholder image
+- [06-03]: Map<fleetyardsId, ShipDocument> for pending selections (preserves full ship data for onSelectShips callback)
+- [06-03]: Dense list rows in modal (not full cards) for efficient multi-selection scanning
+- [06-03]: Replace "Est. Crew" with "Ships: N" (crew data requires static DB lookup, now removed)
+- [06-03]: Image fallback to /assets/ship-placeholder.png (Phase 4 placeholder, not legacy /images/placeholder-ship.png)
 - [06-04]: Profile fleet is read-only (no add/remove on profile page, fleet management in fleet builder edit mode)
 - [06-04]: Unresolved mission participant ships show name/role text only, no image or placeholder
 - [06-04]: INT-05 contextual specs: crew for multi-crew ships (crew.max > 1), cargo for transport/freight/hauling
@@ -136,7 +140,7 @@ None yet.
 - [03-exec]: COSMOS_DATABASE_ID must be `aydocorp-database` (not `aydocorpdb-vcore`) -- actual app data lives there
 - [RESOLVED]: Planned mission idempotency partial -- Phase 4 type updates now include fleetyardsId in MissionShip type, addressing the persistence concern from 03-exec.
 - [RESOLVED]: UserFleetBuilder now uses FleetShipPickerModal with real fleetyardsId from ship API (06-02)
-- [04-01]: /images/placeholder-ship.png fallback used in MissionPlanner/Form but asset may not exist -- Phase 5 should create or use alternative
+- [RESOLVED]: /images/placeholder-ship.png fallback in MissionPlannerForm replaced with /assets/ship-placeholder.png (06-03)
 - [RESOLVED]: UI-04 gap -- manufacturer logo URLs captured in data model (05.1-01) and rendered in UI (05.1-02). Gap closed.
 - [RESOLVED]: UI-05 gap -- ship specs (crew, cargo, speed) now displayed on ShipCard and ShipCardList using format utilities (05.1-02). Gap closed.
 - [RESOLVED]: postcss.config.js was missing from project root (moved to scripts/ in Dec 2025 refactor). Restored in 4900314.
@@ -144,7 +148,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-04-PLAN.md. Phase 6 plan 3 of 5 complete. Next: 06-03 and 06-05.
+Stopped at: Completed 06-03-PLAN.md. Phase 6 plan 4 of 5 complete. Next: 06-05.
 Resume file: None
 
 IMPORTANT CONTEXT:
