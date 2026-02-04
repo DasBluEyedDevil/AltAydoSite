@@ -86,7 +86,7 @@ const validateMissionShips = (ships: any[]) => {
     if (!ship.shipName || typeof ship.shipName !== 'string') return false;
     if (!ship.manufacturer || typeof ship.manufacturer !== 'string') return false;
     if (typeof ship.quantity !== 'number' || ship.quantity < 1) return false;
-    if (!ship.image || typeof ship.image !== 'string') return false;
+    if (!ship.fleetyardsId || typeof ship.fleetyardsId !== 'string') return false;
   }
 
   return true;

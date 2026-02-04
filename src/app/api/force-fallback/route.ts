@@ -22,7 +22,7 @@ async function forceLocalStorage() {
       return false; // If we get here, MongoDB is working
     } catch (error) {
       console.log('FORCE-FALLBACK: Successfully forced fallback to local storage');
-      // @ts-ignore - Using private variable
+      // @ts-expect-error - Using private variable
       // eslint-disable-next-line
       global._usingFallbackStorage = true;
       return true;

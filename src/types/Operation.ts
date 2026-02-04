@@ -4,6 +4,7 @@ export interface OperationParticipant {
   userId: string;
   shipName?: string;
   shipManufacturer?: string;
+  fleetyardsId?: string;      // FleetYards UUID (optional)
   role: string;
   notes?: string;
 }

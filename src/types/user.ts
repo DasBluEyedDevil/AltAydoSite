@@ -42,5 +42,6 @@ export interface UserResponse {
 export interface UserShip {
   manufacturer: string;
   name: string;
-  image: string;
-} 
+  fleetyardsId: string;
+  image?: string;              // Kept optional for transition; removed in Phase 7
+}

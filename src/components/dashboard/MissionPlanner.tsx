@@ -18,8 +18,6 @@ import {
   createEmptyMission
 } from '@/types/PlannedMission';
 import { MissionTemplate } from '@/types/MissionTemplate';
-import { ShipDetails } from '@/types/ShipData';
-import { loadShipDatabase } from '@/lib/ship-data';
 import {
   PlusIcon,
   CalendarIcon,
@@ -62,10 +60,6 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
   const [errors, setErrors] = useState<PlannedMissionValidationErrors>({});
   const [statusFilter, setStatusFilter] = useState<PlannedMissionStatus | 'all'>('all');
   const [rsvpData, setRsvpData] = useState<Record<string, { count: number; users: Array<{ username: string; globalName?: string; nickname?: string }> }>>({});
-
-  // Ship database state
-  const [ships, setShips] = useState<ShipDetails[]>([]);
-  const [shipsLoading, setShipsLoading] = useState(true);
 
   // Track if we've already processed URL params
   const templateParamProcessed = useRef(false);
@@ -146,14 +140,6 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
     fetchMissions();
     fetchTemplates();
   }, [fetchMissions, fetchTemplates]);
-
-  // Load ship database
-  useEffect(() => {
-    loadShipDatabase()
-      .then(setShips)
-      .catch(console.error)
-      .finally(() => setShipsLoading(false));
-  }, []);
 
   // Handle initial mission ID
   useEffect(() => {
@@ -548,12 +534,9 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   };
 
-  // Calculate estimated crew for a mission
-  const getEstimatedCrew = (mission: PlannedMissionResponse) => {
-    return (mission.ships || []).reduce((total, ship) => {
-      const shipData = ships.find(sd => sd.name === ship.shipName);
-      return total + (shipData?.crewRequirement || 1) * ship.quantity;
-    }, 0);
+  // Calculate total ships for a mission
+  const getTotalShips = (mission: PlannedMissionResponse) => {
+    return (mission.ships || []).reduce((total, ship) => total + ship.quantity, 0);
   };
 
   // Render list view
@@ -636,13 +619,19 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
               {/* Mission Header Image (first ship) */}
               {mission.ships?.[0] && (
                 <div className="h-32 relative">
-                  <Image
-                    src={mission.ships[0].image}
-                    alt={mission.ships[0].shipName}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
+                  {mission.ships[0].image ? (
+                    <Image
+                      src={mission.ships[0].image}
+                      alt={mission.ships[0].shipName}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.15)] rounded">
+                      <span className="text-xs text-[rgba(var(--mg-primary),0.3)]">No image</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.8)] to-transparent" />
                   {/* Status Badge */}
                   <div className={`absolute top-2 right-2 px-2 py-1 rounded text-xs font-medium ${STATUS_COLORS[mission.status]}`}>
@@ -692,7 +681,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
                   </div>
                   <div className="flex items-center gap-1">
                     <UsersIcon />
-                    <span>~{getEstimatedCrew(mission)} crew</span>
+                    <span>{getTotalShips(mission)} ships</span>
                   </div>
                   {mission.discordEvent && rsvpData[mission.id] && (
                     <div className="flex items-center gap-1 text-[rgba(var(--mg-primary),0.8)] relative group cursor-help">
@@ -941,7 +930,7 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
               title="Ship Roster"
               rightContent={
                 <span className="text-sm text-[rgba(var(--mg-text),0.5)]">
-                  Est. {getEstimatedCrew(selectedMission)} crew
+                  {getTotalShips(selectedMission)} ships
                 </span>
               }
             >
@@ -953,13 +942,19 @@ const MissionPlanner: React.FC<MissionPlannerProps> = ({ initialMissionId }) => 
                       className="rounded overflow-hidden border border-[rgba(var(--mg-primary),0.2)]"
                     >
                       <div className="aspect-video relative">
-                        <Image
-                          src={ship.image}
-                          alt={ship.shipName}
-                          fill
-                          className="object-cover"
-                          sizes="200px"
-                        />
+                        {ship.image ? (
+                          <Image
+                            src={ship.image}
+                            alt={ship.shipName}
+                            fill
+                            className="object-cover"
+                            sizes="200px"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center w-full h-full bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.15)] rounded">
+                            <span className="text-xs text-[rgba(var(--mg-primary),0.3)]">No image</span>
+                          </div>
+                        )}
                         <div className="absolute top-1 right-1 bg-[rgba(0,0,0,0.7)] px-2 py-0.5 rounded text-sm">
                           x{ship.quantity}
                         </div>

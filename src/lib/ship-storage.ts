@@ -1,0 +1,457 @@
+/**
+ * Ship Storage Module -- MongoDB CRUD for ships and sync-status collections
+ *
+ * Unlike user-storage.ts, this module does NOT provide a local JSON fallback.
+ * Ships are cached reference data from the FleetYards API. If MongoDB is
+ * unavailable, ship data is simply not accessible until the connection is
+ * restored.
+ *
+ * Key design decisions:
+ * - Upsert-never-delete pattern: ships are inserted or updated, never removed
+ * - createdAt is set only on first insert via $setOnInsert
+ * - Sync status is append-only (insertOne, never updateOne)
+ * - bulkWrite with ordered:false for maximum throughput, with individual
+ *   upsert fallback for Cosmos DB compatibility
+ */
+
+import { connectToDatabase } from '@/lib/mongodb-client';
+import type { Sort } from 'mongodb';
+import type { ShipDocument, SyncStatusDocument } from '@/types/ship';
+
+const DATABASE_ID = process.env.COSMOS_DATABASE_ID || 'aydocorp-database';
+
+/** UUID v4 pattern for distinguishing FleetYards UUIDs from slugs */
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Get the ships collection from the database.
+ */
+async function getShipsCollection() {
+  const { client } = await connectToDatabase();
+  const db = client.db(DATABASE_ID);
+  return db.collection('ships');
+}
+
+/**
+ * Get the sync-status collection from the database.
+ */
+async function getSyncStatusCollection() {
+  const { client } = await connectToDatabase();
+  const db = client.db(DATABASE_ID);
+  return db.collection('sync-status');
+}
+
+// ---------------------------------------------------------------------------
+// Ship CRUD Operations
+// ---------------------------------------------------------------------------
+
+/**
+ * Bulk upsert ships into the ships collection.
+ *
+ * Uses bulkWrite with ordered:false for maximum throughput. If bulkWrite
+ * fails (e.g. Cosmos DB compatibility issue), falls back to individual
+ * updateOne calls with per-document error handling.
+ *
+ * - New ships are inserted with createdAt set via $setOnInsert
+ * - Existing ships are updated (createdAt is preserved)
+ * - No ships are ever deleted
+ */
+export async function upsertShips(
+  ships: Omit<ShipDocument, '_id' | 'createdAt'>[]
+): Promise<{ newShips: number; updatedShips: number; unchangedShips: number }> {
+  if (ships.length === 0) {
+    return { newShips: 0, updatedShips: 0, unchangedShips: 0 };
+  }
+
+  console.log(`[ship-storage] Upserting ${ships.length} ships...`);
+
+  const shipsCollection = await getShipsCollection();
+
+  // Build bulkWrite operations
+  const operations = ships.map((ship) => ({
+    updateOne: {
+      filter: { fleetyardsId: ship.fleetyardsId },
+      update: {
+        $set: { ...ship },
+        $setOnInsert: { createdAt: new Date() },
+      },
+      upsert: true,
+    },
+  }));
+
+  try {
+    // Attempt bulkWrite for maximum throughput
+    const result = await shipsCollection.bulkWrite(operations, { ordered: false });
+
+    const newShips = result.upsertedCount;
+    const updatedShips = result.modifiedCount;
+    const unchangedShips = result.matchedCount - result.modifiedCount;
+
+    console.log(
+      `[ship-storage] Bulk upsert complete: ${newShips} new, ${updatedShips} updated, ${unchangedShips} unchanged`
+    );
+
+    return { newShips, updatedShips, unchangedShips };
+  } catch (bulkError) {
+    console.error(
+      '[ship-storage] bulkWrite failed, falling back to individual upserts:',
+      bulkError
+    );
+
+    // Fallback: individual upserts with per-document error handling
+    let newShips = 0;
+    let updatedShips = 0;
+    let unchangedShips = 0;
+    let errorCount = 0;
+
+    for (const ship of ships) {
+      try {
+        const result = await shipsCollection.updateOne(
+          { fleetyardsId: ship.fleetyardsId },
+          {
+            $set: { ...ship },
+            $setOnInsert: { createdAt: new Date() },
+          },
+          { upsert: true }
+        );
+
+        if (result.upsertedCount > 0) {
+          newShips++;
+        } else if (result.modifiedCount > 0) {
+          updatedShips++;
+        } else {
+          unchangedShips++;
+        }
+      } catch (docError) {
+        errorCount++;
+        console.error(
+          `[ship-storage] Error upserting ship ${ship.fleetyardsId} (${ship.name}):`,
+          docError
+        );
+      }
+    }
+
+    if (errorCount > 0) {
+      console.error(
+        `[ship-storage] Individual upsert completed with ${errorCount} errors out of ${ships.length} ships`
+      );
+    }
+
+    console.log(
+      `[ship-storage] Individual upsert complete: ${newShips} new, ${updatedShips} updated, ${unchangedShips} unchanged`
+    );
+
+    return { newShips, updatedShips, unchangedShips };
+  }
+}
+
+/**
+ * Get the total number of ships in the collection.
+ * Used for pre/post-sync sanity checks.
+ */
+export async function getShipCount(): Promise<number> {
+  try {
+    const shipsCollection = await getShipsCollection();
+    return await shipsCollection.countDocuments({});
+  } catch (error) {
+    console.error('[ship-storage] Error in getShipCount:', error);
+    return 0;
+  }
+}
+
+/**
+ * Find a ship by its FleetYards UUID.
+ */
+export async function getShipByFleetyardsId(
+  fleetyardsId: string
+): Promise<ShipDocument | null> {
+  try {
+    const shipsCollection = await getShipsCollection();
+    const doc = await shipsCollection.findOne(
+      { fleetyardsId },
+      { projection: { _id: 0 } }
+    );
+    return doc as ShipDocument | null;
+  } catch (error) {
+    console.error('[ship-storage] Error in getShipByFleetyardsId:', error);
+    return null;
+  }
+}
+
+/**
+ * Find a ship by its URL-friendly slug.
+ */
+export async function getShipBySlug(slug: string): Promise<ShipDocument | null> {
+  try {
+    const shipsCollection = await getShipsCollection();
+    const doc = await shipsCollection.findOne(
+      { slug },
+      { projection: { _id: 0 } }
+    );
+    return doc as ShipDocument | null;
+  } catch (error) {
+    console.error('[ship-storage] Error in getShipBySlug:', error);
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sync Status Audit Log
+// ---------------------------------------------------------------------------
+
+/**
+ * Save a sync status audit record. This is an append-only log --
+ * each sync run creates a new document, never updates an existing one.
+ */
+export async function saveSyncStatus(
+  status: Omit<SyncStatusDocument, '_id'>
+): Promise<void> {
+  try {
+    const syncStatusCollection = await getSyncStatusCollection();
+    await syncStatusCollection.insertOne(status);
+    console.log(
+      `[ship-storage] Sync status saved: ${status.status}, version ${status.syncVersion}`
+    );
+  } catch (error) {
+    console.error('[ship-storage] Error in saveSyncStatus:', error);
+    throw error;
+  }
+}
+
+/**
+ * Retrieve the most recent sync status record.
+ * Returns null if no sync has ever been recorded.
+ */
+export async function getLatestSyncStatus(): Promise<SyncStatusDocument | null> {
+  try {
+    const syncStatusCollection = await getSyncStatusCollection();
+    const doc = await syncStatusCollection.findOne(
+      { type: 'ship-sync' },
+      { sort: { lastSyncAt: -1 }, projection: { _id: 0 } }
+    );
+    return doc as SyncStatusDocument | null;
+  } catch (error) {
+    console.error('[ship-storage] Error in getLatestSyncStatus:', error);
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Ship Query Operations
+// ---------------------------------------------------------------------------
+
+/** Options for the paginated ship search/filter query */
+export interface ShipQueryOptions {
+  page: number;
+  pageSize: number;
+  /** Filter by manufacturer.slug */
+  manufacturer?: string;
+  /** Filter by size field */
+  size?: string;
+  /** Filter by classification field */
+  classification?: string;
+  /** Filter by productionStatus field */
+  productionStatus?: string;
+  /** $text search on name + manufacturer.name */
+  search?: string;
+}
+
+/** Paginated result set returned by findShips */
+export interface ShipQueryResult {
+  items: ShipDocument[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+/** Manufacturer summary with ship count */
+export interface ManufacturerInfo {
+  name: string;
+  code: string;
+  slug: string;
+  logo: string | null;
+  shipCount: number;
+}
+
+/**
+ * Find ships with optional text search, field filters, and pagination.
+ *
+ * When `search` is provided the query uses the $text index for relevance-ranked
+ * results. If the $text index is unavailable (e.g. index creation failed), the
+ * function falls back to a case-insensitive $regex match on the name field.
+ *
+ * Filtering and pagination are pushed to MongoDB -- no in-memory filtering.
+ */
+export async function findShips(options: ShipQueryOptions): Promise<ShipQueryResult> {
+  const { page, pageSize, manufacturer, size, classification, productionStatus, search } = options;
+
+  const shipsCollection = await getShipsCollection();
+
+  // Build filter object
+  const filter: Record<string, unknown> = {};
+  if (search) {
+    filter.$text = { $search: search };
+  }
+  if (manufacturer) {
+    filter['manufacturer.slug'] = manufacturer;
+  }
+  if (size) {
+    filter.size = size;
+  }
+  if (classification) {
+    filter.classification = classification;
+  }
+  if (productionStatus) {
+    filter.productionStatus = productionStatus;
+  }
+
+  // Sort and projection depend on whether we are doing a text search
+  const sort: Sort = search
+    ? { score: { $meta: 'textScore' } }
+    : { name: 1 };
+  const projection: Record<string, unknown> = { _id: 0 };
+  if (search) {
+    projection.score = { $meta: 'textScore' };
+  }
+
+  const skip = (page - 1) * pageSize;
+
+  try {
+    const [items, total] = await Promise.all([
+      shipsCollection
+        .find(filter, { projection })
+        .sort(sort)
+        .skip(skip)
+        .limit(pageSize)
+        .toArray() as Promise<ShipDocument[]>,
+      shipsCollection.countDocuments(filter),
+    ]);
+
+    return {
+      items,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize) || 1,
+    };
+  } catch (error) {
+    // If the $text index is missing, the $text query will fail.
+    // Fall back to a $regex search on the name field.
+    if (search) {
+      console.error(
+        '[ship-storage] $text query failed, falling back to $regex:',
+        error
+      );
+
+      // Rebuild filter replacing $text with $regex on name
+      delete filter.$text;
+      filter.name = { $regex: search, $options: 'i' };
+
+      const fallbackSort = { name: 1 as const };
+      const fallbackProjection: Record<string, unknown> = { _id: 0 };
+
+      const [items, total] = await Promise.all([
+        shipsCollection
+          .find(filter, { projection: fallbackProjection })
+          .sort(fallbackSort)
+          .skip(skip)
+          .limit(pageSize)
+          .toArray() as Promise<ShipDocument[]>,
+        shipsCollection.countDocuments(filter),
+      ]);
+
+      return {
+        items,
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize) || 1,
+      };
+    }
+
+    // Non-search query failure -- rethrow
+    console.error('[ship-storage] Error in findShips:', error);
+    throw error;
+  }
+}
+
+/**
+ * Look up a ship by either its FleetYards UUID or its URL slug.
+ *
+ * If the input matches UUID v4 format, delegates to getShipByFleetyardsId.
+ * Otherwise, delegates to getShipBySlug.
+ */
+export async function getShipByIdOrSlug(idOrSlug: string): Promise<ShipDocument | null> {
+  if (UUID_REGEX.test(idOrSlug)) {
+    return getShipByFleetyardsId(idOrSlug);
+  }
+  return getShipBySlug(idOrSlug);
+}
+
+/**
+ * Retrieve multiple ships by an array of FleetYards UUIDs in a single
+ * database round-trip using $in.
+ *
+ * Returns an empty array if the input is empty or on failure.
+ */
+export async function getShipsByFleetyardsIds(ids: string[]): Promise<ShipDocument[]> {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  try {
+    const shipsCollection = await getShipsCollection();
+    const docs = await shipsCollection
+      .find(
+        { fleetyardsId: { $in: ids } },
+        { projection: { _id: 0 } }
+      )
+      .toArray();
+    return docs as ShipDocument[];
+  } catch (error) {
+    console.error('[ship-storage] Error in getShipsByFleetyardsIds:', error);
+    return [];
+  }
+}
+
+/**
+ * Aggregate distinct manufacturers from the ships collection with ship counts.
+ *
+ * Returns an alphabetically sorted list of manufacturers, each with their
+ * name, code, slug, and the number of ships they produce.
+ */
+export async function getManufacturers(): Promise<ManufacturerInfo[]> {
+  try {
+    const shipsCollection = await getShipsCollection();
+    const results = await shipsCollection
+      .aggregate([
+        {
+          $group: {
+            _id: '$manufacturer.slug',
+            name: { $first: '$manufacturer.name' },
+            code: { $first: '$manufacturer.code' },
+            slug: { $first: '$manufacturer.slug' },
+            logo: { $first: '$manufacturer.logo' },
+            shipCount: { $sum: 1 },
+          },
+        },
+        { $sort: { name: 1 } },
+        {
+          $project: {
+            _id: 0,
+            name: 1,
+            code: 1,
+            slug: 1,
+            logo: 1,
+            shipCount: 1,
+          },
+        },
+      ])
+      .toArray();
+    return results as ManufacturerInfo[];
+  } catch (error) {
+    console.error('[ship-storage] Error in getManufacturers:', error);
+    return [];
+  }
+}

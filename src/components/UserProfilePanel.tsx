@@ -1,23 +1,31 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useUserProfile } from '../hooks/useUserProfile';
-import { 
-  subsidiaryOptions, 
-  payGradeOptions, 
-  timezoneOptions, 
+import {
+  subsidiaryOptions,
+  payGradeOptions,
+  timezoneOptions,
   gameplayLoopOptions
 } from '../types/UserProfile';
 import { UserShip } from '../types/user';
 import UserFleetBuilder from './UserFleetBuilder';
+import { useShipBatch } from '@/hooks/useShipBatch';
 import Image from 'next/image';
 
 export default function UserProfilePanel() {
   const { profile, isLoading, updateProfile } = useUserProfile();
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
+  // Batch resolve fleet ship data for FleetYards CDN images (must be before early return -- hooks rule)
+  const fleetyardsIds = useMemo(
+    () => (profile?.ships || []).map(s => s.fleetyardsId).filter(Boolean),
+    [profile?.ships]
+  );
+  const { ships: resolvedShips } = useShipBatch(fleetyardsIds);
+
   if (isLoading || !profile) {
     return (
       <div className="mg-panel p-6 relative">
@@ -305,9 +313,10 @@ export default function UserProfilePanel() {
         </div>
 
         {/* Fleet Builder / Ship Management Section */}
-        <UserFleetBuilder 
+        <UserFleetBuilder
           isEditing={isEditing}
           userShips={profile.ships}
+          resolvedShips={resolvedShips}
           onAddShip={handleAddShip}
           onRemoveShip={handleRemoveShip}
         />

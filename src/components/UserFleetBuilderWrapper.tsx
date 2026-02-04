@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import UserFleetBuilder from './UserFleetBuilder';
 import { UserShip } from '../types/user';
-import { getManufacturersList, getShipsByManufacturer } from '../types/ShipData';
+import { useShipBatch } from '@/hooks/useShipBatch';
 
 // Safe access to localStorage that works in both client and server environments
 const safeLocalStorage = {
@@ -267,6 +267,10 @@ export default function UserFleetBuilderWrapper({
     });
   };
 
+  // Collect fleetyardsIds from current ships for batch resolution
+  const fleetyardsIds = useMemo(() => ships.map(s => s.fleetyardsId).filter(Boolean), [ships]);
+  const { ships: resolvedShips } = useShipBatch(fleetyardsIds);
+
   // For debugging purposes - show error if one occurred
   if (error) {
     console.error('Fleet Builder Error:', error);
@@ -287,9 +291,10 @@ export default function UserFleetBuilderWrapper({
     <div className="mt-4 pt-4 border-t border-[rgba(var(--mg-primary),0.2)]">
       <h3 className="block text-xs text-[rgba(var(--mg-text),0.6)] font-bold mb-4">FLEET</h3>
       
-      <UserFleetBuilder 
+      <UserFleetBuilder
         isEditing={isEditing}
         userShips={ships}
+        resolvedShips={resolvedShips}
         onAddShip={handleAddShip}
         onRemoveShip={handleRemoveShip}
       />
