@@ -114,10 +114,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Manufacturer logo URLs are captured in the ship data model and displayed in ship cards, detail panel, and filter dropdown
   2. Ship cards (grid and list views) display key specs (crew, cargo, speed) at a glance using existing format utilities
-**Plans**: TBD (run /gsd:plan-phase 5.1 to break down)
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05.1-01: TBD
+- [ ] 05.1-01-PLAN.md -- Data pipeline: thread manufacturer logo field through types, Zod schemas, transform, and storage aggregation
+- [ ] 05.1-02-PLAN.md -- UI wiring: add manufacturer logos and ship specs to cards, detail panel, and filter panel
 
 ### Phase 6: Frontend Integration
 **Goal**: All existing application features (fleet builder, mission planner, profiles) use the new dynamic ship data
@@ -162,6 +163,6 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 3. Data Migration | 2/2 | Complete | 2026-02-03 |
 | 4. Type System & Image Resolution | 2/2 | Complete | 2026-02-04 |
 | 5. Ship Browse & Display | 5/5 | Complete (2 gaps) | 2026-02-03 |
-| 5.1 Ship Browse Gaps | 0/TBD | Not started | - |
+| 5.1 Ship Browse Gaps | 0/2 | Not started | - |
 | 6. Frontend Integration | 0/TBD | Not started | - |
 | 7. Cleanup & Decommission | 0/TBD | Not started | - |
