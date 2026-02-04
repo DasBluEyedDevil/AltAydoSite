@@ -646,11 +646,13 @@ export default function UserProfileContent() {
             </div>
           )}
 
-          {/* Fleet Builder Section (edit mode) */}
-          <UserFleetBuilderWrapper
-            isEditing={isEditing}
-            onShipsChange={handleShipsChange}
-          />
+          {/* Fleet Builder Section (edit mode only) */}
+          {isEditing && (
+            <UserFleetBuilderWrapper
+              isEditing={isEditing}
+              onShipsChange={handleShipsChange}
+            />
+          )}
 
           {/* MY FLEET view-only section (read mode) */}
           {!isEditing && (
