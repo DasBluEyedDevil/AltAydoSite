@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { MissionResponse } from '@/types/Mission';
 import Image from 'next/image';
+import { useShipBatch } from '@/hooks/useShipBatch';
+import MissionParticipantShip from '@/components/ships/MissionParticipantShip';
 
 interface MissionDetailProps {
   mission: MissionResponse;
@@ -18,6 +20,15 @@ const MissionDetail: React.FC<MissionDetailProps> = ({
   onEdit,
   onDelete
 }) => {
+  // Batch-resolve participant ships from FleetYards API
+  const participantShipIds = useMemo(
+    () => mission.participants
+      .map((p) => p.fleetyardsId)
+      .filter((id): id is string => !!id && id.length > 0),
+    [mission.participants]
+  );
+  const { ships: resolvedShips } = useShipBatch(participantShipIds);
+
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -336,13 +347,13 @@ const MissionDetail: React.FC<MissionDetailProps> = ({
             ) : (
               <div className="space-y-2">
                 {mission.participants.map((participant, index) => (
-                  <motion.div 
+                  <motion.div
                     key={participant.userId}
                     className="holo-element bg-[rgba(var(--mg-panel-dark),0.3)] p-3 border border-[rgba(var(--mg-primary),0.1)] rounded-sm relative group overflow-hidden"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 + (index * 0.1) }}
-                    whileHover={{ 
+                    whileHover={{
                       y: -2,
                       boxShadow: "0 0 10px rgba(var(--mg-primary), 0.2)",
                       borderColor: "rgba(var(--mg-primary), 0.3)"
@@ -353,62 +364,14 @@ const MissionDetail: React.FC<MissionDetailProps> = ({
                       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
                       <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--mg-primary),0.4)] to-transparent"></div>
                     </div>
-                    
+
                     {/* Scanning line effect */}
                     <div className="holo-scan absolute inset-0 opacity-30 pointer-events-none" />
-                    
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[rgba(var(--mg-primary),0.2)] border border-[rgba(var(--mg-primary),0.4)] flex items-center justify-center text-base flex-shrink-0 relative">
-                        <motion.div
-                          className="absolute inset-0 rounded-full"
-                          animate={{ 
-                            boxShadow: [
-                              "0 0 0 0 rgba(var(--mg-primary), 0)",
-                              "0 0 0 4px rgba(var(--mg-primary), 0.1)",
-                              "0 0 0 0 rgba(var(--mg-primary), 0)"
-                            ]
-                          }}
-                          transition={{ 
-                            duration: 2, 
-                            repeat: Infinity,
-                            ease: "easeOut",
-                            delay: index * 0.5
-                          }}
-                        />
-                        {participant.userName.charAt(0).toUpperCase()}
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <p className="mg-text font-semibold truncate">{participant.userName}</p>
-                        
-                        {participant.roles && participant.roles.length > 0 && (
-                          <div className="mt-1 flex flex-wrap gap-1">
-                            {participant.roles.map((role, index) => (
-                              <span 
-                                key={index}
-                                className="inline-block text-xs px-2 py-0.5 bg-[rgba(var(--mg-primary),0.1)] border border-[rgba(var(--mg-primary),0.2)] rounded-sm"
-                              >
-                                {role}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {participant.shipId && (
-                          <div className="mt-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[rgba(var(--mg-primary),0.6)] mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                            <span className="text-xs text-[rgba(var(--mg-primary),0.7)]">
-                              {participant.shipName} 
-                              {participant.shipType !== participant.shipName && (
-                                <span>({participant.shipType})</span>
-                              )}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+
+                    <MissionParticipantShip
+                      participant={participant}
+                      resolved={participant.fleetyardsId ? resolvedShips.get(participant.fleetyardsId) : undefined}
+                    />
                   </motion.div>
                 ))}
               </div>

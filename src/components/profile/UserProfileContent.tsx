@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -9,6 +9,8 @@ import UserFleetBuilderWrapper from '../UserFleetBuilderWrapper';
 import { UserShip } from '@/types/user';
 import { TIMEZONE_OPTIONS, detectUserTimezone } from '@/lib/timezone';
 import { MobiGlasButton } from '@/components/ui/mobiglas';
+import { useShipBatch } from '@/hooks/useShipBatch';
+import ProfileShipCard from '@/components/ships/ProfileShipCard';
 
 interface UserData {
   name: string;
@@ -45,6 +47,13 @@ export default function UserProfileContent() {
     division: '',
     timezone: ''
   });
+
+  // Batch-resolve fleet ships from FleetYards API
+  const fleetyardsIds = useMemo(
+    () => userShips.map((s) => s.fleetyardsId).filter(Boolean),
+    [userShips]
+  );
+  const { ships: resolvedShips, isLoading: shipsResolving } = useShipBatch(fleetyardsIds);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -637,11 +646,43 @@ export default function UserProfileContent() {
             </div>
           )}
 
-          {/* Fleet Builder Section */}
+          {/* Fleet Builder Section (edit mode) */}
           <UserFleetBuilderWrapper
             isEditing={isEditing}
             onShipsChange={handleShipsChange}
           />
+
+          {/* MY FLEET view-only section (read mode) */}
+          {!isEditing && (
+            <div className="mt-6 pt-6 border-t border-[rgba(var(--mg-primary),0.2)]">
+              <h2 className="mg-subtitle text-xs mb-4 tracking-wider">MY FLEET</h2>
+
+              {shipsResolving ? (
+                <div className="space-y-2">
+                  {Array.from({ length: Math.min(userShips.length || 3, 6) }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-24 bg-[rgba(var(--mg-panel-dark),0.4)] border border-[rgba(var(--mg-primary),0.1)] rounded-sm animate-pulse"
+                    />
+                  ))}
+                </div>
+              ) : userShips.length === 0 ? (
+                <div className="py-6 text-center">
+                  <p className="text-sm text-[rgba(var(--mg-text),0.4)]">No ships in fleet</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {userShips.map((ship, index) => (
+                    <ProfileShipCard
+                      key={`${ship.fleetyardsId || ship.name}-${index}`}
+                      ship={ship}
+                      resolved={resolvedShips.get(ship.fleetyardsId)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </motion.div>
       </div>
     </div>
