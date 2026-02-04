@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 4 (Type System & Image Resolution) -- Plan 01 complete, Plan 02 next.
+**Current focus:** Phase 4 complete. Ready for Phase 5 (Ship Browse UI) and/or Phase 6 (Frontend Integration).
 
 ## Current Position
 
 Phase: 4 of 7 (Type System & Image Resolution)
-Plan: 1 of 2 in current phase
-Status: In progress -- type definitions and next.config.js complete
-Last activity: 2026-02-04 -- Completed 04-01-PLAN.md (type definitions + next.config.js)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-04 -- Completed 04-02-PLAN.md (image resolution + API validation)
 
-Progress: [██████████░] ~42% (10 of ~24 total plans estimated)
+Progress: [███████████░] ~46% (11 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: ~2.2 min
-- Total execution time: ~24 min
+- Total execution time: ~26 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [██████████░] ~42% (10 of ~24 total plans estima
 | 1 - Sync Engine | 4 | ~10 min | ~2.5 min |
 | 2 - Ship API Routes | 3 | ~5 min | ~1.7 min |
 | 3 - Data Migration | 2 | ~5 min | ~2.6 min |
-| 4 - Type System | 1 | ~3 min | ~3 min |
+| 4 - Type System | 2 | ~5 min | ~2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (~2 min), 03-01 (~1.5 min), 03-02 (~3.7 min), 04-01 (~3 min)
+- Last 5 plans: 03-01 (~1.5 min), 03-02 (~3.7 min), 04-01 (~3 min), 04-02 (~2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -74,6 +74,9 @@ Recent decisions affecting current work:
 - [04-01]: image made optional (not removed) to avoid breaking ~7 components -- deferred removal to Phase 7
 - [04-01]: shipDetailsToMissionShip sets fleetyardsId to '' with caller-must-set comment
 - [04-01]: Downstream type errors fixed inline (profile Zod schema, fleet builder, mission planner image fallbacks)
+- [04-02]: resolveShipImage fallback chain: requested view -> angled -> store -> placeholder
+- [04-02]: Legacy function renamed to resolveShipImageLegacy (not overloaded) for clean separation
+- [04-02]: Profile route fleetyardsId validated as UUID (stricter than plain string from 04-01)
 
 ### Pending Todos
 
@@ -94,8 +97,8 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 04-01-PLAN.md. Phase 4 Plan 02 (image resolution + API validation) next.
-Resume file: .planning/phases/04-type-system-image-resolution/04-02-PLAN.md
+Stopped at: Completed 04-02-PLAN.md. Phase 4 complete. Phase 5 (Ship Browse UI) or Phase 6 (Frontend Integration) next.
+Resume file: None (phase complete)
 
 IMPORTANT CONTEXT:
 - commit_docs is true (commit planning artifacts)
