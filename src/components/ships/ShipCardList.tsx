@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { resolveShipImage } from '@/lib/ships/image';
+import { formatCrew, formatCargo, formatSpeed } from '@/lib/ships/format';
 import type { ShipDocument } from '@/types/ship';
 
 interface ShipCardListProps {
@@ -41,8 +42,28 @@ export default function ShipCardList({ ship, onClick }: ShipCardListProps) {
       </span>
 
       {/* Manufacturer */}
-      <span className="text-[rgba(var(--mg-text),0.6)] text-xs w-32 truncate hidden sm:block">
-        {ship.manufacturer.name}
+      <span className="text-[rgba(var(--mg-text),0.6)] text-xs w-32 truncate hidden sm:flex items-center gap-1.5">
+        {ship.manufacturer.logo ? (
+          <Image
+            src={ship.manufacturer.logo}
+            alt={ship.manufacturer.name}
+            width={14}
+            height={14}
+            className="object-contain flex-shrink-0"
+          />
+        ) : null}
+        <span className="truncate">{ship.manufacturer.name}</span>
+      </span>
+
+      {/* Spec Columns */}
+      <span className="text-[rgba(var(--mg-text),0.5)] text-xs w-12 text-right hidden md:block" title="Crew">
+        {formatCrew(ship.crew.min, ship.crew.max)}
+      </span>
+      <span className="text-[rgba(var(--mg-text),0.5)] text-xs w-16 text-right hidden lg:block" title="Cargo">
+        {formatCargo(ship.cargo)}
+      </span>
+      <span className="text-[rgba(var(--mg-text),0.5)] text-xs w-16 text-right hidden lg:block" title="Speed">
+        {formatSpeed(ship.scmSpeed)}
       </span>
 
       {/* Classification Badge */}
