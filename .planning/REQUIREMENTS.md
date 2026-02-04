@@ -53,14 +53,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Ship Browse & Display
 
-- [ ] **UI-01**: Ship list page with multi-axis filtering: manufacturer, size, role/classification, production status, text search — all combinable
-- [ ] **UI-02**: Ship detail card/panel shows full specs, description, multiple image views, manufacturer logo, classification
-- [ ] **UI-03**: Multiple ship image views displayed: angled, side, top, store — with ability to switch between views
-- [ ] **UI-04**: Manufacturer logos shown in dropdowns and ship cards
-- [ ] **UI-05**: Ship specs displayed on cards: dimensions, crew min/max, cargo SCU, SCM speed
-- [ ] **UI-06**: Classification/role labels shown on ship cards (e.g., "Exploration", "Combat", "Freight")
-- [ ] **UI-07**: Data freshness indicator shows last sync timestamp (e.g., "Last synced: 2 hours ago")
-- [ ] **UI-08**: Image gallery with thumbnail strip and view angle switcher (angled/side/top/store)
+- [x] **UI-01**: Ship list page with multi-axis filtering: manufacturer, size, role/classification, production status, text search — all combinable
+- [x] **UI-02**: Ship detail card/panel shows full specs, description, multiple image views, manufacturer logo, classification
+- [x] **UI-03**: Multiple ship image views displayed: angled, side, top, store — with ability to switch between views
+- [ ] **UI-04**: Manufacturer logos shown in dropdowns and ship cards *(gap: logo URL not captured in data model; manufacturer name/code shown instead)*
+- [ ] **UI-05**: Ship specs displayed on cards: dimensions, crew min/max, cargo SCU, SCM speed *(gap: specs shown in detail panel but not on cards)*
+- [x] **UI-06**: Classification/role labels shown on ship cards (e.g., "Exploration", "Combat", "Freight")
+- [x] **UI-07**: Data freshness indicator shows last sync timestamp (e.g., "Last synced: 2 hours ago")
+- [x] **UI-08**: Image gallery with thumbnail strip and view angle switcher (angled/side/top/store)
 
 ### Frontend Integration
 
@@ -133,30 +133,30 @@ Deferred to future release. Tracked but not in current roadmap.
 | DATA-04 | Phase 1 | Sync Engine & Data Model | Complete |
 | DATA-05 | Phase 1 | Sync Engine & Data Model | Complete |
 | DATA-06 | Phase 1 | Sync Engine & Data Model | Complete |
-| API-01 | Phase 2 | Ship API Routes | Pending |
-| API-02 | Phase 2 | Ship API Routes | Pending |
-| API-03 | Phase 2 | Ship API Routes | Pending |
-| API-04 | Phase 2 | Ship API Routes | Pending |
-| MIG-01 | Phase 3 | Data Migration | Pending |
-| MIG-02 | Phase 3 | Data Migration | Pending |
-| MIG-03 | Phase 3 | Data Migration | Pending |
-| MIG-04 | Phase 3 | Data Migration | Pending |
-| MIG-05 | Phase 3 | Data Migration | Pending |
-| MIG-06 | Phase 3 | Data Migration | Pending |
-| TYPE-01 | Phase 4 | Type System & Image Resolution | Pending |
-| TYPE-02 | Phase 4 | Type System & Image Resolution | Pending |
-| TYPE-03 | Phase 4 | Type System & Image Resolution | Pending |
-| TYPE-04 | Phase 4 | Type System & Image Resolution | Pending |
-| TYPE-05 | Phase 4 | Type System & Image Resolution | Pending |
-| TYPE-06 | Phase 4 | Type System & Image Resolution | Pending |
-| UI-01 | Phase 5 | Ship Browse & Display | Pending |
-| UI-02 | Phase 5 | Ship Browse & Display | Pending |
-| UI-03 | Phase 5 | Ship Browse & Display | Pending |
-| UI-04 | Phase 5 | Ship Browse & Display | Pending |
-| UI-05 | Phase 5 | Ship Browse & Display | Pending |
-| UI-06 | Phase 5 | Ship Browse & Display | Pending |
-| UI-07 | Phase 5 | Ship Browse & Display | Pending |
-| UI-08 | Phase 5 | Ship Browse & Display | Pending |
+| API-01 | Phase 2 | Ship API Routes | Complete |
+| API-02 | Phase 2 | Ship API Routes | Complete |
+| API-03 | Phase 2 | Ship API Routes | Complete |
+| API-04 | Phase 2 | Ship API Routes | Complete |
+| MIG-01 | Phase 3 | Data Migration | Complete |
+| MIG-02 | Phase 3 | Data Migration | Complete |
+| MIG-03 | Phase 3 | Data Migration | Complete |
+| MIG-04 | Phase 3 | Data Migration | Complete |
+| MIG-05 | Phase 3 | Data Migration | Complete |
+| MIG-06 | Phase 3 | Data Migration | Complete |
+| TYPE-01 | Phase 4 | Type System & Image Resolution | Complete |
+| TYPE-02 | Phase 4 | Type System & Image Resolution | Complete |
+| TYPE-03 | Phase 4 | Type System & Image Resolution | Complete |
+| TYPE-04 | Phase 4 | Type System & Image Resolution | Complete |
+| TYPE-05 | Phase 4 | Type System & Image Resolution | Complete |
+| TYPE-06 | Phase 4 | Type System & Image Resolution | Complete |
+| UI-01 | Phase 5 | Ship Browse & Display | Complete |
+| UI-02 | Phase 5 | Ship Browse & Display | Complete |
+| UI-03 | Phase 5 | Ship Browse & Display | Complete |
+| UI-04 | Phase 5 | Ship Browse & Display | Gap |
+| UI-05 | Phase 5 | Ship Browse & Display | Gap |
+| UI-06 | Phase 5 | Ship Browse & Display | Complete |
+| UI-07 | Phase 5 | Ship Browse & Display | Complete |
+| UI-08 | Phase 5 | Ship Browse & Display | Complete |
 | INT-01 | Phase 6 | Frontend Integration | Pending |
 | INT-02 | Phase 6 | Frontend Integration | Pending |
 | INT-03 | Phase 6 | Frontend Integration | Pending |

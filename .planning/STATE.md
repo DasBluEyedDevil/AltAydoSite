@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 5 in progress. Building Ship Browse & Display UI layer.
+**Current focus:** Phase 5 complete (6/8 verified, 2 gaps deferred). Ready for Phase 6.
 
 ## Current Position
 
 Phase: 5 of 7 (Ship Browse & Display)
 Plan: 5 of 5 in current phase
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 05-05-PLAN.md (ship browse page assembly)
+Status: Phase complete (verified 6/8, gaps: UI-04 logos, UI-05 card specs)
+Last activity: 2026-02-03 -- Phase 5 verified. Checkpoint approved.
 
 Progress: [████████████████░] ~67% (16 of ~24 total plans estimated)
 
@@ -114,11 +114,14 @@ None yet.
 - [RESOLVED]: Planned mission idempotency partial -- Phase 4 type updates now include fleetyardsId in MissionShip type, addressing the persistence concern from 03-exec.
 - [04-01]: UserFleetBuilder uses placeholder fleetyardsId ('') -- Phase 6 must wire to ship API lookup
 - [04-01]: /images/placeholder-ship.png fallback used in MissionPlanner/Form but asset may not exist -- Phase 5 should create or use alternative
+- [05-VERIFY]: UI-04 gap -- manufacturer logo URLs not captured in data model (name/code shown instead). Needs logo field in ShipDocument + sync transform.
+- [05-VERIFY]: UI-05 gap -- ship specs (crew, cargo, dimensions, speed) shown in detail panel but not on ShipCard/ShipCardList. Format utilities exist but aren't used on cards.
+- [RESOLVED]: postcss.config.js was missing from project root (moved to scripts/ in Dec 2025 refactor). Restored in 4900314.
 
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 05-05-PLAN.md. Phase 5 complete (all 5 plans). Continue with Phase 6 next.
+Stopped at: Phase 5 verified (6/8 pass, 2 gaps deferred). Continue with Phase 6 next.
 Resume file: None
 
 IMPORTANT CONTEXT:
@@ -127,3 +130,4 @@ IMPORTANT CONTEXT:
 - The project uses Cosmos DB for MongoDB vCore (confirmed by research) which DOES support $text indexes
 - Pre-existing build failure from discord.js/zlib-sync is unrelated -- use `npm run type-check` for verification instead of `npm run build`
 - next.config.js now exists at project root (restored from scripts/) with FleetYards CDN support
+- postcss.config.js now exists at project root (restored from scripts/) -- required for Tailwind CSS processing
