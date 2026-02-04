@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 5.1 -- closing verification gaps (UI-04 logos, UI-05 card specs). Plan 01 complete, plan 02 next.
+**Current focus:** Phase 5.1 complete -- both verification gaps (UI-04 logos, UI-05 card specs) closed. Ready for Phase 6 or 7.
 
 ## Current Position
 
 Phase: 5.1 of 7 (Ship Browse Gap Closure)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-03 -- Completed 05.1-01-PLAN.md (manufacturer logo pipeline)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-03 -- Completed 05.1-02-PLAN.md (ship card specs and manufacturer logo UI)
 
-Progress: [█████████████████░] ~68% (17 of ~25 total plans estimated)
+Progress: [██████████████████░] ~72% (18 of ~25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 18
 - Average duration: ~2.3 min
-- Total execution time: ~39 min
+- Total execution time: ~41 min
 
 **By Phase:**
 
@@ -32,10 +32,10 @@ Progress: [█████████████████░] ~68% (17 of ~
 | 3 - Data Migration | 2 | ~5 min | ~2.6 min |
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
 | 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
-| 5.1 - Ship Browse Gaps | 1 | ~2 min | ~2 min |
+| 5.1 - Ship Browse Gaps | 2 | ~4 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-02 (~2 min), 05-03 (~3 min), 05-04 (~2 min), 05-05 (~2 min), 05.1-01 (~2 min)
+- Last 5 plans: 05-03 (~3 min), 05-04 (~2 min), 05-05 (~2 min), 05.1-01 (~2 min), 05.1-02 (~2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -101,10 +101,13 @@ Recent decisions affecting current work:
 - [05-05]: FleetDatabaseClient is a thin 'use client' wrapper for the server-rendered page.tsx
 - [05.1-01]: logo field is string | null (not optional) -- null means no logo, not 'unknown'
 - [05.1-01]: FleetYardsShipSchema uses .nullable().optional().default(null) for backward compat with existing data
+- [05.1-02]: Logo sizes: 16px grid cards, 14px list rows, 20px detail panel -- proportional to context
+- [05.1-02]: List spec columns responsive: crew at md+, cargo/speed at lg+ to prevent overflow
+- [05.1-02]: ManufacturerOption logo field added for type correctness only -- native select cannot render images
 
 ### Roadmap Evolution
 
-- Phase 5.1 inserted after Phase 5: Fix verification gaps (UI-04 manufacturer logos, UI-05 card specs) (URGENT)
+- Phase 5.1 inserted after Phase 5: Fix verification gaps (UI-04 manufacturer logos, UI-05 card specs) -- NOW COMPLETE
 
 ### Pending Todos
 
@@ -121,14 +124,14 @@ None yet.
 - [RESOLVED]: Planned mission idempotency partial -- Phase 4 type updates now include fleetyardsId in MissionShip type, addressing the persistence concern from 03-exec.
 - [04-01]: UserFleetBuilder uses placeholder fleetyardsId ('') -- Phase 6 must wire to ship API lookup
 - [04-01]: /images/placeholder-ship.png fallback used in MissionPlanner/Form but asset may not exist -- Phase 5 should create or use alternative
-- [RESOLVED]: UI-04 gap -- manufacturer logo URLs now captured in data model (05.1-01). Logo field added to ShipDocument, transform, and aggregation pipeline.
-- [05-VERIFY]: UI-05 gap -- ship specs (crew, cargo, dimensions, speed) shown in detail panel but not on ShipCard/ShipCardList. Format utilities exist but aren't used on cards.
+- [RESOLVED]: UI-04 gap -- manufacturer logo URLs captured in data model (05.1-01) and rendered in UI (05.1-02). Gap closed.
+- [RESOLVED]: UI-05 gap -- ship specs (crew, cargo, speed) now displayed on ShipCard and ShipCardList using format utilities (05.1-02). Gap closed.
 - [RESOLVED]: postcss.config.js was missing from project root (moved to scripts/ in Dec 2025 refactor). Restored in 4900314.
 
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 05.1-01-PLAN.md. Execute 05.1-02-PLAN.md next.
+Stopped at: Completed 05.1-02-PLAN.md. Phase 5.1 complete. Next: Phase 6 or 7.
 Resume file: None
 
 IMPORTANT CONTEXT:
@@ -138,3 +141,4 @@ IMPORTANT CONTEXT:
 - Pre-existing build failure from discord.js/zlib-sync is unrelated -- use `npm run type-check` for verification instead of `npm run build`
 - next.config.js now exists at project root (restored from scripts/) with FleetYards CDN support
 - postcss.config.js now exists at project root (restored from scripts/) -- required for Tailwind CSS processing
+- Image from next/image is imported in ShipCard.tsx, ShipCardList.tsx, and ShipDetailPanel.tsx
