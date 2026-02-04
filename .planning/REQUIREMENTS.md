@@ -73,10 +73,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Cleanup
 
-- [ ] **CLN-01**: `public/data/ships.json` removed
-- [ ] **CLN-02**: `src/lib/ship-data.ts` (old static loader) removed or deprecated
-- [ ] **CLN-03**: `shipManufacturers` array and `formatShipImageName()`/`getShipImagePath()` functions removed from `ShipData.ts`
-- [ ] **CLN-04**: Old R2 image path resolution helpers removed
+- [x] **CLN-01**: `public/data/ships.json` removed
+- [x] **CLN-02**: `src/lib/ship-data.ts` (old static loader) removed or deprecated
+- [x] **CLN-03**: `shipManufacturers` array and `formatShipImageName()`/`getShipImagePath()` functions removed from `ShipData.ts`
+- [x] **CLN-04**: Old R2 image path resolution helpers removed
 
 ## v2 Requirements
 
@@ -163,10 +163,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | INT-04 | Phase 6 | Frontend Integration | Complete |
 | INT-05 | Phase 6 | Frontend Integration | Complete |
 | INT-06 | Phase 6 | Frontend Integration | Complete |
-| CLN-01 | Phase 7 | Cleanup & Decommission | Pending |
-| CLN-02 | Phase 7 | Cleanup & Decommission | Pending |
-| CLN-03 | Phase 7 | Cleanup & Decommission | Pending |
-| CLN-04 | Phase 7 | Cleanup & Decommission | Pending |
+| CLN-01 | Phase 7 | Cleanup & Decommission | Complete |
+| CLN-02 | Phase 7 | Cleanup & Decommission | Complete |
+| CLN-03 | Phase 7 | Cleanup & Decommission | Complete |
+| CLN-04 | Phase 7 | Cleanup & Decommission | Complete |
 
 **Coverage:**
 - v1 requirements: 47 total

@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Ship Browse & Display** - Build new ship browsing UI with multi-axis filtering and detail views
 - [x] **Phase 5.1: Ship Browse Gaps** (INSERTED) - Add manufacturer logos to data model and key specs to ship cards
 - [x] **Phase 6: Frontend Integration** - Rewire existing components (fleet builder, mission planner, profiles) to use new API
-- [ ] **Phase 7: Cleanup & Decommission** - Remove legacy static ship data, old loaders, and R2 image helpers
+- [x] **Phase 7: Cleanup & Decommission** - Remove legacy static ship data, old loaders, and R2 image helpers
 
 ## Phase Details
 
@@ -151,9 +151,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 07-01-PLAN.md -- Clean legacy imports from live files and replace placeholder images with CSS empty states
-- [ ] 07-02-PLAN.md -- Delete legacy files, dead code components, and placeholder image
-- [ ] 07-03-PLAN.md -- Fix ESLint config and full build verification with comprehensive grep scan
+- [x] 07-01-PLAN.md -- Clean legacy imports from live files and replace placeholder images with CSS empty states
+- [x] 07-02-PLAN.md -- Delete legacy files, dead code components, and placeholder image
+- [x] 07-03-PLAN.md -- Fix ESLint config and full build verification with comprehensive grep scan
 
 ## Progress
 
@@ -170,4 +170,4 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 5. Ship Browse & Display | 5/5 | Complete | 2026-02-03 |
 | 5.1 Ship Browse Gaps | 2/2 | Complete | 2026-02-03 |
 | 6. Frontend Integration | 5/5 | Complete | 2026-02-04 |
-| 7. Cleanup & Decommission | 0/3 | Not started | - |
+| 7. Cleanup & Decommission | 3/3 | Complete | 2026-02-04 |
