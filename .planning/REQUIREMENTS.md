@@ -35,21 +35,21 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Migration
 
-- [ ] **MIG-01**: Migration script converts all user profile ship references (`user.ships[]`) from name strings to FleetYards UUIDs
-- [ ] **MIG-02**: Migration script converts all planned mission ship references (`MissionShip`, `MissionParticipant`) to FleetYards UUIDs
-- [ ] **MIG-03**: Migration script converts all operation participant ship references to FleetYards UUIDs
-- [ ] **MIG-04**: Migration script converts all resource records (type "Ship") to FleetYards UUIDs
-- [ ] **MIG-05**: Name matching uses multi-pass strategy: exact match, slug match, RSI name match, contains match, manual override map
-- [ ] **MIG-06**: Migration script is idempotent (safe to run multiple times)
+- [x] **MIG-01**: Migration script converts all user profile ship references (`user.ships[]`) from name strings to FleetYards UUIDs
+- [x] **MIG-02**: Migration script converts all planned mission ship references (`MissionShip`, `MissionParticipant`) to FleetYards UUIDs
+- [x] **MIG-03**: Migration script converts all operation participant ship references to FleetYards UUIDs
+- [x] **MIG-04**: Migration script converts all resource records (type "Ship") to FleetYards UUIDs
+- [x] **MIG-05**: Name matching uses multi-pass strategy: exact match, slug match, RSI name match, contains match, manual override map
+- [x] **MIG-06**: Migration script is idempotent (safe to run multiple times)
 
 ### Type Updates
 
-- [ ] **TYPE-01**: `UserShip` type updated: `fleetyardsId` added, `image` field removed (resolved at render time)
-- [ ] **TYPE-02**: `MissionShip` type updated with `fleetyardsId` field
-- [ ] **TYPE-03**: `MissionParticipant` type updated with `fleetyardsId` field
-- [ ] **TYPE-04**: `OperationParticipant` type updated with `fleetyardsId` field
-- [ ] **TYPE-05**: `next.config.js` updated with `cdn.fleetyards.net` in `remotePatterns`
-- [ ] **TYPE-06**: Ship image resolution uses new `resolveShipImage()` that takes ship document and view angle
+- [x] **TYPE-01**: `UserShip` type updated: `fleetyardsId` added, `image` made optional (resolved at render time; removed in Phase 7)
+- [x] **TYPE-02**: `MissionShip` type updated with `fleetyardsId` field
+- [x] **TYPE-03**: `MissionParticipant` type updated with `fleetyardsId` field
+- [x] **TYPE-04**: `OperationParticipant` type updated with `fleetyardsId` field
+- [x] **TYPE-05**: `next.config.js` updated with `cdn.fleetyards.net` in `remotePatterns`
+- [x] **TYPE-06**: Ship image resolution uses new `resolveShipImage()` that takes ship document and view angle
 
 ### Ship Browse & Display
 
