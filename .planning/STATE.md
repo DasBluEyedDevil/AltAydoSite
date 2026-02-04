@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 6 complete -- frontend integration of ship database into existing pages. Ready for Phase 7 (Cleanup).
+**Current focus:** Phase 7 in progress -- cleanup and decommissioning of legacy ship system.
 
 ## Current Position
 
-Phase: 6 of 7 (Frontend Integration)
-Plan: 5 of 5 in current phase
-Status: Phase complete
-Last activity: 2026-02-04 -- Completed 06-05-PLAN.md (fleet composition dashboard)
+Phase: 7 of 7 (Cleanup & Decommission)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-04 -- Completed 07-01-PLAN.md (legacy import cleanup)
 
-Progress: [███████████████████████] ~92% (23 of ~25 total plans estimated)
+Progress: [████████████████████████] ~96% (24 of ~25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
-- Average duration: ~2.4 min
-- Total execution time: ~56 min
+- Total plans completed: 24
+- Average duration: ~2.5 min
+- Total execution time: ~61 min
 
 **By Phase:**
 
@@ -34,10 +34,11 @@ Progress: [███████████████████████
 | 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
 | 5.1 - Ship Browse Gaps | 2 | ~4 min | ~2 min |
 | 6 - Frontend Integration | 5 | ~15 min | ~3 min |
+| 7 - Cleanup & Decommission | 1 | ~5 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (~2 min), 06-02 (~4 min), 06-04 (~4 min), 06-03 (~2 min), 06-05 (~3 min)
-- Trend: stable (Phase 6 complete, averaging ~3 min/plan due to cross-component wiring)
+- Last 5 plans: 06-03 (~2 min), 06-04 (~4 min), 06-05 (~3 min), 07-01 (~5 min)
+- Trend: slightly longer for cleanup (more verification overhead, cross-file grepping)
 
 *Updated after each plan completion*
 
@@ -124,6 +125,9 @@ Recent decisions affecting current work:
 - [06-05]: Recharts PieLabelRenderProps has optional fields -- label function uses defaults instead of strict typing
 - [06-05]: Bar chart uses per-bar Cell coloring matching pie chart palette for visual consistency
 - [06-05]: Tab indicator uses framer-motion layoutId for smooth animated underline
+- [07-01]: getShipPlaceholder returns empty string -- components handle empty/falsy URLs via CSS empty states
+- [07-01]: getTotalShips replaces getEstimatedCrew -- crew data unavailable without static DB, count ships instead
+- [07-01]: ShipImage.tsx updated to CSS empty state since resolveShipImageLegacy was removed (deviation Rule 3)
 
 ### Roadmap Evolution
 
@@ -147,11 +151,12 @@ None yet.
 - [RESOLVED]: UI-04 gap -- manufacturer logo URLs captured in data model (05.1-01) and rendered in UI (05.1-02). Gap closed.
 - [RESOLVED]: UI-05 gap -- ship specs (crew, cargo, speed) now displayed on ShipCard and ShipCardList using format utilities (05.1-02). Gap closed.
 - [RESOLVED]: postcss.config.js was missing from project root (moved to scripts/ in Dec 2025 refactor). Restored in 4900314.
+- [RESOLVED]: All placeholder PNG references eliminated from live source files (07-01). CSS-only empty states used instead.
 
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-05-PLAN.md. Phase 6 fully complete (5/5 plans). Next: Phase 7 (Cleanup).
+Stopped at: Completed 07-01-PLAN.md. Phase 7 plan 1/3 complete. Next: 07-02 (legacy file deletion).
 Resume file: None
 
 IMPORTANT CONTEXT:
@@ -162,3 +167,4 @@ IMPORTANT CONTEXT:
 - next.config.js now exists at project root (restored from scripts/) with FleetYards CDN support
 - postcss.config.js now exists at project root (restored from scripts/) -- required for Tailwind CSS processing
 - Image from next/image is imported in ShipCard.tsx, ShipCardList.tsx, and ShipDetailPanel.tsx
+- Legacy fleet-ops/mission-planner components still reference ShipData.ts but are scheduled for deletion in Plan 02
