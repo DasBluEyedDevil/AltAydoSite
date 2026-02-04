@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React from "react";
-import { resolveShipImage } from "@/lib/ships/image";
+import { resolveShipImageLegacy } from "@/lib/ships/image";
 
 export type ShipImageSize = "sm" | "md" | "lg";
 
@@ -20,7 +20,7 @@ interface ShipImageProps {
 }
 
 const ShipImage: React.FC<ShipImageProps> = ({ model, alt, size = "sm", className }) => {
-  const src = resolveShipImage(model);
+  const src = resolveShipImageLegacy(model);
   const dims = sizeMap[size];
   const [loaded, setLoaded] = React.useState(false);
   return (

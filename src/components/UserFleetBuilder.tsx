@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { UserShip } from '@/types/user';
 import { getManufacturersList, getShipsByManufacturer } from '@/types/ShipData';
-import { resolveShipImage } from '@/lib/ships/image';
+import { resolveShipImageLegacy } from '@/lib/ships/image';
 import Image from 'next/image';
 import { MobiGlasButton } from '@/components/ui/mobiglas';
 
@@ -162,7 +162,7 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
                   );
                   
                   const shipId = `${ship.manufacturer}-${ship.name}`;
-                  const imagePath = resolveShipImage(ship.name);
+                  const imagePath = resolveShipImageLegacy(ship.name);
                   const useDefaultImage = imageErrors[shipId];
                   const isLoaded = loadedImages[shipId];
                   
