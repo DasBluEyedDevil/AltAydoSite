@@ -148,8 +148,8 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-03-PLAN.md. Phase 6 plan 4 of 5 complete. Next: 06-05.
-Resume file: None
+Stopped at: Completed 06-04-PLAN.md. Phase 6 plans 1-4 of 5 complete. Next: 06-05 (fleet composition dashboard).
+Resume file: .planning/phases/06-frontend-integration/.continue-here.md
 
 IMPORTANT CONTEXT:
 - commit_docs is true (commit planning artifacts)
