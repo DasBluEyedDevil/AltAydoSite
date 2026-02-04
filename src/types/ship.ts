@@ -39,6 +39,7 @@ export interface ShipDocument {
     name: string;
     code: string;
     slug: string;
+    logo: string | null;
   };
   /** Ship classification key (e.g., "combat", "transport") */
   classification: string;
@@ -173,6 +174,7 @@ export const FleetYardsShipSchema = z.object({
     name: z.string(),
     code: z.string().optional().default(''),
     slug: z.string(),
+    logo: z.string().nullable().optional().default(null),
   }).passthrough(),
 
   // Optional/nullable fields -- ship is still valid without these
@@ -249,6 +251,7 @@ export const ShipDocumentSchema = z.object({
     name: z.string(),
     code: z.string(),
     slug: z.string(),
+    logo: z.string().nullable(),
   }),
   classification: z.string(),
   classificationLabel: z.string(),

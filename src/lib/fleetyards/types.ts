@@ -31,6 +31,7 @@ export interface FleetYardsManufacturer {
   longName: string;
   slug: string;
   code: string;
+  logo: string | null;
 }
 
 /**

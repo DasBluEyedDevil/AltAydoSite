@@ -71,6 +71,7 @@ export function transformFleetYardsShip(
       name: raw.manufacturer.name,
       code: raw.manufacturer.code,
       slug: raw.manufacturer.slug,
+      logo: raw.manufacturer.logo ?? null,
     },
 
     // Classification and status
