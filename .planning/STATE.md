@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 5 of 7 (Ship Browse & Display)
-Plan: 4 of 5 in current phase
-Status: In progress
-Last activity: 2026-02-03 -- Completed 05-04-PLAN.md (ship detail panel)
+Plan: 5 of 5 in current phase
+Status: Phase complete
+Last activity: 2026-02-03 -- Completed 05-05-PLAN.md (ship browse page assembly)
 
-Progress: [███████████████░] ~63% (15 of ~24 total plans estimated)
+Progress: [████████████████░] ~67% (16 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
+- Total plans completed: 16
 - Average duration: ~2.3 min
-- Total execution time: ~35 min
+- Total execution time: ~37 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [███████████████░] ~63% (15 of ~24 tot
 | 2 - Ship API Routes | 3 | ~5 min | ~1.7 min |
 | 3 - Data Migration | 2 | ~5 min | ~2.6 min |
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
-| 5 - Ship Browse UI | 4 | ~9 min | ~2.3 min |
+| 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (~2 min), 05-02 (~2 min), 05-03 (~3 min), 05-04 (~2 min)
+- Last 5 plans: 05-01 (~2 min), 05-02 (~2 min), 05-03 (~3 min), 05-04 (~2 min), 05-05 (~2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -93,6 +93,11 @@ Recent decisions affecting current work:
 - [05-04]: Body scroll lock when detail panel is open (overflow hidden on body)
 - [05-04]: Production status badge uses inline style for dynamic CSS variable color mapping (Tailwind can't compose variable names)
 - [05-04]: Description collapse state resets on shipId change (each new ship starts with specs visible)
+- [05-05]: useReducer for centralized filter state management (avoids stale closures from research pitfall #2)
+- [05-05]: SET_FILTER and SET_SEARCH both reset page to 1 (changing filters returns to first page)
+- [05-05]: ShipBrowsePage owns ALL state and passes it down to child components
+- [05-05]: SyncStatusIndicator is self-contained (uses useSyncStatus hook internally, renders nothing on error)
+- [05-05]: FleetDatabaseClient is a thin 'use client' wrapper for the server-rendered page.tsx
 
 ### Pending Todos
 
@@ -113,7 +118,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 05-04-PLAN.md. Phase 5 plan 4 of 5 complete. Continue with 05-05-PLAN.md next.
+Stopped at: Completed 05-05-PLAN.md. Phase 5 complete (all 5 plans). Continue with Phase 6 next.
 Resume file: None
 
 IMPORTANT CONTEXT:
