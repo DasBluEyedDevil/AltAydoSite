@@ -16,8 +16,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Ship API Routes** - Expose ship data through filtered, paginated REST endpoints
 - [x] **Phase 3: Data Migration** - Convert all existing ship references from names to FleetYards UUIDs
 - [x] **Phase 4: Type System & Image Resolution** - Update TypeScript types and image pipeline for UUID-based references
-- [x] **Phase 5: Ship Browse & Display** - Build new ship browsing UI with multi-axis filtering and detail views (6/8 reqs verified; UI-04 logos + UI-05 card specs deferred)
-- [ ] **Phase 5.1: Ship Browse Gaps** (INSERTED) - Add manufacturer logos to data model and key specs to ship cards
+- [x] **Phase 5: Ship Browse & Display** - Build new ship browsing UI with multi-axis filtering and detail views
+- [x] **Phase 5.1: Ship Browse Gaps** (INSERTED) - Add manufacturer logos to data model and key specs to ship cards
 - [ ] **Phase 6: Frontend Integration** - Rewire existing components (fleet builder, mission planner, profiles) to use new API
 - [ ] **Phase 7: Cleanup & Decommission** - Remove legacy static ship data, old loaders, and R2 image helpers
 
@@ -117,8 +117,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05.1-01-PLAN.md -- Data pipeline: thread manufacturer logo field through types, Zod schemas, transform, and storage aggregation
-- [ ] 05.1-02-PLAN.md -- UI wiring: add manufacturer logos and ship specs to cards, detail panel, and filter panel
+- [x] 05.1-01-PLAN.md -- Data pipeline: thread manufacturer logo field through types, Zod schemas, transform, and storage aggregation
+- [x] 05.1-02-PLAN.md -- UI wiring: add manufacturer logos and ship specs to cards, detail panel, and filter panel
 
 ### Phase 6: Frontend Integration
 **Goal**: All existing application features (fleet builder, mission planner, profiles) use the new dynamic ship data
@@ -162,7 +162,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 2. Ship API Routes | 3/3 | Complete | 2026-02-03 |
 | 3. Data Migration | 2/2 | Complete | 2026-02-03 |
 | 4. Type System & Image Resolution | 2/2 | Complete | 2026-02-04 |
-| 5. Ship Browse & Display | 5/5 | Complete (2 gaps) | 2026-02-03 |
-| 5.1 Ship Browse Gaps | 0/2 | Not started | - |
+| 5. Ship Browse & Display | 5/5 | Complete | 2026-02-03 |
+| 5.1 Ship Browse Gaps | 2/2 | Complete | 2026-02-03 |
 | 6. Frontend Integration | 0/TBD | Not started | - |
 | 7. Cleanup & Decommission | 0/TBD | Not started | - |

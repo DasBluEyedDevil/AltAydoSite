@@ -56,8 +56,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **UI-01**: Ship list page with multi-axis filtering: manufacturer, size, role/classification, production status, text search — all combinable
 - [x] **UI-02**: Ship detail card/panel shows full specs, description, multiple image views, manufacturer logo, classification
 - [x] **UI-03**: Multiple ship image views displayed: angled, side, top, store — with ability to switch between views
-- [ ] **UI-04**: Manufacturer logos shown in dropdowns and ship cards *(gap: logo URL not captured in data model; manufacturer name/code shown instead)*
-- [ ] **UI-05**: Ship specs displayed on cards: dimensions, crew min/max, cargo SCU, SCM speed *(gap: specs shown in detail panel but not on cards)*
+- [x] **UI-04**: Manufacturer logos shown in dropdowns and ship cards
+- [x] **UI-05**: Ship specs displayed on cards: dimensions, crew min/max, cargo SCU, SCM speed
 - [x] **UI-06**: Classification/role labels shown on ship cards (e.g., "Exploration", "Combat", "Freight")
 - [x] **UI-07**: Data freshness indicator shows last sync timestamp (e.g., "Last synced: 2 hours ago")
 - [x] **UI-08**: Image gallery with thumbnail strip and view angle switcher (angled/side/top/store)
@@ -152,8 +152,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | UI-01 | Phase 5 | Ship Browse & Display | Complete |
 | UI-02 | Phase 5 | Ship Browse & Display | Complete |
 | UI-03 | Phase 5 | Ship Browse & Display | Complete |
-| UI-04 | Phase 5 | Ship Browse & Display | Gap |
-| UI-05 | Phase 5 | Ship Browse & Display | Gap |
+| UI-04 | Phase 5.1 | Ship Browse Gaps | Complete |
+| UI-05 | Phase 5.1 | Ship Browse Gaps | Complete |
 | UI-06 | Phase 5 | Ship Browse & Display | Complete |
 | UI-07 | Phase 5 | Ship Browse & Display | Complete |
 | UI-08 | Phase 5 | Ship Browse & Display | Complete |
