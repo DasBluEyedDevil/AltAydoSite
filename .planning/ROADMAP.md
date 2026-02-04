@@ -148,10 +148,12 @@ Plans:
   2. The old `loadShipDatabase()` / `getShipsByManufacturer()` functions in `src/lib/ship-data.ts` are removed or fully deprecated
   3. Legacy helper functions (`formatShipImageName()`, `getShipImagePath()`, `shipManufacturers` array) are removed from `ShipData.ts`
   4. The application builds and runs without any imports referencing removed files or functions
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 07-01: TBD
+- [ ] 07-01-PLAN.md -- Clean legacy imports from live files and replace placeholder images with CSS empty states
+- [ ] 07-02-PLAN.md -- Delete legacy files, dead code components, and placeholder image
+- [ ] 07-03-PLAN.md -- Fix ESLint config and full build verification with comprehensive grep scan
 
 ## Progress
 
@@ -168,4 +170,4 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 5. Ship Browse & Display | 5/5 | Complete | 2026-02-03 |
 | 5.1 Ship Browse Gaps | 2/2 | Complete | 2026-02-03 |
 | 6. Frontend Integration | 5/5 | Complete | 2026-02-04 |
-| 7. Cleanup & Decommission | 0/TBD | Not started | - |
+| 7. Cleanup & Decommission | 0/3 | Not started | - |
