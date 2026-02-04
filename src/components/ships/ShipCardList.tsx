@@ -13,7 +13,8 @@ interface ShipCardListProps {
 }
 
 export default function ShipCardList({ ship, onClick }: ShipCardListProps) {
-  const [imgSrc, setImgSrc] = useState(() => resolveShipImage(ship.images, 'store'));
+  const [imgSrc] = useState(() => resolveShipImage(ship.images, 'store'));
+  const [imgError, setImgError] = useState(false);
 
   return (
     <motion.div
@@ -25,15 +26,21 @@ export default function ShipCardList({ ship, onClick }: ShipCardListProps) {
     >
       {/* Thumbnail */}
       <div className="relative w-16 h-10 flex-shrink-0 overflow-hidden rounded-sm">
-        <Image
-          src={imgSrc}
-          alt={ship.name}
-          fill
-          className="object-cover"
-          sizes="64px"
-          loading="lazy"
-          onError={() => setImgSrc('/assets/ship-placeholder.png')}
-        />
+        {imgSrc && !imgError ? (
+          <Image
+            src={imgSrc}
+            alt={ship.name}
+            fill
+            className="object-cover"
+            sizes="64px"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="flex items-center justify-center w-full h-full bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.15)] rounded">
+            <span className="text-xs text-[rgba(var(--mg-primary),0.3)]">No image</span>
+          </div>
+        )}
       </div>
 
       {/* Ship Name */}

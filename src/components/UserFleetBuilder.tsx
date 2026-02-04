@@ -116,9 +116,9 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
                               <div className="w-8 h-8 border-2 border-[rgba(var(--mg-primary),0.2)] border-t-[rgba(var(--mg-primary),0.8)] rounded-full animate-spin"></div>
                             </div>
                           )}
-                          {imageSrc ? (
+                          {imageSrc && !useDefaultImage ? (
                             <Image
-                              src={useDefaultImage ? '/assets/ship-placeholder.png' : imageSrc}
+                              src={imageSrc}
                               alt={ship.name}
                               width={192}
                               height={192}
@@ -128,10 +128,8 @@ const UserFleetBuilder: React.FC<UserFleetBuilderProps> = ({
                               priority={index < 2}
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-[rgba(var(--mg-panel-dark),0.4)] rounded-sm">
-                              <span className="text-[rgba(var(--mg-text),0.3)] text-xs text-center px-2">
-                                No image available
-                              </span>
+                            <div className="flex items-center justify-center w-full h-full bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.15)] rounded">
+                              <span className="text-xs text-[rgba(var(--mg-primary),0.3)]">No image</span>
                             </div>
                           )}
                         </div>

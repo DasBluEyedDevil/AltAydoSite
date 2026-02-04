@@ -628,13 +628,19 @@ const MissionPlannerForm: React.FC<MissionPlannerFormProps> = ({
                 >
                   {/* Ship Image */}
                   <div className="aspect-video relative">
-                    <Image
-                      src={ship.image || '/assets/ship-placeholder.png'}
-                      alt={ship.shipName}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 25vw"
-                    />
+                    {ship.image ? (
+                      <Image
+                        src={ship.image}
+                        alt={ship.shipName}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.15)] rounded">
+                        <span className="text-xs text-[rgba(var(--mg-primary),0.3)]">No image</span>
+                      </div>
+                    )}
                     {/* Quantity Controls */}
                     <div className="absolute top-2 right-2 flex items-center gap-1 bg-[rgba(0,0,0,0.8)] rounded px-2 py-1">
                       <button
