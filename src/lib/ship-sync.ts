@@ -17,6 +17,7 @@ import { transformFleetYardsShip } from '@/lib/fleetyards/transform';
 import {
   upsertShips,
   getShipCount,
+  getShipTimestamps,
   saveSyncStatus,
   getLatestSyncStatus,
 } from '@/lib/ship-storage';
@@ -107,11 +108,34 @@ export async function syncShipsFromFleetYards(): Promise<SyncStatusDocument> {
     return failedStatus as SyncStatusDocument;
   }
 
-  // ── Step 6: Validate and transform each ship ──────────────────────────
+  // ── Step 6: Delta filtering -- skip ships unchanged since last sync ───
+  const storedTimestamps = await getShipTimestamps();
+  let deltaUnchanged = 0;
+
+  const changedRaw = rawShips.filter((raw) => {
+    const r = raw as unknown as Record<string, unknown>;
+    const id = r?.id as string | undefined;
+    const upstreamUpdatedAt = (r?.updatedAt ?? r?.lastUpdatedAt ?? '') as string;
+
+    if (id && storedTimestamps.has(id)) {
+      const storedUpdatedAt = storedTimestamps.get(id)!;
+      if (storedUpdatedAt && storedUpdatedAt === upstreamUpdatedAt) {
+        deltaUnchanged++;
+        return false;
+      }
+    }
+    return true;
+  });
+
+  console.log(
+    `[ship-sync] Delta filter: ${changedRaw.length} new/changed, ${deltaUnchanged} unchanged (skipped)`,
+  );
+
+  // ── Step 7: Validate and transform changed ships ────────────────────
   const validated: ReturnType<typeof transformFleetYardsShip>[] = [];
   const validationErrors: string[] = [];
 
-  for (const raw of rawShips) {
+  for (const raw of changedRaw) {
     const result = FleetYardsShipSchema.safeParse(raw);
     if (result.success) {
       validated.push(transformFleetYardsShip(result.data, syncVersion));
@@ -124,7 +148,7 @@ export async function syncShipsFromFleetYards(): Promise<SyncStatusDocument> {
     }
   }
 
-  // ── Step 7: Upsert validated ships into MongoDB ───────────────────────
+  // ── Step 8: Upsert validated ships into MongoDB ──────────────────────
   let upsertResult: {
     newShips: number;
     updatedShips: number;
@@ -135,15 +159,16 @@ export async function syncShipsFromFleetYards(): Promise<SyncStatusDocument> {
     upsertResult = await upsertShips(validated);
   }
 
-  // ── Step 8: Get final ship count ──────────────────────────────────────
+  // ── Step 9: Get final ship count ──────────────────────────────────────
   const finalShipCount = await getShipCount();
 
-  // ── Step 9: Calculate duration ────────────────────────────────────────
+  // ── Step 10: Calculate duration ───────────────────────────────────────
   const duration = Date.now() - startTime;
 
-  // ── Step 10: Determine status ─────────────────────────────────────────
+  // ── Step 11: Determine status ─────────────────────────────────────────
   let status: 'success' | 'partial' | 'failed';
-  if (validated.length === 0) {
+  if (validated.length === 0 && deltaUnchanged === 0) {
+    // No ships validated AND none were delta-skipped → everything failed
     status = 'failed';
   } else if (validationErrors.length > 0 || fetchErrors.length > 0) {
     status = 'partial';
@@ -151,7 +176,7 @@ export async function syncShipsFromFleetYards(): Promise<SyncStatusDocument> {
     status = 'success';
   }
 
-  // ── Step 11: Build and save sync status audit record ──────────────────
+  // ── Step 12: Build and save sync status audit record ─────────────────
   const syncStatus: Omit<SyncStatusDocument, '_id'> = {
     type: 'ship-sync',
     syncVersion,
@@ -159,7 +184,7 @@ export async function syncShipsFromFleetYards(): Promise<SyncStatusDocument> {
     shipCount: finalShipCount,
     newShips: upsertResult?.newShips ?? 0,
     updatedShips: upsertResult?.updatedShips ?? 0,
-    unchangedShips: upsertResult?.unchangedShips ?? 0,
+    unchangedShips: (upsertResult?.unchangedShips ?? 0) + deltaUnchanged,
     skippedShips: validationErrors.length,
     durationMs: duration,
     status,
@@ -169,7 +194,7 @@ export async function syncShipsFromFleetYards(): Promise<SyncStatusDocument> {
 
   await saveSyncStatus(syncStatus);
 
-  // ── Step 12: Log summary ──────────────────────────────────────────────
+  // ── Step 13: Log summary ──────────────────────────────────────────────
   console.log(
     '[ship-sync] Sync complete:',
     JSON.stringify({
@@ -190,14 +215,15 @@ export async function syncShipsFromFleetYards(): Promise<SyncStatusDocument> {
 // ---------------------------------------------------------------------------
 
 /**
- * Check if sync is overdue (>24h since last sync) and run immediately if so.
- * Called on startup to catch up after server downtime.
+ * Check if sync is overdue (>72h since last sync) and run immediately if so.
+ * Called on startup to catch up after server downtime. The 72h threshold
+ * gives the default 48h schedule a comfortable buffer.
  */
 async function checkAndRunOverdueSync(): Promise<void> {
   const lastSync = await getLatestSyncStatus();
-  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const seventyTwoHoursAgo = new Date(Date.now() - 72 * 60 * 60 * 1000);
 
-  if (!lastSync || lastSync.lastSyncAt < twentyFourHoursAgo) {
+  if (!lastSync || lastSync.lastSyncAt < seventyTwoHoursAgo) {
     console.log('[ship-sync] Sync is overdue, running now...');
     await syncShipsFromFleetYards();
   }
@@ -207,13 +233,13 @@ async function checkAndRunOverdueSync(): Promise<void> {
  * Start the node-cron scheduler for automatic ship syncs.
  *
  * Configuration via environment variables:
- * - SHIP_SYNC_CRON_SCHEDULE: Cron expression (default: every 6 hours)
+ * - SHIP_SYNC_CRON_SCHEDULE: Cron expression (default: midnight every 2 days)
  * - SHIP_SYNC_ENABLED: Set to 'false' to disable cron scheduling
  *
- * On startup, checks if sync is overdue (>24h) and runs immediately if needed.
+ * On startup, checks if sync is overdue (>72h) and runs immediately if needed.
  */
 export function startShipSyncCron(): void {
-  const schedule = process.env.SHIP_SYNC_CRON_SCHEDULE || '0 */6 * * *';
+  const schedule = process.env.SHIP_SYNC_CRON_SCHEDULE || '0 0 */2 * *';
   const enabled = process.env.SHIP_SYNC_ENABLED !== 'false';
 
   if (!enabled) {
@@ -241,7 +267,7 @@ export function startShipSyncCron(): void {
 
   console.log(`[ship-sync] Cron scheduled: ${schedule}`);
 
-  // Check if sync is overdue (>24h since last) and run immediately
+  // Check if sync is overdue (>72h since last) and run immediately
   checkAndRunOverdueSync().catch((err) => {
     console.warn('[ship-sync] Overdue sync check failed:', err);
   });

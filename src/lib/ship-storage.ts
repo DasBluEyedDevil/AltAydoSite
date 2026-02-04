@@ -146,6 +146,31 @@ export async function upsertShips(
 }
 
 /**
+ * Get a lightweight map of fleetyardsId → fleetyardsUpdatedAt for all ships.
+ * Used by the sync pipeline for delta detection: only ships whose upstream
+ * updatedAt differs from the stored value need to be validated and upserted.
+ */
+export async function getShipTimestamps(): Promise<Map<string, string>> {
+  try {
+    const shipsCollection = await getShipsCollection();
+    const docs = await shipsCollection
+      .find({}, { projection: { fleetyardsId: 1, fleetyardsUpdatedAt: 1, _id: 0 } })
+      .toArray();
+
+    const map = new Map<string, string>();
+    for (const doc of docs) {
+      if (doc.fleetyardsId) {
+        map.set(doc.fleetyardsId as string, (doc.fleetyardsUpdatedAt as string) || '');
+      }
+    }
+    return map;
+  } catch (error) {
+    console.error('[ship-storage] Error in getShipTimestamps:', error);
+    return new Map();
+  }
+}
+
+/**
  * Get the total number of ships in the collection.
  * Used for pre/post-sync sanity checks.
  */

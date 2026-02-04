@@ -15,6 +15,7 @@ const nextConfig = {
     },
     images: {
         dangerouslyAllowSVG: true,
+        minimumCacheTTL: 86400, // Cache optimized images for 24 hours (ship images rarely change)
         remotePatterns: [
             {
                 protocol: 'https',
