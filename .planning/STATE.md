@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 6 of 7 (Frontend Integration)
-Plan: 2 of 5 in current phase
+Plan: 3 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-02-PLAN.md (fleet builder rewire)
+Last activity: 2026-02-04 -- Completed 06-04-PLAN.md (profile ship display and mission participant ships)
 
-Progress: [████████████████████░] ~80% (20 of ~25 total plans estimated)
+Progress: [█████████████████████░] ~84% (21 of ~25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
+- Total plans completed: 21
 - Average duration: ~2.4 min
-- Total execution time: ~47 min
+- Total execution time: ~51 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Progress: [████████████████████░] ~80%
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
 | 5 - Ship Browse UI | 5 | ~11 min | ~2.2 min |
 | 5.1 - Ship Browse Gaps | 2 | ~4 min | ~2 min |
-| 6 - Frontend Integration | 2 | ~6 min | ~3 min |
+| 6 - Frontend Integration | 3 | ~10 min | ~3.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-05 (~2 min), 05.1-01 (~2 min), 05.1-02 (~2 min), 06-01 (~2 min), 06-02 (~4 min)
-- Trend: stable (06-02 slightly longer due to additional caller fix)
+- Last 5 plans: 05.1-01 (~2 min), 05.1-02 (~2 min), 06-01 (~2 min), 06-02 (~4 min), 06-04 (~4 min)
+- Trend: stable (Phase 6 plans slightly longer due to cross-component wiring)
 
 *Updated after each plan completion*
 
@@ -114,6 +114,9 @@ Recent decisions affecting current work:
 - [06-02]: Modal state resets on close via RESET action (clean filter state each time modal opens)
 - [06-02]: Angled view image preferred for fleet display (larger cards benefit from angled perspective)
 - [06-02]: Unresolved ships show "No image available" placeholder div instead of placeholder image
+- [06-04]: Profile fleet is read-only (no add/remove on profile page, fleet management in fleet builder edit mode)
+- [06-04]: Unresolved mission participant ships show name/role text only, no image or placeholder
+- [06-04]: INT-05 contextual specs: crew for multi-crew ships (crew.max > 1), cargo for transport/freight/hauling
 
 ### Roadmap Evolution
 
@@ -141,7 +144,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-02-PLAN.md. Phase 6 plan 2 of 5 complete. Next: 06-03 through 06-05.
+Stopped at: Completed 06-04-PLAN.md. Phase 6 plan 3 of 5 complete. Next: 06-03 and 06-05.
 Resume file: None
 
 IMPORTANT CONTEXT:
