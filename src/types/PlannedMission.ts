@@ -11,7 +11,6 @@
 // 5. Post-mission: Leaders mark confirmed participants (attendance tracking)
 
 import { ActivityType, OperationType } from './MissionTemplate';
-import { ShipDetails } from './ShipData';
 
 // Actual ship assignment (specific ship from compendium)
 export interface MissionShip {
@@ -20,7 +19,7 @@ export interface MissionShip {
   size: string;               // Ship size category
   role?: string[];            // Ship roles
   fleetyardsId: string;       // FleetYards UUID
-  image?: string;             // Ship image URL -- Kept optional for transition; removed in Phase 7
+  image?: string;             // Ship image URL (FleetYards CDN)
   quantity: number;           // How many of this ship type
   assignedTo?: string;        // Optional: User ID of who's bringing this ship
   assignedToName?: string;    // Optional: Display name of assignee
@@ -167,20 +166,6 @@ export const LEADERSHIP_ROLES = [
 ] as const;
 
 export type LeadershipRole = typeof LEADERSHIP_ROLES[number];
-
-// Helper to convert ShipDetails to MissionShip
-export function shipDetailsToMissionShip(ship: ShipDetails, quantity: number = 1): MissionShip {
-  return {
-    shipName: ship.name,
-    manufacturer: ship.manufacturer,
-    size: ship.size || 'Medium',
-    role: ship.role,
-    fleetyardsId: '',          // Empty placeholder -- callers must set fleetyardsId from ship lookup
-    image: ship.image,
-    quantity,
-    notes: ''
-  };
-}
 
 // Helper to create empty mission with defaults
 export function createEmptyMission(): Partial<PlannedMission> {

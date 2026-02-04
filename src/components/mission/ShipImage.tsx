@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import React from "react";
-import { resolveShipImageLegacy } from "@/lib/ships/image";
 
 export type ShipImageSize = "sm" | "md" | "lg";
 
@@ -20,26 +18,16 @@ interface ShipImageProps {
 }
 
 const ShipImage: React.FC<ShipImageProps> = ({ model, alt, size = "sm", className }) => {
-  const src = resolveShipImageLegacy(model);
   const dims = sizeMap[size];
-  const [loaded, setLoaded] = React.useState(false);
   return (
     <div
       aria-hidden={false}
       className={`relative overflow-hidden rounded-md border border-[rgba(var(--mg-primary),0.25)] bg-[rgba(var(--mg-panel-dark),0.4)] ${dims.className} ${className || ""}`}
       style={{ contain: "layout paint" }}
     >
-      {/* Skeleton */}
-      {!loaded && <div className="absolute inset-0 animate-pulse bg-[rgba(255,255,255,0.04)]" />}
-      <Image
-        src={src}
-        alt={alt || `${model} image`}
-        fill
-        sizes={`${dims.w}px`}
-        loading="lazy"
-        className="object-cover"
-        onLoadingComplete={() => setLoaded(true)}
-      />
+      <div className="flex items-center justify-center w-full h-full bg-[rgba(var(--mg-panel-dark),0.6)] border border-[rgba(var(--mg-primary),0.15)] rounded">
+        <span className="text-xs text-[rgba(var(--mg-primary),0.3)]">No image</span>
+      </div>
     </div>
   );
 };

@@ -75,38 +75,9 @@ export function resolveShipImage(
 }
 
 // ---------------------------------------------------------------------------
-// Legacy Support (Phase 6 rewires callers; Phase 7 removes)
-// ---------------------------------------------------------------------------
-
-import { getDirectImagePath, getShipByName } from '@/types/ShipData';
-
-/**
- * Resolve a displayable image URL for a given ship model/name.
- * Falls back to a neutral placeholder when unknown.
- *
- * @deprecated Use resolveShipImage(images, view) instead. Will be removed in Phase 7.
- */
-export function resolveShipImageLegacy(model: string): string {
-  if (!model) return getShipPlaceholder();
-  try {
-    // Prefer direct mapping
-    const direct = getDirectImagePath(model);
-    if (direct && direct.trim().length > 0) {
-      return direct;
-    }
-    // Try by canonical ship details (some models/types differ)
-    const details = getShipByName(model);
-    if (details?.image) return details.image;
-  } catch {
-    // ignore
-  }
-  return getShipPlaceholder();
-}
-
-// ---------------------------------------------------------------------------
 // Placeholder
 // ---------------------------------------------------------------------------
 
 export function getShipPlaceholder(): string {
-  return '/assets/ship-placeholder.png';
+  return '';
 }
