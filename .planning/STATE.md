@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 5 of 7 (Ship Browse & Display)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 05-03-PLAN.md (filter & search components)
+Last activity: 2026-02-03 -- Completed 05-04-PLAN.md (ship detail panel)
 
-Progress: [██████████████░] ~58% (14 of ~24 total plans estimated)
+Progress: [███████████████░] ~63% (15 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
-- Average duration: ~2.4 min
-- Total execution time: ~33 min
+- Total plans completed: 15
+- Average duration: ~2.3 min
+- Total execution time: ~35 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [██████████████░] ~58% (14 of ~24 total 
 | 2 - Ship API Routes | 3 | ~5 min | ~1.7 min |
 | 3 - Data Migration | 2 | ~5 min | ~2.6 min |
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
-| 5 - Ship Browse UI | 3 | ~7 min | ~2.3 min |
+| 5 - Ship Browse UI | 4 | ~9 min | ~2.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (~2 min), 05-01 (~2 min), 05-02 (~2 min), 05-03 (~3 min)
+- Last 5 plans: 05-01 (~2 min), 05-02 (~2 min), 05-03 (~3 min), 05-04 (~2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -89,6 +89,10 @@ Recent decisions affecting current work:
 - [05-03]: Manufacturer filter sends slug as value (not display name) per API contract
 - [05-03]: External value sync in ShipSearchBar uses ref flag to prevent debounce re-trigger
 - [05-03]: formatClassification local helper in FilterPanel (underscore-split title case)
+- [05-04]: ShipImageGallery/ShipSpecs pre-existed from 05-02 -- no duplicate creation needed
+- [05-04]: Body scroll lock when detail panel is open (overflow hidden on body)
+- [05-04]: Production status badge uses inline style for dynamic CSS variable color mapping (Tailwind can't compose variable names)
+- [05-04]: Description collapse state resets on shipId change (each new ship starts with specs visible)
 
 ### Pending Todos
 
@@ -108,8 +112,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-04
-Stopped at: Completed 05-03-PLAN.md. Phase 5 plan 3 of 5 complete. Continue with 05-04-PLAN.md next.
+Last session: 2026-02-03
+Stopped at: Completed 05-04-PLAN.md. Phase 5 plan 4 of 5 complete. Continue with 05-05-PLAN.md next.
 Resume file: None
 
 IMPORTANT CONTEXT:
