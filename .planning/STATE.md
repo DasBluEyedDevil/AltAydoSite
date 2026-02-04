@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** The ship database is always current with the latest Star Citizen ships and data without any manual maintenance.
-**Current focus:** Phase 3 (Data Migration) -- Complete, verified against live data. Phase 4 (Type System Pivot) next.
+**Current focus:** Phase 4 (Type System & Image Resolution) -- Plan 01 complete, Plan 02 next.
 
 ## Current Position
 
-Phase: 3 of 7 (Data Migration) -- COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase complete -- migration executed against production Cosmos DB
-Last activity: 2026-02-03 -- Migration executed: 116 ship refs converted, 0 unmatched, 0 failed
+Phase: 4 of 7 (Type System & Image Resolution)
+Plan: 1 of 2 in current phase
+Status: In progress -- type definitions and next.config.js complete
+Last activity: 2026-02-04 -- Completed 04-01-PLAN.md (type definitions + next.config.js)
 
-Progress: [█████████░] ~38% (9 of ~24 total plans estimated)
+Progress: [██████████░] ~42% (10 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: ~2.3 min
-- Total execution time: ~21 min
+- Total plans completed: 10
+- Average duration: ~2.2 min
+- Total execution time: ~24 min
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: [█████████░] ~38% (9 of ~24 total plans estimated)
 | 1 - Sync Engine | 4 | ~10 min | ~2.5 min |
 | 2 - Ship API Routes | 3 | ~5 min | ~1.7 min |
 | 3 - Data Migration | 2 | ~5 min | ~2.6 min |
+| 4 - Type System | 1 | ~3 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (~1 min), 02-03 (~2 min), 03-01 (~1.5 min), 03-02 (~3.7 min)
-- Trend: stable, 03-02 slightly longer due to 765-line migration script with 5 collection handlers
+- Last 5 plans: 02-03 (~2 min), 03-01 (~1.5 min), 03-02 (~3.7 min), 04-01 (~3 min)
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -70,6 +71,9 @@ Recent decisions affecting current work:
 - [03-02]: Use user-storage API for users (handles MongoDB/local fallback), direct fs for operations/resources JSON
 - [03-02]: Mutate JSON files in-place for operations/resources (small files, atomic read/write)
 - [03-02]: Skip counting at ship/participant level for granular reporting accuracy
+- [04-01]: image made optional (not removed) to avoid breaking ~7 components -- deferred removal to Phase 7
+- [04-01]: shipDetailsToMissionShip sets fleetyardsId to '' with caller-must-set comment
+- [04-01]: Downstream type errors fixed inline (profile Zod schema, fleet builder, mission planner image fallbacks)
 
 ### Pending Todos
 
@@ -83,16 +87,19 @@ None yet.
 - [01-04]: Pre-existing build failure from discord.js/zlib-sync webpack issue in planned-missions route -- unrelated to ship sync but may affect Phase 2 build verification
 - [03-exec]: FleetYards API changed response format -- view fields now flat strings at top level, objects under media. Schema updated in 8a8b72a.
 - [03-exec]: COSMOS_DATABASE_ID must be `aydocorp-database` (not `aydocorpdb-vcore`) -- actual app data lives there
-- [03-exec]: Planned mission idempotency partial (3/4 re-updated on second run) -- fleetyardsId may not persist on MissionShip subdocuments. Phase 4 type updates should address.
+- [RESOLVED]: Planned mission idempotency partial -- Phase 4 type updates now include fleetyardsId in MissionShip type, addressing the persistence concern from 03-exec.
+- [04-01]: UserFleetBuilder uses placeholder fleetyardsId ('') -- Phase 6 must wire to ship API lookup
+- [04-01]: /images/placeholder-ship.png fallback used in MissionPlanner/Form but asset may not exist -- Phase 5 should create or use alternative
 
 ## Session Continuity
 
-Last session: 2026-02-03
-Stopped at: Phase 3 fully executed and verified against production Cosmos DB. Phase 4 (Type System Pivot) next.
-Resume file: .planning/ROADMAP.md (Phase 4)
+Last session: 2026-02-04
+Stopped at: Completed 04-01-PLAN.md. Phase 4 Plan 02 (image resolution + API validation) next.
+Resume file: .planning/phases/04-type-system-image-resolution/04-02-PLAN.md
 
 IMPORTANT CONTEXT:
 - commit_docs is true (commit planning artifacts)
 - Model profile is "quality"
 - The project uses Cosmos DB for MongoDB vCore (confirmed by research) which DOES support $text indexes
 - Pre-existing build failure from discord.js/zlib-sync is unrelated -- use `npm run type-check` for verification instead of `npm run build`
+- next.config.js now exists at project root (restored from scripts/) with FleetYards CDN support
