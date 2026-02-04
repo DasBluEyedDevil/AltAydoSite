@@ -20,6 +20,7 @@ interface ManufacturerOption {
   name: string;
   code: string;
   slug: string;
+  logo: string | null;
   shipCount: number;
 }
 

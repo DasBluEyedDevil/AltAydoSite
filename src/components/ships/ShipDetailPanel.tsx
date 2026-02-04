@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useShipDetail } from '@/hooks/useShipDetail';
@@ -174,6 +175,15 @@ export default function ShipDetailPanel({ shipId, onClose }: ShipDetailPanelProp
 
                 {/* Manufacturer + Status Bar */}
                 <div className="flex items-center gap-3 px-4 pb-2">
+                  {ship.manufacturer.logo ? (
+                    <Image
+                      src={ship.manufacturer.logo}
+                      alt={ship.manufacturer.name}
+                      width={20}
+                      height={20}
+                      className="object-contain flex-shrink-0"
+                    />
+                  ) : null}
                   <span className="bg-[rgba(var(--mg-primary),0.1)] text-[rgba(var(--mg-primary),0.8)] px-2 py-0.5 text-xs font-mono rounded-sm">
                     {ship.manufacturer.code}
                   </span>
