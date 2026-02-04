@@ -9,7 +9,7 @@ import { UserShip } from '@/types/user';
 const userShipSchema = z.object({
   manufacturer: z.string(),
   name: z.string(),
-  fleetyardsId: z.string(),
+  fleetyardsId: z.string().uuid(),
   image: z.string().optional(),
 });
 
@@ -103,7 +103,7 @@ export async function PUT(request: NextRequest) {
       // Validate each ship in the array
       for (let i = 0; i < body.ships.length; i++) {
         const ship = body.ships[i];
-        if (!ship.manufacturer || !ship.name || !ship.image) {
+        if (!ship.manufacturer || !ship.name || !ship.fleetyardsId) {
           console.error(`PUT Profile - Invalid ship at index ${i}:`, ship);
           return NextResponse.json(
             { error: `Ship at index ${i} is missing required fields` }, 
