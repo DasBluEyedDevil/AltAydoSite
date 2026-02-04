@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 5 of 7 (Ship Browse & Display)
-Plan: 2 of 5 in current phase
+Plan: 3 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-03 -- Completed 05-02-PLAN.md (ship card components & grid/list view)
+Last activity: 2026-02-04 -- Completed 05-03-PLAN.md (filter & search components)
 
-Progress: [█████████████░] ~54% (13 of ~24 total plans estimated)
+Progress: [██████████████░] ~58% (14 of ~24 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: ~2.3 min
-- Total execution time: ~30 min
+- Total plans completed: 14
+- Average duration: ~2.4 min
+- Total execution time: ~33 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [█████████████░] ~54% (13 of ~24 total pla
 | 2 - Ship API Routes | 3 | ~5 min | ~1.7 min |
 | 3 - Data Migration | 2 | ~5 min | ~2.6 min |
 | 4 - Type System | 2 | ~5 min | ~2.5 min |
-| 5 - Ship Browse UI | 2 | ~4 min | ~2.0 min |
+| 5 - Ship Browse UI | 3 | ~7 min | ~2.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (~3 min), 04-02 (~2 min), 05-01 (~2 min), 05-02 (~2 min)
+- Last 5 plans: 04-02 (~2 min), 05-01 (~2 min), 05-02 (~2 min), 05-03 (~3 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -85,6 +85,10 @@ Recent decisions affecting current work:
 - [05-02]: Image error handled via React state (useState + onError) rather than CSS-only fallback
 - [05-02]: 24 skeleton placeholders matching default pageSize for consistent loading UX
 - [05-02]: Manufacturer column hidden on small screens in list view (sm:block) to prevent overflow
+- [05-03]: Debounce via native setTimeout (no lodash) -- 300ms delay sufficient for search
+- [05-03]: Manufacturer filter sends slug as value (not display name) per API contract
+- [05-03]: External value sync in ShipSearchBar uses ref flag to prevent debounce re-trigger
+- [05-03]: formatClassification local helper in FilterPanel (underscore-split title case)
 
 ### Pending Todos
 
@@ -104,8 +108,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-03
-Stopped at: Completed 05-02-PLAN.md. Phase 5 plan 2 of 5 complete. Continue with 05-03-PLAN.md next.
+Last session: 2026-02-04
+Stopped at: Completed 05-03-PLAN.md. Phase 5 plan 3 of 5 complete. Continue with 05-04-PLAN.md next.
 Resume file: None
 
 IMPORTANT CONTEXT:
