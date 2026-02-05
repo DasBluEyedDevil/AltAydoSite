@@ -335,10 +335,9 @@ export async function findShips(options: ShipQueryOptions): Promise<ShipQueryRes
   const sort: Sort = search
     ? { score: { $meta: 'textScore' } }
     : { name: 1 };
+  // Keep full ship documents in search responses; projecting only `score`
+  // would strip fields needed by UI renderers (name, manufacturer, etc.).
   const projection: Record<string, unknown> = { _id: 0 };
-  if (search) {
-    projection.score = { $meta: 'textScore' };
-  }
 
   const skip = (page - 1) * pageSize;
 
